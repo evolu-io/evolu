@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": "10.15.x"
+  },
+  "scripts": {
+    "deps": "rimraf 'yarn.lock' 'node_modules' '**/node_modules' && yarn",
+    "dev": "yarn workspace web dev",
+    "prod": "yarn workspace web build && yarn workspace web start",
+    "lint": "eslint '**/*.{ts,tsx}'",
+    "tsc": "tsc",
+    "jest": "jest",
+    "test": "yarn lint && yarn tsc && yarn jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
+    "eslint": "^6.0.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.14.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.6.1",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  }
+}

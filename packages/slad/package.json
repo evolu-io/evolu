@@ -1,0 +1,15 @@
+{
+  "name": "slad",
+  "version": "1.0.0",
+  "repository": "https://github.com/steida/slad.git",
+  "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.24",
+    "@types/react-dom": "^16.8.5"
+  }
+}
