@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/react": "^16.8.24",
-    "@types/react-dom": "^16.8.5"
+    "@types/react-dom": "^16.8.5",
+    "@types/styled-jsx": "^2.2.8"
   }
 }

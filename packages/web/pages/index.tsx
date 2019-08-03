@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { SladEditor, SladValue } from 'slad';
 import { Text } from '../components/Text';
+import { Container } from '../components/Container';
 
 const initialState: SladValue = '';
 
@@ -12,18 +13,11 @@ function Index() {
   }, []);
 
   return (
-    <>
-      <div>
-        <Text size={1}>Slad</Text>
-        <Text>TODO: Everything</Text>
-        <SladEditor value={editorValue} onChange={handleSladEditorChange} />
-      </div>
-      <style jsx>{`
-        div {
-          margin: 16px;
-        }
-      `}</style>
-    </>
+    <Container>
+      <Text size={1}>Slad</Text>
+      <Text>TODO: Everything</Text>
+      <SladEditor value={editorValue} onChange={handleSladEditorChange} />
+    </Container>
   );
 }
 
