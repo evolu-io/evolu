@@ -3,7 +3,27 @@ import { SladEditor, SladValue } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 
-const initialState: SladValue = '';
+const initialState: SladValue = {
+  element: {
+    props: {
+      style: { width: '100px', backgroundColor: 'red' },
+    },
+    children: [
+      {
+        props: {
+          style: { fontSize: '24px' },
+        },
+        children: [{ type: 'text', value: 'heading 1' }],
+      },
+      {
+        props: {
+          style: { fontSize: '16px' },
+        },
+        children: [{ type: 'text', value: 'paragraph' }],
+      },
+    ],
+  },
+};
 
 function Index() {
   const [editorValue, setEditorValue] = useState<SladValue>(initialState);
