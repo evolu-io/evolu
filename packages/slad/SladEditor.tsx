@@ -1,4 +1,10 @@
-import React, { memo, useCallback, ReactNode, Fragment } from 'react';
+import React, {
+  memo,
+  useCallback,
+  ReactNode,
+  Fragment,
+  CSSProperties,
+} from 'react';
 import { useReferenceKey } from './useReferenceKey';
 
 // SladElement is rendered as HTMLDivElement by default.
@@ -33,16 +39,24 @@ export type RenderElement = (
 export interface SladEditorProps {
   value: SladValue;
   onChange: (value: SladValue) => void;
+  disabled?: boolean;
+  // Some React HTMLAttributes.
+  autoCapitalize?: string;
+  autoCorrect?: 'on' | 'off';
+  className?: string;
+  role?: string;
+  spellCheck?: boolean;
+  style?: CSSProperties;
+  tabIndex?: number;
 }
 
 export const SladEditor = memo<SladEditorProps>(function SladEditor({
   value,
-  // onChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onChange,
+  disabled,
+  ...rest
 }) {
-  // const handleInputChange = useCallback(() => {
-  //   onChange(value);
-  // }, [onChange, value]);
-
   const renderText = useCallback<RenderText>(text => {
     return text.value;
   }, []);
@@ -68,6 +82,13 @@ export const SladEditor = memo<SladEditorProps>(function SladEditor({
     [getReferenceKey, renderElement, renderText],
   );
 
-  // Of course it will be contentEditable. This is just an example for now.
-  return <div>{renderTree(value.element)}</div>;
+  return (
+    <div
+      contentEditable={!disabled}
+      suppressContentEditableWarning={!disabled}
+      {...rest}
+    >
+      {renderTree(value.element)}
+    </div>
+  );
 });

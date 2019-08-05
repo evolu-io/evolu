@@ -36,7 +36,13 @@ function Index() {
     <Container>
       <Text size={1}>Slad</Text>
       <Text>TODO: Everything</Text>
-      <SladEditor value={editorValue} onChange={handleSladEditorChange} />
+      <SladEditor
+        value={editorValue}
+        onChange={handleSladEditorChange}
+        autoCorrect="off" // Disable browser autoCorrect.
+        spellCheck={false} // Disable browser spellCheck.
+        data-gramm // Disable Grammarly Chrome extension.
+      />
     </Container>
   );
 }
