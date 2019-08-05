@@ -33,6 +33,7 @@ const initialState: CustomValue = {
   },
 };
 
+// Leverage styled-jsx for custom style rendering.
 const useStyledJsx = () => {
   // TODO: Cache resolved styles with WeakMap in useRef.
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
@@ -43,7 +44,8 @@ const useStyledJsx = () => {
         return [...array, `${prop}: ${value}`];
       }, [])
       .join(';');
-    // css.resolve does not add vendor prefixes, but that's fine, we don't need them.
+    // css.resolve does not add vendor prefixes, but that's fine,
+    // modern browsers don't need them.
     const { className, styles: styleElement } = css.resolve`
       ${styleString}
     `;

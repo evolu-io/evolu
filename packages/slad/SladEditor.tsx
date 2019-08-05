@@ -40,7 +40,6 @@ export interface SladEditorProps<Props = SladElementDefaultProps> {
   value: SladValue<Props>;
   onChange: (value: SladValue<Props>) => void;
   disabled?: boolean;
-  // Tohle genericky
   renderElement?: RenderElement<Props>;
   // Some React HTMLAttributes.
   autoCapitalize?: string;
