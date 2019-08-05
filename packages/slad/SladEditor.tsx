@@ -1,9 +1,9 @@
 import React, {
-  memo,
   useCallback,
   ReactNode,
   Fragment,
   CSSProperties,
+  useMemo,
 } from 'react';
 import { useReferenceKey } from './useReferenceKey';
 
@@ -24,22 +24,24 @@ const isSladText = (x: SladElement | SladText): x is SladText => {
   return 'type' in x && x.type === 'text';
 };
 
-export type SladValue = Readonly<{
-  element: SladElement;
+export type SladValue<Props = SladElementDefaultProps> = Readonly<{
+  element: SladElement<Props>;
   // TODO: Add SladSelection.
 }>;
 
 export type RenderText = (text: SladText) => ReactNode;
 
-export type RenderElement = (
-  props: SladElementDefaultProps,
+export type RenderElement<Props = SladElementDefaultProps> = (
+  props: Props,
   children: ReactNode,
 ) => ReactNode;
 
-export interface SladEditorProps {
-  value: SladValue;
-  onChange: (value: SladValue) => void;
+export interface SladEditorProps<Props = SladElementDefaultProps> {
+  value: SladValue<Props>;
+  onChange: (value: SladValue<Props>) => void;
   disabled?: boolean;
+  // Tohle genericky
+  renderElement?: RenderElement<Props>;
   // Some React HTMLAttributes.
   autoCapitalize?: string;
   autoCorrect?: 'on' | 'off';
@@ -50,25 +52,29 @@ export interface SladEditorProps {
   tabIndex?: number;
 }
 
-export const SladEditor = memo<SladEditorProps>(function SladEditor({
+export function SladEditor<Props = SladElementDefaultProps>({
   value,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onChange,
   disabled,
+  renderElement,
   ...rest
-}) {
+}: SladEditorProps<Props>) {
   const renderText = useCallback<RenderText>(text => {
     return text.value;
   }, []);
 
-  const renderElement = useCallback<RenderElement>((props, children) => {
-    return <div {...props}>{children}</div>;
-  }, []);
+  const renderDefaultElement = useCallback<RenderElement<Props>>(
+    (props, children) => {
+      return <div {...props}>{children}</div>;
+    },
+    [],
+  );
 
   const getReferenceKey = useReferenceKey();
 
   const renderTree = useCallback(
-    (element: SladElement): ReactNode => {
+    (element: SladElement<Props>): ReactNode => {
       const children: ReactNode = element.children.map(child => {
         const key = getReferenceKey(child);
         return (
@@ -77,18 +83,22 @@ export const SladEditor = memo<SladEditorProps>(function SladEditor({
           </Fragment>
         );
       });
-      return renderElement(element.props, children);
+      return (renderElement || renderDefaultElement)(element.props, children);
     },
-    [getReferenceKey, renderElement, renderText],
+    [getReferenceKey, renderDefaultElement, renderElement, renderText],
   );
 
-  return (
-    <div
-      contentEditable={!disabled}
-      suppressContentEditableWarning={!disabled}
-      {...rest}
-    >
-      {renderTree(value.element)}
-    </div>
-  );
-});
+  // I don't know how to type React.memo with generic component, maybe it's not
+  // even possible. Nevermind, we can memo div element instead.
+  return useMemo(() => {
+    return (
+      <div
+        contentEditable={!disabled}
+        suppressContentEditableWarning={!disabled}
+        {...rest}
+      >
+        {renderTree(value.element)}
+      </div>
+    );
+  }, [disabled, renderTree, rest, value.element]);
+}

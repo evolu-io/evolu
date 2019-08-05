@@ -8,11 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "csstype": "^2.6.6",
     "next": "^9.0.3",
     "next-transpile-modules": "^2.3.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "slad": "1.0.0"
+    "slad": "1.0.0",
+    "styled-jsx": "^3.2.1"
   },
   "devDependencies": {
     "@types/react": "^16.8.24",
