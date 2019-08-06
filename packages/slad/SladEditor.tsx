@@ -1,40 +1,17 @@
-import React, {
-  useCallback,
-  ReactNode,
-  Fragment,
-  CSSProperties,
-  useMemo,
-} from 'react';
-import { useReferenceKey } from './useReferenceKey';
-
-// SladElement is rendered as HTMLDivElement by default.
-type SladElementDefaultProps = React.HTMLAttributes<HTMLDivElement>;
-
-export type SladText = Readonly<{
-  type: 'text';
-  value: string;
-}>;
-
-export type SladElement<Props = SladElementDefaultProps> = Readonly<{
-  props: Props;
-  children: readonly (SladElement<Props> | SladText)[];
-}>;
-
-const isSladText = (x: SladElement | SladText): x is SladText => {
-  return 'type' in x && x.type === 'text';
-};
+import React, { ReactNode, CSSProperties, useMemo } from 'react';
+import {
+  SladEditorElement,
+  SladElementDefaultProps,
+  SladElement,
+  RenderElement,
+} from './SladEditorElement';
+import { SladText } from './SladEditorText';
 
 export type SladValue<Props = SladElementDefaultProps> = Readonly<{
   element: SladElement<Props>;
-  // TODO: Add SladSelection.
 }>;
 
 export type RenderText = (text: SladText) => ReactNode;
-
-export type RenderElement<Props = SladElementDefaultProps> = (
-  props: Props,
-  children: ReactNode,
-) => ReactNode;
 
 export interface SladEditorProps<Props = SladElementDefaultProps> {
   value: SladValue<Props>;
@@ -51,6 +28,8 @@ export interface SladEditorProps<Props = SladElementDefaultProps> {
   tabIndex?: number;
 }
 
+// React.memo does not support generic type so we use useMemo instead.
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/37087
 export function SladEditor<Props = SladElementDefaultProps>({
   value,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -58,37 +37,7 @@ export function SladEditor<Props = SladElementDefaultProps>({
   disabled,
   renderElement,
   ...rest
-}: SladEditorProps<Props>) {
-  const renderText = useCallback<RenderText>(text => {
-    return text.value;
-  }, []);
-
-  const renderDefaultElement = useCallback<RenderElement<Props>>(
-    (props, children) => {
-      return <div {...props}>{children}</div>;
-    },
-    [],
-  );
-
-  const getReferenceKey = useReferenceKey();
-
-  const renderTree = useCallback(
-    (element: SladElement<Props>): ReactNode => {
-      const children: ReactNode = element.children.map(child => {
-        const key = getReferenceKey(child);
-        return (
-          <Fragment key={key}>
-            {isSladText(child) ? renderText(child) : renderTree(child)}
-          </Fragment>
-        );
-      });
-      return (renderElement || renderDefaultElement)(element.props, children);
-    },
-    [getReferenceKey, renderDefaultElement, renderElement, renderText],
-  );
-
-  // I don't know how to type React.memo with generic component, maybe it's not
-  // even possible. Nevermind, we can memo div element instead.
+}: SladEditorProps<Props>): JSX.Element {
   return useMemo(() => {
     return (
       <div
@@ -96,8 +45,11 @@ export function SladEditor<Props = SladElementDefaultProps>({
         suppressContentEditableWarning={!disabled}
         {...rest}
       >
-        {renderTree(value.element)}
+        <SladEditorElement<Props>
+          element={value.element}
+          renderElement={renderElement}
+        />
       </div>
     );
-  }, [disabled, renderTree, rest, value.element]);
+  }, [disabled, renderElement, rest, value.element]);
 }
