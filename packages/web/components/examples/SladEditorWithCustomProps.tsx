@@ -35,7 +35,7 @@ const initialState: CustomValue = {
 
 // Leverage styled-jsx for custom style rendering.
 const useStyledJsx = () => {
-  // TODO: Cache resolved styles with WeakMap in useRef.
+  // TODO: Cache resolved styles with WeakMap and useRef.
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
     const styleString = Object.keys(style)
       .reduce<string[]>((array, prop) => {
@@ -64,10 +64,10 @@ export function SladEditorWithCustomProps() {
   const getStyledJsx = useStyledJsx();
 
   const renderElement = useCallback<RenderElement<CustomProps>>(
-    (prop, children) => {
+    (prop, children, ref) => {
       const { className, styleElement } = getStyledJsx(prop.style);
       return (
-        <div className={className}>
+        <div className={className} ref={ref}>
           {children}
           {styleElement}
         </div>
