@@ -5,6 +5,11 @@
   "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
   "license": "MIT",
   "dependencies": {
+    "@types/debug": "^4.1.4",
+    "debug": "^4.1.1",
+    "tiny-invariant": "^1.0.6"
+  },
+  "peerDependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },

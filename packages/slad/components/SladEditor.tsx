@@ -1,15 +1,21 @@
-import React, { CSSProperties, useMemo, useCallback } from 'react';
+import React, { CSSProperties, useMemo, useCallback, useEffect } from 'react';
+import invariant from 'tiny-invariant';
+import Debug from 'debug';
 import {
   SladEditorElement,
   SladElementDefaultProps,
   SladElement,
   RenderElement,
+  isSladText,
 } from './SladEditorElement';
 import {
   SladEditorSetNodePathContext,
   SladPath,
   SladEditorSetNodePath,
 } from './SladEditorSetNodePathContext';
+import { SladText } from './SladEditorText';
+
+const debug = Debug('slad:editor');
 
 export type SladValue<Props = SladElementDefaultProps> = Readonly<{
   element: SladElement<Props>;
@@ -43,6 +49,30 @@ export function SladEditor<Props = SladElementDefaultProps>({
 }: SladEditorProps<Props>): JSX.Element {
   // We use nodesPathsMap to map browser API to Slad API.
   const nodesPathsMap = useMemo(() => new Map<Element | Text, SladPath>(), []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      const nodes: [string, Element | Text][] = [];
+      nodesPathsMap.forEach((path, node) => {
+        nodes.push([path.join(), node]);
+      });
+      debug('nodesPathsMap after render', nodes);
+
+      const countNodes = (node: SladElement | SladText, count = 0) => {
+        if (isSladText(node)) return count + 1;
+        let childrenCount = 0;
+        node.children.forEach(child => {
+          childrenCount += countNodes(child, count);
+        });
+        return count + 1 + childrenCount;
+      };
+      const nodesLength = countNodes(value.element);
+      invariant(
+        nodesLength === nodesPathsMap.size,
+        'It looks like you forget to use ref in custom renderElement',
+      );
+    }
+  });
 
   const setNodePath = useCallback<SladEditorSetNodePath>(
     (node, path) => {

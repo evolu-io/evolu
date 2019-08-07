@@ -27,7 +27,7 @@ export interface SladEditorElementProps<Props = SladElementDefaultProps> {
   path: SladPath;
 }
 
-const isSladText = (x: SladElement | SladText): x is SladText => {
+export const isSladText = (x: SladElement | SladText): x is SladText => {
   return 'type' in x && x.type === 'text';
 };
 
