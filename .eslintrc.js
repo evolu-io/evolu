@@ -16,6 +16,8 @@ module.exports = {
     'prettier/react',
   ],
   rules: {
+    // No need, we have Prettier.
+    'no-plusplus': 'off',
     // Type inference works good enough so we don't have to always type returns.
     '@typescript-eslint/explicit-function-return-type': 'off',
     // Unnecessary imho.
