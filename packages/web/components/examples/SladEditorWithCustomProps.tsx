@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { SladEditor, SladValue, RenderElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import css from 'styled-jsx/css';
@@ -35,7 +35,7 @@ const initialState: CustomValue = {
 
 // Leverage styled-jsx for custom style rendering.
 const useStyledJsx = () => {
-  // TODO: Cache resolved styles with WeakMap and useRef.
+  // TODO: Consider caching resolved styles with WeakMap and useRef.
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
     const styleString = Object.keys(style)
       .reduce<string[]>((array, prop) => {
@@ -88,6 +88,12 @@ export function SladEditorWithCustomProps() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
+      <pre>
+        selection:{' '}
+        {useMemo(() => JSON.stringify(editorValue.selection), [
+          editorValue.selection,
+        ])}
+      </pre>
     </>
   );
 }
