@@ -18,11 +18,15 @@ module.exports = {
   rules: {
     // No need, we have Prettier.
     'no-plusplus': 'off',
+    // Unnecessary with TypeScript.
+    'consistent-return': 'off',
+    // Immer uses it.
+    'no-param-reassign': 'off',
     // Type inference works good enough so we don't have to always type returns.
     '@typescript-eslint/explicit-function-return-type': 'off',
-    // Unnecessary imho.
+    // Unnecessary.
     '@typescript-eslint/explicit-member-accessibility': 'off',
-    // I suppose default export is DX anti-pattern.
+    // Default export is DX anti-pattern.
     'import/prefer-default-export': 'off',
     // We have TypeScript.
     'react/prop-types': 'off',
