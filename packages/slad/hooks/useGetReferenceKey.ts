@@ -10,9 +10,12 @@ const weakMap = new WeakMap<object, string>();
  * We can not use structural identity, because it would produce non unique key.
  * We can not use SladPath, because it does not represent identity across
  * updates. It would be the same as using indexes for keys.
- * But we also can not reuse the same instance among siblings.
+ * But we also can not reuse the same instance among siblings:
  * product.tags = [a, a, a, a]
- * If you have a better idea, feel free to open an issue.
+ * But that's fine, because:
+ * "Immer assumes your state to be a unidirectional tree. That is, no object should
+ * appear twice in the tree, and there should be no circular references.""
+ * https://github.com/immerjs/immer#pitfalls
  */
 export const useGetReferenceKey = () => {
   const getReferenceKey = useCallback((object: object): string => {
