@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import invariant from 'tiny-invariant';
 import Debug from 'debug';
-import produce from 'immer';
+import produce, { Immutable } from 'immer';
 import {
   SladPath,
   SladEditorSetNodePath,
@@ -27,8 +27,16 @@ export type SladSelection = Readonly<{
 }>;
 
 export interface SladDivElement extends SladElement {
-  readonly props: React.HTMLAttributes<HTMLDivElement>;
-  readonly children?: readonly (SladDivElement | string)[] | null;
+  props: React.HTMLAttributes<HTMLDivElement>;
+  children?: (SladDivElement | string)[] | null;
+}
+
+/**
+ * SladValue is immutable value describing editor state.
+ */
+export interface SladValue<T extends SladElement = SladDivElement> {
+  readonly element: Immutable<T>;
+  readonly selection?: Immutable<SladSelection | null>;
 }
 
 const isGoodEnoughSladDivElement = (
@@ -62,11 +70,6 @@ const renderDivElement: RenderElement = (element, children, ref) => {
     </div>
   );
 };
-
-export interface SladValue<T extends SladElement = SladDivElement> {
-  readonly element: T;
-  readonly selection?: SladSelection | null;
-}
 
 type NodesPathsMap = Map<Node, SladPath>;
 

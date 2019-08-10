@@ -1,63 +1,69 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { SladEditor, SladValue, SladElement, RenderElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
-import css from 'styled-jsx/css';
 import { Text } from '../Text';
+import { useStyledJsx } from '../../hooks/useStyledJsx';
 
+// It seems we can describe a schema with TypeScript pretty well.
+// Immutablity is enforced via SladValue once for all. No boring readonly everywhere.
+// Runtime validation should be possible with awesome gcanti/io-ts.
+
+// Always extends from SladElement
 interface SchemaElement extends SladElement {
-  readonly type: string;
-  readonly props: {
-    // Replace fooBla with foo-bla.
-    readonly style: StandardPropertiesHyphen;
-  };
-  readonly children?: readonly (SchemaElement | string)[] | null;
+  type: string;
+  // Note there is no special props property. Props are spread. It's better for DX.
+  // For css-in-js, foo-bla is better than inline fooBla style.
+  style?: StandardPropertiesHyphen;
+  children?: (SchemaElement | string)[] | null;
+}
+
+// For images and the other void elements.
+interface SchemaVoidElement extends SladElement {
+  children: null;
 }
 
 interface SchemaHeadingElement extends SchemaElement {
-  readonly type: 'heading';
+  type: 'heading';
   // Just one string.
-  readonly children: readonly [string];
+  children: [string];
 }
 
 interface SchemaLinkElement extends SchemaElement {
-  readonly type: 'link';
-  readonly href: string;
+  type: 'link';
+  href: string;
   // Just one string.
-  readonly children: readonly [string];
+  children: [string];
 }
 
+type SchemaParagraphElementChild = string | SchemaLinkElement;
+
 interface SchemaParagraphElement extends SchemaElement {
-  readonly type: 'paragraph';
-  // We can not use such tuple. Probably because Next.js or Webpack.
-  // Rest element must be last element (33:37)
+  type: 'paragraph';
   // At least one SchemaLinkElement or string.
-  // readonly children: [
-  //   SchemaLinkElement | string,
-  //   ...(SchemaLinkElement | string)[],
-  // ];
-  readonly children: (SchemaLinkElement | string)[];
+  children: [SchemaParagraphElementChild, ...(SchemaParagraphElementChild)[]];
 }
 
 interface SchemaListItemElement extends SchemaElement {
-  readonly type: 'listitem';
+  type: 'listitem';
   // Just one string or string with another SchemaListElement.
-  readonly children: [string] | [string, SchemaListElement];
+  children: [string] | [string, SchemaListElement];
 }
 
 interface SchemaListElement extends SchemaElement {
-  readonly type: 'list';
-  readonly children: SchemaListItemElement[];
+  type: 'list';
+  children: SchemaListItemElement[];
 }
 
-interface SchemaImageElement extends SchemaElement {
-  readonly type: 'image';
-  readonly src: string;
-  // Enforce no children
-  readonly children: null;
+interface SchemaImageElement extends SchemaVoidElement {
+  type: 'image';
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
 }
 
 interface SchemaDocumentElement extends SchemaElement {
-  readonly type: 'document';
+  type: 'document';
   children: (
     | SchemaHeadingElement
     | SchemaParagraphElement
@@ -70,73 +76,70 @@ type CustomValue = SladValue<SchemaDocumentElement>;
 const initialState: CustomValue = {
   element: {
     type: 'document',
-    props: {
-      style: { 'background-color': '#ccc' },
-    },
+    style: { 'background-color': '#ccc' },
     children: [
       {
         type: 'heading',
-        props: {
-          style: { 'font-size': '24px' },
-        },
+        style: { 'font-size': '24px' },
         children: ['heading'],
       },
       {
         type: 'paragraph',
-        props: {
-          style: { 'font-size': '16px' },
-        },
+        style: { 'font-size': '16px' },
         children: ['paragraph'],
       },
-      // TODO: Wtf?
-      // {
-      //   type: 'list',
-      //   props: {
-      //     style: { 'font-size': '16px' },
-      //   },
-      //   children: [{ type: 'listitem', children: ['item'] }],
-      // },
+      {
+        type: 'list',
+        style: { margin: '16px' },
+        children: [
+          {
+            type: 'listitem',
+            style: { 'font-size': '16px' },
+            children: ['listitem'],
+          },
+        ],
+      },
+      {
+        type: 'image',
+        src: 'https://via.placeholder.com/80',
+        alt: 'Square placeholder image 80px',
+        width: 80,
+        height: 80,
+        children: null,
+      },
     ],
   },
-};
-
-// Leverage styled-jsx for custom style rendering.
-const useStyledJsx = () => {
-  // TODO: Consider caching resolved styles with WeakMap and useRef.
-  const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
-    const styleString = Object.keys(style)
-      .reduce<string[]>((array, prop) => {
-        // @ts-ignore I don't know. Probably prop should be restricted string.
-        const value = style[prop];
-        return [...array, `${prop}: ${value}`];
-      }, [])
-      .join(';');
-    // css.resolve does not add vendor prefixes, but that's fine,
-    // modern browsers don't need them.
-    const { className, styles: styleElement } = css.resolve`
-      ${styleString}
-    `;
-    return { className, styleElement };
-  }, []);
-  return getStyledJsx;
 };
 
 export function SchemaExample() {
   const [editorValue, setEditorValue] = useState<CustomValue>(initialState);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSladEditorChange = useCallback((value: CustomValue) => {
     setEditorValue(value);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStyledJsx = useStyledJsx();
 
   const renderElement = useCallback<RenderElement>(
     (element, children, ref) => {
-      // TODO: Type guard for CustomElement, or something better.
+      // TODO: Exhausive switch with assert never on union of all elements.
       // @ts-ignore
-      const { className, styleElement } = getStyledJsx(element.props.style);
+      if (element.src)
+        return (
+          <img
+            // @ts-ignore
+            src={element.src}
+            // @ts-ignore
+            alt={element.alt}
+            // @ts-ignore
+            width={element.width}
+            // @ts-ignore
+            height={element.height}
+            ref={ref}
+          />
+        );
+      // @ts-ignore
+      const { className, styleElement } = getStyledJsx(element.style);
       return (
         <div className={className} ref={ref}>
           {children}
