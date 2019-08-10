@@ -21,14 +21,14 @@ import {
   RenderElement,
 } from './SladEditorRenderElementContext';
 
-export type SladSelection = Readonly<{
+export interface SladSelection {
   anchor: SladPath;
   focus: SladPath;
-}>;
+}
 
 export interface SladDivElement extends SladElement {
   props: React.HTMLAttributes<HTMLDivElement>;
-  children?: (SladDivElement | string)[] | null;
+  children?: (SladDivElement | string)[] | undefined;
 }
 
 /**
@@ -36,7 +36,7 @@ export interface SladDivElement extends SladElement {
  */
 export interface SladValue<T extends SladElement = SladDivElement> {
   readonly element: Immutable<T>;
-  readonly selection?: Immutable<SladSelection | null>;
+  readonly selection?: Immutable<SladSelection | undefined>;
 }
 
 const isGoodEnoughSladDivElement = (
@@ -183,17 +183,12 @@ export function SladEditor<T extends SladElement>({
       const sladSelection = mapSelectionToSladSelection(selection);
       const nextValue = produce(value, draft => {
         if (!sladSelection) {
-          draft.selection = null;
+          delete draft.selection;
           return;
         }
-        // For some reason, we can't assign reaonly array into mutable draft:
-        // "The type 'readonly number[]' is 'readonly' and cannot be assigned to
-        // the mutable type 'number[]'"
-        // Fortunately, we can use slice which returns mutable array.
-        // Not great, not terrible.
         draft.selection = {
-          anchor: sladSelection.anchor.slice(),
-          focus: sladSelection.focus.slice(),
+          anchor: sladSelection.anchor,
+          focus: sladSelection.focus,
         };
       });
       onChange(nextValue);

@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { SladEditor, SladValue, SladElement, RenderElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
+import { SelectionToJsonString } from '../SelectionToJsonString';
 
 // It seems we can describe a schema with TypeScript pretty well.
 // Immutablity is enforced via SladValue once for all. No boring readonly everywhere.
@@ -14,12 +15,12 @@ interface SchemaElement extends SladElement {
   // Note there is no special props property. Props are spread. It's better for DX.
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
-  children?: (SchemaElement | string)[] | null;
+  children?: (SchemaElement | string)[] | undefined;
 }
 
 // For images and the other void elements.
 interface SchemaVoidElement extends SladElement {
-  children: null;
+  children: undefined;
 }
 
 interface SchemaHeadingElement extends SchemaElement {
@@ -105,7 +106,7 @@ const initialState: CustomValue = {
         alt: 'Square placeholder image 80px',
         width: 80,
         height: 80,
-        children: null,
+        children: undefined,
       },
     ],
   },
@@ -162,12 +163,7 @@ export function SchemaExample() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
-      <pre>
-        selection:{' '}
-        {useMemo(() => JSON.stringify(editorValue.selection), [
-          editorValue.selection,
-        ])}
-      </pre>
+      <SelectionToJsonString value={editorValue.selection} />
     </>
   );
 }

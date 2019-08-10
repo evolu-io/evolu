@@ -6,7 +6,7 @@ import { SladEditorSetNodePathRef } from '../hooks/useSladEditorSetNodePathRef';
  * It only has properties common to all kinds of elements.
  */
 export interface SladElement {
-  readonly children?: readonly (SladElement | string)[] | null;
+  readonly children?: readonly (SladElement | string)[] | undefined;
 }
 
 export type RenderElement = (

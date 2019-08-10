@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { SladEditor, SladValue } from 'slad';
 import { Text } from '../Text';
+import { SelectionToJsonString } from '../SelectionToJsonString';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialState: SladValue = {
@@ -43,12 +44,7 @@ export function BasicExample() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
-      <pre>
-        selection:{' '}
-        {useMemo(() => JSON.stringify(editorValue.selection), [
-          editorValue.selection,
-        ])}
-      </pre>
+      <SelectionToJsonString value={editorValue.selection} />
     </>
   );
 }
