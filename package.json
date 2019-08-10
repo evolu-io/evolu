@@ -14,9 +14,7 @@
     "tsc": "tsc",
     "jest": "jest",
     "test": "yarn lint && yarn tsc && yarn jest",
-    "analyze": "yarn workspace web analyze",
-    "analyze:server": "yarn workspace web analyze:server",
-    "analyze:browser": "yarn workspace web analyze:browser"
+    "analyze": "yarn workspace web analyze"
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",
