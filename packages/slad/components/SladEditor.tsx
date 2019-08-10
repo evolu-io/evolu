@@ -1,35 +1,70 @@
 import React, {
   CSSProperties,
-  useMemo,
-  useCallback,
-  useEffect,
   useRef,
+  useEffect,
   RefObject,
+  useCallback,
+  useMemo,
 } from 'react';
 import invariant from 'tiny-invariant';
 import Debug from 'debug';
 import produce from 'immer';
 import {
-  SladEditorElement,
-  SladElementDefaultProps,
-  SladElement,
-  RenderElement,
-  isSladText,
-} from './SladEditorElement';
-import {
-  SladEditorSetNodePathContext,
   SladPath,
   SladEditorSetNodePath,
+  SladEditorSetNodePathContext,
 } from './SladEditorSetNodePathContext';
-import { SladText } from './SladEditorText';
+import { SladEditorElement } from './SladEditorElement';
+import {
+  SladEditorRenderElementContext,
+  SladElement,
+  RenderElement,
+} from './SladEditorRenderElementContext';
 
 export type SladSelection = Readonly<{
   anchor: SladPath;
   focus: SladPath;
 }>;
 
-export interface SladValue<Props = SladElementDefaultProps> {
-  readonly element: SladElement<Props>;
+export interface SladDivElement extends SladElement {
+  readonly props: React.HTMLAttributes<HTMLDivElement>;
+  readonly children?: readonly (SladDivElement | string)[] | null;
+}
+
+const isGoodEnoughSladDivElement = (
+  element: SladElement,
+): element is SladDivElement => {
+  // https://overreacted.io/how-does-the-development-mode-work/
+  if (process.env.NODE_ENV !== 'production') {
+    const div = element as SladDivElement;
+    return (
+      typeof div.props === 'object' &&
+      (div.props.style || div.props.className) != null
+    );
+  }
+  return true;
+};
+
+const renderDivElement: RenderElement = (element, children, ref) => {
+  if (!isGoodEnoughSladDivElement(element)) {
+    // https://overreacted.io/how-does-the-development-mode-work/
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(
+        false,
+        'SladEditor: SladDivElement props has to have at least className or style prop. Or pass custom renderElement to SladEditor.',
+      );
+    }
+    return null;
+  }
+  return (
+    <div {...element.props} ref={ref}>
+      {children}
+    </div>
+  );
+};
+
+export interface SladValue<T extends SladElement = SladDivElement> {
+  readonly element: T;
   readonly selection?: SladSelection | null;
 }
 
@@ -44,8 +79,12 @@ const useNodesPathsMap = (): NodesPathsMap => {
 
 const debug = Debug('slad:editor');
 
-const useDevDebug = (nodesPathsMap: NodesPathsMap, value: SladValue) => {
+const useDevDebug = (
+  nodesPathsMap: NodesPathsMap,
+  value: SladValue<SladElement>,
+) => {
   useEffect(() => {
+    // https://overreacted.io/how-does-the-development-mode-work/
     if (process.env.NODE_ENV !== 'production') {
       const nodes: [string, Node][] = [];
       nodesPathsMap.forEach((path, node) => {
@@ -53,21 +92,22 @@ const useDevDebug = (nodesPathsMap: NodesPathsMap, value: SladValue) => {
       });
       debug('nodesPathsMap after render', nodes);
 
-      const countNodes = (node: SladElement | SladText, count = 0) => {
-        if (isSladText(node)) return count + 1;
+      const countNodes = (node: SladElement | string, count = 0) => {
+        if (typeof node === 'string') return count + 1;
         let childrenCount = 0;
-        node.children.forEach(child => {
-          childrenCount += countNodes(child, count);
-        });
+        if (node.children)
+          node.children.forEach(child => {
+            childrenCount += countNodes(child, count);
+          });
         return count + 1 + childrenCount;
       };
       const nodesLength = countNodes(value.element);
       invariant(
         nodesLength === nodesPathsMap.size,
-        'It looks like you forget to use ref in custom renderElement',
+        'SladEditor: It looks like you forgot to use ref in custom renderElement',
       );
     }
-  });
+  }, [nodesPathsMap, value.element]);
 };
 
 const useDocumentSelectionChange = (
@@ -92,11 +132,11 @@ const useDocumentSelectionChange = (
   }, [callback, ref]);
 };
 
-export interface SladEditorProps<Props = SladElementDefaultProps> {
-  value: SladValue<Props>;
-  onChange: (value: SladValue<Props>) => void;
+export interface SladEditorProps<T extends SladElement> {
+  value: SladValue<T>;
+  onChange: (value: SladValue<T>) => void;
   disabled?: boolean;
-  renderElement?: RenderElement<Props>;
+  renderElement?: RenderElement;
   // Some React HTMLAttributes.
   autoCapitalize?: string;
   autoCorrect?: 'on' | 'off';
@@ -107,18 +147,16 @@ export interface SladEditorProps<Props = SladElementDefaultProps> {
   tabIndex?: number;
 }
 
-// React.memo does not support generic type, but that's fine because we prefer
-// useMemo which provides better granularity.
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/37087
-export function SladEditor<Props = SladElementDefaultProps>({
+// No React.memo because we prefer granularity.
+export function SladEditor<T extends SladElement>({
   value,
   onChange,
   disabled,
-  renderElement,
+  renderElement = renderDivElement,
   ...rest
-}: SladEditorProps<Props>): JSX.Element {
-  const divRef = useRef<HTMLDivElement>(null);
+}: SladEditorProps<T>) {
   const nodesPathsMap = useNodesPathsMap();
+
   useDevDebug(nodesPathsMap, value);
 
   const mapSelectionToSladSelection = useCallback(
@@ -160,6 +198,7 @@ export function SladEditor<Props = SladElementDefaultProps>({
     [mapSelectionToSladSelection, onChange, value],
   );
 
+  const divRef = useRef<HTMLDivElement>(null);
   useDocumentSelectionChange(divRef, handleDocumentSelectionChange);
 
   const setNodePath = useCallback<SladEditorSetNodePath>(
@@ -173,18 +212,7 @@ export function SladEditor<Props = SladElementDefaultProps>({
     [nodesPathsMap],
   );
 
-  const children = useMemo(() => {
-    return (
-      <SladEditorSetNodePathContext.Provider value={setNodePath}>
-        <SladEditorElement<Props>
-          element={value.element}
-          renderElement={renderElement}
-          path={[]}
-        />
-      </SladEditorSetNodePathContext.Provider>
-    );
-  }, [renderElement, setNodePath, value.element]);
-
+  // That's how we do nothing when only value.selection has been changed.
   return useMemo(() => {
     return (
       <div
@@ -193,8 +221,12 @@ export function SladEditor<Props = SladElementDefaultProps>({
         ref={divRef}
         {...rest}
       >
-        {children}
+        <SladEditorSetNodePathContext.Provider value={setNodePath}>
+          <SladEditorRenderElementContext.Provider value={renderElement}>
+            <SladEditorElement element={value.element} path={[]} />
+          </SladEditorRenderElementContext.Provider>
+        </SladEditorSetNodePathContext.Provider>
       </div>
     );
-  }, [children, disabled, rest]);
+  }, [disabled, renderElement, rest, setNodePath, value.element]);
 }

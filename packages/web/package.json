@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "assert-never": "^1.2.0",
     "csstype": "^2.6.6",
     "next": "^9.0.3",
     "next-transpile-modules": "^2.3.1",

@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { SladEditor, SladValue } from 'slad';
 import { Text } from '../Text';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialState: SladValue = {
   element: {
     props: {
@@ -12,19 +13,19 @@ const initialState: SladValue = {
         props: {
           style: { fontSize: '24px' },
         },
-        children: [{ type: 'text', value: 'heading 1' }],
+        children: ['heading'],
       },
       {
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ type: 'text', value: 'paragraph' }],
+        children: ['paragraph'],
       },
     ],
   },
 };
 
-export function SladEditorWithDefaultProps() {
+export function BasicExample() {
   const [editorValue, setEditorValue] = useState<SladValue>(initialState);
 
   const handleSladEditorChange = useCallback((value: SladValue) => {
@@ -33,7 +34,7 @@ export function SladEditorWithDefaultProps() {
 
   return (
     <>
-      <Text>Editor with default props</Text>
+      <Text>Basic</Text>
       <SladEditor
         value={editorValue}
         onChange={handleSladEditorChange}
@@ -42,6 +43,12 @@ export function SladEditorWithDefaultProps() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
+      <pre>
+        selection:{' '}
+        {useMemo(() => JSON.stringify(editorValue.selection), [
+          editorValue.selection,
+        ])}
+      </pre>
     </>
   );
 }

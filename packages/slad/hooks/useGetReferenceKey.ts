@@ -5,7 +5,7 @@ let id = 0;
 const weakMap = new WeakMap<object, string>();
 
 /**
- * `useReferenceKey` will return a unique key representing object identity.
+ * `useReferenceKey` will return a unique key representing object or string identity.
  * We use this for React key when we have no other object identity than reference.
  * We can not use structural identity, because it would produce non unique key.
  * We can not use SladPath, because it does not represent identity across
@@ -18,13 +18,19 @@ const weakMap = new WeakMap<object, string>();
  * https://github.com/immerjs/immer#pitfalls
  */
 export const useGetReferenceKey = () => {
-  const getReferenceKey = useCallback((object: object): string => {
-    let key = weakMap.get(object);
-    if (key !== undefined) return key;
-    key = (id++).toString();
-    weakMap.set(object, key);
-    return key;
-  }, []);
+  const getReferenceKey = useCallback(
+    (value: object | string, index: number): string => {
+      // We have to use index for strings, to prevent the same key for sibling
+      // text nodes, but that's fine, because textNode does not have a state.
+      if (typeof value === 'string') return value + index.toString();
+      let key = weakMap.get(value);
+      if (key !== undefined) return key;
+      key = (id++).toString();
+      weakMap.set(value, key);
+      return key;
+    },
+    [],
+  );
 
   return getReferenceKey;
 };

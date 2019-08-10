@@ -11,6 +11,7 @@ export const useSladEditorSetNodePathRef = (path: SladPath) => {
   const sladEditorSetNodePath = useContext(SladEditorSetNodePathContext);
   const sladEditorSetNodePathRef = useCallback<SladEditorSetNodePathRef>(
     node => {
+      // This is like useEffect clean, but for ref.
       if (previousNodeRef.current != null)
         sladEditorSetNodePath(previousNodeRef.current);
       previousNodeRef.current = node;

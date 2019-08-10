@@ -1,83 +1,43 @@
-import React, { ReactNode, Fragment, useMemo } from 'react';
-import { SladText, SladEditorText } from './SladEditorText';
+import React, { Fragment, memo, useMemo, useContext } from 'react';
 import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
+import { useSladEditorSetNodePathRef } from '../hooks/useSladEditorSetNodePathRef';
 import { SladPath } from './SladEditorSetNodePathContext';
+import { SladEditorText } from './SladEditorText';
 import {
-  SladEditorSetNodePathRef,
-  useSladEditorSetNodePathRef,
-} from '../hooks/useSladEditorSetNodePathRef';
-import { useMemoPath } from '../hooks/useMemoPath';
+  SladEditorRenderElementContext,
+  SladElement,
+} from './SladEditorRenderElementContext';
 
-export type SladElementDefaultProps = React.HTMLAttributes<HTMLDivElement>;
-
-export type SladElement<Props = SladElementDefaultProps> = Readonly<{
-  props: Props;
-  children: readonly (SladElement<Props> | SladText)[];
-}>;
-
-export type RenderElement<Props = SladElementDefaultProps> = (
-  props: Props,
-  children: ReactNode,
-  ref: SladEditorSetNodePathRef,
-) => ReactNode;
-
-export interface SladEditorElementProps<Props = SladElementDefaultProps> {
-  element: SladElement<Props>;
-  renderElement: RenderElement<Props> | undefined;
+export interface SladEditorElementProps {
+  element: SladElement;
   path: SladPath;
 }
 
-export const isSladText = (x: SladElement | SladText): x is SladText => {
-  return 'type' in x && x.type === 'text';
-};
+export const SladEditorElement = memo<SladEditorElementProps>(
+  function SladEditorElement({ element, path }) {
+    const getReferenceKey = useGetReferenceKey();
+    const renderElement = useContext(SladEditorRenderElementContext);
+    const sladEditorSetNodePathRef = useSladEditorSetNodePathRef(path);
 
-const renderDefaultElement: RenderElement = (props, children, ref) => {
-  return (
-    <div {...props} ref={ref}>
-      {children}
-    </div>
-  );
-};
-
-export function SladEditorElement<Props = SladElementDefaultProps>({
-  element,
-  renderElement,
-  path,
-}: SladEditorElementProps<Props>): JSX.Element {
-  const getReferenceKey = useGetReferenceKey();
-  const memoPath = useMemoPath(path);
-
-  const children = useMemo(() => {
-    return element.children.map((child, index) => {
-      const key = getReferenceKey(child);
-      const childPath = [...memoPath, index];
+    const children = useMemo(() => {
       return (
-        <Fragment key={key}>
-          {isSladText(child) ? (
-            <SladEditorText text={child} path={childPath} />
-          ) : (
-            <SladEditorElement
-              element={child}
-              renderElement={renderElement}
-              path={childPath}
-            />
-          )}
-        </Fragment>
+        element.children &&
+        element.children.map((child, index) => {
+          const key = getReferenceKey(child, index);
+          const childPath: SladPath = [...path, index];
+          return (
+            <Fragment key={key}>
+              {typeof child === 'string' ? (
+                <SladEditorText value={child} path={childPath} />
+              ) : (
+                <SladEditorElement element={child} path={childPath} />
+              )}
+            </Fragment>
+          );
+        })
       );
-    });
-  }, [element.children, getReferenceKey, memoPath, renderElement]);
+    }, [element.children, getReferenceKey, path]);
 
-  const sladEditorSetNodePathRef = useSladEditorSetNodePathRef(memoPath);
-
-  return useMemo(() => {
-    return (
-      <>
-        {(renderElement || renderDefaultElement)(
-          element.props,
-          children,
-          sladEditorSetNodePathRef,
-        )}
-      </>
-    );
-  }, [children, element.props, renderElement, sladEditorSetNodePathRef]);
-}
+    return <>{renderElement(element, children, sladEditorSetNodePathRef)}</>;
+  },
+);
