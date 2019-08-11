@@ -20,6 +20,7 @@ module.exports = {
     'no-plusplus': 'off',
     // Unnecessary with TypeScript.
     'consistent-return': 'off',
+    'react/jsx-props-no-spreading': 'off',
     // Immer uses it.
     'no-param-reassign': 'off',
     // Type inference works good enough so we don't have to always type returns.
