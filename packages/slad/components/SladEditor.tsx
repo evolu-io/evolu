@@ -21,11 +21,7 @@ import {
   RenderElement,
 } from './SladEditorRenderElementContext';
 import { SladSelection } from '../models/selection';
-
-export interface SladDivElement extends SladElement {
-  props: React.HTMLAttributes<HTMLDivElement>;
-  children?: (SladDivElement | string)[] | undefined;
-}
+import { SladDivElement, renderDivElement } from './rendeDivElement';
 
 /**
  * SladValue is immutable value describing editor state.
@@ -34,44 +30,6 @@ export interface SladValue<T extends SladElement = SladDivElement> {
   readonly element: Immutable<T>;
   readonly selection?: SladSelection | undefined;
 }
-
-// It should be possible to enforce this via types only, but TypeScript errors
-// can be confusing, so it's good to have nice dev warning.
-const isGoodEnoughSladDivElement = (
-  element: SladElement,
-): element is SladDivElement => {
-  // https://overreacted.io/how-does-the-development-mode-work/
-  if (process.env.NODE_ENV !== 'production') {
-    const div = element as SladDivElement;
-    return (
-      typeof div.props === 'object' &&
-      (div.props.style || div.props.className) != null
-    );
-  }
-  return true;
-};
-
-const renderDivElement: RenderElement<SladDivElement> = (
-  element,
-  children,
-  ref,
-) => {
-  if (!isGoodEnoughSladDivElement(element)) {
-    // https://overreacted.io/how-does-the-development-mode-work/
-    if (process.env.NODE_ENV !== 'production') {
-      invariant(
-        false,
-        'SladEditor: SladDivElement props has to have at least className or style prop. Or pass custom renderElement to SladEditor.',
-      );
-    }
-    return null;
-  }
-  return (
-    <div {...element.props} ref={ref}>
-      {children}
-    </div>
-  );
-};
 
 type NodesPathsMap = Map<Node, SladPath>;
 
@@ -109,7 +67,7 @@ const useDevDebug = (
       const nodesLength = countNodes(value.element);
       invariant(
         nodesLength === nodesPathsMap.size,
-        'SladEditor: It looks like you forgot to use ref in custom renderElement',
+        'It looks like you forgot to use ref in custom renderElement of SladEditor.',
       );
     }
   }, [nodesPathsMap, value.element]);
