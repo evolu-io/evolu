@@ -14,6 +14,7 @@ import {
   SladPath,
   SladEditorSetNodePath,
   SladEditorSetNodePathContext,
+  Node,
 } from './SladEditorSetNodePathContext';
 import { SladEditorElement } from './SladEditorElement';
 import {
@@ -160,8 +161,8 @@ export function SladEditor<T extends SladElement>({
       if (!selection) return undefined;
       const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
       if (!anchorNode || !focusNode) return undefined;
-      const anchorPath = nodesPathsMap.get(anchorNode);
-      const focusPath = nodesPathsMap.get(focusNode);
+      const anchorPath = nodesPathsMap.get(anchorNode as Node);
+      const focusPath = nodesPathsMap.get(focusNode as Node);
       if (!anchorPath || !focusPath) return undefined;
       return {
         anchor: [...anchorPath, anchorOffset],

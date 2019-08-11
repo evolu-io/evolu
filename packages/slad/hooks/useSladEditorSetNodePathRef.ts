@@ -2,12 +2,13 @@ import { useContext, useCallback, useRef } from 'react';
 import {
   SladPath,
   SladEditorSetNodePathContext,
+  Node,
 } from '../components/SladEditorSetNodePathContext';
 
-export type SladEditorSetNodePathRef = (node: Element | Text | null) => void;
+export type SladEditorSetNodePathRef = (node: Node | null) => void;
 
 export const useSladEditorSetNodePathRef = (path: SladPath) => {
-  const previousNodeRef = useRef<Element | Text | null>(null);
+  const previousNodeRef = useRef<Node | null>(null);
   const sladEditorSetNodePath = useContext(SladEditorSetNodePathContext);
   const sladEditorSetNodePathRef = useCallback<SladEditorSetNodePathRef>(
     node => {
