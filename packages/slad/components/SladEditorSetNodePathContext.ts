@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export type SladPath = number[];
+export type SladPath = readonly number[];
 
 export type SladEditorSetNodePath = (
   node: Element | Text,

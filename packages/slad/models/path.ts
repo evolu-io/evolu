@@ -1,4 +1,4 @@
-import { SladPath } from '../components/SladEditorSetNodePathContext';
+export type SladPath = readonly number[];
 
 export const pathsAreEqual = (path1: SladPath, path2: SladPath): boolean => {
   if (path1 === path2) return true;

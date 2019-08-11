@@ -20,11 +20,7 @@ import {
   SladElement,
   RenderElement,
 } from './SladEditorRenderElementContext';
-
-export interface SladSelection {
-  anchor: SladPath;
-  focus: SladPath;
-}
+import { SladSelection } from '../models/selection';
 
 export interface SladDivElement extends SladElement {
   props: React.HTMLAttributes<HTMLDivElement>;
@@ -36,7 +32,7 @@ export interface SladDivElement extends SladElement {
  */
 export interface SladValue<T extends SladElement = SladDivElement> {
   readonly element: Immutable<T>;
-  readonly selection?: Immutable<SladSelection | undefined>;
+  readonly selection?: SladSelection | undefined;
 }
 
 // It should be possible to enforce this via types only, but TypeScript errors
@@ -194,11 +190,13 @@ export function SladEditor<T extends SladElement>({
       const nextValue = produce(value, draft => {
         if (!sladSelection) {
           delete draft.selection;
+          // eslint-disable-next-line no-useless-return
           return;
         }
+        // Temp fix. We don't want to update model directly, so TypeScipt is right.
         draft.selection = {
-          anchor: sladSelection.anchor,
-          focus: sladSelection.focus,
+          anchor: sladSelection.anchor.slice(),
+          focus: sladSelection.focus.slice(),
         };
       });
       onChange(nextValue);
