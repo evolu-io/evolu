@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactNode } from 'react';
 import { SladEditor, SladValue, SladElement, RenderElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
+import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { SelectionToJsonString } from '../SelectionToJsonString';
@@ -9,17 +10,16 @@ import { SelectionToJsonString } from '../SelectionToJsonString';
 // Immutablity is enforced via SladValue once for all. No boring readonly everywhere.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-// Always extends from SladElement
+// Note there is no special props property. Flat interfaces ftw.
 interface SchemaElement extends SladElement {
   type: string;
-  // Note there is no special props property. Props are spread. It's better for DX.
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
   children?: (SchemaElement | string)[] | undefined;
 }
 
 // For images and the other void elements.
-interface SchemaVoidElement extends SladElement {
+interface SchemaVoidElement extends SchemaElement {
   children: undefined;
 }
 
@@ -40,7 +40,7 @@ type SchemaParagraphElementChild = string | SchemaLinkElement;
 
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
-  // At least one SchemaLinkElement or string.
+  // At least one child.
   children: [SchemaParagraphElementChild, ...(SchemaParagraphElementChild)[]];
 }
 
@@ -63,7 +63,7 @@ interface SchemaImageElement extends SchemaVoidElement {
   height: number;
 }
 
-interface SchemaDocumentElement extends SchemaElement {
+interface SchemaRootElement extends SchemaElement {
   type: 'document';
   children: (
     | SchemaHeadingElement
@@ -72,7 +72,7 @@ interface SchemaDocumentElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type CustomValue = SladValue<SchemaDocumentElement>;
+type CustomValue = SladValue<SchemaRootElement>;
 
 const initialState: CustomValue = {
   element: {
@@ -96,7 +96,19 @@ const initialState: CustomValue = {
           {
             type: 'listitem',
             style: { 'font-size': '16px' },
-            children: ['listitem'],
+            children: [
+              'listitem',
+              // List can be nested. With type checking of course.
+              // {
+              //   type: 'list',
+              //   children: [
+              //     {
+              //       type: 'listitem',
+              //       children: ['nested'],
+              //     },
+              //   ],
+              // },
+            ],
           },
         ],
       },
@@ -121,31 +133,45 @@ export function SchemaExample() {
 
   const getStyledJsx = useStyledJsx();
 
-  const renderElement = useCallback<RenderElement>(
+  const renderElement = useCallback<RenderElement<SchemaRootElement>>(
     (element, children, ref) => {
-      // TODO: Exhausive switch with assert never on union of all elements.
-      // @ts-ignore
-      if (element.src)
-        return (
-          <img
-            // @ts-ignore
-            src={element.src}
-            // @ts-ignore
-            alt={element.alt}
-            // @ts-ignore
-            width={element.width}
-            // @ts-ignore
-            height={element.height}
-            ref={ref}
-          />
-        );
-      // @ts-ignore
-      const { className, styleElement } = getStyledJsx(element.style);
+      const styledJsx = element.style && getStyledJsx(element.style);
+      const className = styledJsx ? styledJsx.className : '';
+
+      const renderByType = (): ReactNode => {
+        switch (element.type) {
+          case 'document':
+          case 'heading':
+          case 'link':
+          case 'list':
+          case 'listitem':
+          case 'paragraph':
+            return (
+              <div ref={ref} className={className}>
+                {children}
+              </div>
+            );
+          case 'image':
+            return (
+              <img
+                ref={ref}
+                className={className}
+                src={element.src}
+                alt={element.alt}
+                width={element.width}
+                height={element.height}
+              />
+            );
+          default:
+            assertNever(element);
+        }
+      };
+
       return (
-        <div className={className} ref={ref}>
-          {children}
-          {styleElement}
-        </div>
+        <>
+          {renderByType()}
+          {styledJsx && styledJsx.styles}
+        </>
       );
     },
     [getStyledJsx],

@@ -39,6 +39,8 @@ export interface SladValue<T extends SladElement = SladDivElement> {
   readonly selection?: Immutable<SladSelection | undefined>;
 }
 
+// It should be possible to enforce this via types only, but TypeScript errors
+// can be confusing, so it's good to have nice dev warning.
 const isGoodEnoughSladDivElement = (
   element: SladElement,
 ): element is SladDivElement => {
@@ -53,7 +55,11 @@ const isGoodEnoughSladDivElement = (
   return true;
 };
 
-const renderDivElement: RenderElement = (element, children, ref) => {
+const renderDivElement: RenderElement<SladDivElement> = (
+  element,
+  children,
+  ref,
+) => {
   if (!isGoodEnoughSladDivElement(element)) {
     // https://overreacted.io/how-does-the-development-mode-work/
     if (process.env.NODE_ENV !== 'production') {
@@ -128,6 +134,8 @@ const useDocumentSelectionChange = (
     const handleDocumentSelectionChange = () => {
       callback(doc.defaultView && doc.defaultView.getSelection());
     };
+    // Hmm, should we use useSubscription for future concurrent mode?
+    // https://github.com/facebook/react/issues/16350
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
       doc.removeEventListener('selectionchange', handleDocumentSelectionChange);
@@ -139,7 +147,7 @@ export interface SladEditorProps<T extends SladElement> {
   value: SladValue<T>;
   onChange: (value: SladValue<T>) => void;
   disabled?: boolean;
-  renderElement?: RenderElement;
+  renderElement?: RenderElement<T>;
   // Some React HTMLAttributes.
   autoCapitalize?: string;
   autoCorrect?: 'on' | 'off';
@@ -150,12 +158,14 @@ export interface SladEditorProps<T extends SladElement> {
   tabIndex?: number;
 }
 
-// No React.memo because we prefer granularity.
+// No memo for two reasons:
+//  1) It's not possible to memoize generic component.
+//  2) We prefer better memoize granularity via inner useMemo anyway.
 export function SladEditor<T extends SladElement>({
   value,
   onChange,
   disabled,
-  renderElement = renderDivElement,
+  renderElement,
   ...rest
 }: SladEditorProps<T>) {
   const nodesPathsMap = useNodesPathsMap();
@@ -210,6 +220,12 @@ export function SladEditor<T extends SladElement>({
     [nodesPathsMap],
   );
 
+  // SladEditorRenderElementContext value requires SladElement.
+  // React context value can't be generic, as far as I know, because it must be
+  // defined before Editor is instantiated. I suppose, this is right workaround.
+  const renderSladElement = ((renderElement ||
+    renderDivElement) as unknown) as RenderElement<SladElement>;
+
   // That's how we do nothing when only value.selection has been changed.
   return useMemo(() => {
     return (
@@ -220,11 +236,11 @@ export function SladEditor<T extends SladElement>({
         {...rest}
       >
         <SladEditorSetNodePathContext.Provider value={setNodePath}>
-          <SladEditorRenderElementContext.Provider value={renderElement}>
+          <SladEditorRenderElementContext.Provider value={renderSladElement}>
             <SladEditorElement element={value.element} path={[]} />
           </SladEditorRenderElementContext.Provider>
         </SladEditorSetNodePathContext.Provider>
       </div>
     );
-  }, [disabled, renderElement, rest, setNodePath, value.element]);
+  }, [disabled, renderSladElement, rest, setNodePath, value.element]);
 }

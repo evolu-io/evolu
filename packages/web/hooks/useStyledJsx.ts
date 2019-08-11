@@ -4,7 +4,7 @@ import { StandardPropertiesHyphen } from 'csstype';
 
 // Leverage styled-jsx for custom style rendering.
 export const useStyledJsx = () => {
-  // TODO: Consider caching resolved styles with WeakMap and useRef.
+  // TODO: Maybe cache resolved styles with WeakMap, but do we need it?
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
     const styleString = Object.keys(style)
       .reduce<string[]>((array, prop) => {
@@ -15,10 +15,9 @@ export const useStyledJsx = () => {
       .join(';');
     // css.resolve does not add vendor prefixes, but that's fine,
     // modern browsers don't need them.
-    const { className, styles: styleElement } = css.resolve`
+    return css.resolve`
       ${styleString}
     `;
-    return { className, styleElement };
   }, []);
   return getStyledJsx;
 };
