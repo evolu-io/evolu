@@ -226,21 +226,29 @@ export function SladEditor<T extends SladElement>({
   const renderSladElement = ((renderElement ||
     renderDivElement) as unknown) as RenderElement<SladElement>;
 
-  // That's how we do nothing when only value.selection has been changed.
+  // Granular "shouldComponentUpdate" ftw.
+  const children = useMemo(() => {
+    return (
+      <SladEditorSetNodePathContext.Provider value={setNodePath}>
+        <SladEditorRenderElementContext.Provider value={renderSladElement}>
+          <SladEditorElement element={value.element} path={[]} />
+        </SladEditorRenderElementContext.Provider>
+      </SladEditorSetNodePathContext.Provider>
+    );
+  }, [renderSladElement, setNodePath, value.element]);
+
   return useMemo(() => {
     return (
       <div
         contentEditable={!disabled}
-        suppressContentEditableWarning={!disabled}
         ref={divRef}
+        role="textbox"
+        suppressContentEditableWarning={!disabled}
+        tabIndex={disabled ? -1 : 0}
         {...rest}
       >
-        <SladEditorSetNodePathContext.Provider value={setNodePath}>
-          <SladEditorRenderElementContext.Provider value={renderSladElement}>
-            <SladEditorElement element={value.element} path={[]} />
-          </SladEditorRenderElementContext.Provider>
-        </SladEditorSetNodePathContext.Provider>
+        {children}
       </div>
     );
-  }, [disabled, renderSladElement, rest, setNodePath, value.element]);
+  }, [children, disabled, rest]);
 }
