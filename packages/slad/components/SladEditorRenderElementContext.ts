@@ -1,13 +1,6 @@
 import { createContext, ReactNode } from 'react';
 import { SladEditorSetNodePathRef } from '../hooks/useSladEditorSetNodePathRef';
-
-/**
- * SladElement is the most general base interface from which all interfaces inherit.
- * It only has properties common to all kinds of elements.
- */
-export interface SladElement {
-  readonly children?: readonly (SladElement | string)[] | undefined;
-}
+import { SladElement } from '../models/element';
 
 // For nice DX, renderElement element arg is an union of all nested elements.
 // Unfortunately, infinite recursion is not possible with TypeScript.

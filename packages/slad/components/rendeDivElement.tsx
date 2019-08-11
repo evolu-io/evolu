@@ -1,11 +1,7 @@
 import React from 'react';
 import invariant from 'tiny-invariant';
-import { SladElement, RenderElement } from './SladEditorRenderElementContext';
-
-export interface SladDivElement extends SladElement {
-  props: React.HTMLAttributes<HTMLDivElement>;
-  children?: (SladDivElement | string)[] | undefined;
-}
+import { RenderElement } from './SladEditorRenderElementContext';
+import { SladElement, SladDivElement } from '../models/element';
 
 // It should be possible to enforce this via types only, but TypeScript errors
 // can be confusing, so it's good to have nice dev warning.

@@ -5,6 +5,7 @@
   "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
   "license": "MIT",
   "dependencies": {
+    "assert-never": "^1.2.0",
     "debug": "^4.1.1",
     "immer": "^3.2.0",
     "tiny-invariant": "^1.0.6"

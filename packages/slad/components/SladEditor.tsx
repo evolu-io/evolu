@@ -8,7 +8,8 @@ import React, {
 } from 'react';
 import invariant from 'tiny-invariant';
 import Debug from 'debug';
-import produce, { Immutable } from 'immer';
+import produce, { Immutable, Draft } from 'immer';
+import { assertNever } from 'assert-never';
 import {
   SladPath,
   SladEditorSetNodePath,
@@ -17,19 +18,12 @@ import {
 import { SladEditorElement } from './SladEditorElement';
 import {
   SladEditorRenderElementContext,
-  SladElement,
   RenderElement,
 } from './SladEditorRenderElementContext';
-import { SladSelection } from '../models/selection';
-import { SladDivElement, renderDivElement } from './rendeDivElement';
-
-/**
- * SladValue is immutable value describing editor state.
- */
-export interface SladValue<T extends SladElement = SladDivElement> {
-  readonly element: Immutable<T>;
-  readonly selection?: SladSelection | undefined;
-}
+import { SladSelection, selectionIsCollapsed } from '../models/selection';
+import { renderDivElement } from './rendeDivElement';
+import { SladElement } from '../models/element';
+import { SladValue } from '../models/value';
 
 type NodesPathsMap = Map<Node, SladPath>;
 
@@ -75,7 +69,7 @@ const useDevDebug = (
 
 const useDocumentSelectionChange = (
   ref: RefObject<Element>,
-  callback: (selection: Selection | null) => void,
+  callback: (selection: Selection | undefined) => void,
 ) => {
   // useEffect is called on every SladValue change because of the callback.
   // That's ok. It's cheap and right. Do not try to optimize it via useRef,
@@ -86,7 +80,9 @@ const useDocumentSelectionChange = (
     const doc = ref.current && ref.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
-      callback(doc.defaultView && doc.defaultView.getSelection());
+      callback(
+        (doc.defaultView && doc.defaultView.getSelection()) || undefined,
+      );
     };
     // Hmm, should we use useSubscription for future concurrent mode?
     // https://github.com/facebook/react/issues/16350
@@ -96,6 +92,11 @@ const useDocumentSelectionChange = (
     };
   }, [callback, ref]);
 };
+
+type CommandAction = Draft<
+  | { type: 'setSelection'; selection: SladSelection | undefined }
+  | { type: 'insertText'; path: SladPath; text: string }
+>;
 
 export interface SladEditorProps<T extends SladElement> {
   value: SladValue<T>;
@@ -122,18 +123,46 @@ export function SladEditor<T extends SladElement>({
   renderElement,
   ...rest
 }: SladEditorProps<T>) {
-  const nodesPathsMap = useNodesPathsMap();
+  const handleCommand = useCallback(
+    (draft: Draft<SladValue<T>>, action: CommandAction) => {
+      switch (action.type) {
+        case 'setSelection': {
+          draft.selection = action.selection;
+          break;
+        }
+        case 'insertText': {
+          break;
+        }
+        default:
+          return assertNever(action);
+      }
+    },
+    [],
+  );
 
+  // Note casting from immutable to mutable. TypeScript is right with enforcing it.
+  const command = useCallback(
+    (action: Immutable<CommandAction>) => {
+      onChange(
+        produce(value, draft => {
+          handleCommand(draft, action as Draft<CommandAction>);
+        }),
+      );
+    },
+    [handleCommand, onChange, value],
+  );
+
+  const nodesPathsMap = useNodesPathsMap();
   useDevDebug(nodesPathsMap, value);
 
   const mapSelectionToSladSelection = useCallback(
-    (selection: Selection | null): SladSelection | null => {
-      if (selection == null) return null;
+    (selection: Selection | undefined): SladSelection | undefined => {
+      if (!selection) return undefined;
       const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-      if (anchorNode == null || focusNode == null) return null;
+      if (!anchorNode || !focusNode) return undefined;
       const anchorPath = nodesPathsMap.get(anchorNode);
       const focusPath = nodesPathsMap.get(focusNode);
-      if (anchorPath == null || focusPath == null) return null;
+      if (!anchorPath || !focusPath) return undefined;
       return {
         anchor: [...anchorPath, anchorOffset],
         focus: [...focusPath, focusOffset],
@@ -143,23 +172,11 @@ export function SladEditor<T extends SladElement>({
   );
 
   const handleDocumentSelectionChange = useCallback(
-    (selection: Selection | null) => {
+    (selection: Selection | undefined) => {
       const sladSelection = mapSelectionToSladSelection(selection);
-      const nextValue = produce(value, draft => {
-        if (!sladSelection) {
-          delete draft.selection;
-          // eslint-disable-next-line no-useless-return
-          return;
-        }
-        // Temp fix. We don't want to update model directly, so TypeScipt is right.
-        draft.selection = {
-          anchor: sladSelection.anchor.slice(),
-          focus: sladSelection.focus.slice(),
-        };
-      });
-      onChange(nextValue);
+      command({ type: 'setSelection', selection: sladSelection });
     },
-    [mapSelectionToSladSelection, onChange, value],
+    [command, mapSelectionToSladSelection],
   );
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -193,6 +210,20 @@ export function SladEditor<T extends SladElement>({
     );
   }, [renderSladElement, setNodePath, value.element]);
 
+  // just a quick test!
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (value.selection == null) return;
+      if (!selectionIsCollapsed(value.selection)) return;
+      command({
+        type: 'insertText',
+        path: value.selection.focus,
+        text: event.key,
+      });
+    },
+    [command, value.selection],
+  );
+
   return useMemo(() => {
     return (
       <div
@@ -201,10 +232,12 @@ export function SladEditor<T extends SladElement>({
         role="textbox"
         suppressContentEditableWarning={!disabled}
         tabIndex={disabled ? -1 : 0}
+        // TODO: Remove this test!
+        onKeyDown={handleKeyDown}
         {...rest}
       >
         {children}
       </div>
     );
-  }, [children, disabled, rest]);
+  }, [children, disabled, handleKeyDown, rest]);
 }

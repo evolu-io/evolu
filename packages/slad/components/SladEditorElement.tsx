@@ -3,10 +3,8 @@ import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
 import { useSladEditorSetNodePathRef } from '../hooks/useSladEditorSetNodePathRef';
 import { SladPath } from './SladEditorSetNodePathContext';
 import { SladEditorText } from './SladEditorText';
-import {
-  SladEditorRenderElementContext,
-  SladElement,
-} from './SladEditorRenderElementContext';
+import { SladEditorRenderElementContext } from './SladEditorRenderElementContext';
+import { SladElement } from '../models/element';
 
 export interface SladEditorElementProps {
   element: SladElement;
