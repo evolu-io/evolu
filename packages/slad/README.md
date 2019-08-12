@@ -1,3 +1,3 @@
 # Slad
 
-Experimental React editor
+React contentEditable editor
