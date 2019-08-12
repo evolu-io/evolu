@@ -1,6 +1,6 @@
 import { createContext, ReactNode } from 'react';
-import { SladEditorSetNodePathRef } from '../hooks/useSladEditorSetNodePathRef';
-import { SladElement } from '../models/element';
+import { SetNodePathRef } from '../hooks/useSetNodePathRef';
+import { Element } from '../models/element';
 
 // For nice DX, renderElement element arg is an union of all nested elements.
 // Unfortunately, infinite recursion is not possible with TypeScript.
@@ -16,7 +16,7 @@ import { SladElement } from '../models/element';
 // Feel free to send PR.
 type OmitString<T> = T extends string ? never : T;
 type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
-type UnionFromElementAndItsChildren<T extends SladElement> =
+type UnionFromElementAndItsChildren<T extends Element> =
   | T
   | UnionFromAray<T['children']>;
 // For reason beyond my imagination, UnionFromElementAndItsChildren must be aliased,
@@ -30,14 +30,13 @@ type Union<T> = UnionFromElementAndItsChildren<T>;
 // But I am pretty sure 6 is good enough.
 type DeepFiniteNestedUnion<T> = Union<Union<Union<Union<Union<Union<T>>>>>>;
 
-export type RenderElement<T extends SladElement> = (
+export type RenderElement<T extends Element> = (
   element: DeepFiniteNestedUnion<T>,
   children: ReactNode,
-  ref: SladEditorSetNodePathRef,
+  ref: SetNodePathRef,
 ) => ReactNode;
 
-// Through the context, we pass the most general element, the SladElement.
-// React context value can't be generic, as far as I know.
-export const SladEditorRenderElementContext = createContext<
-  RenderElement<SladElement>
->(() => null);
+// Element, because React context value can't be generic.
+export const RenderElementContext = createContext<RenderElement<Element>>(
+  () => null,
+);

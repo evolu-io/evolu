@@ -1,11 +1,11 @@
 import { Immutable } from 'immer';
-import { SladSelection } from './selection';
-import { SladElement, SladDivElement } from './element';
+import { Selection } from './selection';
+import { Element, DivElement } from './element';
 
 /**
- * SladValue is immutable value describing editor state.
+ * Immutable value describing Editor state.
  */
-export interface SladValue<T extends SladElement = SladDivElement> {
+export interface Value<T extends Element = DivElement> {
   readonly element: Immutable<T>;
-  readonly selection?: SladSelection | undefined;
+  readonly selection?: Selection | undefined;
 }

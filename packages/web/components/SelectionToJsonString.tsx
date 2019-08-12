@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import { SladSelection } from 'slad';
+import { Selection } from 'slad';
 import { Immutable } from 'immer';
 
 export const SelectionToJsonString = memo<{
-  value: Immutable<SladSelection> | undefined;
+  value: Immutable<Selection> | undefined;
 }>(({ value }) => {
   return <pre>selection: {JSON.stringify(value)}</pre>;
 });

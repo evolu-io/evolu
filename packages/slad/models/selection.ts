@@ -1,11 +1,10 @@
-import { pathsAreEqual } from './path';
-import { SladPath } from '../components/SladEditorSetNodePathContext';
+import { pathsAreEqual, Path } from './path';
 
-export interface SladSelection {
-  readonly anchor: SladPath;
-  readonly focus: SladPath;
+export interface Selection {
+  readonly anchor: Path;
+  readonly focus: Path;
 }
 
-export const selectionIsCollapsed = (selection: SladSelection): boolean => {
+export const selectionIsCollapsed = (selection: Selection): boolean => {
   return pathsAreEqual(selection.anchor, selection.focus);
 };

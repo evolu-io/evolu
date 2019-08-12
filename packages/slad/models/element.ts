@@ -1,15 +1,15 @@
 /**
- * SladElement is the most general base interface from which all elements inherit.
+ * Element is the most general base interface from which all elements inherit.
  * It only has properties common to all kinds of elements.
  */
-export interface SladElement {
-  readonly children?: readonly (SladElement | string)[] | undefined;
+export interface Element {
+  readonly children?: readonly (Element | string)[] | undefined;
 }
 
 /**
- * SladDivElement has React div element.
+ * DivElement has props the same as React div element.
  */
-export interface SladDivElement extends SladElement {
+export interface DivElement extends Element {
   props: React.HTMLAttributes<HTMLDivElement>;
-  children?: (SladDivElement | string)[] | undefined;
+  children?: (DivElement | string)[] | undefined;
 }

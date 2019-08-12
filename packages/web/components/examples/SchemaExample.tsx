@@ -1,5 +1,5 @@
 import React, { useState, useCallback, ReactNode } from 'react';
-import { SladEditor, SladValue, SladElement, RenderElement } from 'slad';
+import { Editor, Value, Element, RenderElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
 import { Text } from '../Text';
@@ -11,7 +11,7 @@ import { SelectionToJsonString } from '../SelectionToJsonString';
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
 // Note there is no special props property. Flat interfaces ftw.
-interface SchemaElement extends SladElement {
+interface SchemaElement extends Element {
   type: string;
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
@@ -72,7 +72,7 @@ interface SchemaRootElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type CustomValue = SladValue<SchemaRootElement>;
+type CustomValue = Value<SchemaRootElement>;
 
 const initialState: CustomValue = {
   element: {
@@ -180,7 +180,7 @@ export function SchemaExample() {
   return (
     <>
       <Text>Custom Element</Text>
-      <SladEditor
+      <Editor
         value={editorValue}
         onChange={handleSladEditorChange}
         renderElement={renderElement}

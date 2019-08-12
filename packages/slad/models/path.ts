@@ -1,6 +1,6 @@
-export type SladPath = readonly number[];
+export type Path = readonly number[];
 
-export const pathsAreEqual = (path1: SladPath, path2: SladPath): boolean => {
+export const pathsAreEqual = (path1: Path, path2: Path): boolean => {
   if (path1 === path2) return true;
   const { length } = path1;
   if (length !== path2.length) return false;

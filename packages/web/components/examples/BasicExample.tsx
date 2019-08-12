@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
-import { SladEditor, SladValue } from 'slad';
+import { Editor, Value } from 'slad';
 import { Text } from '../Text';
 import { SelectionToJsonString } from '../SelectionToJsonString';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const initialState: SladValue = {
+const initialState: Value = {
   element: {
     props: {
       style: { backgroundColor: '#ccc' },
@@ -27,16 +27,16 @@ const initialState: SladValue = {
 };
 
 export function BasicExample() {
-  const [editorValue, setEditorValue] = useState<SladValue>(initialState);
+  const [editorValue, setEditorValue] = useState<Value>(initialState);
 
-  const handleSladEditorChange = useCallback((value: SladValue) => {
+  const handleSladEditorChange = useCallback((value: Value) => {
     setEditorValue(value);
   }, []);
 
   return (
     <>
       <Text>Basic</Text>
-      <SladEditor
+      <Editor
         value={editorValue}
         onChange={handleSladEditorChange}
         autoCorrect="off" // Disable browser autoCorrect.

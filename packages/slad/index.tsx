@@ -1,8 +1,13 @@
-// Expose everything. Rethink before the release.
-export * from './components/SladEditor';
-export * from './components/SladEditorElement';
-export * from './components/SladEditorRenderElementContext';
-export * from './components/SladEditorText';
+// Export everything. Rethink before the release.
+export * from './components/Editor';
+export * from './components/EditorElement';
+export * from './components/EditorText';
+export * from './components/renderDivElement';
+export * from './contexts/RenderElementContext';
+export * from './contexts/SetNodePathContext';
+export * from './hooks/useDocumentSelectionChange';
+export * from './hooks/useGetReferenceKey';
+export * from './hooks/useSetNodePathRef';
 export * from './models/element';
 export * from './models/path';
 export * from './models/selection';
