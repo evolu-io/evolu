@@ -7,7 +7,7 @@ import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { SelectionToJsonString } from '../SelectionToJsonString';
 
 // It seems we can describe a schema with TypeScript pretty well.
-// Immutablity is enforced via SladValue once for all. No boring readonly everywhere.
+// Immutablity is enforced via Value once for all. No boring readonly everywhere.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
 // Note there is no special props property. Flat interfaces ftw.
