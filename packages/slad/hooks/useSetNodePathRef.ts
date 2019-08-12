@@ -4,7 +4,7 @@ import { Path } from '../models/path';
 
 export type SetNodePathRef = (node: Node | null) => void;
 
-export const useSetNodePathRef = (path: Path) => {
+export function useSetNodePathRef(path: Path) {
   const previousNodeRef = useRef<Node | null>(null);
   const setNodePath = useContext(SetNodePathContext);
   const setNodePathRef = useCallback<SetNodePathRef>(
@@ -17,4 +17,4 @@ export const useSetNodePathRef = (path: Path) => {
     [path, setNodePath],
   );
   return setNodePathRef;
-};
+}

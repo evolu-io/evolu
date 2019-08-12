@@ -5,9 +5,9 @@ import { Element, DivElement } from '../models/element';
 
 // It should be possible to enforce this via types only, but TypeScript errors
 // can be confusing, so it's good to have nice dev warning.
-export const isGoodEnoughDivElement = (
+export function isGoodEnoughDivElement(
   element: Element,
-): element is DivElement => {
+): element is DivElement {
   // https://overreacted.io/how-does-the-development-mode-work/
   if (process.env.NODE_ENV !== 'production') {
     const div = element as DivElement;
@@ -17,7 +17,7 @@ export const isGoodEnoughDivElement = (
     );
   }
   return true;
-};
+}
 
 export const renderDivElement: RenderElement<Element> = (
   element,

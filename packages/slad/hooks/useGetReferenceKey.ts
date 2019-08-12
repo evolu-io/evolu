@@ -17,7 +17,7 @@ const weakMap = new WeakMap<object, string>();
  * appear twice in the tree, and there should be no circular references.""
  * https://github.com/immerjs/immer#pitfalls
  */
-export const useGetReferenceKey = () => {
+export function useGetReferenceKey() {
   const getReferenceKey = useCallback(
     (value: object | string, index: number): string => {
       // We have to use index for strings, to prevent the same key for sibling
@@ -33,4 +33,4 @@ export const useGetReferenceKey = () => {
   );
 
   return getReferenceKey;
-};
+}

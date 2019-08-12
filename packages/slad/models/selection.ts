@@ -5,6 +5,6 @@ export interface Selection {
   readonly focus: Path;
 }
 
-export const selectionIsCollapsed = (selection: Selection): boolean => {
+export function selectionIsCollapsed(selection: Selection): boolean {
   return pathsAreEqual(selection.anchor, selection.focus);
-};
+}

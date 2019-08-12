@@ -1,9 +1,9 @@
 import { RefObject, useEffect } from 'react';
 
-export const useDocumentSelectionChange = (
+export function useDocumentSelectionChange(
   ref: RefObject<Element>,
   callback: (selection: Selection | undefined) => void,
-) => {
+) {
   // Note we can not naively use useLayoutEffect because of SSR.
   // https://gist.github.com/gaearon/e7d97cdf38a2907924ea12e4ebdf3c85
   useEffect(() => {
@@ -21,4 +21,4 @@ export const useDocumentSelectionChange = (
       doc.removeEventListener('selectionchange', handleDocumentSelectionChange);
     };
   }, [callback, ref]);
-};
+}

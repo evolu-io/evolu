@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { StandardPropertiesHyphen } from 'csstype';
 
 // Leverage styled-jsx for custom style rendering.
-export const useStyledJsx = () => {
+export function useStyledJsx() {
   // TODO: Maybe cache resolved styles with WeakMap, but do we need it?
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
     const styleString = Object.keys(style)
@@ -20,4 +20,4 @@ export const useStyledJsx = () => {
     `;
   }, []);
   return getStyledJsx;
-};
+}
