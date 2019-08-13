@@ -1,12 +1,4 @@
-import React, {
-  CSSProperties,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
-import invariant from 'tiny-invariant';
-import Debug from 'debug';
+import React, { CSSProperties, useRef, useCallback, useMemo } from 'react';
 import produce, { Immutable, Draft } from 'immer';
 import { assertNever } from 'assert-never';
 import {
@@ -29,45 +21,7 @@ import { Element } from '../models/element';
 import { Value } from '../models/value';
 import { useDocumentSelectionChange } from '../hooks/useDocumentSelectionChange';
 import { Path } from '../models/path';
-
-type NodesPathsMap = Map<Node, Path>;
-
-const useNodesPathsMap = (): NodesPathsMap => {
-  // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
-  const nodesPathsMapRef = useRef<NodesPathsMap | null>(null);
-  if (nodesPathsMapRef.current == null) nodesPathsMapRef.current = new Map();
-  return nodesPathsMapRef.current;
-};
-
-const debug = Debug('editor');
-
-const useDevDebug = (nodesPathsMap: NodesPathsMap, value: Value<Element>) => {
-  useEffect(() => {
-    // https://overreacted.io/how-does-the-development-mode-work/
-    if (process.env.NODE_ENV !== 'production') {
-      const nodes: [string, Node][] = [];
-      nodesPathsMap.forEach((path, node) => {
-        nodes.push([path.join(), node]);
-      });
-      debug('nodesPathsMap after render', nodes);
-
-      const countNodes = (node: Element | string, count = 0) => {
-        if (typeof node === 'string') return count + 1;
-        let childrenCount = 0;
-        if (node.children)
-          node.children.forEach(child => {
-            childrenCount += countNodes(child, count);
-          });
-        return count + 1 + childrenCount;
-      };
-      const nodesLength = countNodes(value.element);
-      invariant(
-        nodesLength === nodesPathsMap.size,
-        'It looks like you forgot to use ref in custom renderElement of Editor.',
-      );
-    }
-  }, [nodesPathsMap, value.element]);
-};
+import { useNodesPathsMap } from '../hooks/useNodesPathsMap';
 
 type CommandAction = Draft<
   | { type: 'setSelection'; selection: ModelSelection | undefined }
@@ -99,6 +53,12 @@ export function Editor<T extends Element>({
   renderElement,
   ...rest
 }: EditorProps<T>) {
+  // const [state, ]
+  // nastavim state,
+  // proc pak ale command? proc ne dispatch?
+  // protoze reducer musi bejt pure, ok
+  // a ja treba budu chtit, co ja vim, uvidime, ok
+
   const handleCommand = useCallback(
     (draft: Draft<Value<T>>, action: CommandAction) => {
       switch (action.type) {
@@ -107,6 +67,13 @@ export function Editor<T extends Element>({
           break;
         }
         case 'insertText': {
+          // draft.element = insertText(action.path, action.text, draft.element)
+          // najit el, zmenit mu child
+          // to je nice draft zmena, ok
+          // action.path.reduce((element, index) => {
+          //   // node.children
+          //   // pokud neni, element? ne
+          // }, draft.element)
           break;
         }
         default:
@@ -128,8 +95,7 @@ export function Editor<T extends Element>({
     [handleCommand, onChange, value],
   );
 
-  const nodesPathsMap = useNodesPathsMap();
-  useDevDebug(nodesPathsMap, value);
+  const nodesPathsMap = useNodesPathsMap(value);
 
   const mapSelectionToModelSelection = useCallback(
     (selection: Selection | undefined): ModelSelection | undefined => {
