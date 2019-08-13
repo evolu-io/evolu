@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`normalizeElement do not add children 1`] = `Object {}`;
+
+exports[`normalizeElement do not remove children 1`] = `
+Object {
+  "children": Array [],
+}
+`;
+
+exports[`normalizeElement do not remove children 2`] = `
+Object {
+  "children": Array [],
+}
+`;
+
+exports[`normalizeElement do not remove children 3`] = `
+Object {
+  "children": Array [
+    ".",
+  ],
+}
+`;
+
+exports[`normalizeElement merges adjacent strings 1`] = `
+Object {
+  "children": Array [
+    "ab",
+    Object {
+      "children": Array [
+        "abc",
+        Object {
+          "children": Array [
+            "a",
+            Object {},
+            "bc",
+          ],
+        },
+      ],
+    },
+    "ab",
+  ],
+}
+`;
+
+exports[`normalizeElement removes empty strings 1`] = `
+Object {
+  "children": Array [
+    ".",
+    Object {
+      "children": Array [
+        ".",
+        Object {
+          "children": Array [],
+        },
+      ],
+    },
+    ".",
+  ],
+}
+`;
