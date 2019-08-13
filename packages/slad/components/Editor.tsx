@@ -1,4 +1,5 @@
 import React, { CSSProperties, useRef, useCallback, useMemo } from 'react';
+import produce, { Draft } from 'immer';
 import {
   SetNodePath,
   SetNodePathContext,
@@ -41,8 +42,6 @@ export const Editor = function Editor<T extends Element>({
   renderElement,
   ...rest
 }: EditorProps<T>) {
-  // jednoznacne naklonovat type, popsat, ze je to must,
-
   const nodesPathsMap = useNodesPathsMap(value);
 
   const mapSelectionToModelSelection = useCallback(
@@ -64,10 +63,10 @@ export const Editor = function Editor<T extends Element>({
   const handleDocumentSelectionChange = useCallback(
     (selection: Selection | undefined) => {
       const modelSelection = mapSelectionToModelSelection(selection);
-      onChange({
-        ...value,
-        selection: modelSelection,
+      const nextValue = produce(value, draft => {
+        draft.selection = modelSelection as Draft<ModelSelection>;
       });
+      onChange(nextValue);
     },
     [mapSelectionToModelSelection, onChange, value],
   );
@@ -90,7 +89,6 @@ export const Editor = function Editor<T extends Element>({
   const renderEditorElement =
     (renderElement as RenderElement<Element> | undefined) || renderDivElement;
 
-  // Granular "shouldComponentUpdate" ftw.
   const children = useMemo(() => {
     return (
       <SetNodePathContext.Provider value={setNodePath}>
