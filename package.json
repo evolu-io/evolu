@@ -19,8 +19,8 @@
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "@types/node": "^12.6.9",
-    "@typescript-eslint/eslint-plugin": "^1.11.0",
-    "@typescript-eslint/parser": "^1.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
     "eslint": "^6.0.0",
     "eslint-config-airbnb": "^18.0.0",
     "eslint-config-prettier": "^6.0.0",
@@ -32,7 +32,7 @@
     "eslint-plugin-react-hooks": "^1.6.1",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
   }
