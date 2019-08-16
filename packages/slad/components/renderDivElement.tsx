@@ -19,7 +19,7 @@ export function isGoodEnoughDivElement(
   return true;
 }
 
-export const renderDivElement: RenderElement<Element> = (
+export const renderDivElement: RenderElement<DivElement> = (
   element,
   children,
   ref,

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Editor, Value } from 'slad';
 import { Text } from '../Text';
-import { SelectionToJsonString } from '../SelectionToJsonString';
+import { LogValue } from '../LogValue';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialState: Value = {
@@ -24,6 +24,8 @@ const initialState: Value = {
       },
     ],
   },
+  selection: undefined,
+  hasFocus: true,
 };
 
 export function BasicExample() {
@@ -44,7 +46,7 @@ export function BasicExample() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
-      <SelectionToJsonString value={editorValue.selection} />
+      <LogValue value={editorValue} />
     </>
   );
 }

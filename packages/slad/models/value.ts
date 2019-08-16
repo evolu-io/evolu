@@ -7,5 +7,9 @@ import { Element, DivElement } from './element';
  */
 export interface Value<T extends Element = DivElement> {
   readonly element: Immutable<T>;
-  readonly selection?: Selection | undefined;
+  // We can make them optional later, but remember adding prop even undefined
+  // Immer correctly recognizes as a change, so we would have to ignore it manually.
+  // Be explicit, not smart, for now.
+  readonly selection: Selection | undefined;
+  readonly hasFocus: boolean;
 }

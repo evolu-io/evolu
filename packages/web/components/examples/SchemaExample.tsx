@@ -4,7 +4,7 @@ import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
-import { SelectionToJsonString } from '../SelectionToJsonString';
+import { LogValue } from '../LogValue';
 
 // It seems we can describe a schema with TypeScript pretty well.
 // Immutablity is enforced via Value once for all. No boring readonly everywhere.
@@ -122,6 +122,8 @@ const initialState: CustomValue = {
       },
     ],
   },
+  selection: undefined,
+  hasFocus: true,
 };
 
 export function SchemaExample() {
@@ -177,9 +179,16 @@ export function SchemaExample() {
     [getStyledJsx],
   );
 
+  const handleClick = useCallback(() => {
+    setEditorValue({ ...editorValue, hasFocus: true });
+  }, [editorValue]);
+
   return (
     <>
       <Text>Custom Element</Text>
+      <button type="button" onClick={handleClick}>
+        focus
+      </button>
       <Editor
         value={editorValue}
         onChange={handleSladEditorChange}
@@ -189,7 +198,7 @@ export function SchemaExample() {
         data-gramm // Disable Grammarly Chrome extension.
         style={{ width: 300, marginBottom: 24 }}
       />
-      <SelectionToJsonString value={editorValue.selection} />
+      <LogValue value={editorValue} />
     </>
   );
 }
