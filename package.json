@@ -17,8 +17,11 @@
     "analyze": "yarn workspace web analyze"
   },
   "devDependencies": {
+    "@types/expect-puppeteer": "^3.3.1",
     "@types/jest": "^24.0.15",
+    "@types/jest-environment-puppeteer": "^4.3.0",
     "@types/node": "^12.6.9",
+    "@types/puppeteer": "^1.19.1",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "eslint": "^6.0.0",
@@ -31,7 +34,9 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.6.1",
     "jest": "^24.8.0",
+    "jest-puppeteer": "^4.3.0",
     "prettier": "^1.18.2",
+    "puppeteer": "^1.19.0",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
