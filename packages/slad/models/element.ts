@@ -9,7 +9,7 @@ export interface Element {
  * DivElement has props the same as React div element.
  */
 export interface DivElement extends Element {
-  readonly props: React.HTMLAttributes<HTMLDivElement>;
+  readonly props?: React.HTMLAttributes<HTMLDivElement>;
   readonly children?: (DivElement | string)[] | undefined;
 }
 

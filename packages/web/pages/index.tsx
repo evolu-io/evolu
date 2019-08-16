@@ -8,7 +8,6 @@ function Index() {
   return (
     <Container>
       <Text size={2}>Slad</Text>
-      <Text>TODO: Everything</Text>
       <BasicExample />
       <SchemaExample />
     </Container>

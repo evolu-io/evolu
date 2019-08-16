@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export function Text({
   children,
   size = 0,
 }: {
-  children: string;
+  children: ReactNode;
   size?: number;
 }) {
   const baseFontSize = 16;

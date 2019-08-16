@@ -2,13 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { Editor, Value } from 'slad';
 import { Text } from '../Text';
 import { LogValue } from '../LogValue';
+import { defaultEditorProps } from './_defaultEditorProps';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialState: Value = {
   element: {
-    props: {
-      style: { backgroundColor: '#ccc' },
-    },
     children: [
       {
         props: {
@@ -37,14 +35,11 @@ export function BasicExample() {
 
   return (
     <>
-      <Text>Basic</Text>
+      <Text size={1}>Basic Example</Text>
       <Editor
+        {...defaultEditorProps}
         value={editorValue}
         onChange={handleSladEditorChange}
-        autoCorrect="off" // Disable browser autoCorrect.
-        spellCheck={false} // Disable browser spellCheck.
-        data-gramm // Disable Grammarly Chrome extension.
-        style={{ width: 300, marginBottom: 24 }}
       />
       <LogValue value={editorValue} />
     </>

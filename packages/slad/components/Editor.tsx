@@ -37,7 +37,7 @@ type EditorAction = Immutable<
   // | { type: 'setValueElement'; value: Element }
 >;
 
-export interface EditorProps<T extends Element> {
+export interface EditorProps<T extends Element = Element> {
   value: Value<T>;
   onChange: (value: Value<T>) => void;
   disabled?: boolean;

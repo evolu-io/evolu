@@ -5,6 +5,7 @@ import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { LogValue } from '../LogValue';
+import { defaultEditorProps } from './_defaultEditorProps';
 
 // It seems we can describe a schema with TypeScript pretty well.
 // Immutablity is enforced via Value once for all. No boring readonly everywhere.
@@ -77,7 +78,6 @@ type CustomValue = Value<SchemaRootElement>;
 const initialState: CustomValue = {
   element: {
     type: 'document',
-    style: { 'background-color': '#ccc' },
     children: [
       {
         type: 'heading',
@@ -185,19 +185,16 @@ export function SchemaExample() {
 
   return (
     <>
-      <Text>Custom Element</Text>
-      <button type="button" onClick={handleClick}>
-        focus
-      </button>
+      <Text size={1}>Schema Example</Text>
       <Editor
+        {...defaultEditorProps}
         value={editorValue}
         onChange={handleSladEditorChange}
         renderElement={renderElement}
-        autoCorrect="off" // Disable browser autoCorrect.
-        spellCheck={false} // Disable browser spellCheck.
-        data-gramm // Disable Grammarly Chrome extension.
-        style={{ width: 300, marginBottom: 24 }}
       />
+      <button type="button" onClick={handleClick}>
+        focus
+      </button>
       <LogValue value={editorValue} />
     </>
   );

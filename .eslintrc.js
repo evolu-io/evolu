@@ -34,6 +34,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     // Unnecessary.
     '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
     // Default export is DX anti-pattern.
     'import/prefer-default-export': 'off',
     // We have TypeScript.
