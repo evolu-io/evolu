@@ -44,5 +44,4 @@ export const EditorText = memo<EditorTextProps>(
   },
 );
 
-// For easy debugging.
-EditorText.displayName = 'Text';
+EditorText.displayName = 'EditorText';

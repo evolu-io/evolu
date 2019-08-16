@@ -45,5 +45,4 @@ export const EditorElement = memo<EditorElementProps>(
   },
 );
 
-// For easy debugging.
-EditorElement.displayName = 'Element';
+EditorElement.displayName = 'EditorElement';
