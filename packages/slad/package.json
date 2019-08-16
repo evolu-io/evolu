@@ -4,6 +4,11 @@
   "repository": "https://github.com/steida/slad.git",
   "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
   "license": "MIT",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions"
+  ],
   "dependencies": {
     "assert-never": "^1.2.0",
     "debug": "^4.1.1",
