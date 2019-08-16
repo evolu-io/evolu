@@ -9,9 +9,8 @@ export function useDocumentSelectionChange(
     const doc = ref.current && ref.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
-      callback(
-        (doc.defaultView && doc.defaultView.getSelection()) || undefined,
-      );
+      const selection = doc.getSelection() || undefined;
+      callback(selection);
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
