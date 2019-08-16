@@ -8,8 +8,7 @@ export function useStyledJsx() {
   const getStyledJsx = useCallback((style: StandardPropertiesHyphen) => {
     const styleString = Object.keys(style)
       .reduce<string[]>((array, prop) => {
-        // @ts-ignore I don't know. Probably prop should be restricted string.
-        const value = style[prop];
+        const value = style[prop as keyof StandardPropertiesHyphen];
         return [...array, `${prop}: ${value}`];
       }, [])
       .join(';');
