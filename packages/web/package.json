@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "export": "next export -o './tests/integration/out'",
     "start": "next start",
     "analyze": "ANALYZE=true next build"
   },

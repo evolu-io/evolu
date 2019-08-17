@@ -13,7 +13,8 @@
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
     "jest": "jest",
-    "test": "yarn lint && yarn tsc && yarn jest",
+    "build": "yarn workspace web build && yarn workspace web export",
+    "test": "yarn lint && yarn tsc && yarn build && yarn jest",
     "analyze": "yarn workspace web analyze"
   },
   "devDependencies": {

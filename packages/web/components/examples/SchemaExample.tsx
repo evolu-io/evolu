@@ -75,59 +75,57 @@ interface SchemaRootElement extends SchemaElement {
 
 type CustomValue = Value<SchemaRootElement>;
 
-const initialState: CustomValue = {
-  element: {
-    type: 'document',
-    children: [
-      {
-        type: 'heading',
-        style: { 'font-size': '24px' },
-        children: ['heading'],
-      },
-      {
-        type: 'paragraph',
-        style: { 'font-size': '16px' },
-        children: ['paragraph'],
-      },
-      {
-        type: 'list',
-        style: { margin: '16px' },
-        children: [
-          {
-            type: 'listitem',
-            style: { 'font-size': '16px' },
-            children: [
-              'listitem',
-              // List can be nested. With type checking of course.
-              // {
-              //   type: 'list',
-              //   children: [
-              //     {
-              //       type: 'listitem',
-              //       children: ['nested'],
-              //     },
-              //   ],
-              // },
-            ],
-          },
-        ],
-      },
-      {
-        type: 'image',
-        src: 'https://via.placeholder.com/80',
-        alt: 'Square placeholder image 80px',
-        width: 80,
-        height: 80,
-        children: undefined,
-      },
-    ],
-  },
-  selection: undefined,
-  hasFocus: true,
-};
-
-export function SchemaExample() {
-  const [editorValue, setEditorValue] = useState<CustomValue>(initialState);
+export function SchemaExample({ hasFocus }: { hasFocus: boolean }) {
+  const [editorValue, setEditorValue] = useState<CustomValue>({
+    element: {
+      type: 'document',
+      children: [
+        {
+          type: 'heading',
+          style: { 'font-size': '24px' },
+          children: ['heading'],
+        },
+        {
+          type: 'paragraph',
+          style: { 'font-size': '16px' },
+          children: ['paragraph'],
+        },
+        {
+          type: 'list',
+          style: { margin: '16px' },
+          children: [
+            {
+              type: 'listitem',
+              style: { 'font-size': '16px' },
+              children: [
+                'listitem',
+                // List can be nested. With type checking of course.
+                // {
+                //   type: 'list',
+                //   children: [
+                //     {
+                //       type: 'listitem',
+                //       children: ['nested'],
+                //     },
+                //   ],
+                // },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'image',
+          src: 'https://via.placeholder.com/80',
+          alt: 'Square placeholder image 80px',
+          width: 80,
+          height: 80,
+          children: undefined,
+        },
+      ],
+    },
+    selection: undefined,
+    hasFocus,
+  });
 
   const handleEditorChange = useCallback((value: CustomValue) => {
     setEditorValue(value);
