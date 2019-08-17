@@ -14,15 +14,15 @@ test('render', async () => {
 });
 
 test('focus blur via tab, tab, tab', async () => {
-  await page.keyboard.press('Tab', { delay: 100 });
+  await page.keyboard.press('Tab');
   await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
-  await page.keyboard.press('Tab', { delay: 100 });
+  await page.keyboard.press('Tab');
   await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
-  await page.keyboard.press('Tab', { delay: 100 });
+  await page.keyboard.press('Tab');
   await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
