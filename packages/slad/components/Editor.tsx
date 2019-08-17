@@ -1,5 +1,4 @@
 import React, {
-  CSSProperties,
   useRef,
   useCallback,
   useMemo,
@@ -37,19 +36,24 @@ type EditorAction = Immutable<
   // | { type: 'setValueElement'; value: Element }
 >;
 
-export interface EditorProps<T extends Element = Element> {
+type SomeReactDivAtttributes = Pick<
+  React.HTMLAttributes<HTMLDivElement>,
+  | 'accessKey'
+  | 'autoCorrect'
+  | 'className'
+  | 'id'
+  | 'role'
+  | 'spellCheck'
+  | 'style'
+  | 'tabIndex'
+>;
+
+export interface EditorProps<T extends Element = Element>
+  extends SomeReactDivAtttributes {
   value: Value<T>;
   onChange: (value: Value<T>) => void;
   disabled?: boolean;
   renderElement?: RenderElement<T>;
-  // Some React HTMLAttributes.
-  autoCapitalize?: string;
-  autoCorrect?: 'on' | 'off';
-  className?: string;
-  role?: string;
-  spellCheck?: boolean;
-  style?: CSSProperties;
-  tabIndex?: number;
 }
 
 // It's not possible to use React.memo nor React.forwardRef on a component
@@ -65,6 +69,9 @@ export const Editor = function Editor<T extends Element>({
   onChange,
   disabled,
   renderElement,
+  autoCorrect = 'off', // Disable browser autoCorrect.
+  spellCheck = false, // Disable browser spellCheck.
+  role = 'textbox',
   ...rest
 }: EditorProps<T>) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -200,17 +207,29 @@ export const Editor = function Editor<T extends Element>({
   return useMemo(() => {
     return (
       <div
+        autoCorrect={autoCorrect}
         contentEditable={!disabled}
+        data-gramm // Disable Grammarly Chrome extension.
+        onBlur={handleOnBlur}
+        onFocus={handleOnFocus}
         ref={divRef}
-        role="textbox"
+        role={role}
+        spellCheck={spellCheck}
         suppressContentEditableWarning={!disabled}
         tabIndex={disabled ? -1 : 0}
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
         {...rest}
       >
         {children}
       </div>
     );
-  }, [children, disabled, handleOnBlur, handleOnFocus, rest]);
+  }, [
+    autoCorrect,
+    children,
+    disabled,
+    handleOnBlur,
+    handleOnFocus,
+    rest,
+    role,
+    spellCheck,
+  ]);
 };
