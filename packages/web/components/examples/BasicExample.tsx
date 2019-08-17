@@ -29,7 +29,7 @@ const initialState: Value = {
 export function BasicExample() {
   const [editorValue, setEditorValue] = useState<Value>(initialState);
 
-  const handleSladEditorChange = useCallback((value: Value) => {
+  const handleEditorChange = useCallback((value: Value) => {
     setEditorValue(value);
   }, []);
 
@@ -39,7 +39,7 @@ export function BasicExample() {
       <Editor
         {...defaultEditorProps}
         value={editorValue}
-        onChange={handleSladEditorChange}
+        onChange={handleEditorChange}
       />
       <LogValue value={editorValue} />
     </>

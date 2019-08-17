@@ -129,7 +129,7 @@ const initialState: CustomValue = {
 export function SchemaExample() {
   const [editorValue, setEditorValue] = useState<CustomValue>(initialState);
 
-  const handleSladEditorChange = useCallback((value: CustomValue) => {
+  const handleEditorChange = useCallback((value: CustomValue) => {
     setEditorValue(value);
   }, []);
 
@@ -189,7 +189,7 @@ export function SchemaExample() {
       <Editor
         {...defaultEditorProps}
         value={editorValue}
-        onChange={handleSladEditorChange}
+        onChange={handleEditorChange}
         renderElement={renderElement}
       />
       <button type="button" onClick={handleClick}>
