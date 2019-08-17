@@ -1,27 +1,31 @@
 import { serializeDom } from './helpers/serializeDom';
 
 beforeEach(async () => {
-  await page.goto(`file://${__dirname}/out/index.html`);
+  await page.goto(`file://${__dirname}/out/index.html`, {
+    waitUntil: 'networkidle2',
+  });
+  await page.waitFor(100);
 });
-
-// pak tab, tab, tab, pak focus first, focus second, focus both
 
 test('page title', async () => {
   await expect(page.title()).resolves.toMatch('Slad');
 });
 
-test('initial render', async () => {
+test('render', async () => {
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 
 test('focus blur via tab, tab, tab', async () => {
-  await page.keyboard.press('Tab', { delay: 10 });
+  await page.keyboard.press('Tab', { delay: 100 });
+  await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
-  await page.keyboard.press('Tab', { delay: 10 });
+  await page.keyboard.press('Tab', { delay: 100 });
+  await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
-  await page.keyboard.press('Tab', { delay: 10 });
+  await page.keyboard.press('Tab', { delay: 100 });
+  await page.waitFor(100);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 

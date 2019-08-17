@@ -4,7 +4,7 @@ import { Text } from '../Text';
 import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-export function BasicExample({ hasFocus }: { hasFocus: boolean }) {
+export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
   const [editorValue, setEditorValue] = useState<Value>({
     element: {
       children: [

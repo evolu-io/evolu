@@ -7,7 +7,7 @@ import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-// It seems we can describe a schema with TypeScript pretty well.
+// We can describe a schema with TypeScript pretty well.
 // Immutablity is enforced via Value once for all. No boring readonly everywhere.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
@@ -75,7 +75,7 @@ interface SchemaRootElement extends SchemaElement {
 
 type CustomValue = Value<SchemaRootElement>;
 
-export function SchemaExample({ hasFocus }: { hasFocus: boolean }) {
+export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
   const [editorValue, setEditorValue] = useState<CustomValue>({
     element: {
       type: 'document',

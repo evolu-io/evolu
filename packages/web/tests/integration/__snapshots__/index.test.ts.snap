@@ -720,7 +720,7 @@ Object {
 }
 `;
 
-exports[`initial render 1`] = `
+exports[`render 1`] = `
 Object {
   "attributes": Object {
     "id": "__next",
