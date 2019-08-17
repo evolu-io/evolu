@@ -15,10 +15,10 @@ test('initial render', async () => {
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 
-test('focus via tab', async () => {
-  await page.keyboard.down('Tab');
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
-});
+// test('focus via tab', async () => {
+//   await page.keyboard.down('Tab');
+//   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+// });
 
 // https://github.com/steida/slad/issues/14
 export default undefined;
