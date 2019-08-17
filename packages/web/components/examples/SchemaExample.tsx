@@ -196,6 +196,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
       />
       <button
         type="button"
+        className="focus"
         onClick={handleFocusClick}
         disabled={editorValue.hasFocus}
       >
@@ -203,6 +204,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
       </button>
       <button
         type="button"
+        className="blur"
         onClick={handleBlurClick}
         disabled={!editorValue.hasFocus}
       >

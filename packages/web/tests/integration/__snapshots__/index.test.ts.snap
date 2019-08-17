@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`focus blur via tab, tab, tab 1`] = `
+exports[`focus blur via tab, tab, tab, click to focus button, click to blur button 1`] = `
 Object {
   "attributes": Object {
     "id": "__next",
@@ -181,6 +181,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "focus",
             "type": "button",
           },
           "children": Array [
@@ -190,6 +191,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "blur",
             "disabled": "",
             "type": "button",
           },
@@ -240,7 +242,7 @@ Object {
 }
 `;
 
-exports[`focus blur via tab, tab, tab 2`] = `
+exports[`focus blur via tab, tab, tab, click to focus button, click to blur button 2`] = `
 Object {
   "attributes": Object {
     "id": "__next",
@@ -420,6 +422,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "focus",
             "disabled": "",
             "type": "button",
           },
@@ -430,6 +433,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "blur",
             "type": "button",
           },
           "children": Array [
@@ -480,7 +484,7 @@ Object {
 }
 `;
 
-exports[`focus blur via tab, tab, tab 3`] = `
+exports[`focus blur via tab, tab, tab, click to focus button, click to blur button 3`] = `
 Object {
   "attributes": Object {
     "id": "__next",
@@ -660,6 +664,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "focus",
             "type": "button",
           },
           "children": Array [
@@ -669,6 +674,491 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "blur",
+            "disabled": "",
+            "type": "button",
+          },
+          "children": Array [
+            "blur",
+          ],
+          "tag": "BUTTON",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-1341841029",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "jsx-1141794554",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1341841029",
+                  },
+                  "children": Array [
+                    "selection: ",
+                    "{\\"anchor\\":[0,0,0],\\"focus\\":[0,0,0]}",
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1341841029",
+                      },
+                      "children": Array [],
+                      "tag": "BR",
+                    },
+                    "hasFocus: ",
+                    "false",
+                  ],
+                  "tag": "PRE",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+      ],
+      "tag": "DIV",
+    },
+  ],
+  "tag": "DIV",
+}
+`;
+
+exports[`focus blur via tab, tab, tab, click to focus button, click to blur button 4`] = `
+Object {
+  "attributes": Object {
+    "id": "__next",
+  },
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "class": "jsx-2517315232",
+      },
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "class": "jsx-3659724228",
+          },
+          "children": Array [
+            "Slad",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-442929638",
+          },
+          "children": Array [
+            "Basic Example",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "autocorrect": "off",
+            "contenteditable": "true",
+            "data-gramm": "true",
+            "role": "textbox",
+            "spellcheck": "false",
+            "style": "background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px",
+            "tabindex": "0",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {},
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "style": "font-size:24px",
+                  },
+                  "children": Array [
+                    "heading",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "style": "font-size:16px",
+                  },
+                  "children": Array [
+                    "paragraph",
+                  ],
+                  "tag": "DIV",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-1341841029",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "jsx-1141794554",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1341841029",
+                  },
+                  "children": Array [
+                    "selection: ",
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1341841029",
+                      },
+                      "children": Array [],
+                      "tag": "BR",
+                    },
+                    "hasFocus: ",
+                    "false",
+                  ],
+                  "tag": "PRE",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-442929638",
+          },
+          "children": Array [
+            "Schema Example",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "autocorrect": "off",
+            "contenteditable": "true",
+            "data-gramm": "true",
+            "role": "textbox",
+            "spellcheck": "false",
+            "style": "background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px",
+            "tabindex": "0",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-3102962925",
+                  },
+                  "children": Array [
+                    "heading",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1758464876",
+                  },
+                  "children": Array [
+                    "paragraph",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-44984361",
+                  },
+                  "children": Array [
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1758464876",
+                      },
+                      "children": Array [
+                        "listitem",
+                      ],
+                      "tag": "DIV",
+                    },
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "alt": "Square placeholder image 80px",
+                    "class": "",
+                    "height": "80",
+                    "src": "https://via.placeholder.com/80",
+                    "width": "80",
+                  },
+                  "children": Array [],
+                  "tag": "IMG",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "focus",
+            "disabled": "",
+            "type": "button",
+          },
+          "children": Array [
+            "focus",
+          ],
+          "tag": "BUTTON",
+        },
+        Object {
+          "attributes": Object {
+            "class": "blur",
+            "type": "button",
+          },
+          "children": Array [
+            "blur",
+          ],
+          "tag": "BUTTON",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-1341841029",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "jsx-1141794554",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1341841029",
+                  },
+                  "children": Array [
+                    "selection: ",
+                    "{\\"anchor\\":[0,0,0],\\"focus\\":[0,0,0]}",
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1341841029",
+                      },
+                      "children": Array [],
+                      "tag": "BR",
+                    },
+                    "hasFocus: ",
+                    "true",
+                  ],
+                  "tag": "PRE",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+      ],
+      "tag": "DIV",
+    },
+  ],
+  "tag": "DIV",
+}
+`;
+
+exports[`focus blur via tab, tab, tab, click to focus button, click to blur button 5`] = `
+Object {
+  "attributes": Object {
+    "id": "__next",
+  },
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "class": "jsx-2517315232",
+      },
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "class": "jsx-3659724228",
+          },
+          "children": Array [
+            "Slad",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-442929638",
+          },
+          "children": Array [
+            "Basic Example",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "autocorrect": "off",
+            "contenteditable": "true",
+            "data-gramm": "true",
+            "role": "textbox",
+            "spellcheck": "false",
+            "style": "background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px",
+            "tabindex": "0",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {},
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "style": "font-size:24px",
+                  },
+                  "children": Array [
+                    "heading",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "style": "font-size:16px",
+                  },
+                  "children": Array [
+                    "paragraph",
+                  ],
+                  "tag": "DIV",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-1341841029",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "jsx-1141794554",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1341841029",
+                  },
+                  "children": Array [
+                    "selection: ",
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1341841029",
+                      },
+                      "children": Array [],
+                      "tag": "BR",
+                    },
+                    "hasFocus: ",
+                    "false",
+                  ],
+                  "tag": "PRE",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "jsx-442929638",
+          },
+          "children": Array [
+            "Schema Example",
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "autocorrect": "off",
+            "contenteditable": "true",
+            "data-gramm": "true",
+            "role": "textbox",
+            "spellcheck": "false",
+            "style": "background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px",
+            "tabindex": "0",
+          },
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "class": "",
+              },
+              "children": Array [
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-3102962925",
+                  },
+                  "children": Array [
+                    "heading",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-1758464876",
+                  },
+                  "children": Array [
+                    "paragraph",
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "class": "jsx-44984361",
+                  },
+                  "children": Array [
+                    Object {
+                      "attributes": Object {
+                        "class": "jsx-1758464876",
+                      },
+                      "children": Array [
+                        "listitem",
+                      ],
+                      "tag": "DIV",
+                    },
+                  ],
+                  "tag": "DIV",
+                },
+                Object {
+                  "attributes": Object {
+                    "alt": "Square placeholder image 80px",
+                    "class": "",
+                    "height": "80",
+                    "src": "https://via.placeholder.com/80",
+                    "width": "80",
+                  },
+                  "children": Array [],
+                  "tag": "IMG",
+                },
+              ],
+              "tag": "DIV",
+            },
+          ],
+          "tag": "DIV",
+        },
+        Object {
+          "attributes": Object {
+            "class": "focus",
+            "type": "button",
+          },
+          "children": Array [
+            "focus",
+          ],
+          "tag": "BUTTON",
+        },
+        Object {
+          "attributes": Object {
+            "class": "blur",
             "disabled": "",
             "type": "button",
           },
@@ -900,6 +1390,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "focus",
             "type": "button",
           },
           "children": Array [
@@ -909,6 +1400,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "blur",
             "disabled": "",
             "type": "button",
           },

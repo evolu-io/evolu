@@ -13,7 +13,7 @@ test('render', async () => {
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 
-test('focus blur via tab, tab, tab', async () => {
+test('focus blur via tab, tab, tab, click to focus button, click to blur button', async () => {
   await page.keyboard.press('Tab');
   await page.waitFor(50);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
@@ -23,6 +23,14 @@ test('focus blur via tab, tab, tab', async () => {
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
   await page.keyboard.press('Tab');
+  await page.waitFor(50);
+  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+
+  await page.click('button.focus');
+  await page.waitFor(50);
+  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+
+  await page.click('button.blur');
   await page.waitFor(50);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });

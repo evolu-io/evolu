@@ -171,6 +171,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "focus",
             "disabled": "",
             "type": "button",
           },
@@ -181,6 +182,7 @@ Object {
         },
         Object {
           "attributes": Object {
+            "class": "blur",
             "type": "button",
           },
           "children": Array [
