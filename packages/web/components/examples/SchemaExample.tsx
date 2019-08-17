@@ -179,8 +179,12 @@ export function SchemaExample() {
     [getStyledJsx],
   );
 
-  const handleClick = useCallback(() => {
+  const handleFocusClick = useCallback(() => {
     setEditorValue({ ...editorValue, hasFocus: true });
+  }, [editorValue]);
+
+  const handleBlurClick = useCallback(() => {
+    setEditorValue({ ...editorValue, hasFocus: false });
   }, [editorValue]);
 
   return (
@@ -192,8 +196,19 @@ export function SchemaExample() {
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
-      <button type="button" onClick={handleClick}>
+      <button
+        type="button"
+        onClick={handleFocusClick}
+        disabled={editorValue.hasFocus}
+      >
         focus
+      </button>
+      <button
+        type="button"
+        onClick={handleBlurClick}
+        disabled={!editorValue.hasFocus}
+      >
+        blur
       </button>
       <LogValue value={editorValue} />
     </>
