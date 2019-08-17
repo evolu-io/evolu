@@ -15,13 +15,6 @@ module.exports = {
     'prettier/@typescript-eslint',
     'prettier/react',
   ],
-  // https://github.com/smooth-code/jest-puppeteer#configure-eslint
-  globals: {
-    page: true,
-    browser: true,
-    context: true,
-    jestPuppeteer: true,
-  },
   rules: {
     // No need, we have Prettier.
     'no-plusplus': 'off',
