@@ -1,9 +1,7 @@
 import { serializeDom } from './helpers/serializeDom';
 
 beforeEach(async () => {
-  await page.goto(`file://${__dirname}/out/test1.html`, {
-    waitUntil: 'networkidle2',
-  });
+  await page.goto(`file://${__dirname}/out/test1.html`);
   await page.waitFor(100);
 });
 
