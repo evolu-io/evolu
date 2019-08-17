@@ -1,7 +1,6 @@
 import { serializeDom } from './helpers/serializeDom';
 
-// beforeEach?
-beforeAll(async () => {
+beforeEach(async () => {
   await page.goto(`file://${__dirname}/out/index.html`);
 });
 
@@ -15,10 +14,16 @@ test('initial render', async () => {
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 
-// test('focus via tab', async () => {
-//   await page.keyboard.down('Tab');
-//   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
-// });
+test('focus blur via tab, tab, tab', async () => {
+  await page.keyboard.press('Tab', { delay: 10 });
+  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+
+  await page.keyboard.press('Tab', { delay: 10 });
+  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+
+  await page.keyboard.press('Tab', { delay: 10 });
+  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+});
 
 // https://github.com/steida/slad/issues/14
 export default undefined;
