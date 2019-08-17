@@ -12,7 +12,7 @@
     "prod": "yarn workspace web build && yarn workspace web start",
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
-    "jest": "jest",
+    "jest": "jest --maxWorkers=2",
     "build": "yarn workspace web build && yarn workspace web export",
     "test": "yarn lint && yarn tsc && yarn build && yarn jest",
     "analyze": "yarn workspace web analyze"
@@ -37,7 +37,6 @@
     "jest": "^24.8.0",
     "jest-puppeteer": "^4.3.0",
     "prettier": "^1.18.2",
-    "puppeteer": "^1.19.0",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
