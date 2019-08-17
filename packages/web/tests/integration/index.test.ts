@@ -2,7 +2,7 @@ import { serializeDom } from './helpers/serializeDom';
 
 beforeEach(async () => {
   await page.goto(`file://${__dirname}/out/index.html`);
-  await page.waitFor(100);
+  await page.waitFor(50);
 });
 
 test('page title', async () => {
@@ -15,15 +15,15 @@ test('render', async () => {
 
 test('focus blur via tab, tab, tab', async () => {
   await page.keyboard.press('Tab');
-  await page.waitFor(100);
+  await page.waitFor(50);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
   await page.keyboard.press('Tab');
-  await page.waitFor(100);
+  await page.waitFor(50);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 
   await page.keyboard.press('Tab');
-  await page.waitFor(100);
+  await page.waitFor(50);
   await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
 });
 

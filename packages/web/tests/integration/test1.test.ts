@@ -2,7 +2,7 @@ import { serializeDom } from './helpers/serializeDom';
 
 beforeEach(async () => {
   await page.goto(`file://${__dirname}/out/test1.html`);
-  await page.waitFor(100);
+  await page.waitFor(50);
 });
 
 test('render', async () => {
