@@ -1,4 +1,4 @@
-import { serializeDom } from './helpers/serializeDom';
+import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
   await page.goto(`file://${__dirname}/out/index.html`);
@@ -10,29 +10,29 @@ test('page title', async () => {
 });
 
 test('render', async () => {
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 });
 
 test('focus blur via tab, tab, tab, click to focus button, click to blur button', async () => {
   await page.keyboard.press('Tab');
   await page.waitFor(50);
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 
   await page.keyboard.press('Tab');
   await page.waitFor(50);
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 
   await page.keyboard.press('Tab');
   await page.waitFor(50);
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 
   await page.click('button.focus');
   await page.waitFor(50);
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 
   await page.click('button.blur');
   await page.waitFor(50);
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 });
 
 // https://github.com/steida/slad/issues/14

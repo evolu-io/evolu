@@ -1,4 +1,4 @@
-import { serializeDom } from './helpers/serializeDom';
+import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
   await page.goto(`file://${__dirname}/out/test2.html`);
@@ -6,7 +6,7 @@ beforeEach(async () => {
 });
 
 test('render', async () => {
-  await expect(await page.evaluate(serializeDom)).toMatchSnapshot();
+  await expect(await pageDom()).toMatchSnapshot();
 });
 
 // https://github.com/steida/slad/issues/14

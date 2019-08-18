@@ -136,7 +136,10 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
   const renderElement = useCallback<RenderElement<SchemaRootElement>>(
     (element, children, ref) => {
       const styledJsx = element.style && getStyledJsx(element.style);
-      const className = styledJsx ? styledJsx.className : '';
+      // Because we don't want to render empty class attributes.
+      const classNameObject = styledJsx
+        ? { className: styledJsx.className }
+        : null;
 
       const renderByType = (): ReactNode => {
         switch (element.type) {
@@ -147,7 +150,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
           case 'listitem':
           case 'paragraph':
             return (
-              <div ref={ref} className={className}>
+              <div ref={ref} {...classNameObject}>
                 {children}
               </div>
             );
@@ -155,7 +158,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
             return (
               <img
                 ref={ref}
-                className={className}
+                {...classNameObject}
                 src={element.src}
                 alt={element.alt}
                 width={element.width}
@@ -194,6 +197,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
+      <LogValue value={editorValue} />
       <button
         type="button"
         className="focus"
@@ -210,7 +214,6 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
       >
         blur
       </button>
-      <LogValue value={editorValue} />
     </>
   );
 }
