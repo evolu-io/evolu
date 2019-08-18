@@ -4,30 +4,27 @@ import { Text } from '../Text';
 import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const initialState: Value = {
-  element: {
-    children: [
-      {
-        props: {
-          style: { fontSize: '24px' },
+export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
+  const [editorValue, setEditorValue] = useState<Value>({
+    element: {
+      children: [
+        {
+          props: {
+            style: { fontSize: '24px' },
+          },
+          children: ['heading'],
         },
-        children: ['heading'],
-      },
-      {
-        props: {
-          style: { fontSize: '16px' },
+        {
+          props: {
+            style: { fontSize: '16px' },
+          },
+          children: ['paragraph'],
         },
-        children: ['paragraph'],
-      },
-    ],
-  },
-  selection: undefined,
-  hasFocus: true,
-};
-
-export function BasicExample() {
-  const [editorValue, setEditorValue] = useState<Value>(initialState);
+      ],
+    },
+    selection: undefined,
+    hasFocus,
+  });
 
   const handleEditorChange = useCallback((value: Value) => {
     setEditorValue(value);
