@@ -16,11 +16,6 @@ export const LogValue = memo<{
           hasFocus: {JSON.stringify(value.hasFocus)}
         </pre>
       </Text>
-      <style jsx>{`
-        div {
-          margin-bottom: 24px;
-        }
-      `}</style>
     </div>
   );
 });

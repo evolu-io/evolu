@@ -7,7 +7,7 @@ import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-// It seems we can describe a schema with TypeScript pretty well.
+// We can describe a schema with TypeScript pretty well.
 // Immutablity is enforced via Value once for all. No boring readonly everywhere.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
@@ -75,59 +75,57 @@ interface SchemaRootElement extends SchemaElement {
 
 type CustomValue = Value<SchemaRootElement>;
 
-const initialState: CustomValue = {
-  element: {
-    type: 'document',
-    children: [
-      {
-        type: 'heading',
-        style: { 'font-size': '24px' },
-        children: ['heading'],
-      },
-      {
-        type: 'paragraph',
-        style: { 'font-size': '16px' },
-        children: ['paragraph'],
-      },
-      {
-        type: 'list',
-        style: { margin: '16px' },
-        children: [
-          {
-            type: 'listitem',
-            style: { 'font-size': '16px' },
-            children: [
-              'listitem',
-              // List can be nested. With type checking of course.
-              // {
-              //   type: 'list',
-              //   children: [
-              //     {
-              //       type: 'listitem',
-              //       children: ['nested'],
-              //     },
-              //   ],
-              // },
-            ],
-          },
-        ],
-      },
-      {
-        type: 'image',
-        src: 'https://via.placeholder.com/80',
-        alt: 'Square placeholder image 80px',
-        width: 80,
-        height: 80,
-        children: undefined,
-      },
-    ],
-  },
-  selection: undefined,
-  hasFocus: true,
-};
-
-export function SchemaExample() {
-  const [editorValue, setEditorValue] = useState<CustomValue>(initialState);
+export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
+  const [editorValue, setEditorValue] = useState<CustomValue>({
+    element: {
+      type: 'document',
+      children: [
+        {
+          type: 'heading',
+          style: { 'font-size': '24px' },
+          children: ['heading'],
+        },
+        {
+          type: 'paragraph',
+          style: { 'font-size': '16px' },
+          children: ['paragraph'],
+        },
+        {
+          type: 'list',
+          style: { margin: '16px' },
+          children: [
+            {
+              type: 'listitem',
+              style: { 'font-size': '16px' },
+              children: [
+                'listitem',
+                // List can be nested. With type checking of course.
+                // {
+                //   type: 'list',
+                //   children: [
+                //     {
+                //       type: 'listitem',
+                //       children: ['nested'],
+                //     },
+                //   ],
+                // },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'image',
+          src: 'https://via.placeholder.com/80',
+          alt: 'Square placeholder image 80px',
+          width: 80,
+          height: 80,
+          children: undefined,
+        },
+      ],
+    },
+    selection: undefined,
+    hasFocus,
+  });
 
   const handleEditorChange = useCallback((value: CustomValue) => {
     setEditorValue(value);
@@ -138,7 +136,10 @@ export function SchemaExample() {
   const renderElement = useCallback<RenderElement<SchemaRootElement>>(
     (element, children, ref) => {
       const styledJsx = element.style && getStyledJsx(element.style);
-      const className = styledJsx ? styledJsx.className : '';
+      // Because we don't want to render empty class attributes.
+      const classNameObject = styledJsx
+        ? { className: styledJsx.className }
+        : null;
 
       const renderByType = (): ReactNode => {
         switch (element.type) {
@@ -149,7 +150,7 @@ export function SchemaExample() {
           case 'listitem':
           case 'paragraph':
             return (
-              <div ref={ref} className={className}>
+              <div ref={ref} {...classNameObject}>
                 {children}
               </div>
             );
@@ -157,7 +158,7 @@ export function SchemaExample() {
             return (
               <img
                 ref={ref}
-                className={className}
+                {...classNameObject}
                 src={element.src}
                 alt={element.alt}
                 width={element.width}
@@ -196,8 +197,10 @@ export function SchemaExample() {
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
+      <LogValue value={editorValue} />
       <button
         type="button"
+        className="focus"
         onClick={handleFocusClick}
         disabled={editorValue.hasFocus}
       >
@@ -205,12 +208,12 @@ export function SchemaExample() {
       </button>
       <button
         type="button"
+        className="blur"
         onClick={handleBlurClick}
         disabled={!editorValue.hasFocus}
       >
         blur
       </button>
-      <LogValue value={editorValue} />
     </>
   );
 }
