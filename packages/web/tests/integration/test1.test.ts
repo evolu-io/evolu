@@ -1,7 +1,8 @@
+import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
-  await page.goto(`file://${__dirname}/out/test1.html`);
+  await page.goto(pageUrl('test1'));
   await page.waitFor(50);
 });
 
