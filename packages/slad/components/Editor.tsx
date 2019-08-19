@@ -60,10 +60,8 @@ export interface EditorProps<T extends Element = Element>
 // with generic type argument.
 // https://stackoverflow.com/a/57493789/233902
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/37087
-// Maybe, we don't need them. Instead of memo, we can use useMemo.
-// Instead of explicit imperative focus and blur, we can use Value model I suppose.
-// Maybe new React Flare will solve it. The same for forwardRef.
-// If we will really need forwardRef, we can force types via casting.
+// Anyway, we don't need it. Instead of memo, we use useMemo.
+// Instead of explicit imperative focus and blur, we use Value model.
 export const Editor = function Editor<T extends Element>({
   value: propsValue,
   onChange,
@@ -97,36 +95,29 @@ export const Editor = function Editor<T extends Element>({
     });
   };
 
-  // We need duplicated state (value) because of stable dispatch and render changes.
-  // Otherwise, any value change would propagate new callbacks through the whole tree
-  // via context. As for render changes, select after focus can't wait for parent update.
+  // We need duplicated state (value) because of stable dispatch.
+  // Otherwise, any change would create new callbacks and pass them through
+  // the whole tree via context. Also, this allows inner async state changes.
   const [state, dispatch] = useReducer(reducer, {
     value: propsValue,
   });
 
-  // Propagate inner state to outer. Conditionally per value.
+  // Propagate inner state to outer.
   useEffect(() => {
     if (state.value === propsValue) return;
     onChange(state.value as Value<T>);
   }, [onChange, propsValue, state.value]);
 
-  // Propagate outer state to inner. Conditionally per props.
-  // We can't compare with state here because it would invalidate useEffect deps.
-  // And it's compared in reducer anyway.
+  // Propagate outer state to inner.
   useEffect(() => {
     dispatch({ type: 'focus', value: propsValue.hasFocus });
   }, [propsValue.hasFocus]);
-  // TODO: tohle to zacykli, pokud mam 2x hasFocus. proc?
-  // useEffect(() => {
-  //   dispatch({ type: 'select', value: propsValue.selection });
-  // }, [propsValue.selection]);
 
-  // Map declarative state hasFocus to DOM imperative focus and blur methods.
+  // Map declarative hasFocus to DOM imperative focus and blur methods.
   const stateHadFocus = usePrevious(state.value.hasFocus);
   useEffect(() => {
     const { current: div } = divRef;
     if (!div) return;
-    // autoFocus like behavior.
     if (stateHadFocus == null) {
       if (state.value.hasFocus) div.focus();
       return;
@@ -182,9 +173,8 @@ export const Editor = function Editor<T extends Element>({
       <SetNodePathContext.Provider value={setNodePath}>
         <RenderElementContext.Provider
           value={
-            // Cast renderElement, because React context value can't be generic,
-            // afaik. We know it's safe because only Element API is used.
-            // TODO: Figure out how to cast it without 'as unknown'.
+            // Cast renderElement, because React context value can't be generic.
+            // We know it's safe because only Element API is used.
             ((renderElement || renderDivElement) as unknown) as RenderElement<
               Element
             >
