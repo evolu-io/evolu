@@ -1,15 +1,14 @@
 import React from 'react';
-import { Container } from '../components/Container';
 import { BasicExample } from '../components/examples/BasicExample';
 import { SchemaExample } from '../components/examples/SchemaExample';
 
-function Index() {
+function TestAutoFocusSecond() {
   return (
-    <Container>
-      <BasicExample hasFocus />
+    <>
+      <BasicExample />
       <SchemaExample hasFocus />
-    </Container>
+    </>
   );
 }
 
-export default Index;
+export default TestAutoFocusSecond;

@@ -2,7 +2,7 @@ import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('test2'));
+  await page.goto(pageUrl('testAutoFocusSecond'));
   await page.waitFor(50);
 });
 

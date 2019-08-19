@@ -2,12 +2,8 @@ import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('index'));
+  await page.goto(pageUrl('testTabKeyAndFocusBlurClick'));
   await page.waitFor(50);
-});
-
-test('page title', async () => {
-  await expect(page.title()).resolves.toMatch('Slad');
 });
 
 test('render', async () => {

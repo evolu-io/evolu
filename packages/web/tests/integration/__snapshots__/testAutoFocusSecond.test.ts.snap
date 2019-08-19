@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="jsx-1141794554"
+    >
+      <pre>
+        ·selection: ·
+        <br />
+        ·hasFocus: ·
+        ·false·
+      </pre>
+    </div>
+  </div>
+  <div
+    class="jsx-442929638"
+  >
+    ·Schema Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      <div
+        class="jsx-3102962925"
+      >
+        ·heading·
+      </div>
+      <div
+        class="jsx-1758464876"
+      >
+        ·paragraph·
+      </div>
+      <div
+        class="jsx-44984361"
+      >
+        <div
+          class="jsx-1758464876"
+        >
+          ·listitem·
+        </div>
+      </div>
+      <img
+        alt="Square placeholder image 80px"
+        height="80"
+        src="https://via.placeholder.com/80"
+        width="80"
+      />
+    </div>
+  </div>
+  <div>
+    <div
+      class="jsx-1141794554"
+    >
+      <pre>
+        ·selection: ·
+        ·{"anchor":[0,0,0],"focus":[0,0,0]}·
+        <br />
+        ·hasFocus: ·
+        ·true·
+      </pre>
+    </div>
+  </div>
+  <button
+    class="focus"
+    disabled=""
+    type="button"
+  >
+    ·focus·
+  </button>
+  <button
+    class="blur"
+    type="button"
+  >
+    ·blur·
+  </button>
+</div>
+`;
