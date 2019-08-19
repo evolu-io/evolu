@@ -25,6 +25,7 @@ import { Value } from '../models/value';
 import { useDocumentSelectionChange } from '../hooks/useDocumentSelectionChange';
 import { useNodesPathsMap } from '../hooks/useNodesPathsMap';
 import { usePrevious } from '../hooks/usePrevious';
+import { useInvariantElementIsNormalized } from '../hooks/useInvariantElementIsNormalized';
 
 type EditorState = Immutable<{
   value: Value<Element>;
@@ -101,6 +102,8 @@ export const Editor = function Editor<T extends Element>({
   const [state, dispatch] = useReducer(reducer, {
     value: propsValue,
   });
+
+  useInvariantElementIsNormalized(state.value.element);
 
   // Propagate inner state to outer.
   useEffect(() => {

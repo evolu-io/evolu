@@ -1,4 +1,4 @@
-import { normalizeElement, Element } from './element';
+import { normalizeElement, Element, isNormalizedElement } from './element';
 
 test('normalizeElement removes empty strings', () => {
   const element: Element = {
@@ -51,4 +51,27 @@ test('normalizeElement merges adjacent strings', () => {
     ],
   };
   expect(normalizeElement(element)).toMatchSnapshot();
+});
+
+test('isNormalizedElement', () => {
+  expect(
+    isNormalizedElement({
+      children: ['a'],
+    }),
+  ).toBe(true);
+  expect(
+    isNormalizedElement({
+      children: [''],
+    }),
+  ).toBe(false);
+  expect(
+    isNormalizedElement({
+      children: ['a', 'b'],
+    }),
+  ).toBe(false);
+  expect(
+    isNormalizedElement({
+      children: [{ children: [''] }],
+    }),
+  ).toBe(false);
 });
