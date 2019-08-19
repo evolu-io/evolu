@@ -12,8 +12,8 @@
     "prod": "yarn workspace web build && yarn workspace web start",
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
-    "jest": "jest --maxWorkers=2",
-    "jest-watch": "cross-env JEST_WATCH=true jest --watch",
+    "jest": "jest --runInBand",
+    "jest-watch": "cross-env JEST_WATCH=true jest --watch --runInBand",
     "test": "yarn lint && yarn tsc && yarn workspace web build && yarn workspace web export && yarn jest",
     "analyze": "yarn workspace web analyze"
   },
