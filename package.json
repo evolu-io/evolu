@@ -13,8 +13,8 @@
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
     "jest": "jest --maxWorkers=2",
-    "build": "yarn workspace web build && yarn workspace web export",
-    "test": "yarn lint && yarn tsc && yarn build && yarn jest",
+    "jest-watch": "cross-env JEST_WATCH=true jest --watch",
+    "test": "yarn lint && yarn tsc && yarn workspace web build && yarn workspace web export && yarn jest",
     "analyze": "yarn workspace web analyze"
   },
   "devDependencies": {
@@ -25,6 +25,7 @@
     "@types/puppeteer": "^1.19.1",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
+    "cross-env": "^5.2.0",
     "eslint": "^6.0.0",
     "eslint-config-airbnb": "^18.0.0",
     "eslint-config-prettier": "^6.0.0",
