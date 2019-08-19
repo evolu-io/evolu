@@ -13,7 +13,7 @@
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
     "jest": "jest --runInBand",
-    "jest-watch": "cross-env JEST_WATCH=true jest --watch --runInBand",
+    "jest-watch": "cross-env JEST_WATCH=true jest --watch --runInBand --notify",
     "test": "yarn lint && yarn tsc && yarn workspace web build && yarn workspace web export && yarn jest",
     "analyze": "yarn workspace web analyze"
   },
