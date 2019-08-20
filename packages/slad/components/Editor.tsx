@@ -11,14 +11,16 @@ import { assertNever } from 'assert-never';
 import {
   SetNodeEditorPath,
   SetNodeEditorPathContext,
-  Node,
 } from '../contexts/SetNodeEditorPathContext';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import {
   RenderEditorElementContext,
   RenderEditorElement,
 } from '../contexts/RenderEditorElementContext';
-import { EditorSelection } from '../models/selection';
+import {
+  EditorSelection,
+  mapSelectionToEditorSelection,
+} from '../models/selection';
 import { renderEditorDivElement } from './renderEditorDivElement';
 import { EditorElement } from '../models/element';
 import { EditorValue } from '../models/value';
@@ -138,30 +140,17 @@ export const Editor = function Editor<T extends EditorElement>({
 
   const nodesEditorPathsMap = useNodesEditorPathsMap(state.value);
 
-  const mapSelectionToEditorSelection = useCallback(
-    (selection: Selection | undefined): EditorSelection | undefined => {
-      if (!selection) return undefined;
-      const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-      if (!anchorNode || !focusNode) return undefined;
-      const anchorPath = nodesEditorPathsMap.get(anchorNode as Node);
-      const focusPath = nodesEditorPathsMap.get(focusNode as Node);
-      if (!anchorPath || !focusPath) return undefined;
-      return {
-        anchor: [...anchorPath, anchorOffset],
-        focus: [...focusPath, focusOffset],
-      };
-    },
-    [nodesEditorPathsMap],
-  );
-
   useDocumentSelectionChange(
     divRef,
     useCallback(
       (selection: Selection | undefined) => {
-        const editorSelection = mapSelectionToEditorSelection(selection);
+        const editorSelection = mapSelectionToEditorSelection(
+          selection,
+          nodesEditorPathsMap,
+        );
         dispatch({ type: 'select', value: editorSelection });
       },
-      [mapSelectionToEditorSelection],
+      [nodesEditorPathsMap],
     ),
   );
 

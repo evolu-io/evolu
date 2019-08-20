@@ -2,15 +2,13 @@ import { useRef, useEffect } from 'react';
 import Debug from 'debug';
 import invariant from 'tiny-invariant';
 import { EditorElement } from '../models/element';
-import { EditorPath } from '../models/path';
+import { NodesEditorPathsMap } from '../models/path';
 import { EditorValue } from '../models/value';
-
-export type NodesPathsMap = Map<Node, EditorPath>;
 
 const debug = Debug('editor');
 
 export const useDevDebug = (
-  nodesPathsMap: NodesPathsMap,
+  nodesPathsMap: NodesEditorPathsMap,
   value: EditorValue<EditorElement>,
 ) => {
   // https://overreacted.io/how-does-the-development-mode-work/
@@ -43,9 +41,9 @@ export const useDevDebug = (
 
 export const useNodesEditorPathsMap = (
   value: EditorValue<EditorElement>,
-): NodesPathsMap => {
+): NodesEditorPathsMap => {
   // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
-  const nodesPathsMapRef = useRef<NodesPathsMap | null>(null);
+  const nodesPathsMapRef = useRef<NodesEditorPathsMap | null>(null);
   if (nodesPathsMapRef.current == null) nodesPathsMapRef.current = new Map();
   useDevDebug(nodesPathsMapRef.current, value);
   return nodesPathsMapRef.current;

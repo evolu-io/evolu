@@ -1,5 +1,7 @@
 export type EditorPath = readonly number[];
 
+export type NodesEditorPathsMap = Map<Node, EditorPath>;
+
 export function editorPathsAreEqual(
   path1: EditorPath,
   path2: EditorPath,
