@@ -116,15 +116,19 @@ export const Editor = function Editor<T extends Element>({
     dispatch({ type: 'focus', value: propsValue.hasFocus });
   }, [propsValue.hasFocus]);
 
+  // Propagate inner state to DOM.
   // Map declarative hasFocus to DOM imperative focus and blur methods.
   const stateHadFocus = usePrevious(state.value.hasFocus);
   useEffect(() => {
     const { current: div } = divRef;
     if (!div) return;
+    // For the initial render, it behaves like autoFocus prop.
     if (stateHadFocus == null) {
       if (state.value.hasFocus) div.focus();
       return;
     }
+    // Do things only on change.
+    // Maybe this logic is not ideal, but React Flare will solve it.
     if (stateHadFocus === false && state.value.hasFocus) {
       div.focus();
     } else if (stateHadFocus === true && !state.value.hasFocus) {
@@ -150,15 +154,16 @@ export const Editor = function Editor<T extends Element>({
     [nodesPathsMap],
   );
 
-  const handleDocumentSelectionChange = useCallback(
-    (selection: Selection | undefined) => {
-      const modelSelection = mapSelectionToModelSelection(selection);
-      dispatch({ type: 'select', value: modelSelection });
-    },
-    [mapSelectionToModelSelection],
+  useDocumentSelectionChange(
+    divRef,
+    useCallback(
+      (selection: Selection | undefined) => {
+        const modelSelection = mapSelectionToModelSelection(selection);
+        dispatch({ type: 'select', value: modelSelection });
+      },
+      [mapSelectionToModelSelection],
+    ),
   );
-
-  useDocumentSelectionChange(divRef, handleDocumentSelectionChange);
 
   const setNodePath = useCallback<SetNodePath>(
     (node, path) => {
