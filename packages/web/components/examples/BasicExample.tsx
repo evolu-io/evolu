@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, Value } from 'slad';
+import { Editor, EditorValue } from 'slad';
 import { Text } from '../Text';
 import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
-  const [editorValue, setEditorValue] = useState<Value>({
+  const [editorValue, setEditorValue] = useState<EditorValue>({
     element: {
       children: [
         {
@@ -26,7 +26,7 @@ export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
     hasFocus,
   });
 
-  const handleEditorChange = useCallback((value: Value) => {
+  const handleEditorChange = useCallback((value: EditorValue) => {
     setEditorValue(value);
   }, []);
 

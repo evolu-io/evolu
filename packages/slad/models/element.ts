@@ -1,30 +1,30 @@
 /**
- * Element is the most general base model for Editor.
+ * EditorElement is the base model for all other editor elements.
  */
-export interface Element {
-  readonly children?: readonly (Element | string)[] | undefined;
+export interface EditorElement {
+  readonly children?: readonly (EditorElement | string)[] | undefined;
 }
 
 /**
- * DivElement has props the same as React div element.
+ * EditorDivElement has props the same as React div element.
  */
-export interface DivElement extends Element {
+export interface EditorDivElement extends EditorElement {
   readonly props?: React.HTMLAttributes<HTMLDivElement>;
-  readonly children?: (DivElement | string)[] | undefined;
+  readonly children?: (EditorDivElement | string)[] | undefined;
 }
 
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize
  */
-export function normalizeElement(element: Element): Element {
+export function normalizeEditorElement(element: EditorElement): EditorElement {
   return {
     ...element,
     ...(element.children
       ? {
-          children: element.children.reduce<(Element | string)[]>(
+          children: element.children.reduce<(EditorElement | string)[]>(
             (array, child) => {
               if (typeof child !== 'string')
-                return [...array, normalizeElement(child)];
+                return [...array, normalizeEditorElement(child)];
               if (child.length === 0) return array;
               const previousChild = array[array.length - 1];
               if (typeof previousChild === 'string') {
@@ -43,7 +43,9 @@ export function normalizeElement(element: Element): Element {
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize
  */
-export function isNormalizedElement({ children }: Element): boolean {
+export function isNormalizedEditorElement({
+  children,
+}: EditorElement): boolean {
   if (children == null) return true;
   return !children.some((child, i) => {
     if (typeof child === 'string') {
@@ -51,6 +53,6 @@ export function isNormalizedElement({ children }: Element): boolean {
       if (i > 0 && typeof children[i - 1] === 'string') return true;
       return false;
     }
-    return !isNormalizedElement(child);
+    return !isNormalizedEditorElement(child);
   });
 }

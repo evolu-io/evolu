@@ -1,7 +1,11 @@
-import { normalizeElement, Element, isNormalizedElement } from './element';
+import {
+  normalizeEditorElement,
+  EditorElement,
+  isNormalizedEditorElement,
+} from './element';
 
-test('normalizeElement removes empty strings', () => {
-  const element: Element = {
+test('normalizeEditorElement removes empty strings', () => {
+  const element: EditorElement = {
     children: [
       '',
       '.',
@@ -17,21 +21,21 @@ test('normalizeElement removes empty strings', () => {
       '.',
     ],
   };
-  expect(normalizeElement(element)).toMatchSnapshot();
+  expect(normalizeEditorElement(element)).toMatchSnapshot();
 });
 
-test('normalizeElement do not add children', () => {
-  expect(normalizeElement({})).toMatchSnapshot();
+test('normalizeEditorElement do not add children', () => {
+  expect(normalizeEditorElement({})).toMatchSnapshot();
 });
 
-test('normalizeElement do not remove children', () => {
-  expect(normalizeElement({ children: [] })).toMatchSnapshot();
-  expect(normalizeElement({ children: [''] })).toMatchSnapshot();
-  expect(normalizeElement({ children: ['.'] })).toMatchSnapshot();
+test('normalizeEditorElement do not remove children', () => {
+  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ children: [''] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ children: ['.'] })).toMatchSnapshot();
 });
 
-test('normalizeElement merges adjacent strings', () => {
-  const element: Element = {
+test('normalizeEditorElement merges adjacent strings', () => {
+  const element: EditorElement = {
     children: [
       'a',
       'b',
@@ -50,27 +54,27 @@ test('normalizeElement merges adjacent strings', () => {
       'b',
     ],
   };
-  expect(normalizeElement(element)).toMatchSnapshot();
+  expect(normalizeEditorElement(element)).toMatchSnapshot();
 });
 
-test('isNormalizedElement', () => {
+test('isNormalizedEditorElement', () => {
   expect(
-    isNormalizedElement({
+    isNormalizedEditorElement({
       children: ['a'],
     }),
   ).toBe(true);
   expect(
-    isNormalizedElement({
+    isNormalizedEditorElement({
       children: [''],
     }),
   ).toBe(false);
   expect(
-    isNormalizedElement({
+    isNormalizedEditorElement({
       children: ['a', 'b'],
     }),
   ).toBe(false);
   expect(
-    isNormalizedElement({
+    isNormalizedEditorElement({
       children: [{ children: [''] }],
     }),
   ).toBe(false);

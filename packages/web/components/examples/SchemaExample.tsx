@@ -1,5 +1,5 @@
 import React, { useState, useCallback, ReactNode } from 'react';
-import { Editor, Value, Element, RenderElement } from 'slad';
+import { Editor, EditorValue, EditorElement, RenderEditorElement } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
 import { Text } from '../Text';
@@ -12,7 +12,7 @@ import { defaultEditorProps } from './_defaultEditorProps';
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
 // Note there is no special props property. Flat interfaces ftw.
-interface SchemaElement extends Element {
+interface SchemaElement extends EditorElement {
   type: string;
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
@@ -73,7 +73,7 @@ interface SchemaRootElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type CustomValue = Value<SchemaRootElement>;
+type CustomValue = EditorValue<SchemaRootElement>;
 
 export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
   const [editorValue, setEditorValue] = useState<CustomValue>({
@@ -133,7 +133,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
 
   const getStyledJsx = useStyledJsx();
 
-  const renderElement = useCallback<RenderElement<SchemaRootElement>>(
+  const renderElement = useCallback<RenderEditorElement<SchemaRootElement>>(
     (element, children, ref) => {
       const styledJsx = element.style && getStyledJsx(element.style);
       // Because we don't want to render empty class attributes.

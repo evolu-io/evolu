@@ -1,28 +1,28 @@
 import React, { Fragment, memo, useMemo, useContext } from 'react';
 import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
-import { useSetNodePathRef } from '../hooks/useSetNodePathRef';
+import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorTextRenderer } from './EditorTextRenderer';
-import { RenderElementContext } from '../contexts/RenderElementContext';
-import { Element } from '../models/element';
-import { Path, pathsAreEqual } from '../models/path';
+import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
+import { EditorElement } from '../models/element';
+import { EditorPath, editorPathsAreEqual } from '../models/path';
 
 export interface EditorElementRendererProps {
-  element: Element;
-  path: Path;
+  element: EditorElement;
+  path: EditorPath;
 }
 
 export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
     const getReferenceKey = useGetReferenceKey();
-    const renderElement = useContext(RenderElementContext);
-    const setNodePathRef = useSetNodePathRef(path);
+    const renderElement = useContext(RenderEditorElementContext);
+    const setNodePathRef = useSetNodeEditorPathRef(path);
 
     const children = useMemo(() => {
       return (
         element.children &&
         element.children.map((child, index) => {
           const key = getReferenceKey(child, index);
-          const childPath: Path = [...path, index];
+          const childPath: EditorPath = [...path, index];
           return (
             <Fragment key={key}>
               {typeof child === 'string' ? (
@@ -40,7 +40,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
   },
   (prevProps, nextProps) => {
     if (prevProps.element !== nextProps.element) return false;
-    if (!pathsAreEqual(prevProps.path, nextProps.path)) return false;
+    if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
     return true;
   },
 );

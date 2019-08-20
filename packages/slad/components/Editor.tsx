@@ -9,31 +9,31 @@ import React, {
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import {
-  SetNodePath,
-  SetNodePathContext,
+  SetNodeEditorPath,
+  SetNodeEditorPathContext,
   Node,
-} from '../contexts/SetNodePathContext';
+} from '../contexts/SetNodeEditorPathContext';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import {
-  RenderElementContext,
-  RenderElement,
-} from '../contexts/RenderElementContext';
-import { Selection as ModelSelection } from '../models/selection';
-import { renderDivElement } from './renderDivElement';
-import { Element } from '../models/element';
-import { Value } from '../models/value';
+  RenderEditorElementContext,
+  RenderEditorElement,
+} from '../contexts/RenderEditorElementContext';
+import { EditorSelection } from '../models/selection';
+import { renderEditorDivElement } from './renderEditorDivElement';
+import { EditorElement } from '../models/element';
+import { EditorValue } from '../models/value';
 import { useDocumentSelectionChange } from '../hooks/useDocumentSelectionChange';
-import { useNodesPathsMap } from '../hooks/useNodesPathsMap';
+import { useNodesEditorPathsMap } from '../hooks/useNodesEditorPathsMap';
 import { usePrevious } from '../hooks/usePrevious';
-import { useInvariantElementIsNormalized } from '../hooks/useInvariantElementIsNormalized';
+import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 
 type EditorState = Immutable<{
-  value: Value<Element>;
+  value: EditorValue<EditorElement>;
 }>;
 
 type EditorAction = Immutable<
   | { type: 'focus'; value: boolean }
-  | { type: 'select'; value: ModelSelection | undefined }
+  | { type: 'select'; value: EditorSelection | undefined }
   // | { type: 'setValueElement'; value: Element }
 >;
 
@@ -49,12 +49,12 @@ type SomeReactDivAtttributes = Pick<
   | 'tabIndex'
 >;
 
-export interface EditorProps<T extends Element = Element>
+export interface EditorProps<T extends EditorElement = EditorElement>
   extends SomeReactDivAtttributes {
-  value: Value<T>;
-  onChange: (value: Value<T>) => void;
+  value: EditorValue<T>;
+  onChange: (value: EditorValue<T>) => void;
   disabled?: boolean;
-  renderElement?: RenderElement<T>;
+  renderElement?: RenderEditorElement<T>;
 }
 
 // It's not possible to use React.memo nor React.forwardRef on a component
@@ -63,7 +63,7 @@ export interface EditorProps<T extends Element = Element>
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/37087
 // Anyway, we don't need it. Instead of memo, we use useMemo.
 // Instead of explicit imperative focus and blur, we use Value model.
-export const Editor = function Editor<T extends Element>({
+export const Editor = function Editor<T extends EditorElement>({
   value: propsValue,
   onChange,
   disabled,
@@ -103,12 +103,12 @@ export const Editor = function Editor<T extends Element>({
     value: propsValue,
   });
 
-  useInvariantElementIsNormalized(state.value.element);
+  useInvariantEditorElementIsNormalized(state.value.element);
 
   // Propagate inner state to outer.
   useEffect(() => {
     if (state.value === propsValue) return;
-    onChange(state.value as Value<T>);
+    onChange(state.value as EditorValue<T>);
   }, [onChange, propsValue, state.value]);
 
   // Propagate outer state to inner.
@@ -136,63 +136,64 @@ export const Editor = function Editor<T extends Element>({
     }
   }, [stateHadFocus, state.value.hasFocus]);
 
-  const nodesPathsMap = useNodesPathsMap(state.value);
+  const nodesEditorPathsMap = useNodesEditorPathsMap(state.value);
 
-  const mapSelectionToModelSelection = useCallback(
-    (selection: Selection | undefined): ModelSelection | undefined => {
+  const mapSelectionToEditorSelection = useCallback(
+    (selection: Selection | undefined): EditorSelection | undefined => {
       if (!selection) return undefined;
       const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
       if (!anchorNode || !focusNode) return undefined;
-      const anchorPath = nodesPathsMap.get(anchorNode as Node);
-      const focusPath = nodesPathsMap.get(focusNode as Node);
+      const anchorPath = nodesEditorPathsMap.get(anchorNode as Node);
+      const focusPath = nodesEditorPathsMap.get(focusNode as Node);
       if (!anchorPath || !focusPath) return undefined;
       return {
         anchor: [...anchorPath, anchorOffset],
         focus: [...focusPath, focusOffset],
       };
     },
-    [nodesPathsMap],
+    [nodesEditorPathsMap],
   );
 
   useDocumentSelectionChange(
     divRef,
     useCallback(
       (selection: Selection | undefined) => {
-        const modelSelection = mapSelectionToModelSelection(selection);
-        dispatch({ type: 'select', value: modelSelection });
+        const editorSelection = mapSelectionToEditorSelection(selection);
+        dispatch({ type: 'select', value: editorSelection });
       },
-      [mapSelectionToModelSelection],
+      [mapSelectionToEditorSelection],
     ),
   );
 
-  const setNodePath = useCallback<SetNodePath>(
+  const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (node, path) => {
       if (path != null) {
-        nodesPathsMap.set(node, path);
+        nodesEditorPathsMap.set(node, path);
       } else {
-        nodesPathsMap.delete(node);
+        nodesEditorPathsMap.delete(node);
       }
     },
-    [nodesPathsMap],
+    [nodesEditorPathsMap],
   );
 
   const children = useMemo(() => {
     return (
-      <SetNodePathContext.Provider value={setNodePath}>
-        <RenderElementContext.Provider
+      <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
+        <RenderEditorElementContext.Provider
           value={
             // Cast renderElement, because React context value can't be generic.
             // We know it's safe because only Element API is used.
-            ((renderElement || renderDivElement) as unknown) as RenderElement<
-              Element
+            ((renderElement ||
+              renderEditorDivElement) as unknown) as RenderEditorElement<
+              EditorElement
             >
           }
         >
           <EditorElementRenderer element={state.value.element} path={[]} />
-        </RenderElementContext.Provider>
-      </SetNodePathContext.Provider>
+        </RenderEditorElementContext.Provider>
+      </SetNodeEditorPathContext.Provider>
     );
-  }, [renderElement, setNodePath, state.value.element]);
+  }, [renderElement, setNodeEditorPath, state.value.element]);
 
   const handleOnFocus = useCallback(() => {
     dispatch({ type: 'focus', value: true });

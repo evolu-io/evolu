@@ -1,6 +1,9 @@
-export type Path = readonly number[];
+export type EditorPath = readonly number[];
 
-export function pathsAreEqual(path1: Path, path2: Path): boolean {
+export function editorPathsAreEqual(
+  path1: EditorPath,
+  path2: EditorPath,
+): boolean {
   if (path1 === path2) return true;
   const { length } = path1;
   if (length !== path2.length) return false;

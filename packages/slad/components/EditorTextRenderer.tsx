@@ -1,7 +1,7 @@
 import React, { Component, useCallback, memo } from 'react';
 import ReactDOM from 'react-dom';
-import { useSetNodePathRef } from '../hooks/useSetNodePathRef';
-import { Path, pathsAreEqual } from '../models/path';
+import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
+import { EditorPath, editorPathsAreEqual } from '../models/path';
 
 // Yes, we use Component and findDOMNode because it's the only way how
 // we can get TextNode DOM reference with React.
@@ -18,12 +18,12 @@ class TextNode extends Component<{ value: string }> {
 
 export interface EditorTextRendererProps {
   value: string;
-  path: Path;
+  path: EditorPath;
 }
 
 export const EditorTextRenderer = memo<EditorTextRendererProps>(
   ({ value, path }) => {
-    const setNodePathRef = useSetNodePathRef(path);
+    const setNodePathRef = useSetNodeEditorPathRef(path);
 
     const handleRef = useCallback(
       (instance: TextNode) => {
@@ -39,7 +39,7 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
   },
   (prevProps, nextProps) => {
     if (prevProps.value !== nextProps.value) return false;
-    if (!pathsAreEqual(prevProps.path, nextProps.path)) return false;
+    if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
     return true;
   },
 );

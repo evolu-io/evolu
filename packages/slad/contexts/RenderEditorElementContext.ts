@@ -1,6 +1,6 @@
 import { createContext, ReactNode } from 'react';
-import { SetNodePathRef } from '../hooks/useSetNodePathRef';
-import { Element } from '../models/element';
+import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
+import { EditorElement } from '../models/element';
 
 // For nice DX, renderElement element arg is an union of all nested elements.
 // Unfortunately, infinite recursion is not possible with TypeScript.
@@ -16,7 +16,7 @@ import { Element } from '../models/element';
 // Feel free to send PR.
 type OmitString<T> = T extends string ? never : T;
 type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
-type UnionFromElementAndItsChildren<T extends Element> =
+type UnionFromElementAndItsChildren<T extends EditorElement> =
   | T
   | UnionFromAray<T['children']>;
 // For reason beyond my imagination, UnionFromElementAndItsChildren must be aliased,
@@ -30,13 +30,13 @@ type Union<T> = UnionFromElementAndItsChildren<T>;
 // But I am pretty sure 6 is good enough.
 type DeepFiniteNestedUnion<T> = Union<Union<Union<Union<Union<Union<T>>>>>>;
 
-export type RenderElement<T extends Element> = (
+export type RenderEditorElement<T extends EditorElement> = (
   element: DeepFiniteNestedUnion<T>,
   children: ReactNode,
-  ref: SetNodePathRef,
+  ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
 // Element, because React context value can't be generic.
-export const RenderElementContext = createContext<RenderElement<Element>>(
-  () => null,
-);
+export const RenderEditorElementContext = createContext<
+  RenderEditorElement<EditorElement>
+>(() => null);

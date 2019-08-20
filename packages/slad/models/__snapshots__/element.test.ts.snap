@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`normalizeElement do not add children 1`] = `Object {}`;
+exports[`normalizeEditorElement do not add children 1`] = `Object {}`;
 
-exports[`normalizeElement do not remove children 1`] = `
+exports[`normalizeEditorElement do not remove children 1`] = `
 Object {
   "children": Array [],
 }
 `;
 
-exports[`normalizeElement do not remove children 2`] = `
+exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
   "children": Array [],
 }
 `;
 
-exports[`normalizeElement do not remove children 3`] = `
+exports[`normalizeEditorElement do not remove children 3`] = `
 Object {
   "children": Array [
     ".",
@@ -22,7 +22,7 @@ Object {
 }
 `;
 
-exports[`normalizeElement merges adjacent strings 1`] = `
+exports[`normalizeEditorElement merges adjacent strings 1`] = `
 Object {
   "children": Array [
     "ab",
@@ -43,7 +43,7 @@ Object {
 }
 `;
 
-exports[`normalizeElement removes empty strings 1`] = `
+exports[`normalizeEditorElement removes empty strings 1`] = `
 Object {
   "children": Array [
     ".",

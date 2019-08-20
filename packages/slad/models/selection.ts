@@ -1,21 +1,23 @@
-import { pathsAreEqual, Path } from './path';
+import { editorPathsAreEqual, EditorPath } from './path';
 
-export interface Selection {
-  readonly anchor: Path;
-  readonly focus: Path;
+export interface EditorSelection {
+  readonly anchor: EditorPath;
+  readonly focus: EditorPath;
 }
 
-export function selectionIsCollapsed(selection: Selection): boolean {
-  return pathsAreEqual(selection.anchor, selection.focus);
+export function editorSelectionIsCollapsed(
+  selection: EditorSelection,
+): boolean {
+  return editorPathsAreEqual(selection.anchor, selection.focus);
 }
 
-export function selectionsAreEqual(
-  selection1: Selection,
-  selection2: Selection,
+export function editorSelectionsAreEqual(
+  selection1: EditorSelection,
+  selection2: EditorSelection,
 ): boolean {
   if (selection1 === selection2) return true;
   return (
-    pathsAreEqual(selection1.anchor, selection2.anchor) &&
-    pathsAreEqual(selection1.focus, selection2.focus)
+    editorPathsAreEqual(selection1.anchor, selection2.anchor) &&
+    editorPathsAreEqual(selection1.focus, selection2.focus)
   );
 }
