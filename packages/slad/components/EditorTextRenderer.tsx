@@ -16,12 +16,12 @@ class TextNode extends Component<{ value: string }> {
   }
 }
 
-export interface EditorTextProps {
+export interface EditorTextRendererProps {
   value: string;
   path: Path;
 }
 
-export const EditorText = memo<EditorTextProps>(
+export const EditorTextRenderer = memo<EditorTextRendererProps>(
   ({ value, path }) => {
     const setNodePathRef = useSetNodePathRef(path);
 
@@ -44,4 +44,4 @@ export const EditorText = memo<EditorTextProps>(
   },
 );
 
-EditorText.displayName = 'EditorText';
+EditorTextRenderer.displayName = 'EditorTextRenderer';

@@ -1,17 +1,17 @@
 import React, { Fragment, memo, useMemo, useContext } from 'react';
 import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
 import { useSetNodePathRef } from '../hooks/useSetNodePathRef';
-import { EditorText } from './EditorText';
+import { EditorTextRenderer } from './EditorTextRenderer';
 import { RenderElementContext } from '../contexts/RenderElementContext';
 import { Element } from '../models/element';
 import { Path, pathsAreEqual } from '../models/path';
 
-export interface EditorElementProps {
+export interface EditorElementRendererProps {
   element: Element;
   path: Path;
 }
 
-export const EditorElement = memo<EditorElementProps>(
+export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
     const getReferenceKey = useGetReferenceKey();
     const renderElement = useContext(RenderElementContext);
@@ -26,9 +26,9 @@ export const EditorElement = memo<EditorElementProps>(
           return (
             <Fragment key={key}>
               {typeof child === 'string' ? (
-                <EditorText value={child} path={childPath} />
+                <EditorTextRenderer value={child} path={childPath} />
               ) : (
-                <EditorElement element={child} path={childPath} />
+                <EditorElementRenderer element={child} path={childPath} />
               )}
             </Fragment>
           );
@@ -45,4 +45,4 @@ export const EditorElement = memo<EditorElementProps>(
   },
 );
 
-EditorElement.displayName = 'EditorElement';
+EditorElementRenderer.displayName = 'EditorElementRenderer';

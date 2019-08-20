@@ -1,7 +1,7 @@
 // Export everything. Rethink before the release.
 export * from './components/Editor';
-export * from './components/EditorElement';
-export * from './components/EditorText';
+export * from './components/EditorElementRenderer';
+export * from './components/EditorTextRenderer';
 export * from './components/renderDivElement';
 export * from './contexts/RenderElementContext';
 export * from './contexts/SetNodePathContext';

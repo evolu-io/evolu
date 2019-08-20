@@ -13,7 +13,7 @@ import {
   SetNodePathContext,
   Node,
 } from '../contexts/SetNodePathContext';
-import { EditorElement } from './EditorElement';
+import { EditorElementRenderer } from './EditorElementRenderer';
 import {
   RenderElementContext,
   RenderElement,
@@ -188,7 +188,7 @@ export const Editor = function Editor<T extends Element>({
             >
           }
         >
-          <EditorElement element={state.value.element} path={[]} />
+          <EditorElementRenderer element={state.value.element} path={[]} />
         </RenderElementContext.Provider>
       </SetNodePathContext.Provider>
     );
