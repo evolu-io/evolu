@@ -10,7 +10,7 @@ test('render', async () => {
   await expect(await pageDom()).toMatchSnapshot();
 });
 
-test('focus blur via tab, tab, tab, click to focus button, click to blur button', async () => {
+test('focus blur via tab, tab, tab', async () => {
   await page.keyboard.press('Tab');
   await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
@@ -22,7 +22,9 @@ test('focus blur via tab, tab, tab, click to focus button, click to blur button'
   await page.keyboard.press('Tab');
   await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
+});
 
+test('click to focus button, click to blur button', async () => {
   await page.click('button.focus');
   await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
