@@ -12,9 +12,9 @@
     "prod": "yarn workspace web build && yarn workspace web start",
     "lint": "eslint '**/*.{ts,tsx}'",
     "tsc": "tsc",
-    "jest": "jest --runInBand",
-    "jest-watch": "cross-env JEST_WATCH=true jest --watch --runInBand --notify",
-    "test": "yarn lint && yarn tsc && yarn workspace web build && yarn workspace web export && yarn jest",
+    "jest": "cross-env JEST_WATCH=true jest --watch --runInBand --notify",
+    "jest-ci": "jest --runInBand",
+    "test": "yarn lint && yarn tsc && yarn workspace web build && yarn workspace web export && yarn jest-ci",
     "analyze": "yarn workspace web analyze"
   },
   "devDependencies": {
