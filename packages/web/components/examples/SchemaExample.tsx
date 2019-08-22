@@ -1,10 +1,15 @@
 import React, { useState, useCallback, ReactNode } from 'react';
-import { Editor, EditorValue, EditorElement, RenderEditorElement } from 'slad';
+import {
+  Editor,
+  EditorValue,
+  EditorElement,
+  RenderEditorElement,
+  useLogEditorValue,
+} from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
-import { LogValue } from '../LogValue';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // We can describe a schema with TypeScript pretty well.
@@ -127,9 +132,17 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
     hasFocus,
   });
 
-  const handleEditorChange = useCallback((value: CustomValue) => {
-    setEditorValue(value);
-  }, []);
+  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
+    editorValue,
+  );
+
+  const handleEditorChange = useCallback(
+    (value: CustomValue) => {
+      logEditorValue(value);
+      setEditorValue(value);
+    },
+    [logEditorValue],
+  );
 
   const getStyledJsx = useStyledJsx();
 
@@ -197,7 +210,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
-      <LogValue value={editorValue} />
+      {logEditorValueElement}
       <button
         type="button"
         className="focus"

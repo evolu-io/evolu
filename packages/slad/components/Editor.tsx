@@ -64,7 +64,7 @@ export interface EditorProps<T extends EditorElement = EditorElement>
 // https://stackoverflow.com/a/57493789/233902
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/37087
 // Anyway, we don't need it. Instead of memo, we use useMemo.
-// Instead of explicit imperative focus and blur, we use Value model.
+// Instead of explicit imperative focus and blur, we use EditorValue.
 export const Editor = function Editor<T extends EditorElement>({
   value: propsValue,
   onChange,
@@ -107,18 +107,15 @@ export const Editor = function Editor<T extends EditorElement>({
 
   useInvariantEditorElementIsNormalized(state.value.element);
 
-  // Propagate inner state to outer.
   useEffect(() => {
-    if (state.value === propsValue) return;
+    if (propsValue === state.value) return;
     onChange(state.value as EditorValue<T>);
   }, [onChange, propsValue, state.value]);
 
-  // Propagate outer state to inner.
   useEffect(() => {
     dispatch({ type: 'focus', value: propsValue.hasFocus });
   }, [propsValue.hasFocus]);
 
-  // Propagate inner state to DOM.
   // Map declarative hasFocus to DOM imperative focus and blur methods.
   const stateHadFocus = usePrevious(state.value.hasFocus);
   useEffect(() => {
@@ -148,11 +145,27 @@ export const Editor = function Editor<T extends EditorElement>({
           selection,
           nodesEditorPathsMap,
         );
+        // Editor must remember the last selection when document selection
+        // is moved elsewhere to restore it later on focus.
+        // In Chrome, contentEditable does not do that.
+        // That's why we ignore null values.
+        // if (editorSelection == null) return;
         dispatch({ type: 'select', value: editorSelection });
       },
       [nodesEditorPathsMap],
     ),
   );
+
+  // useEffect(() => {
+  //   if (state.value.selection == null)
+  //   // nacist
+  //   // if (state.value.selection == null || currentSelectionRef.current == null)
+  //   //   return;
+  //   // if (selectionsAreEqual(state.value.selection, currentSelectionRef.current))
+  //   //   return;
+  //   // // eslint-disable-next-line no-console
+  //   // console.log('f');
+  // }, [state.value.selection]);
 
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (node, path) => {

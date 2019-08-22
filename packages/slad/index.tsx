@@ -7,6 +7,7 @@ export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/useDocumentSelectionChange';
 export * from './hooks/useGetReferenceKey';
+export * from './hooks/useLogEditorValue';
 export * from './hooks/useSetNodeEditorPathRef';
 export * from './models/element';
 export * from './models/path';

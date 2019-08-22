@@ -31,18 +31,20 @@ exports[`render 1`] = `
       </div>
     </div>
   </div>
-  <div>
-    <div
-      class="jsx-1141794554"
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="opacity:1"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
-      <pre>
-        ·selection: ·
-        <br />
-        ·hasFocus: ·
-        ·false·
-      </pre>
-    </div>
-  </div>
+      ·0·
+      · ·
+      ·{"hasFocus":false}·
+    </span>
+    <br />
+    <br />
+  </pre>
   <div
     class="jsx-442929638"
   >
@@ -85,19 +87,30 @@ exports[`render 1`] = `
       />
     </div>
   </div>
-  <div>
-    <div
-      class="jsx-1141794554"
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="opacity: 1;"
+      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
-      <pre>
-        ·selection: ·
-        ·{"anchor":[0,0,0],"focus":[0,0,0]}·
-        <br />
-        ·hasFocus: ·
-        ·true·
-      </pre>
-    </div>
-  </div>
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="opacity: 0.5;"
+      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true}·
+    </span>
+    <br />
+    <br />
+  </pre>
   <button
     class="focus"
     disabled=""
