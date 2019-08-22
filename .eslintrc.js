@@ -44,5 +44,7 @@ module.exports = {
     // Enforce react-hooks rules.
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
+    // Shadowing has deterministic behavior.
+    'no-shadow': 'off',
   },
 };
