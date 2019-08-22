@@ -22,9 +22,6 @@ export function useLogEditorValue(
           .map((value, index) => {
             // hasFocus, to render it first
             const { element, hasFocus, ...rest } = value;
-            // const title = JSON.stringify(element, null, 2)
-            //   .split('"')
-            //   .join("'");
             const title = JSON.stringify(element)
               .split('"')
               .join("'");

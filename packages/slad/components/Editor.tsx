@@ -1,11 +1,4 @@
-import React, {
-  useRef,
-  useCallback,
-  useMemo,
-  useReducer,
-  Reducer,
-  useEffect,
-} from 'react';
+import React, { useRef, useCallback, useMemo, useEffect } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import {
@@ -29,11 +22,7 @@ import { useNodesEditorPathsMap } from '../hooks/useNodesEditorPathsMap';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 
-type EditorState = Immutable<{
-  value: EditorValue<EditorElement>;
-}>;
-
-type EditorAction = Immutable<
+type EditorCommand = Immutable<
   | { type: 'focus'; value: boolean }
   | { type: 'select'; value: EditorSelection | undefined }
   // | { type: 'setValueElement'; value: Element }
@@ -66,7 +55,7 @@ export interface EditorProps<T extends EditorElement = EditorElement>
 // Anyway, we don't need it. Instead of memo, we use useMemo.
 // Instead of explicit imperative focus and blur, we use EditorValue.
 export const Editor = function Editor<T extends EditorElement>({
-  value: propsValue,
+  value,
   onChange,
   disabled,
   renderElement,
@@ -75,67 +64,52 @@ export const Editor = function Editor<T extends EditorElement>({
   role = 'textbox',
   ...rest
 }: EditorProps<T>) {
-  const divRef = useRef<HTMLDivElement>(null);
+  useInvariantEditorElementIsNormalized(value.element);
 
-  const reducer: Reducer<EditorState, EditorAction> = (
-    state,
-    immutableAction,
-  ) => {
-    const action = immutableAction as Draft<EditorAction>;
-    return produce(state, draft => {
-      switch (action.type) {
+  // To have stable command like useReducer dispatch is.
+  const valueRef = useRef(value);
+  valueRef.current = value;
+  const { current: command } = useRef((immutableCommand: EditorCommand) => {
+    const command = immutableCommand as Draft<EditorCommand>;
+    const nextValue = produce(valueRef.current, draft => {
+      switch (command.type) {
         case 'focus': {
-          draft.value.hasFocus = action.value;
+          draft.hasFocus = command.value;
           break;
         }
         case 'select': {
-          draft.value.selection = action.value;
+          draft.selection = command.value;
           break;
         }
         default:
-          assertNever(action);
+          assertNever(command);
       }
     });
-  };
-
-  // We need duplicated state (value) because of stable dispatch.
-  // Otherwise, any change would create new callbacks and pass them through
-  // the whole tree via context. Also, this allows inner async state changes.
-  const [state, dispatch] = useReducer(reducer, {
-    value: propsValue,
+    if (nextValue === valueRef.current) return;
+    onChange(nextValue);
   });
 
-  useInvariantEditorElementIsNormalized(state.value.element);
-
-  useEffect(() => {
-    if (propsValue === state.value) return;
-    onChange(state.value as EditorValue<T>);
-  }, [onChange, propsValue, state.value]);
-
-  useEffect(() => {
-    dispatch({ type: 'focus', value: propsValue.hasFocus });
-  }, [propsValue.hasFocus]);
-
   // Map declarative hasFocus to DOM imperative focus and blur methods.
-  const stateHadFocus = usePrevious(state.value.hasFocus);
+  const divRef = useRef<HTMLDivElement>(null);
+  const valueHadFocus = usePrevious(value.hasFocus);
   useEffect(() => {
     const { current: div } = divRef;
     if (!div) return;
     // For the initial render, it behaves like autoFocus prop.
-    if (stateHadFocus == null) {
-      if (state.value.hasFocus) div.focus();
+    if (valueHadFocus == null) {
+      if (value.hasFocus) div.focus();
       return;
     }
     // Do things only on change.
     // Maybe this logic is not ideal, but React Flare will solve it.
-    if (stateHadFocus === false && state.value.hasFocus) {
+    if (valueHadFocus === false && value.hasFocus) {
       div.focus();
-    } else if (stateHadFocus === true && !state.value.hasFocus) {
+    } else if (valueHadFocus === true && !value.hasFocus) {
       div.blur();
     }
-  }, [stateHadFocus, state.value.hasFocus]);
+  }, [valueHadFocus, value.hasFocus]);
 
-  const nodesEditorPathsMap = useNodesEditorPathsMap(state.value);
+  const nodesEditorPathsMap = useNodesEditorPathsMap(value);
 
   useDocumentSelectionChange(
     divRef,
@@ -150,9 +124,9 @@ export const Editor = function Editor<T extends EditorElement>({
         // In Chrome, contentEditable does not do that.
         // That's why we ignore null values.
         // if (editorSelection == null) return;
-        dispatch({ type: 'select', value: editorSelection });
+        command({ type: 'select', value: editorSelection });
       },
-      [nodesEditorPathsMap],
+      [command, nodesEditorPathsMap],
     ),
   );
 
@@ -191,19 +165,19 @@ export const Editor = function Editor<T extends EditorElement>({
             >
           }
         >
-          <EditorElementRenderer element={state.value.element} path={[]} />
+          <EditorElementRenderer element={value.element} path={[]} />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
-  }, [renderElement, setNodeEditorPath, state.value.element]);
+  }, [renderElement, setNodeEditorPath, value.element]);
 
   const handleOnFocus = useCallback(() => {
-    dispatch({ type: 'focus', value: true });
-  }, []);
+    command({ type: 'focus', value: true });
+  }, [command]);
 
   const handleOnBlur = useCallback(() => {
-    dispatch({ type: 'focus', value: false });
-  }, []);
+    command({ type: 'focus', value: false });
+  }, [command]);
 
   return useMemo(() => {
     return (

@@ -94,39 +94,9 @@ exports[`click to focus button, click to blur button 1`] = `
       style="opacity: 1;"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
-      ·3·
-      · ·
-      ·{"hasFocus":true}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
-      ·2·
-      · ·
-      ·{"hasFocus":true}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
       ·1·
       · ·
-      ·{"hasFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <br />
     <br />
@@ -251,7 +221,7 @@ exports[`click to focus button, click to blur button 2`] = `
       style="opacity: 1;"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
-      ·5·
+      ·2·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
@@ -261,39 +231,9 @@ exports[`click to focus button, click to blur button 2`] = `
       style="opacity: 0.5;"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
-      ·3·
-      · ·
-      ·{"hasFocus":true}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
-      ·2·
-      · ·
-      ·{"hasFocus":true}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
       ·1·
       · ·
-      ·{"hasFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <br />
     <br />
