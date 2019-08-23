@@ -35,7 +35,7 @@ exports[`click to focus button, click to blur button 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity:1"
+      style="color:#888"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0·
@@ -91,7 +91,7 @@ exports[`click to focus button, click to blur button 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·2·
@@ -101,7 +101,7 @@ exports[`click to focus button, click to blur button 1`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·1·
@@ -111,7 +111,7 @@ exports[`click to focus button, click to blur button 1`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -174,7 +174,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2·
@@ -184,7 +184,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1·
@@ -194,7 +194,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0·
@@ -250,7 +250,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity:1"
+      style="color:#888"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -313,7 +313,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·3·
@@ -323,7 +323,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2·
@@ -333,7 +333,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1·
@@ -343,7 +343,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0·
@@ -399,7 +399,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·2·
@@ -409,7 +409,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·1·
@@ -419,7 +419,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -482,7 +482,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·3·
@@ -492,7 +492,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2·
@@ -502,7 +502,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1·
@@ -512,7 +512,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0·
@@ -568,7 +568,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·3·
@@ -578,7 +578,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·2·
@@ -588,7 +588,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·1·
@@ -598,7 +598,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color:#888"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -661,7 +661,7 @@ exports[`render 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity:1"
+      style="color:#888"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0·
@@ -717,7 +717,7 @@ exports[`render 1`] = `
     style="height:48px;overflow:auto"
   >
     <span
-      style="opacity:1"
+      style="color:#888"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·

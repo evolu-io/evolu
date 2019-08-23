@@ -28,10 +28,7 @@ export function useLogEditorValue(
             return (
               // eslint-disable-next-line react/no-array-index-key
               <Fragment key={index}>
-                <span
-                  title={title}
-                  style={{ opacity: values.length - 1 === index ? 1 : 0.5 }}
-                >
+                <span title={title} style={{ color: '#888' }}>
                   {index} {JSON.stringify({ hasFocus, ...rest })}
                 </span>
                 <br />

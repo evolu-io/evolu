@@ -50,7 +50,7 @@ exports[`selection 1`] = `
     style="height: 48px; overflow: auto;"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -154,7 +154,7 @@ exports[`selection 2`] = `
     style="height: 48px; overflow: auto;"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·1·
@@ -164,7 +164,7 @@ exports[`selection 2`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -268,7 +268,7 @@ exports[`selection 3`] = `
     style="height: 48px; overflow: auto;"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
@@ -372,7 +372,7 @@ exports[`selection 4`] = `
     style="height: 48px; overflow: auto;"
   >
     <span
-      style="opacity: 1;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·1·
@@ -382,7 +382,7 @@ exports[`selection 4`] = `
     <br />
     <br />
     <span
-      style="opacity: 0.5;"
+      style="color: rgb(136, 136, 136);"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
       ·0·
