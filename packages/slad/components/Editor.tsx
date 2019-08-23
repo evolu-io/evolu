@@ -153,9 +153,9 @@ function useEditorCommand<T>(
           draft.hasFocus = false;
           // Remember, blurWithinWindow is optional, and setting it to undefined
           // is properly considered as change in Immer.
-          if (command.blurWithinWindow)
+          if (command.blurWithinWindow) {
             draft.blurWithinWindow = command.blurWithinWindow;
-          else {
+          } else {
             delete draft.blurWithinWindow;
           }
           break;
@@ -163,7 +163,12 @@ function useEditorCommand<T>(
         case 'select': {
           // Immer doesn't do deep checking.
           if (editorSelectionsAreEqual(command.value, draft.selection)) return;
-          draft.selection = command.value;
+          // This is the correct pattern for optional truthy props.
+          if (command.value) {
+            draft.selection = command.value;
+          } else {
+            delete draft.selection;
+          }
           break;
         }
         default:
