@@ -113,6 +113,7 @@ exports[`render 1`] = `
   </pre>
   <button
     class="focus"
+    tabindex="-1"
     type="button"
   >
     ·focus·
@@ -120,6 +121,7 @@ exports[`render 1`] = `
   <button
     class="blur"
     disabled=""
+    tabindex="0"
     type="button"
   >
     ·blur·
