@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useEffect,
   RefObject,
+  useLayoutEffect,
 } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
@@ -238,7 +239,8 @@ export function Editor<T extends EditorElement>({
     [nodesEditorPathsMap],
   );
 
-  // Map selection to editor selection.
+  // No need for useLayoutEffect.
+  // https://github.com/facebook/react/issues/14750#issuecomment-460409609
   useEffect(() => {
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
@@ -258,13 +260,15 @@ export function Editor<T extends EditorElement>({
     };
   }, [command, findEditorSelection, getSelection]);
 
-  // Ensure editor selection is actual.
-  useEffect(() => {
+  // Ensure value.selection equals Selection.
+  // Note we are using useLayoutEffect. It's a must, we are reading from layout.
+  useLayoutEffect(() => {
     if (value.selection == null) return;
     const selection = getSelection();
     if (selection == null) return;
-    const editorSelection = findEditorSelection(selection);
-    if (editorSelectionsAreEqual(value.selection, editorSelection)) return;
+    const currentEditorSelection = findEditorSelection(selection);
+    if (editorSelectionsAreEqual(value.selection, currentEditorSelection))
+      return;
 
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
