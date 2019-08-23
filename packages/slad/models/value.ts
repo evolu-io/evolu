@@ -4,12 +4,12 @@ import { EditorElement, EditorDivElement } from './element';
 
 /**
  * Immutable value describing Editor state.
+ * TODO: Rename to EditorState.
  */
 export interface EditorValue<T extends EditorElement = EditorDivElement> {
   readonly element: Immutable<T>;
-  // We can make them optional later, but remember adding prop even undefined
-  // Immer correctly recognizes as a change, so we would have to ignore it manually.
-  // Be explicit, not smart, for now.
+  // TODO: Make it optional.
   readonly selection: EditorSelection | undefined;
   readonly hasFocus: boolean;
+  readonly blurWithinWindow?: boolean | undefined;
 }

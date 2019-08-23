@@ -103,30 +103,32 @@ function useDebugNodesEditorPaths(
   }
 }
 
+// Map declarative value to imperative method.
 function useValueHasFocusOnDiv(
   hasFocus: boolean,
   divRef: RefObject<HTMLDivElement>,
+  blurWithinWindow: boolean | undefined,
 ) {
   const hadFocus = usePrevious(hasFocus);
   useEffect(() => {
     const { current: div } = divRef;
     if (div == null) return;
-    if (hadFocus == null) {
-      if (hasFocus) div.focus();
-      return;
+    const divHasFocus =
+      div === (div.ownerDocument && div.ownerDocument.activeElement);
+    if (!hadFocus && hasFocus) {
+      if (!divHasFocus) div.focus();
+    } else if (hadFocus && !hasFocus) {
+      // When blurring occurs within the window (as opposed to clicking to
+      // another tab or window), we do not call blur, so when window is
+      // focused back, the editor will not lose its focus.
+      if (divHasFocus && !blurWithinWindow) div.blur();
     }
-    if (hadFocus === false && hasFocus) {
-      div.focus();
-    } else if (hadFocus === true && !hasFocus) {
-      // Blur is tricky. Sometimes, it prevents to gain focus back.
-      // Repro: cmd-tab quickly several times, and editor will not get focus.
-      // div.blur();
-    }
-  }, [divRef, hadFocus, hasFocus]);
+  }, [blurWithinWindow, divRef, hadFocus, hasFocus]);
 }
 
 type EditorCommand = Immutable<
-  | { type: 'focus'; value: boolean }
+  | { type: 'focus' }
+  | { type: 'blur'; blurWithinWindow: boolean | undefined }
   | { type: 'select'; value: EditorSelection | undefined }
   // | { type: 'setValueElement'; value: Element }
 >;
@@ -143,7 +145,15 @@ function useEditorCommand<T>(
     const nextValue = produce(valueRef.current, draft => {
       switch (command.type) {
         case 'focus': {
-          draft.hasFocus = command.value;
+          draft.hasFocus = true;
+          break;
+        }
+        case 'blur': {
+          draft.hasFocus = false;
+          // Remember, blurWithinWindow is optional, and setting it to undefined
+          // is properly considered as change in Immer.
+          if (command.blurWithinWindow != null)
+            draft.blurWithinWindow = command.blurWithinWindow;
           break;
         }
         case 'select': {
@@ -187,8 +197,8 @@ export function Editor<T extends EditorElement>({
   onChange,
   disabled,
   renderElement,
-  autoCorrect = 'off', // Disable browser autoCorrect.
-  spellCheck = false, // Disable browser spellCheck.
+  autoCorrect = 'off',
+  spellCheck = false,
   role = 'textbox',
   ...rest
 }: EditorProps<T>) {
@@ -202,7 +212,7 @@ export function Editor<T extends EditorElement>({
   useDebugNodesEditorPaths(nodesEditorPathsMap, value);
   useInvariantEditorElementIsNormalized(value.element);
 
-  useValueHasFocusOnDiv(value.hasFocus, divRef);
+  useValueHasFocusOnDiv(value.hasFocus, divRef, value.blurWithinWindow);
 
   const command = useEditorCommand<T>(value, onChange);
 
@@ -301,11 +311,15 @@ export function Editor<T extends EditorElement>({
   }, [renderElement, setNodeEditorPath, value.element]);
 
   const handleDivFocus = useCallback(() => {
-    command({ type: 'focus', value: true });
+    command({ type: 'focus' });
   }, [command]);
 
   const handleDivBlur = useCallback(() => {
-    command({ type: 'focus', value: false });
+    const blurWithinWindow =
+      divRef.current &&
+      divRef.current.ownerDocument &&
+      divRef.current.ownerDocument.activeElement === divRef.current;
+    command({ type: 'blur', blurWithinWindow: blurWithinWindow || undefined });
   }, [command]);
 
   return useMemo(() => {
