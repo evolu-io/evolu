@@ -105,7 +105,7 @@ function useDebugNodesEditorPaths(
 
 // Map declarative value to imperative method.
 function useValueHasFocusOnDiv(
-  hasFocus: boolean,
+  hasFocus: boolean | undefined,
   divRef: RefObject<HTMLDivElement>,
   blurWithinWindow: boolean | undefined,
 ) {
