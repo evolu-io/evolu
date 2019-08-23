@@ -5,6 +5,7 @@ import {
   EditorElement,
   RenderEditorElement,
   useLogEditorValue,
+  EditorSelection,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
@@ -80,7 +81,13 @@ interface SchemaRootElement extends SchemaElement {
 
 type CustomValue = EditorValue<SchemaRootElement>;
 
-export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
+export function SchemaExample({
+  autoFocus = false,
+  initialSelection = undefined,
+}: {
+  autoFocus?: boolean;
+  initialSelection?: EditorSelection;
+}) {
   const [editorValue, setEditorValue] = useState<CustomValue>({
     element: {
       type: 'document',
@@ -128,8 +135,8 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
         },
       ],
     },
-    selection: undefined,
-    hasFocus,
+    hasFocus: autoFocus,
+    selection: initialSelection,
   });
 
   const [logEditorValue, logEditorValueElement] = useLogEditorValue(
@@ -194,12 +201,16 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
   );
 
   const handleFocusClick = useCallback(() => {
-    setEditorValue({ ...editorValue, hasFocus: true });
-  }, [editorValue]);
+    handleEditorChange({ ...editorValue, hasFocus: true });
+  }, [editorValue, handleEditorChange]);
 
-  const handleBlurClick = useCallback(() => {
-    setEditorValue({ ...editorValue, hasFocus: false });
-  }, [editorValue]);
+  const handleBlurMouseDown = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.preventDefault();
+      handleEditorChange({ ...editorValue, hasFocus: false });
+    },
+    [editorValue, handleEditorChange],
+  );
 
   return (
     <>
@@ -215,6 +226,7 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
         type="button"
         className="focus"
         onClick={handleFocusClick}
+        tabIndex={editorValue.hasFocus ? 0 : -1}
         disabled={editorValue.hasFocus}
       >
         focus
@@ -222,7 +234,9 @@ export function SchemaExample({ hasFocus = false }: { hasFocus?: boolean }) {
       <button
         type="button"
         className="blur"
-        onClick={handleBlurClick}
+        // Do not steal focus. Force blur.
+        onMouseDown={handleBlurMouseDown}
+        tabIndex={!editorValue.hasFocus ? 0 : -1}
         disabled={!editorValue.hasFocus}
       >
         blur

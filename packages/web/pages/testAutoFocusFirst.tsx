@@ -5,7 +5,7 @@ import { SchemaExample } from '../components/examples/SchemaExample';
 function TestAutoFocusFirst() {
   return (
     <>
-      <BasicExample hasFocus />
+      <BasicExample autoFocus />
       <SchemaExample />
     </>
   );

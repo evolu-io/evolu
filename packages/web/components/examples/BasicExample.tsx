@@ -1,9 +1,15 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorValue, useLogEditorValue } from 'slad';
+import { Editor, EditorValue, useLogEditorValue, EditorSelection } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
+export function BasicExample({
+  autoFocus = false,
+  initialSelection = undefined,
+}: {
+  autoFocus?: boolean;
+  initialSelection?: EditorSelection;
+}) {
   const [editorValue, setEditorValue] = useState<EditorValue>({
     element: {
       children: [
@@ -21,8 +27,8 @@ export function BasicExample({ hasFocus = false }: { hasFocus?: boolean }) {
         },
       ],
     },
-    selection: undefined,
-    hasFocus,
+    hasFocus: autoFocus,
+    selection: initialSelection,
   });
 
   const [logEditorValue, logEditorValueElement] = useLogEditorValue(

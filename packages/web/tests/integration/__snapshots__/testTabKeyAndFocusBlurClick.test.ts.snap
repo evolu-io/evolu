@@ -94,136 +94,9 @@ exports[`click to focus button, click to blur button 1`] = `
       style="opacity: 1;"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
-    </span>
-    <br />
-    <br />
-  </pre>
-  <button
-    class="focus"
-    disabled=""
-    type="button"
-  >
-    ·focus·
-  </button>
-  <button
-    class="blur"
-    type="button"
-  >
-    ·blur·
-  </button>
-</div>
-`;
-
-exports[`click to focus button, click to blur button 2`] = `
-<div
-  id="__next"
->
-  <div
-    class="jsx-442929638"
-  >
-    ·Basic Example·
-  </div>
-  <div
-    autocorrect="off"
-    contenteditable="true"
-    data-gramm="true"
-    role="textbox"
-    spellcheck="false"
-    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
-    tabindex="0"
-  >
-    <div>
-      <div
-        style="font-size:24px"
-      >
-        ·heading·
-      </div>
-      <div
-        style="font-size:16px"
-      >
-        ·paragraph·
-      </div>
-    </div>
-  </div>
-  <pre
-    style="height:48px;overflow:auto"
-  >
-    <span
-      style="opacity:1"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
-    >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
-    </span>
-    <br />
-    <br />
-  </pre>
-  <div
-    class="jsx-442929638"
-  >
-    ·Schema Example·
-  </div>
-  <div
-    autocorrect="off"
-    contenteditable="true"
-    data-gramm="true"
-    role="textbox"
-    spellcheck="false"
-    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
-    tabindex="0"
-  >
-    <div>
-      <div
-        class="jsx-3102962925"
-      >
-        ·heading·
-      </div>
-      <div
-        class="jsx-1758464876"
-      >
-        ·paragraph·
-      </div>
-      <div
-        class="jsx-44984361"
-      >
-        <div
-          class="jsx-1758464876"
-        >
-          ·listitem·
-        </div>
-      </div>
-      <img
-        alt="Square placeholder image 80px"
-        height="80"
-        src="https://via.placeholder.com/80"
-        width="80"
-      />
-    </div>
-  </div>
-  <pre
-    style="height:48px;overflow:auto"
-  >
-    <span
-      style="opacity: 1;"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80}]}"
-    >
       ·2·
       · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <br />
     <br />
@@ -233,7 +106,7 @@ exports[`click to focus button, click to blur button 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·{"hasFocus":true}·
     </span>
     <br />
     <br />
@@ -250,13 +123,15 @@ exports[`click to focus button, click to blur button 2`] = `
   </pre>
   <button
     class="focus"
+    disabled=""
+    tabindex="0"
     type="button"
   >
     ·focus·
   </button>
   <button
     class="blur"
-    disabled=""
+    tabindex="-1"
     type="button"
   >
     ·blur·
@@ -387,6 +262,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
   </pre>
   <button
     class="focus"
+    tabindex="-1"
     type="button"
   >
     ·focus·
@@ -394,6 +270,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
   <button
     class="blur"
     disabled=""
+    tabindex="0"
     type="button"
   >
     ·blur·
@@ -439,16 +316,6 @@ exports[`focus blur via tab, tab, tab 2`] = `
       style="opacity: 1;"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":false}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
-    >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
@@ -565,12 +432,14 @@ exports[`focus blur via tab, tab, tab 2`] = `
   <button
     class="focus"
     disabled=""
+    tabindex="0"
     type="button"
   >
     ·focus·
   </button>
   <button
     class="blur"
+    tabindex="-1"
     type="button"
   >
     ·blur·
@@ -616,16 +485,6 @@ exports[`focus blur via tab, tab, tab 3`] = `
       style="opacity: 1;"
       title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":false}·
-    </span>
-    <br />
-    <br />
-    <span
-      style="opacity: 0.5;"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
-    >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
@@ -751,6 +610,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
   </pre>
   <button
     class="focus"
+    tabindex="-1"
     type="button"
   >
     ·focus·
@@ -758,6 +618,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
   <button
     class="blur"
     disabled=""
+    tabindex="0"
     type="button"
   >
     ·blur·
@@ -868,6 +729,7 @@ exports[`render 1`] = `
   </pre>
   <button
     class="focus"
+    tabindex="-1"
     type="button"
   >
     ·focus·
@@ -875,6 +737,7 @@ exports[`render 1`] = `
   <button
     class="blur"
     disabled=""
+    tabindex="0"
     type="button"
   >
     ·blur·

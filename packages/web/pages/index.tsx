@@ -12,7 +12,10 @@ function Index() {
         <title>Slad</title>
       </Head>
       <Text size={2}>Slad</Text>
-      <BasicExample />
+      <BasicExample
+        autoFocus
+        initialSelection={{ anchor: [0, 0, 0], focus: [0, 0, 2] }}
+      />
       <SchemaExample />
     </Container>
   );

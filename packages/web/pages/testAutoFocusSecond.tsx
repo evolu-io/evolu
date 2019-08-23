@@ -6,7 +6,7 @@ function TestAutoFocusSecond() {
   return (
     <>
       <BasicExample />
-      <SchemaExample hasFocus />
+      <SchemaExample autoFocus />
     </>
   );
 }
