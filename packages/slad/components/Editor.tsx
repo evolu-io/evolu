@@ -146,14 +146,18 @@ function useEditorCommand<T>(
       switch (command.type) {
         case 'focus': {
           draft.hasFocus = true;
+          delete draft.blurWithinWindow;
           break;
         }
         case 'blur': {
           draft.hasFocus = false;
           // Remember, blurWithinWindow is optional, and setting it to undefined
           // is properly considered as change in Immer.
-          if (command.blurWithinWindow != null)
+          if (command.blurWithinWindow)
             draft.blurWithinWindow = command.blurWithinWindow;
+          else {
+            delete draft.blurWithinWindow;
+          }
           break;
         }
         case 'select': {
