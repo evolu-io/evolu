@@ -1,3 +1,5 @@
+import { ReactDOM } from 'react';
+
 /**
  * EditorElement is the base model for all other editor elements.
  */
@@ -5,13 +7,16 @@ export interface EditorElement {
   readonly children?: readonly (EditorElement | string)[] | undefined;
 }
 
+type CreateEditorReactDOMElement<T extends keyof ReactDOM> = {
+  readonly tag?: T;
+  readonly props?: ReturnType<ReactDOM[T]>['props'];
+  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
+};
+
 /**
- * EditorDivElement has props the same as React div element.
+ * EditorReactDOMElement has props the same as in ReactDOM.
  */
-export interface EditorDivElement extends EditorElement {
-  readonly props?: React.HTMLAttributes<HTMLDivElement>;
-  readonly children?: (EditorDivElement | string)[] | undefined;
-}
+export type EditorReactDOMElement = CreateEditorReactDOMElement<keyof ReactDOM>;
 
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize

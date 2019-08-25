@@ -24,7 +24,7 @@ import {
   editorSelectionsAreEqual,
   editorSelectionIsBackward,
 } from '../models/selection';
-import { renderEditorDivElement } from './renderEditorDivElement';
+import { renderEditorReactDOMElement } from './renderEditorReactDOMElement';
 import { EditorElement } from '../models/element';
 import { EditorValue } from '../models/value';
 import { usePrevious } from '../hooks/usePrevious';
@@ -330,9 +330,9 @@ export function Editor<T extends EditorElement>({
         <RenderEditorElementContext.Provider
           value={
             // Cast renderElement, because React context value can't be generic.
-            // We know it's safe because only Element API is used.
+            // We know it's safe because only EditorElement is used.
             ((renderElement ||
-              renderEditorDivElement) as unknown) as RenderEditorElement<
+              renderEditorReactDOMElement) as unknown) as RenderEditorElement<
               EditorElement
             >
           }

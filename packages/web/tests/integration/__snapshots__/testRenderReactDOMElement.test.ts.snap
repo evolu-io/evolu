@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render 1`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <img
+        alt="Square placeholder image 80px"
+        height="80"
+        src="https://via.placeholder.com/80"
+        width="80"
+      />
+    </div>
+  </div>
+</div>
+`;
