@@ -262,15 +262,19 @@ export function Editor<T extends EditorElement>({
     };
   }, [command, findEditorSelection, getSelection]);
 
-  // Ensure editor selection matches document selection.
-  useEffect(() => {
-    if (pendingNewSelectionChange.current) return;
-    if (value.selection == null) return;
+  const ensureSelectionMatchesEditorSelection = useCallback(() => {
     const selection = getSelection();
     if (selection == null) return;
     const currentEditorSelection = findEditorSelection(selection);
     if (editorSelectionsAreEqual(value.selection, currentEditorSelection))
       return;
+    if (!value.selection) {
+      // TODO: What to do when selection is falsy? Blur? Collapse?
+      // 'selection.removeAllRanges()' breaks tests.
+      // The same for 'if (divRef.current) divRef.current.blur()'.
+      // Feel free to send PR.
+      return;
+    }
 
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
@@ -288,13 +292,13 @@ export function Editor<T extends EditorElement>({
       return [textNode, path[path.length - 1]];
     }
 
-    const isForward = !editorSelectionIsBackward(value.selection);
+    const isBackward = editorSelectionIsBackward(value.selection);
 
     const [startNode, startOffset] = editorPathToNodeOffset(
-      isForward ? value.selection.anchor : value.selection.focus,
+      isBackward ? value.selection.focus : value.selection.anchor,
     );
     const [endNode, endOffset] = editorPathToNodeOffset(
-      isForward ? value.selection.focus : value.selection.anchor,
+      isBackward ? value.selection.anchor : value.selection.focus,
     );
 
     if (startNode == null || endNode == null) return;
@@ -302,9 +306,23 @@ export function Editor<T extends EditorElement>({
     const range = doc.createRange();
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
+
     selection.removeAllRanges();
-    selection.addRange(range);
+    if (isBackward) {
+      // https://stackoverflow.com/a/4802994/233902
+      const endRange = range.cloneRange();
+      endRange.collapse(false);
+      selection.addRange(endRange);
+      selection.extend(range.startContainer, range.startOffset);
+    } else {
+      selection.addRange(range);
+    }
   }, [editorPathsNodesMap, findEditorSelection, getSelection, value.selection]);
+
+  useEffect(() => {
+    if (pendingNewSelectionChange.current || !value.hasFocus) return;
+    ensureSelectionMatchesEditorSelection();
+  }, [ensureSelectionMatchesEditorSelection, value.hasFocus]);
 
   const children = useMemo(() => {
     return (
@@ -326,8 +344,9 @@ export function Editor<T extends EditorElement>({
   }, [renderElement, setNodeEditorPath, value.element]);
 
   const handleDivFocus = useCallback(() => {
+    ensureSelectionMatchesEditorSelection();
     command({ type: 'focus' });
-  }, [command]);
+  }, [command, ensureSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
     const blurWithinWindow =

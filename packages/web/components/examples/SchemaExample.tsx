@@ -79,7 +79,7 @@ interface SchemaRootElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type CustomValue = EditorValue<SchemaRootElement>;
+type SchemaValue = EditorValue<SchemaRootElement>;
 
 export function SchemaExample({
   autoFocus = false,
@@ -88,7 +88,7 @@ export function SchemaExample({
   autoFocus?: boolean;
   initialSelection?: EditorSelection;
 }) {
-  const [editorValue, setEditorValue] = useState<CustomValue>({
+  const [editorValue, setEditorValue] = useState<SchemaValue>({
     element: {
       type: 'document',
       children: [
@@ -144,7 +144,7 @@ export function SchemaExample({
   );
 
   const handleEditorChange = useCallback(
-    (value: CustomValue) => {
+    (value: SchemaValue) => {
       logEditorValue(value);
       setEditorValue(value);
     },
