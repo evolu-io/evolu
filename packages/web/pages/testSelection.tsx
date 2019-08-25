@@ -68,14 +68,14 @@ function TestSelection() {
         >
           select first two letters backward
         </button>
-        {/* <button
+        <button
           className="select-all"
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setSchemaEditorSelection({
+            select({
               anchor: [0, 0, 0],
-              focus: [4],
+              focus: [1, 0, 9],
             });
           }}
         >
@@ -86,8 +86,8 @@ function TestSelection() {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setSchemaEditorSelection({
-              anchor: [4],
+            select({
+              anchor: [1, 0, 9],
               focus: [0, 0, 0],
             });
           }}
@@ -99,11 +99,11 @@ function TestSelection() {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setBasicEditorSelection(undefined);
+            select(undefined);
           }}
         >
           unselect
-        </button> */}
+        </button>
       </div>
     </>
   );

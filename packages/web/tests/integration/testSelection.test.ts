@@ -6,14 +6,32 @@ beforeEach(async () => {
   await page.waitFor(50);
 });
 
-test('selection is remembered', async () => {
-  await expect(true).toBe(true);
-  // await page.keyboard.press('Tab');
-  // await page.waitFor(50);
-  // await expect(await pageDom()).toMatchSnapshot();
+test('select', async () => {
+  await expect(await pageDom()).toMatchSnapshot();
 
-  // await page.keyboard.down('Shift');
-  // await page.keyboard.press('Tab');
+  await page.click('.select-first-two-letters');
+  await page.waitFor(50);
+  await expect(await pageDom()).toMatchSnapshot();
+
+  await page.click('.select-first-two-letters-backward');
+  await page.waitFor(50);
+  await expect(await pageDom()).toMatchSnapshot();
+
+  await page.keyboard.down('Shift');
+  await page.keyboard.press('ArrowRight');
+  await page.waitFor(50);
+  await expect(await pageDom()).toMatchSnapshot();
+
+  await page.click('.select-all');
+  await page.waitFor(50);
+  await expect(await pageDom()).toMatchSnapshot();
+
+  await page.click('.select-all-backward');
+  await page.waitFor(50);
+  await expect(await pageDom()).toMatchSnapshot();
+
+  // TODO: Once we decide what we want.
+  // await page.click('.unselect');
   // await page.waitFor(50);
   // await expect(await pageDom()).toMatchSnapshot();
 });
@@ -25,21 +43,7 @@ test('selection is remembered', async () => {
 // });
 
 // test('selection via mousedown', async () => {
-//   await page.click('.select-first-two-letters');
-//   await page.waitFor(50);
-//   await expect(await pageDom()).toMatchSnapshot();
 
-//   await page.click('.select-first-two-letters-backward');
-//   await page.waitFor(50);
-//   await expect(await pageDom()).toMatchSnapshot();
-
-//   await page.click('.select-all');
-//   await page.waitFor(50);
-//   await expect(await pageDom()).toMatchSnapshot();
-
-//   await page.click('.select-all-backward');
-//   await page.waitFor(50);
-//   await expect(await pageDom()).toMatchSnapshot();
 // });
 
 // https://github.com/steida/slad/issues/14

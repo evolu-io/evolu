@@ -1,0 +1,595 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`select 1`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`select 2`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`select 3`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`select 4`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`select 5`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`select 6`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·5·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[1,0,9],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+    >
+      ·0·
+      · ·
+      ·{}·
+    </span>
+    <br />
+    <br />
+  </pre>
+  <div>
+    <button
+      class="select-first-two-letters"
+      type="button"
+    >
+      ·select first two letters·
+    </button>
+    <button
+      class="select-first-two-letters-backward"
+      type="button"
+    >
+      ·select first two letters backward·
+    </button>
+    <button
+      class="select-all"
+      type="button"
+    >
+      ·select all·
+    </button>
+    <button
+      class="select-all-backward"
+      type="button"
+    >
+      ·select all backward·
+    </button>
+    <button
+      class="unselect"
+      type="button"
+    >
+      ·unselect·
+    </button>
+  </div>
+</div>
+`;
