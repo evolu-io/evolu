@@ -1,26 +1,53 @@
-import React, { useState } from 'react';
-import { EditorSelection } from 'slad';
-import { SchemaExample } from '../components/examples/SchemaExample';
+import React, { useState, useCallback } from 'react';
+import { Editor, EditorValue, useLogEditorValue, EditorSelection } from 'slad';
 
 function TestSelection() {
-  const [editorSelection, setEditorSelection] = useState<
-    EditorSelection | undefined
-  >();
+  const [editorValue, setEditorValue] = useState<EditorValue>({
+    element: {
+      children: [
+        {
+          props: {
+            style: { fontSize: '24px' },
+          },
+          children: ['heading'],
+        },
+        {
+          props: {
+            style: { fontSize: '16px' },
+          },
+          children: ['paragraph'],
+        },
+      ],
+    },
+  });
+
+  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
+    editorValue,
+  );
+
+  const handleEditorChange = useCallback(
+    (value: EditorValue) => {
+      logEditorValue(value);
+      setEditorValue(value);
+    },
+    [logEditorValue],
+  );
+
+  function select(selection: EditorSelection | undefined) {
+    handleEditorChange({ ...editorValue, hasFocus: true, selection });
+  }
 
   return (
     <>
-      <SchemaExample
-        autoFocus
-        initialSelection={editorSelection}
-        key={JSON.stringify(editorSelection)}
-      />
+      <Editor value={editorValue} onChange={handleEditorChange} />
+      {logEditorValueElement}
       <div>
         <button
           className="select-first-two-letters"
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setEditorSelection({
+            select({
               anchor: [0, 0, 0],
               focus: [0, 0, 2],
             });
@@ -33,7 +60,7 @@ function TestSelection() {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setEditorSelection({
+            select({
               anchor: [0, 0, 2],
               focus: [0, 0, 0],
             });
@@ -41,12 +68,12 @@ function TestSelection() {
         >
           select first two letters backward
         </button>
-        <button
+        {/* <button
           className="select-all"
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setEditorSelection({
+            setSchemaEditorSelection({
               anchor: [0, 0, 0],
               focus: [4],
             });
@@ -59,7 +86,7 @@ function TestSelection() {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            setEditorSelection({
+            setSchemaEditorSelection({
               anchor: [4],
               focus: [0, 0, 0],
             });
@@ -67,6 +94,16 @@ function TestSelection() {
         >
           select all backward
         </button>
+        <button
+          className="unselect"
+          type="button"
+          onMouseDown={event => {
+            event.preventDefault();
+            setBasicEditorSelection(undefined);
+          }}
+        >
+          unselect
+        </button> */}
       </div>
     </>
   );

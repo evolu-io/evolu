@@ -262,9 +262,7 @@ export function Editor<T extends EditorElement>({
     };
   }, [command, findEditorSelection, getSelection]);
 
-  // Ensure editor selection matches document selection.
-  useEffect(() => {
-    if (pendingNewSelectionChange.current) return;
+  const ensureDocumentSelectionMatchesEditorSelection = useCallback(() => {
     if (value.selection == null) return;
     const selection = getSelection();
     if (selection == null) return;
@@ -289,6 +287,7 @@ export function Editor<T extends EditorElement>({
     }
 
     const isForward = !editorSelectionIsBackward(value.selection);
+    console.log(isForward);
 
     const [startNode, startOffset] = editorPathToNodeOffset(
       isForward ? value.selection.anchor : value.selection.focus,
@@ -305,6 +304,12 @@ export function Editor<T extends EditorElement>({
     selection.removeAllRanges();
     selection.addRange(range);
   }, [editorPathsNodesMap, findEditorSelection, getSelection, value.selection]);
+
+  // Ensure editor selection matches document selection.
+  useEffect(() => {
+    if (pendingNewSelectionChange.current || !value.hasFocus) return;
+    ensureDocumentSelectionMatchesEditorSelection();
+  }, [ensureDocumentSelectionMatchesEditorSelection, value.hasFocus]);
 
   const children = useMemo(() => {
     return (
@@ -326,8 +331,9 @@ export function Editor<T extends EditorElement>({
   }, [renderElement, setNodeEditorPath, value.element]);
 
   const handleDivFocus = useCallback(() => {
+    ensureDocumentSelectionMatchesEditorSelection();
     command({ type: 'focus' });
-  }, [command]);
+  }, [command, ensureDocumentSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
     const blurWithinWindow =
