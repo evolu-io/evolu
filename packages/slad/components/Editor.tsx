@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useEffect,
   RefObject,
-  useLayoutEffect,
 } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
@@ -239,8 +238,10 @@ export function Editor<T extends EditorElement>({
     [nodesEditorPathsMap],
   );
 
-  // No need for useLayoutEffect.
-  // https://github.com/facebook/react/issues/14750#issuecomment-460409609
+  const pendingNewSelectionChange = useRef(false);
+  pendingNewSelectionChange.current = false;
+
+  // Map document selection to editor selection.
   useEffect(() => {
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
@@ -252,6 +253,7 @@ export function Editor<T extends EditorElement>({
       // In Chrome, contentEditable does not do that.
       // That's why we ignore null values.
       if (editorSelection == null) return;
+      pendingNewSelectionChange.current = true;
       command({ type: 'select', value: editorSelection });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
@@ -260,9 +262,9 @@ export function Editor<T extends EditorElement>({
     };
   }, [command, findEditorSelection, getSelection]);
 
-  // Ensure value.selection equals Selection.
-  // Note we are using useLayoutEffect. It's a must, we are reading from layout.
-  useLayoutEffect(() => {
+  // Ensure editor selection matches document selection.
+  useEffect(() => {
+    if (pendingNewSelectionChange.current) return;
     if (value.selection == null) return;
     const selection = getSelection();
     if (selection == null) return;
