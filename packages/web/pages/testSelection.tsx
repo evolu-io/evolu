@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorValue, useLogEditorValue, EditorSelection } from 'slad';
+import { Editor, EditorState, useLogEditorState, EditorSelection } from 'slad';
 
 function TestSelection() {
-  const [editorValue, setEditorValue] = useState<EditorValue>({
+  const [editorState, setEditorState] = useState<EditorState>({
     element: {
       children: [
         {
@@ -21,26 +21,26 @@ function TestSelection() {
     },
   });
 
-  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
-    editorValue,
+  const [logEditorState, logEditorStateElement] = useLogEditorState(
+    editorState,
   );
 
   const handleEditorChange = useCallback(
-    (value: EditorValue) => {
-      logEditorValue(value);
-      setEditorValue(value);
+    (editorState: EditorState) => {
+      logEditorState(editorState);
+      setEditorState(editorState);
     },
-    [logEditorValue],
+    [logEditorState],
   );
 
   function select(selection: EditorSelection | undefined) {
-    handleEditorChange({ ...editorValue, hasFocus: true, selection });
+    handleEditorChange({ ...editorState, hasFocus: true, selection });
   }
 
   return (
     <>
-      <Editor value={editorValue} onChange={handleEditorChange} />
-      {logEditorValueElement}
+      <Editor editorState={editorState} onChange={handleEditorChange} />
+      {logEditorStateElement}
       <div>
         <button
           className="select-first-two-letters"

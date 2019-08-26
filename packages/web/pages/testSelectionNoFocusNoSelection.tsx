@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorValue, useLogEditorValue } from 'slad';
+import { Editor, EditorState, useLogEditorState } from 'slad';
 
 function TestSelectionNoFocusNoSelection() {
-  const [editorValue, setEditorValue] = useState<EditorValue>({
+  const [editorState, setEditorState] = useState<EditorState>({
     element: {
       children: [
         {
@@ -21,22 +21,22 @@ function TestSelectionNoFocusNoSelection() {
     },
   });
 
-  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
-    editorValue,
+  const [logEditorState, logEditorStateElement] = useLogEditorState(
+    editorState,
   );
 
   const handleEditorChange = useCallback(
-    (value: EditorValue) => {
-      logEditorValue(value);
-      setEditorValue(value);
+    (editorState: EditorState) => {
+      logEditorState(editorState);
+      setEditorState(editorState);
     },
-    [logEditorValue],
+    [logEditorState],
   );
 
   return (
     <>
-      <Editor value={editorValue} onChange={handleEditorChange} />
-      {logEditorValueElement}
+      <Editor editorState={editorState} onChange={handleEditorChange} />
+      {logEditorStateElement}
     </>
   );
 }

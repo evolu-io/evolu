@@ -1,10 +1,10 @@
 import React, { useState, useCallback, ReactNode } from 'react';
 import {
   Editor,
-  EditorValue,
+  EditorState,
   EditorElement,
   RenderEditorElement,
-  useLogEditorValue,
+  useLogEditorState,
   EditorSelection,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
@@ -14,10 +14,10 @@ import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // We can describe a schema with TypeScript pretty well.
-// Immutablity is enforced via Value once for all. No boring readonly everywhere.
+// Immutablity is enforced via EditorState once for all.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-// Note there is no special props property. Flat interfaces ftw.
+// Note there is no special props property. Flat interfaces can be extended better.
 interface SchemaElement extends EditorElement {
   type: string;
   // For css-in-js, foo-bla is better than inline fooBla style.
@@ -79,7 +79,7 @@ interface SchemaRootElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type SchemaValue = EditorValue<SchemaRootElement>;
+type SchemaEditorState = EditorState<SchemaRootElement>;
 
 export function SchemaExample({
   autoFocus = false,
@@ -88,7 +88,7 @@ export function SchemaExample({
   autoFocus?: boolean;
   initialSelection?: EditorSelection;
 }) {
-  const [editorValue, setEditorValue] = useState<SchemaValue>({
+  const [editorState, setEditorState] = useState<SchemaEditorState>({
     element: {
       type: 'document',
       children: [
@@ -139,16 +139,16 @@ export function SchemaExample({
     selection: initialSelection,
   });
 
-  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
-    editorValue,
+  const [logEditorState, logEditorStateElement] = useLogEditorState(
+    editorState,
   );
 
   const handleEditorChange = useCallback(
-    (value: SchemaValue) => {
-      logEditorValue(value);
-      setEditorValue(value);
+    (editorState: SchemaEditorState) => {
+      logEditorState(editorState);
+      setEditorState(editorState);
     },
-    [logEditorValue],
+    [logEditorState],
   );
 
   const getStyledJsx = useStyledJsx();
@@ -201,15 +201,15 @@ export function SchemaExample({
   );
 
   const handleFocusClick = useCallback(() => {
-    handleEditorChange({ ...editorValue, hasFocus: true });
-  }, [editorValue, handleEditorChange]);
+    handleEditorChange({ ...editorState, hasFocus: true });
+  }, [editorState, handleEditorChange]);
 
   const handleBlurMouseDown = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
-      handleEditorChange({ ...editorValue, hasFocus: false });
+      handleEditorChange({ ...editorState, hasFocus: false });
     },
-    [editorValue, handleEditorChange],
+    [editorState, handleEditorChange],
   );
 
   return (
@@ -217,17 +217,17 @@ export function SchemaExample({
       <Text size={1}>Schema Example</Text>
       <Editor
         {...defaultEditorProps}
-        value={editorValue}
+        editorState={editorState}
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
-      {logEditorValueElement}
+      {logEditorStateElement}
       <button
         type="button"
         className="focus"
         onClick={handleFocusClick}
-        tabIndex={editorValue.hasFocus ? 0 : -1}
-        disabled={editorValue.hasFocus}
+        tabIndex={editorState.hasFocus ? 0 : -1}
+        disabled={editorState.hasFocus}
       >
         focus
       </button>
@@ -236,8 +236,8 @@ export function SchemaExample({
         className="blur"
         // Do not steal focus. Force blur.
         onMouseDown={handleBlurMouseDown}
-        tabIndex={!editorValue.hasFocus ? 0 : -1}
-        disabled={!editorValue.hasFocus}
+        tabIndex={!editorState.hasFocus ? 0 : -1}
+        disabled={!editorState.hasFocus}
       >
         blur
       </button>

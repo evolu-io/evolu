@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import { Editor, EditorValue, normalizeEditorElement } from 'slad';
+import React, { useState } from 'react';
+import { Editor, EditorState, normalizeEditorElement } from 'slad';
 
 function TestNormalizeEditorElement() {
-  const [editorValue, setEditorValue] = useState<EditorValue>({
+  const [editorState, setEditorState] = useState<EditorState>({
     element: normalizeEditorElement({
       children: [
         {
@@ -14,11 +14,7 @@ function TestNormalizeEditorElement() {
     hasFocus: false,
   });
 
-  const handleEditorChange = useCallback((value: EditorValue) => {
-    setEditorValue(value);
-  }, []);
-
-  return <Editor value={editorValue} onChange={handleEditorChange} />;
+  return <Editor editorState={editorState} onChange={setEditorState} />;
 }
 
 export default TestNormalizeEditorElement;

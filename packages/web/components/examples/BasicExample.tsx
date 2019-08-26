@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorValue, useLogEditorValue, EditorSelection } from 'slad';
+import { Editor, EditorState, useLogEditorState, EditorSelection } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -10,7 +10,7 @@ export function BasicExample({
   autoFocus?: boolean;
   initialSelection?: EditorSelection;
 }) {
-  const [editorValue, setEditorValue] = useState<EditorValue>({
+  const [editorState, setEditorState] = useState<EditorState>({
     element: {
       children: [
         {
@@ -31,16 +31,16 @@ export function BasicExample({
     selection: initialSelection,
   });
 
-  const [logEditorValue, logEditorValueElement] = useLogEditorValue(
-    editorValue,
+  const [logEditorState, logEditorStateElement] = useLogEditorState(
+    editorState,
   );
 
   const handleEditorChange = useCallback(
-    (value: EditorValue) => {
-      logEditorValue(value);
-      setEditorValue(value);
+    (editorState: EditorState) => {
+      logEditorState(editorState);
+      setEditorState(editorState);
     },
-    [logEditorValue],
+    [logEditorState],
   );
 
   return (
@@ -48,10 +48,10 @@ export function BasicExample({
       <Text size={1}>Basic Example</Text>
       <Editor
         {...defaultEditorProps}
-        value={editorValue}
+        editorState={editorState}
         onChange={handleEditorChange}
       />
-      {logEditorValueElement}
+      {logEditorStateElement}
     </>
   );
 }

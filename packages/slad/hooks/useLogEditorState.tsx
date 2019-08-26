@@ -5,23 +5,25 @@ import React, {
   useMemo,
   Fragment,
 } from 'react';
-import { EditorValue } from '../models/value';
+import { EditorState } from '../components/Editor';
 
-export function useLogEditorValue(
-  value: EditorValue,
-): [(value: EditorValue) => void, ReactNode] {
-  const [values, setValues] = useState<EditorValue[]>([value]);
-  const logValue = useCallback((value: EditorValue) => {
-    setValues(prevValues => [...prevValues, value]);
+export function useLogEditorState(
+  editorState: EditorState,
+): [(editorState: EditorState) => void, ReactNode] {
+  const [editorStates, setEditorStates] = useState<EditorState[]>([
+    editorState,
+  ]);
+  const logEditorState = useCallback((editorState: EditorState) => {
+    setEditorStates(prevEditorStates => [...prevEditorStates, editorState]);
   }, []);
 
-  const logValueElement = useMemo(() => {
+  const logEditorStateElement = useMemo(() => {
     return (
       <pre style={{ height: 48, overflow: 'auto' }}>
-        {values
-          .map((value, index) => {
+        {editorStates
+          .map((editorState, index) => {
             // hasFocus, to render it first
-            const { element, hasFocus, ...rest } = value;
+            const { element, hasFocus, ...rest } = editorState;
             const title = JSON.stringify(element)
               .split('"')
               .join("'");
@@ -39,7 +41,7 @@ export function useLogEditorValue(
           .reverse()}
       </pre>
     );
-  }, [values]);
+  }, [editorStates]);
 
-  return [logValue, logValueElement];
+  return [logEditorState, logEditorStateElement];
 }

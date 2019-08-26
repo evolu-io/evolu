@@ -25,8 +25,7 @@ import {
   editorSelectionIsBackward,
 } from '../models/selection';
 import { renderEditorReactDOMElement } from './renderEditorReactDOMElement';
-import { EditorElement } from '../models/element';
-import { EditorValue } from '../models/value';
+import { EditorElement, EditorReactDOMElement } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import {
@@ -73,7 +72,7 @@ const debug = Debug('editor');
 
 function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
-  value: EditorValue<EditorElement>,
+  editorState: EditorState<EditorElement>,
 ) {
   // https://overreacted.io/how-does-the-development-mode-work/
   if (process.env.NODE_ENV !== 'production') {
@@ -94,17 +93,16 @@ function useDebugNodesEditorPaths(
           });
         return count + 1 + childrenCount;
       };
-      const nodesLength = countNodes(value.element);
+      const nodesLength = countNodes(editorState.element);
       invariant(
         nodesLength === nodesEditorPathsMap.size,
         'It looks like the ref in the custom renderElement of Editor is not used.',
       );
-    }, [nodesEditorPathsMap, value.element]);
+    }, [nodesEditorPathsMap, editorState.element]);
   }
 }
 
-// Map declarative value to imperative method.
-function useValueHasFocusOnDiv(
+function useEditorStateHasFocusOnDiv(
   hasFocus: boolean | undefined,
   divRef: RefObject<HTMLDivElement>,
   blurWithinWindow: boolean | undefined,
@@ -129,20 +127,20 @@ function useValueHasFocusOnDiv(
 type EditorCommand = Immutable<
   | { type: 'focus' }
   | { type: 'blur'; blurWithinWindow: boolean | undefined }
-  | { type: 'select'; value: EditorSelection | undefined }
-  // | { type: 'setValueElement'; value: Element }
+  | { type: 'select'; editorSelection: EditorSelection | undefined }
+  // | { type: 'setValueElement'; element: Element }
 >;
 
 function useEditorCommand<T>(
-  value: EditorValue<T>,
-  onChange: (value: EditorValue<T>) => void,
+  editorState: EditorState<T>,
+  onChange: (editorState: EditorState<T>) => void,
 ) {
-  const valueRef = useRef(value);
-  valueRef.current = value;
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
   // To have stable command like useReducer dispatch is.
   const commandRef = useRef((immutableCommand: EditorCommand) => {
     const command = immutableCommand as Draft<EditorCommand>;
-    const nextValue = produce(valueRef.current, draft => {
+    const nextEditorState = produce(editorStateRef.current, draft => {
       switch (command.type) {
         case 'focus': {
           draft.hasFocus = true;
@@ -162,10 +160,13 @@ function useEditorCommand<T>(
         }
         case 'select': {
           // Immer doesn't do deep checking.
-          if (editorSelectionsAreEqual(command.value, draft.selection)) return;
+          if (
+            editorSelectionsAreEqual(command.editorSelection, draft.selection)
+          )
+            return;
           // This is the correct pattern for optional truthy props.
-          if (command.value) {
-            draft.selection = command.value;
+          if (command.editorSelection) {
+            draft.selection = command.editorSelection;
           } else {
             delete draft.selection;
           }
@@ -175,8 +176,8 @@ function useEditorCommand<T>(
           assertNever(command);
       }
     });
-    if (nextValue === valueRef.current) return;
-    onChange(nextValue);
+    if (nextEditorState === editorStateRef.current) return;
+    onChange(nextEditorState);
   });
   return commandRef.current;
 }
@@ -193,16 +194,23 @@ type UsefulReactDivAtttributes = Pick<
   | 'tabIndex'
 >;
 
+export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
+  readonly element: Immutable<T>;
+  readonly selection?: EditorSelection;
+  readonly hasFocus?: boolean;
+  readonly blurWithinWindow?: boolean;
+}
+
 export interface EditorProps<T extends EditorElement = EditorElement>
   extends UsefulReactDivAtttributes {
-  value: EditorValue<T>;
-  onChange: (value: EditorValue<T>) => void;
+  editorState: EditorState<T>;
+  onChange: (editorState: EditorState<T>) => void;
   disabled?: boolean;
   renderElement?: RenderEditorElement<T>;
 }
 
 export function Editor<T extends EditorElement>({
-  value,
+  editorState,
   onChange,
   disabled,
   renderElement,
@@ -218,12 +226,16 @@ export function Editor<T extends EditorElement>({
     setNodeEditorPath,
   } = useEditorPathNodeMaps();
 
-  useDebugNodesEditorPaths(nodesEditorPathsMap, value);
-  useInvariantEditorElementIsNormalized(value.element);
+  useDebugNodesEditorPaths(nodesEditorPathsMap, editorState);
+  useInvariantEditorElementIsNormalized(editorState.element);
 
-  useValueHasFocusOnDiv(value.hasFocus, divRef, value.blurWithinWindow);
+  useEditorStateHasFocusOnDiv(
+    editorState.hasFocus,
+    divRef,
+    editorState.blurWithinWindow,
+  );
 
-  const command = useEditorCommand<T>(value, onChange);
+  const command = useEditorCommand<T>(editorState, onChange);
 
   const getSelection = useCallback((): Selection | undefined => {
     const doc = divRef.current && divRef.current.ownerDocument;
@@ -254,7 +266,7 @@ export function Editor<T extends EditorElement>({
       // That's why we ignore null values.
       if (editorSelection == null) return;
       pendingNewSelectionChange.current = true;
-      command({ type: 'select', value: editorSelection });
+      command({ type: 'select', editorSelection });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
@@ -266,9 +278,9 @@ export function Editor<T extends EditorElement>({
     const selection = getSelection();
     if (selection == null) return;
     const currentEditorSelection = findEditorSelection(selection);
-    if (editorSelectionsAreEqual(value.selection, currentEditorSelection))
+    if (editorSelectionsAreEqual(editorState.selection, currentEditorSelection))
       return;
-    if (!value.selection) {
+    if (!editorState.selection) {
       // TODO: What to do when selection is falsy? Blur? Collapse?
       // 'selection.removeAllRanges()' breaks tests.
       // The same for 'if (divRef.current) divRef.current.blur()'.
@@ -292,13 +304,13 @@ export function Editor<T extends EditorElement>({
       return [textNode, path[path.length - 1]];
     }
 
-    const isBackward = editorSelectionIsBackward(value.selection);
+    const isBackward = editorSelectionIsBackward(editorState.selection);
 
     const [startNode, startOffset] = editorPathToNodeOffset(
-      isBackward ? value.selection.focus : value.selection.anchor,
+      isBackward ? editorState.selection.focus : editorState.selection.anchor,
     );
     const [endNode, endOffset] = editorPathToNodeOffset(
-      isBackward ? value.selection.anchor : value.selection.focus,
+      isBackward ? editorState.selection.anchor : editorState.selection.focus,
     );
 
     if (startNode == null || endNode == null) return;
@@ -317,12 +329,17 @@ export function Editor<T extends EditorElement>({
     } else {
       selection.addRange(range);
     }
-  }, [editorPathsNodesMap, findEditorSelection, getSelection, value.selection]);
+  }, [
+    editorPathsNodesMap,
+    findEditorSelection,
+    getSelection,
+    editorState.selection,
+  ]);
 
   useEffect(() => {
-    if (pendingNewSelectionChange.current || !value.hasFocus) return;
+    if (pendingNewSelectionChange.current || !editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();
-  }, [ensureSelectionMatchesEditorSelection, value.hasFocus]);
+  }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
 
   const children = useMemo(() => {
     return (
@@ -337,11 +354,11 @@ export function Editor<T extends EditorElement>({
             >
           }
         >
-          <EditorElementRenderer element={value.element} path={[]} />
+          <EditorElementRenderer element={editorState.element} path={[]} />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
-  }, [renderElement, setNodeEditorPath, value.element]);
+  }, [renderElement, setNodeEditorPath, editorState.element]);
 
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();

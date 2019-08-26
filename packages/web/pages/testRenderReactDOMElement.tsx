@@ -1,8 +1,8 @@
-import React from 'react';
-import { Editor, EditorValue, useLogEditorValue } from 'slad';
+import React, { useState } from 'react';
+import { Editor, EditorState } from 'slad';
 
 function TestRenderReactDOMElement() {
-  const editorValue: EditorValue = {
+  const [editorState, setEditorState] = useState<EditorState>({
     element: {
       children: [
         {
@@ -22,9 +22,9 @@ function TestRenderReactDOMElement() {
         },
       ],
     },
-  };
+  });
 
-  return <Editor value={editorValue} onChange={() => {}} />;
+  return <Editor editorState={editorState} onChange={setEditorState} />;
 }
 
 export default TestRenderReactDOMElement;
