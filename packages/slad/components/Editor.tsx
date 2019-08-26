@@ -205,14 +205,12 @@ export interface EditorProps<T extends EditorElement = EditorElement>
   extends UsefulReactDivAtttributes {
   editorState: EditorState<T>;
   onChange: (editorState: EditorState<T>) => void;
-  disabled?: boolean;
   renderElement?: RenderEditorElement<T>;
 }
 
 export function Editor<T extends EditorElement>({
   editorState,
   onChange,
-  disabled,
   renderElement,
   autoCorrect = 'off',
   spellCheck = false,
@@ -377,15 +375,16 @@ export function Editor<T extends EditorElement>({
     return (
       <div
         autoCorrect={autoCorrect}
-        contentEditable={!disabled}
+        contentEditable
         data-gramm // Disable Grammarly Chrome extension.
         onBlur={handleDivBlur}
         onFocus={handleDivFocus}
         ref={divRef}
         role={role}
         spellCheck={spellCheck}
-        suppressContentEditableWarning={!disabled}
-        tabIndex={disabled ? -1 : 0}
+        suppressContentEditableWarning
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={0}
         {...rest}
       >
         {children}
@@ -394,7 +393,6 @@ export function Editor<T extends EditorElement>({
   }, [
     autoCorrect,
     children,
-    disabled,
     handleDivBlur,
     handleDivFocus,
     rest,
