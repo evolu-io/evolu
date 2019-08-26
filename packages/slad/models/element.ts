@@ -7,6 +7,8 @@ export interface EditorElement {
   readonly children?: readonly (EditorElement | string)[] | undefined;
 }
 
+// EditorReactDOMElement should extends EditorElement but I don't know how.
+// Feel free to send PR.
 type CreateEditorReactDOMElement<T extends keyof ReactDOM> = {
   readonly tag?: T;
   readonly props?: ReturnType<ReactDOM[T]>['props'];
