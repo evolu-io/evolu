@@ -14,10 +14,7 @@ import {
   SetNodeEditorPathContext,
 } from '../contexts/SetNodeEditorPathContext';
 import { EditorElementRenderer } from './EditorElementRenderer';
-import {
-  RenderEditorElementContext,
-  RenderEditorElement,
-} from '../contexts/RenderEditorElementContext';
+import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import {
   EditorSelection,
   mapSelectionToEditorSelection,
@@ -25,7 +22,11 @@ import {
   editorSelectionIsBackward,
 } from '../models/selection';
 import { renderEditorReactDOMElement } from './renderEditorReactDOMElement';
-import { EditorElement, EditorReactDOMElement } from '../models/element';
+import {
+  EditorElement,
+  EditorReactDOMElement,
+  RenderEditorElement,
+} from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import {

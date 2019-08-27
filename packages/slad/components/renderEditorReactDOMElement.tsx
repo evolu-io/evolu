@@ -1,6 +1,5 @@
 import React from 'react';
-import { RenderEditorElement } from '../contexts/RenderEditorElementContext';
-import { EditorReactDOMElement } from '../models/element';
+import { EditorReactDOMElement, RenderEditorElement } from '../models/element';
 
 export const renderEditorReactDOMElement: RenderEditorElement<
   EditorReactDOMElement
