@@ -36,15 +36,5 @@ test('select', async () => {
   // await expect(await pageDom()).toMatchSnapshot();
 });
 
-// test('unselect selection', async () => {
-//   await page.click('.unselect');
-//   await page.waitFor(50);
-//   await expect(await pageDom()).toMatchSnapshot();
-// });
-
-// test('selection via mousedown', async () => {
-
-// });
-
 // https://github.com/steida/slad/issues/14
 export default undefined;

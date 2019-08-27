@@ -1,38 +1,33 @@
-import React, { ReactNode, createElement } from 'react';
-import {
-  // EditorElement,
-  // DeepFiniteNestedUnion,
-  EditorReactDOMElement,
-} from '../models/element';
+import React, { createElement } from 'react';
+import { RenderEditorElement, EditorReactDOMElement } from '../models/element';
 
-// export type RenderElement<T extends EditorElement> = (
-//   element: DeepFiniteNestedUnion<T>,
-//   children: ReactNode,
-// ) => ReactNode;
-
-export const renderReactDOMElement = (
-  element: EditorReactDOMElement,
-  children: ReactNode,
-) => {
-  return createElement(element.tag || 'div', element.props, children);
-};
-
-export interface RendererProps {
-  element: EditorReactDOMElement;
-  // renderElement: RenderElement<EditorReactDOMElement>;
+export interface RendererProps<T> {
+  element: T;
+  renderElement?: RenderEditorElement<T>;
 }
 
 /**
  * Just render. No edit behaviour. Good for performance and tree shaking.
  */
-export function Renderer({ element }: RendererProps) {
+export function Renderer<T extends EditorReactDOMElement>({
+  element,
+  renderElement,
+}: RendererProps<T>) {
   const children =
     element.children &&
     element.children.map((child, index) => {
       if (typeof child === 'string') return child;
-      // Index is ok for value type.
-      // eslint-disable-next-line react/no-array-index-key
-      return <Renderer element={child} key={index} />;
+      return (
+        <Renderer
+          element={child}
+          // @ts-ignore TODO: Fix it.
+          renderElement={renderElement}
+          // Index is ok for value type.
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+        />
+      );
     });
-  return renderReactDOMElement(element, children);
+  if (renderElement) return <>{renderElement(element, children, () => {})}</>;
+  return createElement(element.tag || 'div', element.props, children);
 }

@@ -1,35 +1,20 @@
 import React from 'react';
-import { Renderer, EditorReactDOMElement } from 'slad';
-// import {
-//   initialSchemaRootElement,
-//   useSchemaRenderElement,
-// } from '../components/examples/SchemaExample';
-
-export const initialEditorReactDOMElement: EditorReactDOMElement = {
-  children: [
-    {
-      props: {
-        style: { fontSize: '24px' },
-      },
-      children: ['heading'],
-    },
-    {
-      props: {
-        style: { fontSize: '16px' },
-      },
-      children: ['paragraph'],
-    },
-  ],
-};
+import { Renderer } from 'slad';
+import { initialEditorReactDOMElement } from '../components/examples/BasicExample';
+import {
+  initialSchemaRootElement,
+  useSchemaRenderElement,
+} from '../components/examples/SchemaExample';
 
 function TestRenderer() {
+  const renderSchemaElement = useSchemaRenderElement();
   return (
     <div>
       <Renderer element={initialEditorReactDOMElement} />
-      {/* <Renderer
+      <Renderer
         element={initialSchemaRootElement}
-        renderElement={useSchemaRenderElement}
-      /> */}
+        renderElement={renderSchemaElement}
+      />
     </div>
   );
 }
