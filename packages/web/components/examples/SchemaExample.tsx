@@ -81,79 +81,57 @@ interface SchemaRootElement extends SchemaElement {
 
 type SchemaEditorState = EditorState<SchemaRootElement>;
 
-export function SchemaExample({
-  autoFocus = false,
-  initialSelection = undefined,
-}: {
-  autoFocus?: boolean;
-  initialSelection?: EditorSelection;
-}) {
-  const [editorState, setEditorState] = useState<SchemaEditorState>({
-    element: {
-      type: 'document',
+export const initialSchemaRootElement: SchemaRootElement = {
+  type: 'document',
+  children: [
+    {
+      type: 'heading',
+      style: { 'font-size': '24px' },
+      children: ['heading'],
+    },
+    {
+      type: 'paragraph',
+      style: { 'font-size': '16px' },
+      children: ['paragraph'],
+    },
+    {
+      type: 'list',
+      style: { margin: '16px' },
       children: [
         {
-          type: 'heading',
-          style: { 'font-size': '24px' },
-          children: ['heading'],
-        },
-        {
-          type: 'paragraph',
+          type: 'listitem',
           style: { 'font-size': '16px' },
-          children: ['paragraph'],
-        },
-        {
-          type: 'list',
-          style: { margin: '16px' },
           children: [
-            {
-              type: 'listitem',
-              style: { 'font-size': '16px' },
-              children: [
-                'listitem',
-                // List can be nested. With type checking of course.
-                // {
-                //   type: 'list',
-                //   children: [
-                //     {
-                //       type: 'listitem',
-                //       children: ['nested'],
-                //     },
-                //   ],
-                // },
-              ],
-            },
+            'listitem',
+            // List can be nested. With type checking of course.
+            // {
+            //   type: 'list',
+            //   children: [
+            //     {
+            //       type: 'listitem',
+            //       children: ['nested'],
+            //     },
+            //   ],
+            // },
           ],
-        },
-        {
-          type: 'image',
-          src: 'https://via.placeholder.com/80',
-          alt: 'Square placeholder image 80px',
-          width: 80,
-          height: 80,
-          children: undefined,
         },
       ],
     },
-    hasFocus: autoFocus,
-    selection: initialSelection,
-  });
-
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
-    editorState,
-  );
-
-  const handleEditorChange = useCallback(
-    (editorState: SchemaEditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    {
+      type: 'image',
+      src: 'https://via.placeholder.com/80',
+      alt: 'Square placeholder image 80px',
+      width: 80,
+      height: 80,
+      children: undefined,
     },
-    [logEditorState],
-  );
+  ],
+};
 
+export function useSchemaRenderElement() {
   const getStyledJsx = useStyledJsx();
 
-  const renderElement = useCallback<RenderEditorElement<SchemaRootElement>>(
+  return useCallback<RenderEditorElement<SchemaRootElement>>(
     (element, children, ref) => {
       const styledJsx = element.style && getStyledJsx(element.style);
       // Because we don't want to render empty class attributes.
@@ -199,6 +177,32 @@ export function SchemaExample({
     },
     [getStyledJsx],
   );
+}
+
+export function SchemaExample({
+  autoFocus = false,
+  initialSelection = undefined,
+}: {
+  autoFocus?: boolean;
+  initialSelection?: EditorSelection;
+}) {
+  const [editorState, setEditorState] = useState<SchemaEditorState>({
+    element: initialSchemaRootElement,
+    hasFocus: autoFocus,
+    selection: initialSelection,
+  });
+
+  const [logEditorState, logEditorStateElement] = useLogEditorState(
+    editorState,
+  );
+
+  const handleEditorChange = useCallback(
+    (editorState: SchemaEditorState) => {
+      logEditorState(editorState);
+      setEditorState(editorState);
+    },
+    [logEditorState],
+  );
 
   const handleFocusClick = useCallback(() => {
     handleEditorChange({ ...editorState, hasFocus: true });
@@ -211,6 +215,8 @@ export function SchemaExample({
     },
     [editorState, handleEditorChange],
   );
+
+  const renderElement = useSchemaRenderElement();
 
   return (
     <>

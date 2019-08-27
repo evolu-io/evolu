@@ -1,7 +1,30 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorState, useLogEditorState, EditorSelection } from 'slad';
+import {
+  Editor,
+  EditorState,
+  useLogEditorState,
+  EditorSelection,
+  EditorReactDOMElement,
+} from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
+
+export const initialBasicElement: EditorReactDOMElement = {
+  children: [
+    {
+      props: {
+        style: { fontSize: '24px' },
+      },
+      children: ['heading'],
+    },
+    {
+      props: {
+        style: { fontSize: '16px' },
+      },
+      children: ['paragraph'],
+    },
+  ],
+};
 
 export function BasicExample({
   autoFocus = false,
@@ -11,22 +34,7 @@ export function BasicExample({
   initialSelection?: EditorSelection;
 }) {
   const [editorState, setEditorState] = useState<EditorState>({
-    element: {
-      children: [
-        {
-          props: {
-            style: { fontSize: '24px' },
-          },
-          children: ['heading'],
-        },
-        {
-          props: {
-            style: { fontSize: '16px' },
-          },
-          children: ['paragraph'],
-        },
-      ],
-    },
+    element: initialBasicElement,
     hasFocus: autoFocus,
     selection: initialSelection,
   });
