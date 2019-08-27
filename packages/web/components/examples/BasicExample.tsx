@@ -9,7 +9,7 @@ import {
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-export const initialBasicElement: EditorReactDOMElement = {
+export const initialEditorReactDOMElement: EditorReactDOMElement = {
   children: [
     {
       props: {
@@ -34,7 +34,7 @@ export function BasicExample({
   initialSelection?: EditorSelection;
 }) {
   const [editorState, setEditorState] = useState<EditorState>({
-    element: initialBasicElement,
+    element: initialEditorReactDOMElement,
     hasFocus: autoFocus,
     selection: initialSelection,
   });
