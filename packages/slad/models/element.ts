@@ -8,18 +8,15 @@ export interface EditorElement {
   readonly children?: readonly (EditorElement | string)[] | undefined;
 }
 
-// EditorReactDOMElement should extends EditorElement but I don't know how.
-// Feel free to send PR.
-type CreateEditorReactDOMElement<T extends keyof ReactDOM> = {
-  readonly tag?: T;
-  readonly props?: ReturnType<ReactDOM[T]>['props'];
-  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
-};
-
 /**
  * EditorReactDOMElement has props the same as in ReactDOM.
+ * TODO: Fix mapping from ReactDOM. Now div can have width prop.
  */
-export type EditorReactDOMElement = CreateEditorReactDOMElement<keyof ReactDOM>;
+export interface EditorReactDOMElement extends EditorElement {
+  readonly tag?: keyof ReactDOM;
+  readonly props?: ReturnType<ReactDOM[keyof ReactDOM]>['props'];
+  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
+}
 
 // For nice DX, renderElement element arg is an union of all nested elements.
 // Unfortunately, infinite recursion is not possible with TypeScript.
