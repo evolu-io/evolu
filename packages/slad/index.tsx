@@ -3,6 +3,7 @@ export * from './components/Editor';
 export * from './components/EditorElementRenderer';
 export * from './components/EditorTextRenderer';
 export * from './components/renderEditorReactDOMElement';
+export * from './components/Renderer';
 export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/useGetReferenceKey';
