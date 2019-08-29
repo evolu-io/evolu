@@ -29,5 +29,6 @@ export function Renderer<T extends EditorReactDOMElement>({
       );
     });
   if (renderElement) return <>{renderElement(element, children, () => {})}</>;
+  // @ts-ignore TODO: Fix it.
   return createElement(element.tag || 'div', element.props, children);
 }
