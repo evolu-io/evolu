@@ -44,6 +44,9 @@ exports[`render 1`] = `
         width="80"
       />
     </div>
+    <div>
+      <br />
+    </div>
   </div>
 </div>
 `;

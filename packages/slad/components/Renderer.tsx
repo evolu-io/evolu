@@ -16,12 +16,25 @@ export function Renderer<T extends EditorReactDOMElement>({
   const children =
     element.children &&
     element.children.map((child, index) => {
-      if (typeof child === 'string') return child;
+      if (typeof child === 'string') {
+        return child.length === 0 ? (
+          <br
+            // Index is ok for value type.
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+          />
+        ) : (
+          child
+        );
+      }
       return (
         <Renderer
           element={child}
-          // @ts-ignore TODO: Fix it.
-          renderElement={renderElement}
+          renderElement={
+            renderElement as
+              | RenderEditorElement<EditorReactDOMElement>
+              | undefined
+          }
           // Index is ok for value type.
           // eslint-disable-next-line react/no-array-index-key
           key={index}
@@ -29,6 +42,8 @@ export function Renderer<T extends EditorReactDOMElement>({
       );
     });
   if (renderElement) return <>{renderElement(element, children, () => {})}</>;
-  // @ts-ignore TODO: Fix it.
+  // It seems nobody knows how to make nested union from ReactDOM type.
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21651
+  // @ts-ignore createElement nor EditorReactDOMElement types are correct.
   return createElement(element.tag || 'div', element.props, children);
 }

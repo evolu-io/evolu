@@ -25,7 +25,7 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
   ({ value, path }) => {
     const setNodePathRef = useSetNodeEditorPathRef(path);
 
-    const handleRef = useCallback(
+    const handleTextNodeRef = useCallback(
       (instance: TextNode) => {
         // We know it can return Text or null only.
         // eslint-disable-next-line react/no-find-dom-node
@@ -35,7 +35,18 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
       [setNodePathRef],
     );
 
-    return <TextNode value={value} ref={handleRef} />;
+    const handleHTMLBRElementRef = useCallback(
+      (element: HTMLBRElement | null) => {
+        setNodePathRef(element);
+      },
+      [setNodePathRef],
+    );
+
+    return value.length === 0 ? (
+      <br ref={handleHTMLBRElementRef} />
+    ) : (
+      <TextNode value={value} ref={handleTextNodeRef} />
+    );
   },
   (prevProps, nextProps) => {
     if (prevProps.value !== nextProps.value) return false;

@@ -10,7 +10,9 @@ Object {
 
 exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
-  "children": Array [],
+  "children": Array [
+    "",
+  ],
 }
 `;
 
@@ -39,23 +41,6 @@ Object {
       ],
     },
     "ab",
-  ],
-}
-`;
-
-exports[`normalizeEditorElement removes empty strings 1`] = `
-Object {
-  "children": Array [
-    ".",
-    Object {
-      "children": Array [
-        ".",
-        Object {
-          "children": Array [],
-        },
-      ],
-    },
-    ".",
   ],
 }
 `;

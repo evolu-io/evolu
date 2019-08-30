@@ -4,36 +4,6 @@ import {
   isNormalizedEditorElement,
 } from './element';
 
-test('normalizeEditorElement removes empty strings', () => {
-  const element: EditorElement = {
-    children: [
-      '',
-      '.',
-      {
-        children: [
-          '.',
-          {
-            children: [''],
-          },
-        ],
-      },
-      '',
-      '.',
-    ],
-  };
-  expect(normalizeEditorElement(element)).toMatchSnapshot();
-});
-
-test('normalizeEditorElement do not add children', () => {
-  expect(normalizeEditorElement({})).toMatchSnapshot();
-});
-
-test('normalizeEditorElement do not remove children', () => {
-  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
-  expect(normalizeEditorElement({ children: [''] })).toMatchSnapshot();
-  expect(normalizeEditorElement({ children: ['.'] })).toMatchSnapshot();
-});
-
 test('normalizeEditorElement merges adjacent strings', () => {
   const element: EditorElement = {
     children: [
@@ -67,7 +37,7 @@ test('isNormalizedEditorElement', () => {
     isNormalizedEditorElement({
       children: [''],
     }),
-  ).toBe(false);
+  ).toBe(true);
   expect(
     isNormalizedEditorElement({
       children: ['a', 'b'],
@@ -77,5 +47,15 @@ test('isNormalizedEditorElement', () => {
     isNormalizedEditorElement({
       children: [{ children: [''] }],
     }),
-  ).toBe(false);
+  ).toBe(true);
+});
+
+test('normalizeEditorElement do not add children', () => {
+  expect(normalizeEditorElement({})).toMatchSnapshot();
+});
+
+test('normalizeEditorElement do not remove children', () => {
+  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ children: [''] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ children: ['.'] })).toMatchSnapshot();
 });

@@ -12,6 +12,12 @@ function TestRenderReactDOMElement() {
           children: ['heading'],
         },
         {
+          props: {
+            style: { fontSize: '16px' },
+          },
+          children: [''],
+        },
+        {
           tag: 'img',
           props: {
             src: 'https://via.placeholder.com/80',

@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React, {
   useRef,
   useCallback,
@@ -129,6 +130,7 @@ type EditorCommand = Immutable<
   | { type: 'focus' }
   | { type: 'blur'; blurWithinWindow: boolean | undefined }
   | { type: 'select'; editorSelection: EditorSelection | undefined }
+  | { type: 'setText'; path: EditorPath; text: string }
   // | { type: 'setValueElement'; element: Element }
 >;
 
@@ -138,8 +140,12 @@ function useEditorCommand<T>(
 ) {
   const editorStateRef = useRef(editorState);
   editorStateRef.current = editorState;
+
   // To have stable command like useReducer dispatch is.
   const commandRef = useRef((immutableCommand: EditorCommand) => {
+    if (process.env.NODE_ENV !== 'production') {
+      debug('command', immutableCommand);
+    }
     const command = immutableCommand as Draft<EditorCommand>;
     const nextEditorState = produce(editorStateRef.current, draft => {
       switch (command.type) {
@@ -160,17 +166,22 @@ function useEditorCommand<T>(
           break;
         }
         case 'select': {
-          // Immer doesn't do deep checking.
+          // Immer checks only props. Deep checks must be explicit.
           if (
             editorSelectionsAreEqual(command.editorSelection, draft.selection)
-          )
+          ) {
             return;
+          }
           // This is the correct pattern for optional truthy props.
           if (command.editorSelection) {
             draft.selection = command.editorSelection;
           } else {
             delete draft.selection;
           }
+          break;
+        }
+        case 'setText': {
+          // const { path, text } = command;
           break;
         }
         default:
@@ -340,17 +351,56 @@ export function Editor<T extends EditorElement>({
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
 
+  // layout effect?
+  useEffect(() => {
+    if (divRef.current == null) return;
+    const observer = new MutationObserver(mutationRecords => {
+      mutationRecords.forEach(mutationRecord => {
+        // We have to handle childList as explained in Draft
+        // if (mutationRecord.type === 'childList') {
+        //   console.log(mutationRecord.addedNodes, mutationRecord.removedNodes);
+        // }
+        if (mutationRecord.type === 'characterData') {
+          const path = nodesEditorPathsMap.get(mutationRecord.target);
+          // Watch when it happens, maybe force rerender as Draft does that.
+          if (path == null) {
+            if (process.env.NODE_ENV !== 'production') {
+              invariant(
+                false,
+                'MutationObserver characterData target is not in nodesEditorPathsMap.',
+              );
+            }
+          }
+          // setText, imho
+          // odzkouset
+          // pak sjednotit se selekci
+          // command({ type: 'focus' });
+
+          // fakticky by to ale nemelo hnout s domem, imho ten spellCheck to odhali
+          // a ten command imho musi mit i novou selekci, pac atomic operation
+          // const newText = mutationRecord.target.nodeValue;
+          // detekce zmeny, immer na zmenu elementu pres path, update selekce, v jednom.
+          // console.log(newText);
+        }
+      });
+    });
+    observer.observe(divRef.current, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+    return () => {
+      observer.disconnect();
+    };
+  }, [command, nodesEditorPathsMap]);
+
   const children = useMemo(() => {
     return (
       <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
         <RenderEditorElementContext.Provider
           value={
-            // Cast renderElement, because React context value can't be generic.
-            // We know it's safe because only EditorElement is used.
-            ((renderElement ||
-              renderEditorReactDOMElement) as unknown) as RenderEditorElement<
-              EditorElement
-            >
+            (renderElement ||
+              renderEditorReactDOMElement) as RenderEditorElement<EditorElement>
           }
         >
           <EditorElementRenderer element={editorState.element} path={[]} />
