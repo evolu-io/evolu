@@ -15,6 +15,11 @@ function TestRenderer() {
         element={initialSchemaRootElement}
         renderElement={renderSchemaElement}
       />
+      <Renderer
+        element={{
+          children: [''],
+        }}
+      />
     </div>
   );
 }

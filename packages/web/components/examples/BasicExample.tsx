@@ -28,14 +28,16 @@ export const initialEditorReactDOMElement: EditorReactDOMElement = {
 
 export function BasicExample({
   autoFocus = false,
+  initialElement = initialEditorReactDOMElement,
   initialSelection = undefined,
 }: {
   autoFocus?: boolean;
+  initialElement?: EditorReactDOMElement;
   initialSelection?: EditorSelection;
 }) {
   const [editorState, setEditorState] = useState<EditorState>({
-    element: initialEditorReactDOMElement,
     hasFocus: autoFocus,
+    element: initialElement,
     selection: initialSelection,
   });
 

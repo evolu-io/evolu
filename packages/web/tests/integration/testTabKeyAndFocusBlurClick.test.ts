@@ -34,5 +34,4 @@ test('click to focus button, click to blur button', async () => {
   await expect(await pageDom()).toMatchSnapshot();
 });
 
-// https://github.com/steida/slad/issues/14
 export default undefined;

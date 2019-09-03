@@ -18,6 +18,11 @@ exports[`render 1`] = `
       >
         ·heading·
       </div>
+      <div
+        style="font-size:16px"
+      >
+        <br />
+      </div>
       <img
         alt="Square placeholder image 80px"
         height="80"

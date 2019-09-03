@@ -18,19 +18,13 @@ const weakMap = new WeakMap<object, string>();
  * https://github.com/immerjs/immer#pitfalls
  */
 export function useGetReferenceKey() {
-  const getReferenceKey = useCallback(
-    (value: object | string, index: number): string => {
-      // We have to use index for strings, to prevent the same key for sibling
-      // text nodes, but that's fine, because textNode does not have a state.
-      if (typeof value === 'string') return value + index.toString();
-      let key = weakMap.get(value);
-      if (key !== undefined) return key;
-      key = (id++).toString();
-      weakMap.set(value, key);
-      return key;
-    },
-    [],
-  );
+  const getReferenceKey = useCallback((value: object): string => {
+    let key = weakMap.get(value);
+    if (key !== undefined) return key;
+    key = (id++).toString();
+    weakMap.set(value, key);
+    return key;
+  }, []);
 
   return getReferenceKey;
 }
