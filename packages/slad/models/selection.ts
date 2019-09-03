@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant';
 import { editorPathsAreEqual, EditorPath, NodesEditorPathsMap } from './path';
 
 export interface EditorSelection {
@@ -44,4 +45,21 @@ export function editorSelectionIsBackward(selection: EditorSelection): boolean {
   return selection.anchor.some(
     (value, index) => value > selection.focus[index],
   );
+}
+
+export function invariantEditorSelectionIsDefined(
+  selection: EditorSelection | undefined,
+): selection is EditorSelection {
+  invariant(selection != null, 'EditorSelection is not defined.');
+  return true;
+}
+
+export function invariantEditorSelectionIsCollapsed(
+  selection: EditorSelection,
+): selection is EditorSelection {
+  invariant(
+    editorSelectionIsCollapsed(selection),
+    'EditorSelection is not collapsed.',
+  );
+  return true;
 }

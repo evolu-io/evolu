@@ -11,19 +11,20 @@ import { Container } from '../components/Container';
 
 export const initialElement: EditorReactDOMElement = {
   children: [
-    {
-      props: {
-        style: { fontSize: '24px' },
-      },
-      // children: [''],
-      children: ['foo'],
-    },
-    {
-      props: {
-        style: { fontSize: '16px' },
-      },
-      children: ['paragraph'],
-    },
+    'g',
+    // {
+    //   props: {
+    //     style: { fontSize: '24px' },
+    //   },
+    //   // children: [''],
+    //   children: ['foo'],
+    // },
+    // {
+    //   props: {
+    //     style: { fontSize: '16px' },
+    //   },
+    //   children: ['paragraph'],
+    // },
   ],
 };
 
@@ -58,6 +59,7 @@ function Index() {
         onChange={handleEditorChange}
         spellCheck
         style={{
+          // whiteSpace: 'pre-wrap',
           backgroundColor: '#eee',
           marginBottom: 24,
           outline: 'none',

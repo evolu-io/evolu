@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo, useContext } from 'react';
+import React, { memo, useMemo, useContext } from 'react';
 import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorTextRenderer } from './EditorTextRenderer';
@@ -18,22 +18,21 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const setNodePathRef = useSetNodeEditorPathRef(path);
 
     const children = useMemo(() => {
-      return (
-        element.children &&
-        element.children.map((child, index) => {
-          const key = getReferenceKey(child, index);
-          const childPath: EditorPath = [...path, index];
+      if (element.children == null) return null;
+      return element.children.map((child, index) => {
+        const childPath: EditorPath = [...path, index];
+        if (typeof child === 'string') {
           return (
-            <Fragment key={key}>
-              {typeof child === 'string' ? (
-                <EditorTextRenderer value={child} path={childPath} />
-              ) : (
-                <EditorElementRenderer element={child} path={childPath} />
-              )}
-            </Fragment>
+            // Text indentity is index because we have to compare text with actual DOM.
+            // eslint-disable-next-line react/no-array-index-key
+            <EditorTextRenderer key={index} text={child} path={childPath} />
           );
-        })
-      );
+        }
+        const key = getReferenceKey(child);
+        return (
+          <EditorElementRenderer key={key} element={child} path={childPath} />
+        );
+      });
     }, [element.children, getReferenceKey, path]);
 
     return <>{renderElement(element, children, setNodePathRef)}</>;

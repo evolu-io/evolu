@@ -1,11 +1,15 @@
 import { ReactDOM, ReactNode } from 'react';
+import invariant from 'tiny-invariant';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
+import { EditorPath } from './path';
+
+export type EditorElementChild = EditorElement | string;
 
 /**
  * EditorElement is the base model for all other editor elements.
  */
 export interface EditorElement {
-  readonly children?: readonly (EditorElement | string)[] | undefined;
+  readonly children?: readonly (EditorElementChild)[] | undefined;
 }
 
 /**
@@ -63,7 +67,7 @@ export function normalizeEditorElement(element: EditorElement): EditorElement {
     ...element,
     ...(element.children
       ? {
-          children: element.children.reduce<(EditorElement | string)[]>(
+          children: element.children.reduce<(EditorElementChild)[]>(
             (array, child) => {
               if (typeof child !== 'string')
                 return [...array, normalizeEditorElement(child)];
@@ -96,4 +100,40 @@ export function isNormalizedEditorElement({
     }
     return !isNormalizedEditorElement(child);
   });
+}
+
+export function getParentElementByPath(
+  element: EditorElement,
+  path: EditorPath,
+): EditorElement {
+  invariant(path.length > 0, 'getParentElementByPath: Path can not be empty.');
+  let parent = element;
+  const pathToParent = path.slice(0, -1);
+  pathToParent.forEach(index => {
+    if (parent.children == null) {
+      invariant(false, 'getParentElementByPath: Children can not be null.');
+      return;
+    }
+    const maybeElement = parent.children[index];
+    if (typeof maybeElement === 'string') {
+      invariant(false, 'getParentElementByPath: Parent can not be string.');
+      return;
+    }
+    parent = maybeElement;
+  });
+  return element;
+}
+
+export function invariantElementChildrenIsDefined(
+  children: EditorElement['children'],
+): children is NonNullable<EditorElement['children']> {
+  invariant(children != null, 'EditorElement children is not defined.');
+  return true;
+}
+
+export function invariantElementChildIsString(
+  child: EditorElementChild,
+): child is string {
+  invariant(typeof child === 'string', 'EditorElementChild is not string.');
+  return true;
 }

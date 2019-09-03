@@ -1,0 +1,228 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`insert text at end 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      ·ahoj·
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['ahoj']}"
+    >
+      ·5·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,4],"focus":[0,4]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['aho']}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,3],"focus":[0,3]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['ah']}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['a']}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['a']}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':['a']}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;
+
+exports[`insert text at start then middle 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      ·bla·
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['bla']}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['ba']}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['a']}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':['a']}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;
+
+exports[`remove text 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      ·b·
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['b']}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['ba']}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'children':['a']}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'children':['a']}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;

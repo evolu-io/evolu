@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
   RefObject,
+  useLayoutEffect,
 } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
@@ -21,12 +22,17 @@ import {
   mapSelectionToEditorSelection,
   editorSelectionsAreEqual,
   editorSelectionIsBackward,
+  invariantEditorSelectionIsDefined,
+  invariantEditorSelectionIsCollapsed,
 } from '../models/selection';
 import { renderEditorReactDOMElement } from './renderEditorReactDOMElement';
 import {
-  EditorElement,
   EditorReactDOMElement,
   RenderEditorElement,
+  EditorElement,
+  getParentElementByPath,
+  invariantElementChildrenIsDefined,
+  invariantElementChildIsString,
 } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -35,6 +41,8 @@ import {
   NodesEditorPathsMap,
   EditorPathsNodesMap,
 } from '../models/path';
+
+const isSSR = typeof window === 'undefined';
 
 function useEditorPathNodeMaps(): {
   nodesEditorPathsMap: NodesEditorPathsMap;
@@ -76,7 +84,6 @@ function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
   editorState: EditorState<EditorElement>,
 ) {
-  // https://overreacted.io/how-does-the-development-mode-work/
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
@@ -130,11 +137,11 @@ type EditorCommand = Immutable<
   | { type: 'focus' }
   | { type: 'blur'; blurWithinWindow: boolean | undefined }
   | { type: 'select'; editorSelection: EditorSelection | undefined }
-  | { type: 'setText'; path: EditorPath; text: string }
+  | { type: 'writeTextToCollapsedSelection'; path: EditorPath; text: string }
   // | { type: 'setValueElement'; element: Element }
 >;
 
-function useEditorCommand<T>(
+function useEditorCommand<T extends EditorElement>(
   editorState: EditorState<T>,
   onChange: (editorState: EditorState<T>) => void,
 ) {
@@ -154,10 +161,9 @@ function useEditorCommand<T>(
           delete draft.blurWithinWindow;
           break;
         }
+
         case 'blur': {
           draft.hasFocus = false;
-          // Remember, blurWithinWindow is optional, and setting it to undefined
-          // is properly considered as change in Immer.
           if (command.blurWithinWindow) {
             draft.blurWithinWindow = command.blurWithinWindow;
           } else {
@@ -165,25 +171,38 @@ function useEditorCommand<T>(
           }
           break;
         }
+
         case 'select': {
-          // Immer checks only props. Deep checks must be explicit.
-          if (
-            editorSelectionsAreEqual(command.editorSelection, draft.selection)
-          ) {
+          const { editorSelection } = command;
+          if (editorSelectionsAreEqual(editorSelection, draft.selection))
             return;
-          }
-          // This is the correct pattern for optional truthy props.
-          if (command.editorSelection) {
-            draft.selection = command.editorSelection;
+          if (editorSelection) {
+            draft.selection = editorSelection;
           } else {
             delete draft.selection;
           }
           break;
         }
-        case 'setText': {
-          // const { path, text } = command;
+
+        case 'writeTextToCollapsedSelection': {
+          if (!invariantEditorSelectionIsDefined(draft.selection)) return;
+          invariantEditorSelectionIsCollapsed(draft.selection);
+          const { path, text } = command;
+          const { children } = getParentElementByPath(
+            draft.element,
+            path,
+          ) as Draft<EditorElement>;
+          if (!invariantElementChildrenIsDefined(children)) return;
+          const childIndex = path.slice(-1)[0];
+          const child = children[childIndex];
+          if (!invariantElementChildIsString(child)) return;
+          const offset = text.length - child.length;
+          children[childIndex] = text;
+          draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
+          draft.selection.focus[draft.selection.focus.length - 1] += offset;
           break;
         }
+
         default:
           assertNever(command);
       }
@@ -253,43 +272,43 @@ export function Editor<T extends EditorElement>({
     return doc.getSelection() || undefined;
   }, []);
 
-  const findEditorSelection = useCallback(
-    (selection: Selection | undefined): EditorSelection | undefined => {
-      return mapSelectionToEditorSelection(selection, nodesEditorPathsMap);
-    },
-    [nodesEditorPathsMap],
-  );
-
-  const pendingNewSelectionChange = useRef(false);
-  pendingNewSelectionChange.current = false;
-
   // Map document selection to editor selection.
   useEffect(() => {
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
       const selection = getSelection();
-      const editorSelection = findEditorSelection(selection);
+      const editorSelection = mapSelectionToEditorSelection(
+        selection,
+        nodesEditorPathsMap,
+      );
       // Editor must remember the last selection when document selection
       // is moved elsewhere to restore it later on focus.
       // In Chrome, contentEditable does not do that.
       // That's why we ignore null values.
       if (editorSelection == null) return;
-      pendingNewSelectionChange.current = true;
       command({ type: 'select', editorSelection });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
       doc.removeEventListener('selectionchange', handleDocumentSelectionChange);
     };
-  }, [command, findEditorSelection, getSelection]);
+  }, [command, getSelection, nodesEditorPathsMap]);
+
+  // const setBrowserSelection = useCallback((editorSelection: Editor) => {
+  //   //
+  // }, []);
 
   const ensureSelectionMatchesEditorSelection = useCallback(() => {
     const selection = getSelection();
     if (selection == null) return;
-    const currentEditorSelection = findEditorSelection(selection);
-    if (editorSelectionsAreEqual(editorState.selection, currentEditorSelection))
+    const currentSelection = mapSelectionToEditorSelection(
+      selection,
+      nodesEditorPathsMap,
+    );
+    if (editorSelectionsAreEqual(editorState.selection, currentSelection))
       return;
+
     if (!editorState.selection) {
       // TODO: What to do when selection is falsy? Blur? Collapse?
       // 'selection.removeAllRanges()' breaks tests.
@@ -329,6 +348,8 @@ export function Editor<T extends EditorElement>({
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
 
+    // console.log('update selection manually');
+
     selection.removeAllRanges();
     if (isBackward) {
       // https://stackoverflow.com/a/4802994/233902
@@ -340,20 +361,25 @@ export function Editor<T extends EditorElement>({
       selection.addRange(range);
     }
   }, [
-    editorPathsNodesMap,
-    findEditorSelection,
     getSelection,
+    nodesEditorPathsMap,
     editorState.selection,
+    editorPathsNodesMap,
   ]);
 
-  useEffect(() => {
-    if (pendingNewSelectionChange.current || !editorState.hasFocus) return;
+  // useLayoutEffect is must to keep browser selection in sync with editor state.
+  // I suppose this is the case for "progressively enhancing hooks"
+  // https://github.com/facebook/react/issues/14927
+  (isSSR ? useEffect : useLayoutEffect)(() => {
+    if (!editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
 
-  // layout effect?
   useEffect(() => {
     if (divRef.current == null) return;
+    // The idea is to let browser do its things for writting text.
+    // It's neccessary for IME anyway, as described in DraftJS.
+    // If neccessary, fix DOM manually.
     const observer = new MutationObserver(mutationRecords => {
       mutationRecords.forEach(mutationRecord => {
         // We have to handle childList as explained in Draft
@@ -364,23 +390,18 @@ export function Editor<T extends EditorElement>({
           const path = nodesEditorPathsMap.get(mutationRecord.target);
           // Watch when it happens, maybe force rerender as Draft does that.
           if (path == null) {
-            if (process.env.NODE_ENV !== 'production') {
-              invariant(
-                false,
-                'MutationObserver characterData target is not in nodesEditorPathsMap.',
-              );
-            }
+            invariant(
+              false,
+              'MutationObserver characterData target is not in nodesEditorPathsMap.',
+            );
+            return;
           }
-          // setText, imho
-          // odzkouset
-          // pak sjednotit se selekci
-          // command({ type: 'focus' });
 
-          // fakticky by to ale nemelo hnout s domem, imho ten spellCheck to odhali
-          // a ten command imho musi mit i novou selekci, pac atomic operation
-          // const newText = mutationRecord.target.nodeValue;
-          // detekce zmeny, immer na zmenu elementu pres path, update selekce, v jednom.
-          // console.log(newText);
+          command({
+            type: 'writeTextToCollapsedSelection',
+            path,
+            text: mutationRecord.target.nodeValue || '',
+          });
         }
       });
     });
@@ -407,7 +428,7 @@ export function Editor<T extends EditorElement>({
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
-  }, [renderElement, setNodeEditorPath, editorState.element]);
+  }, [editorState.element, renderElement, setNodeEditorPath]);
 
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();

@@ -1,39 +1,49 @@
-import React, { Component, useCallback, memo } from 'react';
-import ReactDOM from 'react-dom';
+import React, {
+  Component,
+  useCallback,
+  memo,
+  useRef,
+  MutableRefObject,
+} from 'react';
+import { findDOMNode } from 'react-dom';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath, editorPathsAreEqual } from '../models/path';
 
-// Yes, we use Component and findDOMNode because it's the only way how
-// we can get TextNode DOM reference with React.
-// Otherwise, we would have to traverse DOM which would be slower and error-prone.
-// We don't want to wrap text because that would mess DOM.
+// Text is rendered as plain text node without SPAN wrapper. SPAN is tricky:
+// https://github.com/facebook/draft-js/blob/dc58df8219fdc1e12ce947877d103b595682efa9/src/component/contents/DraftEditorTextNode.react.js#L33
+// As I manually checked it, DIV is always ok, even with display: inline.
+
+// Component and findDOMNode, because it's the only way how to get DOM Text node reference.
 // https://github.com/facebook/react/blob/master/packages/react-dom/src/__tests__/ReactDOMFiber-test.js#L92
-// Check: 'finds the DOM Text node of a string child'
-class TextNode extends Component<{ value: string }> {
+
+interface TextNodeProps {
+  text: string;
+  textNodeRef: MutableRefObject<Text | null>;
+}
+
+class TextNode extends Component<TextNodeProps> {
+  shouldComponentUpdate({ text, textNodeRef: { current } }: TextNodeProps) {
+    // Do not update component if DOM Text node is already updated.
+    // Updating would break native selection.
+    // This is the similar logic as in DraftEditorTextNode.
+    const domTextIsAlreadyUpdated = current && current.nodeValue === text;
+    return !domTextIsAlreadyUpdated;
+  }
+
   render() {
-    const { value } = this.props;
-    return value;
+    const { text } = this.props;
+    return text;
   }
 }
 
 export interface EditorTextRendererProps {
-  value: string;
+  text: string;
   path: EditorPath;
 }
 
 export const EditorTextRenderer = memo<EditorTextRendererProps>(
-  ({ value, path }) => {
+  ({ text, path }) => {
     const setNodePathRef = useSetNodeEditorPathRef(path);
-
-    const handleTextNodeRef = useCallback(
-      (instance: TextNode) => {
-        // We know it can return Text or null only.
-        // eslint-disable-next-line react/no-find-dom-node
-        const textNode = ReactDOM.findDOMNode(instance) as Text | null;
-        setNodePathRef(textNode);
-      },
-      [setNodePathRef],
-    );
 
     const handleHTMLBRElementRef = useCallback(
       (element: HTMLBRElement | null) => {
@@ -42,14 +52,27 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
       [setNodePathRef],
     );
 
-    return value.length === 0 ? (
+    const textNodeRef = useRef<Text | null>(null);
+
+    const handleTextNodeRef = useCallback(
+      (instance: TextNode) => {
+        // We know it can return Text or null only.
+        // eslint-disable-next-line react/no-find-dom-node
+        const text = findDOMNode(instance) as Text | null;
+        textNodeRef.current = text;
+        setNodePathRef(text);
+      },
+      [setNodePathRef],
+    );
+
+    return text.length === 0 ? (
       <br ref={handleHTMLBRElementRef} />
     ) : (
-      <TextNode value={value} ref={handleTextNodeRef} />
+      <TextNode text={text} ref={handleTextNodeRef} textNodeRef={textNodeRef} />
     );
   },
   (prevProps, nextProps) => {
-    if (prevProps.value !== nextProps.value) return false;
+    if (prevProps.text !== nextProps.text) return false;
     if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
     return true;
   },
