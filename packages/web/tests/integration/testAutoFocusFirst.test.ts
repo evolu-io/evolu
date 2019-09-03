@@ -17,5 +17,4 @@ test('render', async () => {
   // check if editor still has a focus.
 });
 
-// https://github.com/steida/slad/issues/14
 export default undefined;
