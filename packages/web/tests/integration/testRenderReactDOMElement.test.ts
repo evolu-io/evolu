@@ -3,7 +3,6 @@ import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
   await page.goto(pageUrl('testRenderReactDOMElement'));
-  await page.waitFor(50);
 });
 
 test('render', async () => {
