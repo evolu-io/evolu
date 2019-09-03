@@ -2,7 +2,7 @@ import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testWritting'));
+  await page.goto(pageUrl('testWriting'));
   await page.waitFor(50);
 });
 
