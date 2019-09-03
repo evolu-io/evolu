@@ -6,6 +6,7 @@ beforeEach(async () => {
     await dialog.dismiss();
   });
   await page.goto(pageUrl('testAutoFocusFirst'));
+  await page.waitFor(50);
 });
 
 test('render', async () => {
