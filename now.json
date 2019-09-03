@@ -2,11 +2,6 @@
   "version": 2,
   "name": "slad",
   "regions": ["bru"],
-  "build": {
-    "env": {
-      "IS_NOW": "true"
-    }
-  },
   "builds": [
     {
       "src": "packages/web/next.config.js",

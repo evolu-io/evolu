@@ -8,8 +8,9 @@ module.exports = withBundleAnalyzer(
     // To force Next.js to transpile code from other workspace packages.
     // https://github.com/martpie/next-transpile-modules
     transpileModules: ['slad'],
-    // IS_NOW is set in now.json. We need server for local next export.
-    target: process.env.IS_NOW ? 'serverless' : 'server',
+    // We need server for local next export for integration tests.
+    // We can detects ZEIT Now runtime via AWS_REGION.
+    target: process.env.AWS_REGION ? 'serverless' : 'server',
     // Enforce relative paths for integration tests.
     // https://github.com/zeit/next.js/issues/2581
     assetPrefix: './',
