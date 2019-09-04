@@ -1,5 +1,6 @@
 import { ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
+import { $Values } from 'utility-types';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
 
@@ -12,15 +13,31 @@ export interface EditorElement {
   readonly children?: readonly (EditorElementChild)[] | undefined;
 }
 
-/**
- * EditorReactDOMElement has props the same as in ReactDOM.
- * TODO: Fix mapping from ReactDOM. Now div can have width prop.
- */
-export interface EditorReactDOMElement extends EditorElement {
-  readonly tag?: keyof ReactDOM;
-  readonly props?: ReturnType<ReactDOM[keyof ReactDOM]>['props'];
+interface EditorReactDOMElementFactory<T, P> extends EditorElement {
+  readonly tag: T;
+  readonly props?: P;
   readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
 }
+
+interface EditorReactDOMElementDIV extends EditorElement {
+  readonly tag?: 'div';
+  readonly props?: ReturnType<ReactDOM['div']>['props'];
+  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
+}
+
+/**
+ * EditorReactDOMElement has props the same as ReactDOM. If tag is ommited, it's DIV.
+ */
+export type EditorReactDOMElement =
+  | EditorReactDOMElementDIV
+  | $Values<
+      {
+        [T in keyof ReactDOM]: EditorReactDOMElementFactory<
+          T,
+          ReturnType<ReactDOM[T]>['props']
+        >;
+      }
+    >;
 
 // For nice DX, renderElement element arg is an union of all nested elements.
 // Unfortunately, infinite recursion is not possible with TypeScript.
