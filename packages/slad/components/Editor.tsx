@@ -43,40 +43,6 @@ import {
 
 const isSSR = typeof window === 'undefined';
 
-function useEditorPathNodeMaps(): {
-  nodesEditorPathsMap: NodesEditorPathsMap;
-  editorPathsNodesMap: EditorPathsNodesMap;
-  setNodeEditorPath: SetNodeEditorPath;
-} {
-  const mapsRef = useRef<{
-    nodesEditorPathsMap: NodesEditorPathsMap;
-    editorPathsNodesMap: EditorPathsNodesMap;
-  } | null>(null);
-  // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
-  if (mapsRef.current == null)
-    mapsRef.current = {
-      nodesEditorPathsMap: new Map(),
-      editorPathsNodesMap: new Map(),
-    };
-  const { nodesEditorPathsMap, editorPathsNodesMap } = mapsRef.current;
-
-  const setNodeEditorPath = useCallback<SetNodeEditorPath>(
-    (node, path) => {
-      if (path != null) {
-        nodesEditorPathsMap.set(node, path);
-        editorPathsNodesMap.set(path.join(), node);
-      } else {
-        const path = nodesEditorPathsMap.get(node) as EditorPath;
-        nodesEditorPathsMap.delete(node);
-        editorPathsNodesMap.delete(path.join());
-      }
-    },
-    [editorPathsNodesMap, nodesEditorPathsMap],
-  );
-
-  return { nodesEditorPathsMap, editorPathsNodesMap, setNodeEditorPath };
-}
-
 const debug = Debug('editor');
 
 function useDebugNodesEditorPaths(
@@ -262,11 +228,28 @@ export function Editor<T extends EditorElement>({
   ...rest
 }: EditorProps<T>) {
   const divRef = useRef<HTMLDivElement>(null);
-  const {
-    nodesEditorPathsMap,
-    editorPathsNodesMap,
-    setNodeEditorPath,
-  } = useEditorPathNodeMaps();
+  const nodesEditorPathsMap = useRef<NodesEditorPathsMap>(new Map()).current;
+  const editorPathsNodesMap = useRef<EditorPathsNodesMap>(new Map()).current;
+
+  const setNodeEditorPath = useCallback<SetNodeEditorPath>(
+    (operation, node, path) => {
+      switch (operation) {
+        case 'add': {
+          nodesEditorPathsMap.set(node, path);
+          editorPathsNodesMap.set(path.join(), node);
+          break;
+        }
+        case 'remove': {
+          nodesEditorPathsMap.delete(node);
+          editorPathsNodesMap.delete(path.join());
+          break;
+        }
+        default:
+          assertNever(operation);
+      }
+    },
+    [editorPathsNodesMap, nodesEditorPathsMap],
+  );
 
   useDebugNodesEditorPaths(nodesEditorPathsMap, editorState);
   useInvariantEditorElementIsNormalized(editorState.element);

@@ -1,6 +1,9 @@
 export type EditorPath = readonly number[];
 
 export type NodesEditorPathsMap = Map<Node, EditorPath>;
+/**
+ * Key string is editorPath.join().
+ */
 export type EditorPathsNodesMap = Map<string, Node>;
 
 export function editorPathsAreEqual(

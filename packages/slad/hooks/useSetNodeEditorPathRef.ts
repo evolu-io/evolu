@@ -8,16 +8,21 @@ import { EditorPath } from '../models/path';
 export type SetNodeEditorPathRef = (node: Node | null) => void;
 
 export function useSetNodeEditorPathRef(path: EditorPath) {
-  const previousNodeRef = useRef<Node | null>(null);
-  const setNodePath = useContext(SetNodeEditorPathContext);
-  const setNodePathRef = useCallback<SetNodeEditorPathRef>(
+  const previousRef = useRef<{ node: Node; path: EditorPath } | null>(null);
+  const setNodeEditorPath = useContext(SetNodeEditorPathContext);
+  const setNodeEditorPathRef = useCallback<SetNodeEditorPathRef>(
     node => {
-      // This is like useEffect clean, but for ref.
-      if (previousNodeRef.current != null) setNodePath(previousNodeRef.current);
-      previousNodeRef.current = node;
-      if (node) setNodePath(node, path);
+      if (previousRef.current != null) {
+        const { node, path } = previousRef.current;
+        setNodeEditorPath('remove', node, path);
+        previousRef.current = null;
+      }
+      if (node) {
+        previousRef.current = { node, path };
+        setNodeEditorPath('add', node, path);
+      }
     },
-    [path, setNodePath],
+    [path, setNodeEditorPath],
   );
-  return setNodePathRef;
+  return setNodeEditorPathRef;
 }
