@@ -8,10 +8,25 @@ import {
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
+import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 
 const initialEditorState = createEditorState({
   element: {
-    children: ['g'],
+    children: [
+      // 'a',
+      {
+        props: {
+          style: { fontSize: '24px' },
+        },
+        children: ['heading'],
+      },
+      {
+        props: {
+          style: { fontSize: '16px' },
+        },
+        children: ['paragraph'],
+      },
+    ],
   },
 });
 
@@ -33,22 +48,16 @@ function Index() {
   return (
     <Container>
       <Head>
-        <title>Slad</title>
+        <title>Sandbox</title>
       </Head>
-      <Text size={2}>Slad</Text>
+      <Text size={2}>Sandbox</Text>
       {/* <textarea /> */}
       <Editor
         editorState={editorState}
         onChange={handleEditorChange}
-        spellCheck
-        style={{
-          // whiteSpace: 'pre-wrap',
-          backgroundColor: '#eee',
-          marginBottom: 24,
-          outline: 'none',
-          padding: 8,
-          width: 300,
-        }}
+        // TODO: Test
+        // spellCheck
+        style={defaultEditorProps.style}
       />
       {logEditorStateElement}
     </Container>
