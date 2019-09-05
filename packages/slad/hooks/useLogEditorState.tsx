@@ -24,6 +24,7 @@ export function useLogEditorState(
           .map((editorState, index) => {
             // hasFocus, to render it first
             const { element, hasFocus, ...rest } = editorState;
+            // Deliberately do not prettify. Smaller output is more readable in snapshots.
             const title = JSON.stringify(element)
               .split('"')
               .join("'");
