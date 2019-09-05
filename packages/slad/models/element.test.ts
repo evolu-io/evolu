@@ -15,7 +15,7 @@ test('normalizeEditorElement merges adjacent strings', () => {
           'b',
           'c',
           {
-            children: ['a', {}, 'b', 'c'],
+            children: ['a', { children: [] }, 'b', 'c'],
           },
         ],
       },
@@ -51,7 +51,7 @@ test('isNormalizedEditorElement', () => {
 });
 
 test('normalizeEditorElement do not add children', () => {
-  expect(normalizeEditorElement({})).toMatchSnapshot();
+  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
 });
 
 test('normalizeEditorElement do not remove children', () => {

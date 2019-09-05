@@ -31,7 +31,6 @@ import {
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
-  invariantElementChildrenIsDefined,
   invariantElementChildIsString,
 } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
@@ -179,16 +178,14 @@ function useEditorCommand<T extends EditorElement>(
           if (!invariantEditorSelectionIsDefined(draft.selection)) return;
           invariantEditorSelectionIsCollapsed(draft.selection);
           const { path, text } = command;
-          const { children } = getParentElementByPath(
-            draft.element,
-            path,
-          ) as Draft<EditorElement>;
-          if (!invariantElementChildrenIsDefined(children)) return;
+          const parent = getParentElementByPath(draft.element, path) as Draft<
+            EditorElement
+          >;
           const childIndex = path.slice(-1)[0];
-          const child = children[childIndex];
+          const child = parent.children[childIndex];
           if (!invariantElementChildIsString(child)) return;
           const offset = text.length - child.length;
-          children[childIndex] = text;
+          parent.children[childIndex] = text;
           draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
           draft.selection.focus[draft.selection.focus.length - 1] += offset;
           break;

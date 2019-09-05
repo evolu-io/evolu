@@ -10,19 +10,19 @@ export type EditorElementChild = EditorElement | string;
  * EditorElement is the base model for all other editor elements.
  */
 export interface EditorElement {
-  readonly children?: readonly (EditorElementChild)[] | undefined;
+  readonly children: readonly (EditorElementChild)[];
 }
 
 interface EditorReactDOMElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
-  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
+  readonly children: readonly (EditorReactDOMElement | string)[];
 }
 
 interface EditorReactDOMElementDIV extends EditorElement {
   readonly tag?: 'div';
   readonly props?: ReturnType<ReactDOM['div']>['props'];
-  readonly children?: readonly (EditorReactDOMElement | string)[] | undefined;
+  readonly children: readonly (EditorReactDOMElement | string)[];
 }
 
 /**
@@ -39,38 +39,19 @@ export type EditorReactDOMElement =
       }
     >;
 
-// For nice DX, renderElement element arg is an union of all nested elements.
-// Unfortunately, infinite recursion is not possible with TypeScript.
-// To be precise, it's possible for recreated trees (that's how DeepReadonly or
-// Immutable types work), or via hack:
-// https://medium.com/@michael.a.hensler/why-be-finite-when-you-can-be-infinite-e84d82865074
-// But that hack should not be used:
-// https://github.com/Microsoft/TypeScript/issues/24016#issuecomment-428745727
-// https://stackoverflow.com/questions/51480502/recursive-version-of-unpackedt-in-typescript/51481332#51481332
-// Nevermind, finite recursion is good enough for most cases.
-// For really elbow deep nesting..., I bet custom renderElement can be used.
-// Or something like https://github.com/dsherret/ts-morph
-// Feel free to send PR.
-type OmitString<T> = T extends string ? never : T;
-type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
-type UnionFromElementAndItsChildren<T extends EditorElement> =
-  | T
-  | UnionFromAray<T['children']>;
-// For reason beyond my imagination, UnionFromElementAndItsChildren must be aliased,
-// otherwise 'Union<Union<Union<T>>>' does not work.
-// ..
-type Union<T> = UnionFromElementAndItsChildren<T>;
-// Max allowed nesting, otherwise:
-// "Type instantiation is excessively deep and possibly infinite.ts(2589)"
-// But it can even enlarged somehow:
-// https://github.com/microsoft/TypeScript/issues/30188#issuecomment-478938437
-// But I am pretty sure 6 is good enough.
-export type DeepFiniteNestedUnion<T> = Union<
-  Union<Union<Union<Union<Union<T>>>>>
->;
+// TODO: Use recursive type references.
+// https://github.com/steida/slad/issues/28
+// https://github.com/microsoft/TypeScript/pull/33050
+// It's possible to hack it somehow but I prefer clean solution.
+// type OmitString<T> = T extends string ? never : T;
+// type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
+type UnionFromTypeAndItsChildrenWithoutStringRecursive<
+  T extends EditorElement
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+> = any;
 
 export type RenderEditorElement<T extends EditorElement> = (
-  element: DeepFiniteNestedUnion<T>,
+  element: UnionFromTypeAndItsChildrenWithoutStringRecursive<T>,
   children: ReactNode,
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
@@ -139,13 +120,6 @@ export function getParentElementByPath(
     parent = maybeElement;
   });
   return element;
-}
-
-export function invariantElementChildrenIsDefined(
-  children: EditorElement['children'],
-): children is NonNullable<EditorElement['children']> {
-  invariant(children != null, 'EditorElement children is not defined.');
-  return true;
 }
 
 export function invariantElementChildIsString(

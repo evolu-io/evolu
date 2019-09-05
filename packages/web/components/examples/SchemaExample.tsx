@@ -9,7 +9,6 @@ import {
   createCustomEditorState,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
-import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { defaultEditorProps } from './_defaultEditorProps';
@@ -23,12 +22,12 @@ interface SchemaElement extends EditorElement {
   type: string;
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
-  children?: (SchemaElement | string)[] | undefined;
+  children: (SchemaElement | string)[];
 }
 
 // For images and the other void elements.
 interface SchemaVoidElement extends SchemaElement {
-  children: undefined;
+  children: [];
 }
 
 interface SchemaHeadingElement extends SchemaElement {
@@ -124,7 +123,7 @@ export const initialSchemaRootElement: SchemaRootElement = {
       alt: 'Square placeholder image 80px',
       width: 80,
       height: 80,
-      children: undefined,
+      children: [],
     },
   ],
 };
@@ -164,8 +163,10 @@ export function useSchemaRenderElement() {
                 height={element.height}
               />
             );
-          default:
-            assertNever(element);
+          default: {
+            // https://github.com/steida/slad/issues/28
+            // assertNever(element);
+          }
         }
       };
 
@@ -231,25 +232,27 @@ export function SchemaExample({
         renderElement={renderElement}
       />
       {logEditorStateElement}
-      <button
-        type="button"
-        className="focus"
-        onClick={handleFocusClick}
-        tabIndex={editorState.hasFocus ? 0 : -1}
-        disabled={editorState.hasFocus}
-      >
-        focus
-      </button>
-      <button
-        type="button"
-        className="blur"
-        // Do not steal focus. Force blur.
-        onMouseDown={handleBlurMouseDown}
-        tabIndex={!editorState.hasFocus ? 0 : -1}
-        disabled={!editorState.hasFocus}
-      >
-        blur
-      </button>
+      <div style={{ marginBottom: 24 }}>
+        <button
+          type="button"
+          className="focus"
+          onClick={handleFocusClick}
+          tabIndex={editorState.hasFocus ? 0 : -1}
+          disabled={editorState.hasFocus}
+        >
+          focus
+        </button>
+        <button
+          type="button"
+          className="blur"
+          // Do not steal focus. Force blur.
+          onMouseDown={handleBlurMouseDown}
+          tabIndex={!editorState.hasFocus ? 0 : -1}
+          disabled={!editorState.hasFocus}
+        >
+          blur
+        </button>
+      </div>
     </>
   );
 }

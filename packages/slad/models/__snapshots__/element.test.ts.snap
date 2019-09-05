@@ -1,6 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`normalizeEditorElement do not add children 1`] = `Object {}`;
+exports[`normalizeEditorElement do not add children 1`] = `
+Object {
+  "children": Array [],
+}
+`;
 
 exports[`normalizeEditorElement do not remove children 1`] = `
 Object {
@@ -34,7 +38,9 @@ Object {
         Object {
           "children": Array [
             "a",
-            Object {},
+            Object {
+              "children": Array [],
+            },
             "bc",
           ],
         },

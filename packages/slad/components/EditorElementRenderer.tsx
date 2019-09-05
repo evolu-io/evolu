@@ -18,7 +18,6 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const setNodePathRef = useSetNodeEditorPathRef(path);
 
     const children = useMemo(() => {
-      if (element.children == null) return null;
       return element.children.map((child, index) => {
         const childPath: EditorPath = [...path, index];
         if (typeof child === 'string') {

@@ -24,6 +24,7 @@ const initialEditorState = createEditorState({
           width: 80,
           height: 80,
         },
+        children: [],
       },
     ],
   },
