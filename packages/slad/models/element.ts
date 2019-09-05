@@ -39,19 +39,21 @@ export type EditorReactDOMElement =
       }
     >;
 
-// TODO: Use recursive type references.
+// TODO: Use upcoming recursive type references.
 // https://github.com/steida/slad/issues/28
 // https://github.com/microsoft/TypeScript/pull/33050
-// It's possible to hack it somehow but I prefer clean solution.
-// type OmitString<T> = T extends string ? never : T;
-// type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
-type UnionFromTypeAndItsChildrenWithoutStringRecursive<
-  T extends EditorElement
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-> = any;
+// This is hacky workaround:
+type OmitString<T> = T extends string ? never : T;
+type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
+type UnionFromElementAndItsChildren<T extends EditorElement> =
+  | T
+  | UnionFromAray<T['children']>;
+// @ts-ignore Do not fix it, wait for recursive type references.
+type Union<T> = UnionFromElementAndItsChildren<T>;
+type DeepFiniteNestedUnion<T> = Union<Union<Union<Union<Union<Union<T>>>>>>;
 
 export type RenderEditorElement<T extends EditorElement> = (
-  element: UnionFromTypeAndItsChildrenWithoutStringRecursive<T>,
+  element: DeepFiniteNestedUnion<T>,
   children: ReactNode,
   ref: SetNodeEditorPathRef,
 ) => ReactNode;

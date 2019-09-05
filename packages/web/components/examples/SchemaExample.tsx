@@ -9,6 +9,7 @@ import {
   createCustomEditorState,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
+import { assertNever } from 'assert-never';
 import { Text } from '../Text';
 import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { defaultEditorProps } from './_defaultEditorProps';
@@ -164,8 +165,7 @@ export function useSchemaRenderElement() {
               />
             );
           default: {
-            // https://github.com/steida/slad/issues/28
-            // assertNever(element);
+            assertNever(element);
           }
         }
       };
