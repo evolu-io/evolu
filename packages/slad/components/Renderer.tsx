@@ -42,8 +42,6 @@ export function Renderer<T extends EditorReactDOMElement>({
       );
     });
   if (renderElement) return <>{renderElement(element, children, () => {})}</>;
-  // It seems nobody knows how to make nested union from ReactDOM type.
-  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21651
-  // @ts-ignore createElement nor EditorReactDOMElement types are correct.
+  // @ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21651
   return createElement(element.tag || 'div', element.props, children);
 }

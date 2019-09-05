@@ -6,6 +6,7 @@ import {
   RenderEditorElement,
   useLogEditorState,
   EditorSelection,
+  createCustomEditorState,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
@@ -181,16 +182,18 @@ export function useSchemaRenderElement() {
 
 export function SchemaExample({
   autoFocus = false,
-  initialSelection = undefined,
+  initialSelection = null,
 }: {
   autoFocus?: boolean;
-  initialSelection?: EditorSelection;
+  initialSelection?: EditorSelection | null;
 }) {
-  const [editorState, setEditorState] = useState<SchemaEditorState>({
-    element: initialSchemaRootElement,
-    hasFocus: autoFocus,
-    selection: initialSelection,
-  });
+  const [editorState, setEditorState] = useState(
+    createCustomEditorState<SchemaRootElement>({
+      element: initialSchemaRootElement,
+      hasFocus: autoFocus,
+      selection: initialSelection,
+    }),
+  );
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,

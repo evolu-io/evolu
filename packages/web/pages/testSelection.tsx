@@ -1,25 +1,33 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, EditorState, useLogEditorState, EditorSelection } from 'slad';
+import {
+  Editor,
+  EditorState,
+  useLogEditorState,
+  EditorSelection,
+  createEditorState,
+} from 'slad';
+
+const initialEditorState = createEditorState({
+  element: {
+    children: [
+      {
+        props: {
+          style: { fontSize: '24px' },
+        },
+        children: ['heading'],
+      },
+      {
+        props: {
+          style: { fontSize: '16px' },
+        },
+        children: ['paragraph'],
+      },
+    ],
+  },
+});
 
 function TestSelection() {
-  const [editorState, setEditorState] = useState<EditorState>({
-    element: {
-      children: [
-        {
-          props: {
-            style: { fontSize: '24px' },
-          },
-          children: ['heading'],
-        },
-        {
-          props: {
-            style: { fontSize: '16px' },
-          },
-          children: ['paragraph'],
-        },
-      ],
-    },
-  });
+  const [editorState, setEditorState] = useState(initialEditorState);
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,
@@ -33,7 +41,7 @@ function TestSelection() {
     [logEditorState],
   );
 
-  function select(selection: EditorSelection | undefined) {
+  function select(selection: EditorSelection | null) {
     handleEditorChange({ ...editorState, hasFocus: true, selection });
   }
 
@@ -99,7 +107,7 @@ function TestSelection() {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            select(undefined);
+            select(null);
           }}
         >
           unselect

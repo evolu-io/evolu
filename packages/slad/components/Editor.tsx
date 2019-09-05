@@ -112,9 +112,9 @@ function useDebugNodesEditorPaths(
 }
 
 function useEditorStateHasFocusOnDiv(
-  hasFocus: boolean | undefined,
+  hasFocus: boolean,
   divRef: RefObject<HTMLDivElement>,
-  blurWithinWindow: boolean | undefined,
+  tabLostFocus: boolean,
 ) {
   const hadFocus = usePrevious(hasFocus);
   useEffect(() => {
@@ -125,20 +125,19 @@ function useEditorStateHasFocusOnDiv(
     if (!hadFocus && hasFocus) {
       if (!divHasFocus) div.focus();
     } else if (hadFocus && !hasFocus) {
-      // When blurring occurs within the window (as opposed to clicking to
-      // another tab or window), we do not call blur, so when window is
-      // focused back, the editor will not lose its focus.
-      if (divHasFocus && !blurWithinWindow) div.blur();
+      // Do not call blur when tab lost focus so editor can be focused back.
+      // For visual test, click to editor then press cmd-tab twice.
+      // Editor selection must be preserved.
+      if (divHasFocus && !tabLostFocus) div.blur();
     }
-  }, [blurWithinWindow, divRef, hadFocus, hasFocus]);
+  }, [tabLostFocus, divRef, hadFocus, hasFocus]);
 }
 
 type EditorCommand = Immutable<
   | { type: 'focus' }
-  | { type: 'blur'; blurWithinWindow: boolean | undefined }
-  | { type: 'select'; editorSelection: EditorSelection | undefined }
+  | { type: 'blur'; tabLostFocus: boolean }
+  | { type: 'select'; editorSelection: EditorSelection | null }
   | { type: 'writeTextToCollapsedSelection'; path: EditorPath; text: string }
-  // | { type: 'setValueElement'; element: Element }
 >;
 
 function useEditorCommand<T extends EditorElement>(
@@ -158,17 +157,13 @@ function useEditorCommand<T extends EditorElement>(
       switch (command.type) {
         case 'focus': {
           draft.hasFocus = true;
-          delete draft.blurWithinWindow;
+          draft.tabLostFocus = false;
           break;
         }
 
         case 'blur': {
           draft.hasFocus = false;
-          if (command.blurWithinWindow) {
-            draft.blurWithinWindow = command.blurWithinWindow;
-          } else {
-            delete draft.blurWithinWindow;
-          }
+          draft.tabLostFocus = command.tabLostFocus;
           break;
         }
 
@@ -176,11 +171,7 @@ function useEditorCommand<T extends EditorElement>(
           const { editorSelection } = command;
           if (editorSelectionsAreEqual(editorSelection, draft.selection))
             return;
-          if (editorSelection) {
-            draft.selection = editorSelection;
-          } else {
-            delete draft.selection;
-          }
+          draft.selection = editorSelection;
           break;
         }
 
@@ -213,6 +204,38 @@ function useEditorCommand<T extends EditorElement>(
   return commandRef.current;
 }
 
+export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
+  readonly element: Immutable<T>;
+  readonly selection: EditorSelection | null;
+  readonly hasFocus: boolean;
+  readonly tabLostFocus: boolean;
+}
+
+export function createEditorState({
+  element = { children: [''] },
+  selection = null,
+  hasFocus = false,
+  tabLostFocus = false,
+}: Partial<EditorState<EditorReactDOMElement>>): EditorState<
+  EditorReactDOMElement
+> {
+  return { element, selection, hasFocus, tabLostFocus };
+}
+
+// It should be possible to have one generic createEditorState factory,
+// but I don't know how to type it. Remember, when element is untyped object,
+// it has to return EditorState<EditorReactDOMElement> to match EditorState.
+export function createCustomEditorState<T extends EditorElement>({
+  element,
+  selection = null,
+  hasFocus = false,
+  tabLostFocus = false,
+}: Partial<EditorState<T>> & {
+  element: T;
+}): EditorState<T> {
+  return { element, selection, hasFocus, tabLostFocus };
+}
+
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'
@@ -224,13 +247,6 @@ type UsefulReactDivAtttributes = Pick<
   | 'style'
   | 'tabIndex'
 >;
-
-export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
-  readonly element: Immutable<T>;
-  readonly selection?: EditorSelection;
-  readonly hasFocus?: boolean;
-  readonly blurWithinWindow?: boolean;
-}
 
 export interface EditorProps<T extends EditorElement = EditorElement>
   extends UsefulReactDivAtttributes {
@@ -261,15 +277,14 @@ export function Editor<T extends EditorElement>({
   useEditorStateHasFocusOnDiv(
     editorState.hasFocus,
     divRef,
-    editorState.blurWithinWindow,
+    editorState.tabLostFocus,
   );
 
   const command = useEditorCommand<T>(editorState, onChange);
 
-  const getSelection = useCallback((): Selection | undefined => {
+  const getSelection = useCallback((): Selection | null => {
     const doc = divRef.current && divRef.current.ownerDocument;
-    if (doc == null) return;
-    return doc.getSelection() || undefined;
+    return doc && doc.getSelection();
   }, []);
 
   // Map document selection to editor selection.
@@ -377,7 +392,7 @@ export function Editor<T extends EditorElement>({
 
   useEffect(() => {
     if (divRef.current == null) return;
-    // The idea is to let browser do its things for writting text.
+    // The idea is to let browser do its things for writing text.
     // It's neccessary for IME anyway, as described in DraftJS.
     // If neccessary, fix DOM manually.
     const observer = new MutationObserver(mutationRecords => {
@@ -436,11 +451,12 @@ export function Editor<T extends EditorElement>({
   }, [command, ensureSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
-    const blurWithinWindow =
-      divRef.current &&
-      divRef.current.ownerDocument &&
-      divRef.current.ownerDocument.activeElement === divRef.current;
-    command({ type: 'blur', blurWithinWindow: blurWithinWindow || undefined });
+    const tabLostFocus =
+      (divRef.current &&
+        divRef.current.ownerDocument &&
+        divRef.current.ownerDocument.activeElement === divRef.current) ||
+      false;
+    command({ type: 'blur', tabLostFocus });
   }, [command]);
 
   return useMemo(() => {

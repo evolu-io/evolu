@@ -13,8 +13,8 @@ export function editorSelectionIsCollapsed(
 }
 
 export function editorSelectionsAreEqual(
-  selection1: EditorSelection | undefined,
-  selection2: EditorSelection | undefined,
+  selection1: EditorSelection | null,
+  selection2: EditorSelection | null,
 ): boolean {
   if (selection1 === selection2) return true;
   if (selection1 == null || selection2 == null) return false;
@@ -25,15 +25,15 @@ export function editorSelectionsAreEqual(
 }
 
 export function mapSelectionToEditorSelection(
-  selection: Selection | undefined,
+  selection: Selection | null,
   nodesEditorPathsMap: NodesEditorPathsMap,
-): EditorSelection | undefined {
-  if (selection == null) return undefined;
+): EditorSelection | null {
+  if (selection == null) return null;
   const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-  if (!anchorNode || !focusNode) return undefined;
+  if (!anchorNode || !focusNode) return null;
   const anchorPath = nodesEditorPathsMap.get(anchorNode as Node);
   const focusPath = nodesEditorPathsMap.get(focusNode as Node);
-  if (!anchorPath || !focusPath) return undefined;
+  if (!anchorPath || !focusPath) return null;
   return {
     anchor: [...anchorPath, anchorOffset],
     focus: [...focusPath, focusOffset],
@@ -48,7 +48,7 @@ export function editorSelectionIsBackward(selection: EditorSelection): boolean {
 }
 
 export function invariantEditorSelectionIsDefined(
-  selection: EditorSelection | undefined,
+  selection: EditorSelection | null,
 ): selection is EditorSelection {
   invariant(selection != null, 'EditorSelection is not defined.');
   return true;

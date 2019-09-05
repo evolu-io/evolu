@@ -4,36 +4,19 @@ import {
   EditorState,
   useLogEditorState,
   Editor,
-  EditorReactDOMElement,
+  createEditorState,
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 
-export const initialElement: EditorReactDOMElement = {
-  children: [
-    'g',
-    // {
-    //   props: {
-    //     style: { fontSize: '24px' },
-    //   },
-    //   // children: [''],
-    //   children: ['foo'],
-    // },
-    // {
-    //   props: {
-    //     style: { fontSize: '16px' },
-    //   },
-    //   children: ['paragraph'],
-    // },
-  ],
-};
+const initialEditorState = createEditorState({
+  element: {
+    children: ['g'],
+  },
+});
 
 function Index() {
-  const [editorState, setEditorState] = useState<EditorState>({
-    element: initialElement,
-    // hasFocus: true,
-    // selection: { anchor: [0, 0, 0], focus: [0, 0, 2] },
-  });
+  const [editorState, setEditorState] = useState(initialEditorState);
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,

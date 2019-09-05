@@ -34,7 +34,7 @@ exports[`select 1`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -108,7 +108,7 @@ exports[`select 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -118,7 +118,7 @@ exports[`select 2`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -192,7 +192,7 @@ exports[`select 3`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -202,7 +202,7 @@ exports[`select 3`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -212,7 +212,7 @@ exports[`select 3`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -286,7 +286,7 @@ exports[`select 4`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -296,7 +296,7 @@ exports[`select 4`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -306,7 +306,7 @@ exports[`select 4`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -316,7 +316,7 @@ exports[`select 4`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -390,7 +390,7 @@ exports[`select 5`] = `
     >
       ·4·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -400,7 +400,7 @@ exports[`select 5`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -410,7 +410,7 @@ exports[`select 5`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -420,7 +420,7 @@ exports[`select 5`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -430,7 +430,7 @@ exports[`select 5`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -504,7 +504,7 @@ exports[`select 6`] = `
     >
       ·5·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[1,0,9],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[1,0,9],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -514,7 +514,7 @@ exports[`select 6`] = `
     >
       ·4·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -524,7 +524,7 @@ exports[`select 6`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -534,7 +534,7 @@ exports[`select 6`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -544,7 +544,7 @@ exports[`select 6`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -554,7 +554,7 @@ exports[`select 6`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />

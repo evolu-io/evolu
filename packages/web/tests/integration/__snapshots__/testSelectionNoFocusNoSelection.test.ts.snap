@@ -34,7 +34,7 @@ exports[`tab then key arrow right 1`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -44,7 +44,7 @@ exports[`tab then key arrow right 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true}·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -54,7 +54,7 @@ exports[`tab then key arrow right 1`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -96,7 +96,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -106,7 +106,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -116,7 +116,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true}·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -126,7 +126,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·0·
       · ·
-      ·{}·
+      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />

@@ -31,7 +31,7 @@ exports[`insert text at end 1`] = `
     >
       ·5·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,4],"focus":[0,4]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,4],"focus":[0,4]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -41,7 +41,7 @@ exports[`insert text at end 1`] = `
     >
       ·4·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,3],"focus":[0,3]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,3],"focus":[0,3]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -51,7 +51,7 @@ exports[`insert text at end 1`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -61,7 +61,7 @@ exports[`insert text at end 1`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -71,7 +71,7 @@ exports[`insert text at end 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -81,7 +81,7 @@ exports[`insert text at end 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true}·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -120,7 +120,7 @@ exports[`insert text at start then middle 1`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -130,7 +130,7 @@ exports[`insert text at start then middle 1`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -140,7 +140,7 @@ exports[`insert text at start then middle 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -150,7 +150,7 @@ exports[`insert text at start then middle 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true}·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -189,7 +189,7 @@ exports[`remove text 1`] = `
     >
       ·3·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -199,7 +199,7 @@ exports[`remove text 1`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -209,7 +209,7 @@ exports[`remove text 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
     <br />
     <br />
@@ -219,7 +219,7 @@ exports[`remove text 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true}·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
     <br />
     <br />

@@ -5,6 +5,7 @@ import {
   useLogEditorState,
   EditorSelection,
   EditorReactDOMElement,
+  createEditorState,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
@@ -29,17 +30,19 @@ export const initialEditorReactDOMElement: EditorReactDOMElement = {
 export function BasicExample({
   autoFocus = false,
   initialElement = initialEditorReactDOMElement,
-  initialSelection = undefined,
+  initialSelection = null,
 }: {
   autoFocus?: boolean;
   initialElement?: EditorReactDOMElement;
-  initialSelection?: EditorSelection;
+  initialSelection?: EditorSelection | null;
 }) {
-  const [editorState, setEditorState] = useState<EditorState>({
-    hasFocus: autoFocus,
-    element: initialElement,
-    selection: initialSelection,
-  });
+  const [editorState, setEditorState] = useState(
+    createEditorState({
+      element: initialElement,
+      hasFocus: autoFocus,
+      selection: initialSelection,
+    }),
+  );
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,

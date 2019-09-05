@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Editor, EditorState, normalizeEditorElement } from 'slad';
+import { Editor, normalizeEditorElement, createEditorState } from 'slad';
+
+const initialEditorState = createEditorState({
+  element: normalizeEditorElement({
+    children: [
+      {
+        children: ['a', '', 'b'],
+      },
+    ],
+  }),
+});
 
 function TestNormalizeEditorElement() {
-  const [editorState, setEditorState] = useState<EditorState>({
-    element: normalizeEditorElement({
-      children: [
-        {
-          children: ['a', '', 'b'],
-        },
-      ],
-    }),
-    selection: undefined,
-    hasFocus: false,
-  });
+  const [editorState, setEditorState] = useState(initialEditorState);
 
   return <Editor editorState={editorState} onChange={setEditorState} />;
 }
