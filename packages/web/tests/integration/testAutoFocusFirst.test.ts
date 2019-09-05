@@ -16,5 +16,3 @@ test('render', async () => {
   // Open http://localhost:3000/testAutoFocusFirst, close alert,
   // check if editor still has a focus.
 });
-
-export default undefined;

@@ -35,5 +35,3 @@ test('select', async () => {
   // await page.waitFor(50);
   // await expect(await pageDom()).toMatchSnapshot();
 });
-
-export default undefined;

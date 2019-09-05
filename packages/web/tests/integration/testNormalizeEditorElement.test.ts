@@ -9,5 +9,3 @@ beforeEach(async () => {
 test('render', async () => {
   await expect(await pageDom()).toMatchSnapshot();
 });
-
-export default undefined;
