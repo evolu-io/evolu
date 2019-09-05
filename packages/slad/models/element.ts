@@ -110,10 +110,6 @@ export function getParentElementByPath(
   let parent = element;
   const pathToParent = path.slice(0, -1);
   pathToParent.forEach(index => {
-    if (parent.children == null) {
-      invariant(false, 'getParentElementByPath: Children can not be null.');
-      return;
-    }
     const maybeElement = parent.children[index];
     if (typeof maybeElement === 'string') {
       invariant(false, 'getParentElementByPath: Parent can not be string.');
@@ -121,7 +117,7 @@ export function getParentElementByPath(
     }
     parent = maybeElement;
   });
-  return element;
+  return parent;
 }
 
 export function invariantElementChildIsString(
