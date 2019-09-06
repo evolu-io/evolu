@@ -1,13 +1,13 @@
 import React, { useState, useCallback, ReactNode } from 'react';
 import {
+  createCustomEditorState,
   Editor,
-  EditorState,
   EditorElement,
+  EditorSelection,
+  EditorState,
+  EditorText,
   RenderEditorElement,
   useLogEditorState,
-  EditorSelection,
-  createCustomEditorState,
-  EditorText,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
@@ -19,10 +19,9 @@ import { defaultEditorProps } from './_defaultEditorProps';
 // Immutablity is enforced via EditorState once for all.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-// Note there is no special props property. Flat interfaces can be extended better.
 interface SchemaElement extends EditorElement {
   type: string;
-  // For css-in-js, foo-bla is better than inline fooBla style.
+  // For css-in-js via styled-jsx, foo-bla is better than fooBla.
   style?: StandardPropertiesHyphen;
   children: (SchemaElement | EditorText)[];
 }
@@ -72,7 +71,7 @@ interface SchemaImageElement extends SchemaVoidElement {
   height: number;
 }
 
-interface SchemaRootElement extends SchemaElement {
+export interface SchemaRootElement extends SchemaElement {
   type: 'document';
   children: (
     | SchemaHeadingElement
@@ -83,52 +82,55 @@ interface SchemaRootElement extends SchemaElement {
 
 type SchemaEditorState = EditorState<SchemaRootElement>;
 
-export const initialSchemaRootElement: SchemaRootElement = {
-  type: 'document',
-  children: [
-    {
-      type: 'heading',
-      style: { 'font-size': '24px' },
-      children: [{ text: 'heading' }],
-    },
-    {
-      type: 'paragraph',
-      style: { 'font-size': '16px' },
-      children: [{ text: 'paragraph' }],
-    },
-    {
-      type: 'list',
-      style: { margin: '16px' },
-      children: [
-        {
-          type: 'listitem',
-          style: { 'font-size': '16px' },
-          children: [
-            { text: 'listitem' },
-            // List can be nested. With type checking of course.
-            // {
-            //   type: 'list',
-            //   children: [
-            //     {
-            //       type: 'listitem',
-            //       children: [{ text: 'nested' }],
-            //     },
-            //   ],
-            // },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'image',
-      src: 'https://via.placeholder.com/80',
-      alt: 'Square placeholder image 80px',
-      width: 80,
-      height: 80,
-      children: [],
-    },
-  ],
-};
+// Export for testRenderer.
+export const initialEditorState = createCustomEditorState<SchemaRootElement>({
+  element: {
+    type: 'document',
+    children: [
+      {
+        type: 'heading',
+        style: { 'font-size': '24px' },
+        children: [{ text: 'heading' }],
+      },
+      {
+        type: 'paragraph',
+        style: { 'font-size': '16px' },
+        children: [{ text: 'paragraph' }],
+      },
+      {
+        type: 'list',
+        style: { margin: '16px' },
+        children: [
+          {
+            type: 'listitem',
+            style: { 'font-size': '16px' },
+            children: [
+              { text: 'listitem' },
+              // List can be nested. With type checking of course.
+              // {
+              //   type: 'list',
+              //   children: [
+              //     {
+              //       type: 'listitem',
+              //       children: [{ text: 'nested' }],
+              //     },
+              //   ],
+              // },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'image',
+        src: 'https://via.placeholder.com/80',
+        alt: 'Square placeholder image 80px',
+        width: 80,
+        height: 80,
+        children: [],
+      },
+    ],
+  },
+});
 
 export function useSchemaRenderElement() {
   const getStyledJsx = useStyledJsx();
@@ -189,13 +191,11 @@ export function SchemaExample({
   autoFocus?: boolean;
   initialSelection?: EditorSelection | null;
 }) {
-  const [editorState, setEditorState] = useState(
-    createCustomEditorState<SchemaRootElement>({
-      element: initialSchemaRootElement,
-      hasFocus: autoFocus,
-      selection: initialSelection,
-    }),
-  );
+  const [editorState, setEditorState] = useState({
+    ...initialEditorState,
+    ...(autoFocus != null && { hasFocus: autoFocus }),
+    ...(initialSelection != null && { selection: initialSelection }),
+  });
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,

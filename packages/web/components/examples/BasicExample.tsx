@@ -4,45 +4,49 @@ import {
   EditorState,
   useLogEditorState,
   EditorSelection,
-  EditorReactDOMElement,
   createEditorState,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-export const initialEditorReactDOMElement: EditorReactDOMElement = {
-  children: [
-    {
-      props: {
-        style: { fontSize: '24px' },
+// Export for testRenderer.
+export const initialEditorState = createEditorState({
+  element: {
+    children: [
+      {
+        props: {
+          style: { fontSize: '24px' },
+        },
+        children: [{ text: 'heading' }],
       },
-      children: [{ text: 'heading' }],
-    },
-    {
-      props: {
-        style: { fontSize: '16px' },
+      {
+        props: {
+          style: { fontSize: '16px' },
+        },
+        children: [{ text: 'paragraph' }],
       },
-      children: [{ text: 'paragraph' }],
-    },
-  ],
-};
+    ],
+  },
+});
 
 export function BasicExample({
   autoFocus = false,
-  initialElement = initialEditorReactDOMElement,
   initialSelection = null,
+  onlyText = false,
 }: {
   autoFocus?: boolean;
-  initialElement?: EditorReactDOMElement;
   initialSelection?: EditorSelection | null;
+  onlyText?: boolean;
 }) {
-  const [editorState, setEditorState] = useState(
-    createEditorState({
-      element: initialElement,
-      hasFocus: autoFocus,
-      selection: initialSelection,
-    }),
-  );
+  const [editorState, setEditorState] = useState(() => {
+    // Run createEditorState again to add ids to element.
+    return createEditorState({
+      ...initialEditorState,
+      ...(autoFocus != null && { hasFocus: autoFocus }),
+      ...(initialSelection != null && { selection: initialSelection }),
+      ...(onlyText && { element: { children: [{ text: 'a' }] } }),
+    });
+  });
 
   const [logEditorState, logEditorStateElement] = useLogEditorState(
     editorState,
