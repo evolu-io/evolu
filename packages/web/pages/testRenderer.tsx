@@ -17,7 +17,7 @@ function TestRenderer() {
       />
       <Renderer
         element={{
-          children: [''],
+          children: [{ text: '' }],
         }}
       />
     </div>

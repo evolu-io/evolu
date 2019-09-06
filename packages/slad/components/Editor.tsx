@@ -31,7 +31,9 @@ import {
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
-  invariantElementChildIsString,
+  invariantIsEditorText,
+  EditorElementChild,
+  isEditorText,
 } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -58,8 +60,8 @@ function useDebugNodesEditorPaths(
       });
       debug('nodesEditorPathsMap after render', nodes);
 
-      const countNodes = (node: EditorElement | string, count = 0) => {
-        if (typeof node === 'string') return count + 1;
+      const countNodes = (node: EditorElementChild, count = 0) => {
+        if (isEditorText(node)) return count + 1;
         let childrenCount = 0;
         if (node.children)
           node.children.forEach(child => {
@@ -149,9 +151,9 @@ function useEditorCommand<T extends EditorElement>(
           >;
           const childIndex = path.slice(-1)[0];
           const child = parent.children[childIndex];
-          if (!invariantElementChildIsString(child)) return;
-          const offset = text.length - child.length;
-          parent.children[childIndex] = text;
+          if (!invariantIsEditorText(child)) return;
+          const offset = text.length - child.text.length;
+          parent.children[childIndex] = { ...child, text };
           draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
           draft.selection.focus[draft.selection.focus.length - 1] += offset;
           break;
@@ -175,7 +177,7 @@ export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
 }
 
 export function createEditorState({
-  element = { children: [''] },
+  element = { children: [{ text: '' }] },
   selection = null,
   hasFocus = false,
   tabLostFocus = false,

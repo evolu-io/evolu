@@ -27,7 +27,7 @@ exports[`insert text at end 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['ahoj']}"
+      title="{'children':[{'text':'ahoj'}]}"
     >
       ·5·
       · ·
@@ -37,7 +37,7 @@ exports[`insert text at end 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['aho']}"
+      title="{'children':[{'text':'aho'}]}"
     >
       ·4·
       · ·
@@ -47,7 +47,7 @@ exports[`insert text at end 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['ah']}"
+      title="{'children':[{'text':'ah'}]}"
     >
       ·3·
       · ·
@@ -57,7 +57,7 @@ exports[`insert text at end 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·2·
       · ·
@@ -67,7 +67,7 @@ exports[`insert text at end 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -77,7 +77,7 @@ exports[`insert text at end 1`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·0·
       · ·
@@ -116,7 +116,7 @@ exports[`insert text at start then middle 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['bla']}"
+      title="{'children':[{'text':'bla'}]}"
     >
       ·3·
       · ·
@@ -126,7 +126,7 @@ exports[`insert text at start then middle 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['ba']}"
+      title="{'children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
@@ -136,7 +136,7 @@ exports[`insert text at start then middle 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -146,7 +146,7 @@ exports[`insert text at start then middle 1`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·0·
       · ·
@@ -185,7 +185,7 @@ exports[`remove text 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['b']}"
+      title="{'children':[{'text':'b'}]}"
     >
       ·3·
       · ·
@@ -195,7 +195,7 @@ exports[`remove text 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['ba']}"
+      title="{'children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
@@ -205,7 +205,7 @@ exports[`remove text 1`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -215,7 +215,7 @@ exports[`remove text 1`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':['a']}"
+      title="{'children':[{'text':'a'}]}"
     >
       ·0·
       · ·

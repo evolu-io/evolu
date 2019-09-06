@@ -30,7 +30,7 @@ exports[`select 1`] = `
   >
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -104,7 +104,7 @@ exports[`select 2`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -114,7 +114,7 @@ exports[`select 2`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -188,7 +188,7 @@ exports[`select 3`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -198,7 +198,7 @@ exports[`select 3`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -208,7 +208,7 @@ exports[`select 3`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -282,7 +282,7 @@ exports[`select 4`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -292,7 +292,7 @@ exports[`select 4`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -302,7 +302,7 @@ exports[`select 4`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -312,7 +312,7 @@ exports[`select 4`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -386,7 +386,7 @@ exports[`select 5`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·4·
       · ·
@@ -396,7 +396,7 @@ exports[`select 5`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -406,7 +406,7 @@ exports[`select 5`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -416,7 +416,7 @@ exports[`select 5`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -426,7 +426,7 @@ exports[`select 5`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -500,7 +500,7 @@ exports[`select 6`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·5·
       · ·
@@ -510,7 +510,7 @@ exports[`select 6`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·4·
       · ·
@@ -520,7 +520,7 @@ exports[`select 6`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -530,7 +530,7 @@ exports[`select 6`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -540,7 +540,7 @@ exports[`select 6`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -550,7 +550,7 @@ exports[`select 6`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·

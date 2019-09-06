@@ -15,7 +15,9 @@ Object {
 exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
   "children": Array [
-    "",
+    Object {
+      "text": "",
+    },
   ],
 }
 `;
@@ -23,7 +25,9 @@ Object {
 exports[`normalizeEditorElement do not remove children 3`] = `
 Object {
   "children": Array [
-    ".",
+    Object {
+      "text": ".",
+    },
   ],
 }
 `;
@@ -31,22 +35,32 @@ Object {
 exports[`normalizeEditorElement merges adjacent strings 1`] = `
 Object {
   "children": Array [
-    "ab",
+    Object {
+      "text": "ab",
+    },
     Object {
       "children": Array [
-        "abc",
+        Object {
+          "text": "abc",
+        },
         Object {
           "children": Array [
-            "a",
+            Object {
+              "text": "a",
+            },
             Object {
               "children": Array [],
             },
-            "bc",
+            Object {
+              "text": "bc",
+            },
           ],
         },
       ],
     },
-    "ab",
+    Object {
+      "text": "ab",
+    },
   ],
 }
 `;

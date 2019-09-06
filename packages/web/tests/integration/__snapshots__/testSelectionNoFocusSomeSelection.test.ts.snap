@@ -30,7 +30,7 @@ exports[`render then tab then key arrow right 1`] = `
   >
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -72,7 +72,7 @@ exports[`render then tab then key arrow right 2`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -82,7 +82,7 @@ exports[`render then tab then key arrow right 2`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -124,7 +124,7 @@ exports[`render then tab then key arrow right 3`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -134,7 +134,7 @@ exports[`render then tab then key arrow right 3`] = `
     <br />
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -144,7 +144,7 @@ exports[`render then tab then key arrow right 3`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·

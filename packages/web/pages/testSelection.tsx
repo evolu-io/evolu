@@ -14,13 +14,13 @@ const initialEditorState = createEditorState({
         props: {
           style: { fontSize: '24px' },
         },
-        children: ['heading'],
+        children: [{ text: 'heading' }],
       },
       {
         props: {
           style: { fontSize: '16px' },
         },
-        children: ['paragraph'],
+        children: [{ text: 'paragraph' }],
       },
     ],
   },

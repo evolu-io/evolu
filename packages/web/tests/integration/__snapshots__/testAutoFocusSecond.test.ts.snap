@@ -36,7 +36,7 @@ exports[`render 1`] = `
   >
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':['heading']},{'props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
+      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -92,7 +92,7 @@ exports[`render 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
       · ·
@@ -102,7 +102,7 @@ exports[`render 1`] = `
     <br />
     <span
       style="color:#888"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':['heading']},{'type':'paragraph','style':{'font-size':'16px'},'children':['paragraph']},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·

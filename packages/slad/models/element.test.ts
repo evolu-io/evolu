@@ -7,21 +7,26 @@ import {
 test('normalizeEditorElement merges adjacent strings', () => {
   const element: EditorElement = {
     children: [
-      'a',
-      'b',
+      { text: 'a' },
+      { text: 'b' },
       {
         children: [
-          'a',
-          'b',
-          'c',
+          { text: 'a' },
+          { text: 'b' },
+          { text: 'c' },
           {
-            children: ['a', { children: [] }, 'b', 'c'],
+            children: [
+              { text: 'a' },
+              { children: [] },
+              { text: 'b' },
+              { text: 'c' },
+            ],
           },
         ],
       },
-      'a',
-      '',
-      'b',
+      { text: 'a' },
+      { text: '' },
+      { text: 'b' },
     ],
   };
   expect(normalizeEditorElement(element)).toMatchSnapshot();
@@ -30,22 +35,22 @@ test('normalizeEditorElement merges adjacent strings', () => {
 test('isNormalizedEditorElement', () => {
   expect(
     isNormalizedEditorElement({
-      children: ['a'],
+      children: [{ text: 'a' }],
     }),
   ).toBe(true);
   expect(
     isNormalizedEditorElement({
-      children: [''],
+      children: [{ text: '' }],
     }),
   ).toBe(true);
   expect(
     isNormalizedEditorElement({
-      children: ['a', 'b'],
+      children: [{ text: 'a' }, { text: 'b' }],
     }),
   ).toBe(false);
   expect(
     isNormalizedEditorElement({
-      children: [{ children: [''] }],
+      children: [{ children: [{ text: '' }] }],
     }),
   ).toBe(true);
 });
@@ -56,6 +61,10 @@ test('normalizeEditorElement do not add children', () => {
 
 test('normalizeEditorElement do not remove children', () => {
   expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
-  expect(normalizeEditorElement({ children: [''] })).toMatchSnapshot();
-  expect(normalizeEditorElement({ children: ['.'] })).toMatchSnapshot();
+  expect(
+    normalizeEditorElement({ children: [{ text: '' }] }),
+  ).toMatchSnapshot();
+  expect(
+    normalizeEditorElement({ children: [{ text: '.' }] }),
+  ).toMatchSnapshot();
 });

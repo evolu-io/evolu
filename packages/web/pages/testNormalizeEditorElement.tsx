@@ -5,7 +5,7 @@ const initialEditorState = createEditorState({
   element: normalizeEditorElement({
     children: [
       {
-        children: ['a', '', 'b'],
+        children: [{ text: 'a' }, { text: '' }, { text: 'b' }],
       },
     ],
   }),

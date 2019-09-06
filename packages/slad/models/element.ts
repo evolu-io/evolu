@@ -4,8 +4,6 @@ import { $Values } from 'utility-types';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
 
-export type EditorElementChild = EditorElement | string;
-
 /**
  * EditorElement is the base model for all other editor elements.
  */
@@ -13,16 +11,25 @@ export interface EditorElement {
   readonly children: readonly (EditorElementChild)[];
 }
 
+/**
+ * EditorText is object because even two same texts need own identity.
+ */
+export interface EditorText {
+  text: string;
+}
+
+export type EditorElementChild = EditorElement | EditorText;
+
 interface EditorReactDOMElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
-  readonly children: readonly (EditorReactDOMElement | string)[];
+  readonly children: readonly (EditorReactDOMElement | EditorText)[];
 }
 
 interface EditorReactDOMElementDIV extends EditorElement {
   readonly tag?: 'div';
   readonly props?: ReturnType<ReactDOM['div']>['props'];
-  readonly children: readonly (EditorReactDOMElement | string)[];
+  readonly children: readonly (EditorReactDOMElement | EditorText)[];
 }
 
 /**
@@ -42,8 +49,8 @@ export type EditorReactDOMElement =
 // TODO: Use upcoming recursive type references.
 // https://github.com/steida/slad/issues/28
 // https://github.com/microsoft/TypeScript/pull/33050
-// This is hacky workaround:
-type OmitString<T> = T extends string ? never : T;
+// This is hacky workaround. It works but there must be ts-ignore for some reason.
+type OmitString<T> = T extends EditorText ? never : T;
 type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
 type UnionFromElementAndItsChildren<T extends EditorElement> =
   | T
@@ -58,9 +65,28 @@ export type RenderEditorElement<T extends EditorElement> = (
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
+// https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
+export function isEditorText(child: EditorElementChild): child is EditorText {
+  return (child as EditorText).text !== undefined;
+}
+
+export function invariantIsEditorText(
+  child: EditorElementChild,
+): child is EditorText {
+  invariant(isEditorText(child), 'EditorElementChild is not EditorText.');
+  return true;
+}
+
+export function invariantIsEditorElement(
+  child: EditorElementChild,
+): child is EditorElement {
+  invariant(!isEditorText(child), 'EditorElementChild is not EditorElement.');
+  return true;
+}
+
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
- * except strings can be empty. Editor renders empty string as BR.
+ * except strings can be empty. Editor and Renderer render empty string as BR.
  */
 export function normalizeEditorElement(element: EditorElement): EditorElement {
   return {
@@ -69,11 +95,16 @@ export function normalizeEditorElement(element: EditorElement): EditorElement {
       ? {
           children: element.children.reduce<(EditorElementChild)[]>(
             (array, child) => {
-              if (typeof child !== 'string')
+              if (!isEditorText(child))
                 return [...array, normalizeEditorElement(child)];
-              const previousChild = array[array.length - 1];
-              if (typeof previousChild === 'string') {
-                array[array.length - 1] = previousChild + child;
+              // Always check existence in an array manually.
+              // https://stackoverflow.com/a/49450994/233902
+              const previousChild = array.length > 0 && array[array.length - 1];
+              if (previousChild && isEditorText(previousChild)) {
+                array[array.length - 1] = {
+                  ...previousChild,
+                  text: previousChild.text + child.text,
+                };
                 return array;
               }
               return [...array, child];
@@ -87,15 +118,14 @@ export function normalizeEditorElement(element: EditorElement): EditorElement {
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
- * except strings can be empty. Editor renders empty string as BR.
+ * except strings can be empty. Editor and Renderer render empty string as BR.
  */
 export function isNormalizedEditorElement({
   children,
 }: EditorElement): boolean {
-  if (children == null) return true;
   return !children.some((child, i) => {
-    if (typeof child === 'string') {
-      if (i > 0 && typeof children[i - 1] === 'string') return true;
+    if (isEditorText(child)) {
+      if (i > 0 && isEditorText(children[i - 1])) return true;
       return false;
     }
     return !isNormalizedEditorElement(child);
@@ -110,19 +140,9 @@ export function getParentElementByPath(
   let parent = element;
   const pathToParent = path.slice(0, -1);
   pathToParent.forEach(index => {
-    const maybeElement = parent.children[index];
-    if (typeof maybeElement === 'string') {
-      invariant(false, 'getParentElementByPath: Parent can not be string.');
-      return;
-    }
-    parent = maybeElement;
+    const child = parent.children[index];
+    if (!invariantIsEditorElement(child)) return;
+    parent = child;
   });
   return parent;
-}
-
-export function invariantElementChildIsString(
-  child: EditorElementChild,
-): child is string {
-  invariant(typeof child === 'string', 'EditorElementChild is not string.');
-  return true;
 }

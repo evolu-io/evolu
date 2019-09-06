@@ -3,7 +3,7 @@ import { useGetReferenceKey } from '../hooks/useGetReferenceKey';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorTextRenderer } from './EditorTextRenderer';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
-import { EditorElement } from '../models/element';
+import { EditorElement, isEditorText } from '../models/element';
 import { EditorPath, editorPathsAreEqual } from '../models/path';
 
 export interface EditorElementRendererProps {
@@ -20,11 +20,16 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const children = useMemo(() => {
       return element.children.map((child, index) => {
         const childPath: EditorPath = [...path, index];
-        if (typeof child === 'string') {
+        // TODO: Explain key must be stable to not accidentally reset component
+        // which bypass should component update.
+        if (isEditorText(child)) {
           return (
-            // Text indentity is index because we have to compare text with actual DOM.
-            // eslint-disable-next-line react/no-array-index-key
-            <EditorTextRenderer key={index} text={child} path={childPath} />
+            <EditorTextRenderer
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
+              text={child.text}
+              path={childPath}
+            />
           );
         }
         const key = getReferenceKey(child);

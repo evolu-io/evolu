@@ -7,6 +7,7 @@ import {
   useLogEditorState,
   EditorSelection,
   createCustomEditorState,
+  EditorText,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
@@ -23,7 +24,7 @@ interface SchemaElement extends EditorElement {
   type: string;
   // For css-in-js, foo-bla is better than inline fooBla style.
   style?: StandardPropertiesHyphen;
-  children: (SchemaElement | string)[];
+  children: (SchemaElement | EditorText)[];
 }
 
 // For images and the other void elements.
@@ -33,18 +34,18 @@ interface SchemaVoidElement extends SchemaElement {
 
 interface SchemaHeadingElement extends SchemaElement {
   type: 'heading';
-  // Just one string.
-  children: [string];
+  // Just one text.
+  children: [EditorText];
 }
 
 interface SchemaLinkElement extends SchemaElement {
   type: 'link';
   href: string;
-  // Just one string.
-  children: [string];
+  // Just one text.
+  children: [EditorText];
 }
 
-type SchemaParagraphElementChild = string | SchemaLinkElement;
+type SchemaParagraphElementChild = EditorText | SchemaLinkElement;
 
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
@@ -54,8 +55,8 @@ interface SchemaParagraphElement extends SchemaElement {
 
 interface SchemaListItemElement extends SchemaElement {
   type: 'listitem';
-  // Just one string or string with another SchemaListElement.
-  children: [string] | [string, SchemaListElement];
+  // Just one text or text with SchemaListElement.
+  children: [EditorText] | [EditorText, SchemaListElement];
 }
 
 interface SchemaListElement extends SchemaElement {
@@ -88,12 +89,12 @@ export const initialSchemaRootElement: SchemaRootElement = {
     {
       type: 'heading',
       style: { 'font-size': '24px' },
-      children: ['heading'],
+      children: [{ text: 'heading' }],
     },
     {
       type: 'paragraph',
       style: { 'font-size': '16px' },
-      children: ['paragraph'],
+      children: [{ text: 'paragraph' }],
     },
     {
       type: 'list',
@@ -103,14 +104,14 @@ export const initialSchemaRootElement: SchemaRootElement = {
           type: 'listitem',
           style: { 'font-size': '16px' },
           children: [
-            'listitem',
+            { text: 'listitem' },
             // List can be nested. With type checking of course.
             // {
             //   type: 'list',
             //   children: [
             //     {
             //       type: 'listitem',
-            //       children: ['nested'],
+            //       children: [{ text: 'nested' }],
             //     },
             //   ],
             // },

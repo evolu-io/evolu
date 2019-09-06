@@ -3,6 +3,7 @@ import {
   RenderEditorElement,
   EditorReactDOMElement,
   EditorElement,
+  isEditorText,
 } from '../models/element';
 
 export interface RendererProps<T extends EditorElement> {
@@ -18,15 +19,16 @@ export function Renderer<T extends EditorElement>({
   renderElement,
 }: RendererProps<T>) {
   const children = element.children.map((child, index) => {
-    if (typeof child === 'string') {
-      return child.length === 0 ? (
+    if (isEditorText(child)) {
+      return child.text.length === 0 ? (
         <br
+          // TODO: Use id.
           // Index is ok for value type.
           // eslint-disable-next-line react/no-array-index-key
           key={index}
         />
       ) : (
-        child
+        child.text
       );
     }
     return (
@@ -37,6 +39,7 @@ export function Renderer<T extends EditorElement>({
             | RenderEditorElement<EditorReactDOMElement>
             | undefined
         }
+        // TODO: Use id.
         // Index is ok for value type.
         // eslint-disable-next-line react/no-array-index-key
         key={index}
