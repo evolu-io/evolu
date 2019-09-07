@@ -36,7 +36,7 @@ exports[`render 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -46,7 +46,7 @@ exports[`render 1`] = `
     <br />
     <span
       style="color:#888"
-      title="{'children':[{'props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·

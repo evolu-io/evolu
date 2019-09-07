@@ -4,18 +4,22 @@ import {
   EditorState,
   useLogEditorState,
   createEditorState,
+  EditorReactDOMElement,
 } from 'slad';
 
-const initialEditorState = createEditorState({
+const initialEditorState = createEditorState<EditorReactDOMElement>({
   element: {
+    tag: 'div',
     children: [
       {
+        tag: 'div',
         props: {
           style: { fontSize: '24px' },
         },
         children: [{ text: 'heading' }],
       },
       {
+        tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },

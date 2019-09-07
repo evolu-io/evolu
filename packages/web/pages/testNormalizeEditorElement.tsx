@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { Editor, normalizeEditorElement, createEditorState } from 'slad';
+import {
+  Editor,
+  normalizeEditorElement,
+  createEditorState,
+  EditorReactDOMElement,
+} from 'slad';
 
-const initialEditorState = createEditorState({
+const initialEditorState = createEditorState<EditorReactDOMElement>({
   element: normalizeEditorElement({
+    tag: 'div',
     children: [
       {
+        tag: 'div',
         children: [{ text: 'a' }, { text: '' }, { text: 'b' }],
       },
     ],

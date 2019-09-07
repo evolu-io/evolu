@@ -5,22 +5,26 @@ import {
   useLogEditorState,
   Editor,
   createEditorState,
+  EditorReactDOMElement,
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 
-const initialEditorState = createEditorState({
+const initialEditorState = createEditorState<EditorReactDOMElement>({
   element: {
+    tag: 'div',
     children: [
       // 'a',
       {
+        tag: 'div',
         props: {
           style: { fontSize: '24px' },
         },
         children: [{ text: 'heading' }],
       },
       {
+        tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },

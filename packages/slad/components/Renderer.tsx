@@ -1,7 +1,6 @@
 import React, { createElement } from 'react';
 import {
   RenderEditorElement,
-  EditorReactDOMElement,
   EditorElement,
   isEditorText,
 } from '../models/element';
@@ -35,9 +34,7 @@ export function Renderer<T extends EditorElement>({
       <Renderer
         element={child}
         renderElement={
-          renderElement as
-            | RenderEditorElement<EditorReactDOMElement>
-            | undefined
+          renderElement as RenderEditorElement<EditorElement> | undefined
         }
         // TODO: Use id.
         // Index is ok for value type.

@@ -11,6 +11,7 @@ import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import Debug from 'debug';
 import invariant from 'tiny-invariant';
+import { Optional } from 'utility-types';
 import {
   SetNodeEditorPath,
   SetNodeEditorPathContext,
@@ -176,28 +177,21 @@ export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
   readonly tabLostFocus: boolean;
 }
 
-export function createEditorState({
-  element = { children: [{ text: '' }] },
-  selection = null,
-  hasFocus = false,
-  tabLostFocus = false,
-}: Partial<EditorState<EditorReactDOMElement>>): EditorState<
-  EditorReactDOMElement
-> {
-  return { element, selection, hasFocus, tabLostFocus };
-}
-
-// It should be possible to have one generic createEditorState factory,
-// but I don't know how to type it. Remember, when element is untyped object,
-// it has to return EditorState<EditorReactDOMElement> to match EditorState.
-export function createCustomEditorState<T extends EditorElement>({
+/**
+ * Create editor state. Remember to always pass generic argument, EditorReactDOMElement
+ * or any other EditorElemement descendant, otherwise TS will show confusing errors.
+ * If you have a better idea, feel free to send a PR.
+ */
+//
+export function createEditorState<T extends EditorElement>({
   element,
   selection = null,
   hasFocus = false,
   tabLostFocus = false,
-}: Partial<EditorState<T>> & {
-  element: T;
-}): EditorState<T> {
+}: Optional<
+  EditorState<T>,
+  'selection' | 'hasFocus' | 'tabLostFocus'
+>): EditorState<T> {
   return { element, selection, hasFocus, tabLostFocus };
 }
 
@@ -417,8 +411,12 @@ export function Editor<T extends EditorElement>({
       <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
         <RenderEditorElementContext.Provider
           value={
-            (renderElement ||
-              renderEditorReactDOMElement) as RenderEditorElement<EditorElement>
+            ((renderElement ||
+              // Not sure why unknown is required. Should not be possible to cast any
+              // element to EditorElement?
+              renderEditorReactDOMElement) as unknown) as RenderEditorElement<
+              EditorElement
+            >
           }
         >
           <EditorElementRenderer element={editorState.element} path={[]} />

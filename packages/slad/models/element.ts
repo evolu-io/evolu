@@ -11,14 +11,16 @@ export interface EditorElement {
   readonly children: readonly (EditorElementChild)[];
 }
 
+export type EditorElementChild = EditorElement | EditorText;
+
 /**
- * EditorText is object because even two same texts need own identity.
+ * EditorText is object because even the two identical texts need own identity.
+ * Imagine some user picks one of few same texts to edit. React needs stable keys
+ * eagerly generated, otherwise it would reset related component instead of update it.
  */
 export interface EditorText {
   text: string;
 }
-
-export type EditorElementChild = EditorElement | EditorText;
 
 interface EditorReactDOMElementFactory<T, P> extends EditorElement {
   readonly tag: T;
@@ -26,25 +28,17 @@ interface EditorReactDOMElementFactory<T, P> extends EditorElement {
   readonly children: readonly (EditorReactDOMElement | EditorText)[];
 }
 
-interface EditorReactDOMElementDIV extends EditorElement {
-  readonly tag?: 'div';
-  readonly props?: ReturnType<ReactDOM['div']>['props'];
-  readonly children: readonly (EditorReactDOMElement | EditorText)[];
-}
-
 /**
- * EditorReactDOMElement has props the same as ReactDOM. If tag is ommited, it's DIV.
+ * EditorReactDOMElement has props the same as ReactDOM.
  */
-export type EditorReactDOMElement =
-  | EditorReactDOMElementDIV
-  | $Values<
-      {
-        [T in keyof ReactDOM]: EditorReactDOMElementFactory<
-          T,
-          ReturnType<ReactDOM[T]>['props']
-        >;
-      }
+export type EditorReactDOMElement = $Values<
+  {
+    [T in keyof ReactDOM]: EditorReactDOMElementFactory<
+      T,
+      ReturnType<ReactDOM[T]>['props']
     >;
+  }
+>;
 
 // TODO: Use upcoming recursive type references.
 // https://github.com/steida/slad/issues/28
@@ -88,7 +82,7 @@ export function invariantIsEditorElement(
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Editor and Renderer render empty string as BR.
  */
-export function normalizeEditorElement(element: EditorElement): EditorElement {
+export function normalizeEditorElement<T extends EditorElement>(element: T): T {
   return {
     ...element,
     ...(element.children

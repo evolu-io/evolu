@@ -1,6 +1,6 @@
 import React, { useState, useCallback, ReactNode } from 'react';
 import {
-  createCustomEditorState,
+  createEditorState,
   Editor,
   EditorElement,
   EditorSelection,
@@ -83,7 +83,7 @@ export interface SchemaRootElement extends SchemaElement {
 type SchemaEditorState = EditorState<SchemaRootElement>;
 
 // Export for testRenderer.
-export const initialEditorState = createCustomEditorState<SchemaRootElement>({
+export const initialEditorState = createEditorState<SchemaRootElement>({
   element: {
     type: 'document',
     children: [
