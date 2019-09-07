@@ -6,14 +6,15 @@ import React, {
   Fragment,
 } from 'react';
 import { EditorState } from '../components/Editor';
+import { EditorElement } from '../models/element';
 
-export function useLogEditorState(
-  editorState: EditorState,
-): [(editorState: EditorState) => void, ReactNode] {
-  const [editorStates, setEditorStates] = useState<EditorState[]>([
+export function useLogEditorState<T extends EditorElement>(
+  editorState: EditorState<T>,
+): [(editorState: EditorState<T>) => void, ReactNode] {
+  const [editorStates, setEditorStates] = useState<EditorState<T>[]>([
     editorState,
   ]);
-  const logEditorState = useCallback((editorState: EditorState) => {
+  const logEditorState = useCallback((editorState: EditorState<T>) => {
     setEditorStates(prevEditorStates => [...prevEditorStates, editorState]);
   }, []);
 
