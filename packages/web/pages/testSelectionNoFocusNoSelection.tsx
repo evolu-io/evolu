@@ -4,10 +4,10 @@ import {
   useLogEditorState,
   createEditorState,
   EditorState,
-  EditorReactDOMElement,
+  EditorDOMElement,
 } from 'slad';
 
-const initialEditorState = createEditorState<EditorReactDOMElement>({
+const initialEditorState = createEditorState<EditorDOMElement>({
   element: {
     tag: 'div',
     children: [

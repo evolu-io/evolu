@@ -26,9 +26,9 @@ import {
   invariantEditorSelectionIsDefined,
   invariantEditorSelectionIsCollapsed,
 } from '../models/selection';
-import { renderEditorReactDOMElement } from './renderEditorReactDOMElement';
+import { renderEditorDOMElement } from './renderEditorDOMElement';
 import {
-  EditorReactDOMElement,
+  EditorDOMElement,
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
@@ -170,7 +170,7 @@ function useEditorCommand<T extends EditorElement>(
   return commandRef.current;
 }
 
-export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
+export interface EditorState<T extends EditorElement = EditorDOMElement> {
   readonly element: Immutable<T>;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
@@ -178,7 +178,7 @@ export interface EditorState<T extends EditorElement = EditorReactDOMElement> {
 }
 
 /**
- * Create editor state. Remember to always pass generic argument, EditorReactDOMElement
+ * Create editor state. Remember to always pass generic argument, EditorDOMElement
  * or any other EditorElemement descendant, otherwise TS will show confusing errors.
  * If you have a better idea, feel free to send a PR.
  */
@@ -414,7 +414,7 @@ export function Editor<T extends EditorElement>({
             ((renderElement ||
               // Not sure why unknown is required. Should not be possible to cast any
               // element to EditorElement?
-              renderEditorReactDOMElement) as unknown) as RenderEditorElement<
+              renderEditorDOMElement) as unknown) as RenderEditorElement<
               EditorElement
             >
           }

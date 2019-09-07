@@ -3,10 +3,10 @@ import {
   Editor,
   normalizeEditorElement,
   createEditorState,
-  EditorReactDOMElement,
+  EditorDOMElement,
 } from 'slad';
 
-const initialEditorState = createEditorState<EditorReactDOMElement>({
+const initialEditorState = createEditorState<EditorDOMElement>({
   element: normalizeEditorElement({
     tag: 'div',
     children: [

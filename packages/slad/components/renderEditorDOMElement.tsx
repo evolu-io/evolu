@@ -1,9 +1,11 @@
 import { createElement, Children } from 'react';
-import { EditorReactDOMElement, RenderEditorElement } from '../models/element';
+import { EditorDOMElement, RenderEditorElement } from '../models/element';
 
-export const renderEditorReactDOMElement: RenderEditorElement<
-  EditorReactDOMElement
-> = (element, children, ref) => {
+export const renderEditorDOMElement: RenderEditorElement<EditorDOMElement> = (
+  element,
+  children,
+  ref,
+) => {
   // To bypass React void elements invariant violation.
   if (Children.count(children) === 0) {
     return createElement(element.tag || 'div', { ...element.props, ref });

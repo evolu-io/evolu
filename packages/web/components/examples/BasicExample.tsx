@@ -5,13 +5,13 @@ import {
   useLogEditorState,
   EditorSelection,
   createEditorState,
-  EditorReactDOMElement,
+  EditorDOMElement,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testRenderer.
-export const initialEditorState = createEditorState<EditorReactDOMElement>({
+export const initialEditorState = createEditorState<EditorDOMElement>({
   element: {
     tag: 'div',
     children: [
@@ -36,7 +36,7 @@ export const initialEditorState = createEditorState<EditorReactDOMElement>({
 });
 
 export const initialEditorStateWithTextOnly = createEditorState<
-  EditorReactDOMElement
+  EditorDOMElement
 >({
   element: {
     tag: 'div',

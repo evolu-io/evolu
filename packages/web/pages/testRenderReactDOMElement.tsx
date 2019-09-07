@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Editor, createEditorState, EditorReactDOMElement } from 'slad';
+import { Editor, createEditorState, EditorDOMElement } from 'slad';
 
-const initialEditorState = createEditorState<EditorReactDOMElement>({
+const initialEditorState = createEditorState<EditorDOMElement>({
   element: {
     tag: 'div',
     children: [

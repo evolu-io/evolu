@@ -22,18 +22,18 @@ export interface EditorText {
   text: string;
 }
 
-interface EditorReactDOMElementFactory<T, P> extends EditorElement {
+interface EditorDOMElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
-  readonly children: readonly (EditorReactDOMElement | EditorText)[];
+  readonly children: readonly (EditorDOMElement | EditorText)[];
 }
 
 /**
- * EditorReactDOMElement has props the same as ReactDOM.
+ * EditorDOMElement has the same props as ReactDOM.
  */
-export type EditorReactDOMElement = $Values<
+export type EditorDOMElement = $Values<
   {
-    [T in keyof ReactDOM]: EditorReactDOMElementFactory<
+    [T in keyof ReactDOM]: EditorDOMElementFactory<
       T,
       ReturnType<ReactDOM[T]>['props']
     >;
