@@ -1,5 +1,5 @@
 import React from 'react';
-import { Renderer, id } from 'slad';
+import { Renderer, id, EditorDOMElement } from 'slad';
 import { Draft } from 'immer';
 import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
 import {
@@ -17,9 +17,10 @@ function TestRenderer() {
         element={initialSchemaEditorState.element as Draft<SchemaRootElement>}
         renderElement={renderSchemaElement}
       />
-      <Renderer
+      <Renderer<EditorDOMElement>
         element={{
           id: id(),
+          tag: 'div',
           children: [{ id: id(), text: '' }],
         }}
       />
