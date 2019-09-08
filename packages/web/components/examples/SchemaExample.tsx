@@ -8,6 +8,7 @@ import {
   EditorText,
   RenderEditorElement,
   useLogEditorState,
+  id,
 } from 'slad';
 import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
@@ -85,27 +86,32 @@ type SchemaEditorState = EditorState<SchemaRootElement>;
 // Export for testRenderer.
 export const initialEditorState = createEditorState<SchemaRootElement>({
   element: {
+    id: id(),
     type: 'document',
     children: [
       {
+        id: id(),
         type: 'heading',
         style: { 'font-size': '24px' },
-        children: [{ text: 'heading' }],
+        children: [{ id: id(), text: 'heading' }],
       },
       {
+        id: id(),
         type: 'paragraph',
         style: { 'font-size': '16px' },
-        children: [{ text: 'paragraph' }],
+        children: [{ id: id(), text: 'paragraph' }],
       },
       {
+        id: id(),
         type: 'list',
         style: { margin: '16px' },
         children: [
           {
+            id: id(),
             type: 'listitem',
             style: { 'font-size': '16px' },
             children: [
-              { text: 'listitem' },
+              { id: id(), text: 'listitem' },
               // List can be nested. With type checking of course.
               // {
               //   type: 'list',
@@ -121,6 +127,7 @@ export const initialEditorState = createEditorState<SchemaRootElement>({
         ],
       },
       {
+        id: id(),
         type: 'image',
         src: 'https://via.placeholder.com/80',
         alt: 'Square placeholder image 80px',

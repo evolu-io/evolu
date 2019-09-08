@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
-import { Editor, createEditorState, EditorDOMElement } from 'slad';
+import { Editor, createEditorState, EditorDOMElement, id } from 'slad';
 
 const initialEditorState = createEditorState<EditorDOMElement>({
   element: {
+    id: id(),
     tag: 'div',
     children: [
       {
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '24px' },
         },
-        children: [{ text: 'heading' }],
+        children: [{ id: id(), text: 'heading' }],
       },
       {
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ text: '' }],
+        children: [{ id: id(), text: '' }],
       },
       {
+        id: id(),
         tag: 'img',
         props: {
           src: 'https://via.placeholder.com/80',

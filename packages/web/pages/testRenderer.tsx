@@ -1,5 +1,5 @@
 import React from 'react';
-import { Renderer } from 'slad';
+import { Renderer, id } from 'slad';
 import { Draft } from 'immer';
 import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
 import {
@@ -19,7 +19,8 @@ function TestRenderer() {
       />
       <Renderer
         element={{
-          children: [{ text: '' }],
+          id: id(),
+          children: [{ id: id(), text: '' }],
         }}
       />
     </div>

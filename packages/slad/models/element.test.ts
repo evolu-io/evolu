@@ -2,31 +2,41 @@ import {
   normalizeEditorElement,
   EditorElement,
   isNormalizedEditorElement,
+  EditorNodeID,
 } from './element';
+
+let lastID = 0;
+
+function id(): EditorNodeID {
+  return (lastID++).toString() as EditorNodeID;
+}
 
 test('normalizeEditorElement merges adjacent strings', () => {
   const element: EditorElement = {
+    id: id(),
     children: [
-      { text: 'a' },
-      { text: 'b' },
+      { id: id(), text: 'a' },
+      { id: id(), text: 'b' },
       {
+        id: id(),
         children: [
-          { text: 'a' },
-          { text: 'b' },
-          { text: 'c' },
+          { id: id(), text: 'a' },
+          { id: id(), text: 'b' },
+          { id: id(), text: 'c' },
           {
+            id: id(),
             children: [
-              { text: 'a' },
-              { children: [] },
-              { text: 'b' },
-              { text: 'c' },
+              { id: id(), text: 'a' },
+              { id: id(), children: [] },
+              { id: id(), text: 'b' },
+              { id: id(), text: 'c' },
             ],
           },
         ],
       },
-      { text: 'a' },
-      { text: '' },
-      { text: 'b' },
+      { id: id(), text: 'a' },
+      { id: id(), text: '' },
+      { id: id(), text: 'b' },
     ],
   };
   expect(normalizeEditorElement(element)).toMatchSnapshot();
@@ -35,36 +45,40 @@ test('normalizeEditorElement merges adjacent strings', () => {
 test('isNormalizedEditorElement', () => {
   expect(
     isNormalizedEditorElement({
-      children: [{ text: 'a' }],
+      id: id(),
+      children: [{ id: id(), text: 'a' }],
     }),
   ).toBe(true);
   expect(
     isNormalizedEditorElement({
-      children: [{ text: '' }],
+      id: id(),
+      children: [{ id: id(), text: '' }],
     }),
   ).toBe(true);
   expect(
     isNormalizedEditorElement({
-      children: [{ text: 'a' }, { text: 'b' }],
+      id: id(),
+      children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
     }),
   ).toBe(false);
   expect(
     isNormalizedEditorElement({
-      children: [{ children: [{ text: '' }] }],
+      id: id(),
+      children: [{ id: id(), children: [{ id: id(), text: '' }] }],
     }),
   ).toBe(true);
 });
 
 test('normalizeEditorElement do not add children', () => {
-  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ id: id(), children: [] })).toMatchSnapshot();
 });
 
 test('normalizeEditorElement do not remove children', () => {
-  expect(normalizeEditorElement({ children: [] })).toMatchSnapshot();
+  expect(normalizeEditorElement({ id: id(), children: [] })).toMatchSnapshot();
   expect(
-    normalizeEditorElement({ children: [{ text: '' }] }),
+    normalizeEditorElement({ id: id(), children: [{ id: id(), text: '' }] }),
   ).toMatchSnapshot();
   expect(
-    normalizeEditorElement({ children: [{ text: '.' }] }),
+    normalizeEditorElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
 });

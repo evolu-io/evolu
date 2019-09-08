@@ -4,15 +4,22 @@ import {
   normalizeEditorElement,
   createEditorState,
   EditorDOMElement,
+  id,
 } from 'slad';
 
 const initialEditorState = createEditorState<EditorDOMElement>({
   element: normalizeEditorElement({
+    id: id(),
     tag: 'div',
     children: [
       {
+        id: id(),
         tag: 'div',
-        children: [{ text: 'a' }, { text: '' }, { text: 'b' }],
+        children: [
+          { id: id(), text: 'a' },
+          { id: id(), text: '' },
+          { id: id(), text: 'b' },
+        ],
       },
     ],
   }),

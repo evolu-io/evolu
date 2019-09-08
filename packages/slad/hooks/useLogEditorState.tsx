@@ -6,7 +6,7 @@ import React, {
   Fragment,
 } from 'react';
 import { EditorState } from '../components/Editor';
-import { EditorElement } from '../models/element';
+import { EditorElement, recursiveRemoveID } from '../models/element';
 
 export function useLogEditorState<T extends EditorElement>(
   editorState: EditorState<T>,
@@ -26,7 +26,7 @@ export function useLogEditorState<T extends EditorElement>(
             // hasFocus, to render it first
             const { element, hasFocus, ...rest } = editorState;
             // Deliberately do not prettify. Smaller output is more readable in snapshots.
-            const title = JSON.stringify(element)
+            const title = JSON.stringify(recursiveRemoveID(element))
               .split('"')
               .join("'");
             return (

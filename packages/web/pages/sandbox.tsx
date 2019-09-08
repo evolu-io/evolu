@@ -6,6 +6,7 @@ import {
   Editor,
   createEditorState,
   EditorDOMElement,
+  id,
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
@@ -13,22 +14,25 @@ import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 
 const initialEditorState = createEditorState<EditorDOMElement>({
   element: {
+    id: id(),
     tag: 'div',
     children: [
       // 'a',
       {
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '24px' },
         },
-        children: [{ text: 'heading' }],
+        children: [{ id: id(), text: 'heading' }],
       },
       {
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ text: 'paragraph' }],
+        children: [{ id: id(), text: 'paragraph' }],
       },
     ],
   },

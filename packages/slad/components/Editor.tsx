@@ -180,9 +180,8 @@ export interface EditorState<T extends EditorElement = EditorDOMElement> {
 /**
  * Create editor state. Remember to always pass generic argument, EditorDOMElement
  * or any other EditorElemement descendant, otherwise TS will show confusing errors.
- * If you have a better idea, feel free to send a PR.
+ * If you have a better idea how to type it, feel free to send a PR.
  */
-//
 export function createEditorState<T extends EditorElement>({
   element,
   selection = null,
@@ -190,7 +189,7 @@ export function createEditorState<T extends EditorElement>({
   tabLostFocus = false,
 }: Optional<
   EditorState<T>,
-  'selection' | 'hasFocus' | 'tabLostFocus'
+  'hasFocus' | 'selection' | 'tabLostFocus'
 >): EditorState<T> {
   return { element, selection, hasFocus, tabLostFocus };
 }

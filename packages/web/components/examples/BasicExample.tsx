@@ -6,30 +6,35 @@ import {
   EditorSelection,
   createEditorState,
   EditorDOMElement,
+  id,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testRenderer.
 export const initialEditorState = createEditorState<EditorDOMElement>({
+  // A co mit createElement?
   element: {
+    id: id(),
     tag: 'div',
     children: [
       {
+        id: id(),
         tag: 'div',
         props: {
           // Uncomment 'width: 1' to check types.
           // width: 1,
           style: { fontSize: '24px' },
         },
-        children: [{ text: 'heading' }],
+        children: [{ id: id(), text: 'heading' }],
       },
       {
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ text: 'paragraph' }],
+        children: [{ id: id(), text: 'paragraph' }],
       },
     ],
   },
@@ -39,8 +44,9 @@ export const initialEditorStateWithTextOnly = createEditorState<
   EditorDOMElement
 >({
   element: {
+    id: id(),
     tag: 'div',
-    children: [{ text: 'a' }],
+    children: [{ id: id(), text: 'a' }],
   },
 });
 

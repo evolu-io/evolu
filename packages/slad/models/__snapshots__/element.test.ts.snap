@@ -3,12 +3,14 @@
 exports[`normalizeEditorElement do not add children 1`] = `
 Object {
   "children": Array [],
+  "id": "25",
 }
 `;
 
 exports[`normalizeEditorElement do not remove children 1`] = `
 Object {
   "children": Array [],
+  "id": "26",
 }
 `;
 
@@ -16,9 +18,11 @@ exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
   "children": Array [
     Object {
+      "id": "28",
       "text": "",
     },
   ],
+  "id": "27",
 }
 `;
 
@@ -26,9 +30,11 @@ exports[`normalizeEditorElement do not remove children 3`] = `
 Object {
   "children": Array [
     Object {
+      "id": "30",
       "text": ".",
     },
   ],
+  "id": "29",
 }
 `;
 
@@ -36,31 +42,40 @@ exports[`normalizeEditorElement merges adjacent strings 1`] = `
 Object {
   "children": Array [
     Object {
+      "id": "1",
       "text": "ab",
     },
     Object {
       "children": Array [
         Object {
+          "id": "4",
           "text": "abc",
         },
         Object {
           "children": Array [
             Object {
+              "id": "8",
               "text": "a",
             },
             Object {
               "children": Array [],
+              "id": "9",
             },
             Object {
+              "id": "10",
               "text": "bc",
             },
           ],
+          "id": "7",
         },
       ],
+      "id": "3",
     },
     Object {
+      "id": "12",
       "text": "ab",
     },
   ],
+  "id": "0",
 }
 `;

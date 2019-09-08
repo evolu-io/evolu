@@ -6,28 +6,34 @@ import {
   EditorSelection,
   createEditorState,
   EditorDOMElement,
+  id,
 } from 'slad';
 
+export const testSelectionElement: EditorDOMElement = {
+  id: id(),
+  tag: 'div',
+  children: [
+    {
+      id: id(),
+      tag: 'div',
+      props: {
+        style: { fontSize: '24px' },
+      },
+      children: [{ id: id(), text: 'heading' }],
+    },
+    {
+      id: id(),
+      tag: 'div',
+      props: {
+        style: { fontSize: '16px' },
+      },
+      children: [{ id: id(), text: 'paragraph' }],
+    },
+  ],
+};
+
 const initialEditorState = createEditorState<EditorDOMElement>({
-  element: {
-    tag: 'div',
-    children: [
-      {
-        tag: 'div',
-        props: {
-          style: { fontSize: '24px' },
-        },
-        children: [{ text: 'heading' }],
-      },
-      {
-        tag: 'div',
-        props: {
-          style: { fontSize: '16px' },
-        },
-        children: [{ text: 'paragraph' }],
-      },
-    ],
-  },
+  element: testSelectionElement,
 });
 
 function TestSelection() {

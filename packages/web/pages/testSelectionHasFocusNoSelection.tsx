@@ -6,27 +6,10 @@ import {
   createEditorState,
   EditorDOMElement,
 } from 'slad';
+import { testSelectionElement } from './testSelection';
 
 const initialEditorState = createEditorState<EditorDOMElement>({
-  element: {
-    tag: 'div',
-    children: [
-      {
-        tag: 'div',
-        props: {
-          style: { fontSize: '24px' },
-        },
-        children: [{ text: 'heading' }],
-      },
-      {
-        tag: 'div',
-        props: {
-          style: { fontSize: '16px' },
-        },
-        children: [{ text: 'paragraph' }],
-      },
-    ],
-  },
+  element: testSelectionElement,
   hasFocus: true,
 });
 
