@@ -177,7 +177,7 @@ exports[`remove text 1`] = `
     tabindex="0"
   >
     <div>
-      ·b·
+      ·a·
     </div>
   </div>
   <pre
@@ -185,7 +185,7 @@ exports[`remove text 1`] = `
   >
     <span
       style="color: rgb(136, 136, 136);"
-      title="{'tag':'div','children':[{'text':'b'}]}"
+      title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·3·
       · ·

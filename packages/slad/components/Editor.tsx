@@ -43,6 +43,7 @@ import {
   NodesEditorPathsMap,
   EditorPathsNodesMap,
 } from '../models/path';
+import { editorTextsAreEqual } from '../models/text';
 
 const isSSR = typeof window === 'undefined';
 
@@ -147,14 +148,17 @@ function useEditorCommand<T extends EditorElement>(
           if (!invariantEditorSelectionIsDefined(draft.selection)) return;
           invariantEditorSelectionIsCollapsed(draft.selection);
           const { path, text } = command;
+          // console.log(text.split('').map(char => char.charCodeAt(0)));
           const parent = getParentElementByPath(draft.element, path) as Draft<
             EditorElement
           >;
           const childIndex = path.slice(-1)[0];
           const child = parent.children[childIndex];
           if (!invariantIsEditorText(child)) return;
+          const newChild = { ...child, text };
+          if (editorTextsAreEqual(child, newChild)) return;
+          parent.children[childIndex] = newChild;
           const offset = text.length - child.text.length;
-          parent.children[childIndex] = { ...child, text };
           draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
           draft.selection.focus[draft.selection.focus.length - 1] += offset;
           break;
@@ -164,6 +168,7 @@ function useEditorCommand<T extends EditorElement>(
           assertNever(command);
       }
     });
+
     if (nextEditorState === editorStateRef.current) return;
     onChange(nextEditorState);
   });
@@ -358,7 +363,7 @@ export function Editor<T extends EditorElement>({
   ]);
 
   // useLayoutEffect is must to keep browser selection in sync with editor state.
-  // I suppose this is the case for "progressively enhancing hooks"
+  // I suppose this is the case for "progressively enhancing hooks".
   // https://github.com/facebook/react/issues/14927
   (isSSR ? useEffect : useLayoutEffect)(() => {
     if (!editorState.hasFocus) return;

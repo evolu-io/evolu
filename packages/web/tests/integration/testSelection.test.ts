@@ -19,6 +19,7 @@ test('select', async () => {
 
   await page.keyboard.down('Shift');
   await page.keyboard.press('ArrowRight');
+  await page.keyboard.up('Shift');
   await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
 

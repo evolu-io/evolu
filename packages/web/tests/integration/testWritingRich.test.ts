@@ -1,19 +1,18 @@
 import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
+import { pressKeyWithModifier } from './helpers/keyboard';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testWriting'));
+  await page.goto(pageUrl('testWritingRich'));
   await page.waitFor(50);
 });
 
 test('insert text at end', async () => {
-  await page.keyboard.press('ArrowRight');
+  await pressKeyWithModifier('alt', 'ArrowRight');
   await page.waitFor(50);
-  await page.keyboard.press('h');
+  await page.keyboard.press('.');
   await page.waitFor(50);
-  await page.keyboard.press('o');
-  await page.waitFor(50);
-  await page.keyboard.press('j');
+  await page.keyboard.press(' ');
   await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
 });

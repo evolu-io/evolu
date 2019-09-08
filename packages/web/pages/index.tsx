@@ -53,6 +53,7 @@ function Index() {
         <LinkToTest name="testSelectionNoFocusSomeSelection" />
         <LinkToTest name="testTabKeyAndFocusBlurClick" />
         <LinkToTest name="testWriting" />
+        <LinkToTest name="testWritingRich" />
       </Text>
     </Container>
   );

@@ -2,11 +2,12 @@ import {
   normalizeEditorElement,
   EditorElement,
   isNormalizedEditorElement,
-  EditorNodeID,
 } from './element';
+import { EditorNodeID } from './node';
 
 let lastID = 0;
 
+// Stable EditorNodeID factory for test snapshots.
 function id(): EditorNodeID {
   return (lastID++).toString() as EditorNodeID;
 }

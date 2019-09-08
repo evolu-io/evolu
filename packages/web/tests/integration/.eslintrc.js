@@ -9,5 +9,7 @@ module.exports = {
     context: true,
     jestPuppeteer: true,
     document: true,
+    window: true,
+    KeyboardEvent: true,
   },
 };

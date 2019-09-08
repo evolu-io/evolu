@@ -1,0 +1,245 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`insert text at end 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading. ·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading. '}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,9],"focus":[0,0,9]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading.'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,8],"focus":[0,0,8]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,7],"focus":[0,0,7]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;
+
+exports[`insert text at start then middle 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·blheading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'blheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'bheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;
+
+exports[`remove text 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    tabindex="0"
+  >
+    <div>
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    style="height:48px;overflow:auto"
+  >
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'bheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color:#888"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+  </pre>
+</div>
+`;

@@ -1,25 +1,10 @@
 import { ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
-import { $Values, Brand } from 'utility-types';
-import nanoid from 'nanoid';
+import { $Values } from 'utility-types';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
-
-export type EditorNodeID = Brand<string, 'EditorNodeID'>;
-
-// TODO: This factory should be internal.
-// Recursive ensureEditorNodeID function should be prefered instead.
-// But we have to wait for TS 3.7, which will allow RecursiveOptionalID type.
-export function id(): EditorNodeID {
-  return nanoid() as EditorNodeID;
-}
-
-/**
- * Every editor node needs UUID for CRDT and React keys.
- */
-export interface EditorNodeIdentity {
-  id: EditorNodeID;
-}
+import { EditorNodeIdentity } from './node';
+import { EditorText } from './text';
 
 /**
  * EditorElement is the base model for all other editor elements.
@@ -29,13 +14,6 @@ export interface EditorElement extends EditorNodeIdentity {
 }
 
 export type EditorElementChild = EditorElement | EditorText;
-
-/**
- * EditorText is object because even the two identical texts need own identity.
- */
-export interface EditorText extends EditorNodeIdentity {
-  text: string;
-}
 
 interface EditorDOMElementFactory<T, P> extends EditorElement {
   readonly tag: T;
@@ -156,7 +134,9 @@ export function getParentElementByPath(
   return parent;
 }
 
-// This is just helper rarely needed.
+/**
+ * This is just helper rarely needed.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function recursiveRemoveID(object: EditorElement): any {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
