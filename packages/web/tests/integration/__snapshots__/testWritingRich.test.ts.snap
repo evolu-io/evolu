@@ -38,7 +38,7 @@ exports[`insert text at end 1`] = `
       style="color: rgb(136, 136, 136);"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading. '}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·4·
+      ·10·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,9],"focus":[0,0,9]},"tabLostFocus":false}·
     </span>
@@ -48,7 +48,7 @@ exports[`insert text at end 1`] = `
       style="color: rgb(136, 136, 136);"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading.'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
+      ·9·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,8],"focus":[0,0,8]},"tabLostFocus":false}·
     </span>
@@ -58,9 +58,69 @@ exports[`insert text at end 1`] = `
       style="color: rgb(136, 136, 136);"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
+      ·8·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,7],"focus":[0,0,7]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·7·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·6·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,5],"focus":[0,0,5]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·5·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,4],"focus":[0,0,4]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,3],"focus":[0,0,3]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+    </span>
+    <br />
+    <br />
+    <span
+      style="color: rgb(136, 136, 136);"
+      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
     <br />
     <br />

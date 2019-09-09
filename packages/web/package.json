@@ -11,12 +11,9 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^9.0.3",
-    "@types/lodash": "^4.14.138",
-    "@wordpress/keycodes": "^2.6.0",
     "assert-never": "^1.2.0",
     "csstype": "^2.6.6",
     "immer": "^3.2.0",
-    "lodash": "^4.17.15",
     "next": "^9.0.3",
     "next-transpile-modules": "^2.3.1",
     "puppeteer": "^1.19.0",
@@ -28,7 +25,6 @@
   "devDependencies": {
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.8.5",
-    "@types/styled-jsx": "^2.2.8",
-    "@types/wordpress__keycodes": "^2.3.0"
+    "@types/styled-jsx": "^2.2.8"
   }
 }
