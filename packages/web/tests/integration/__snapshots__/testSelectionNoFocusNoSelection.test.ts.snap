@@ -26,38 +26,32 @@ exports[`tab then key arrow right 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
 </div>
 `;
@@ -88,48 +82,40 @@ exports[`tab then key arrow right 2`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
 </div>
 `;

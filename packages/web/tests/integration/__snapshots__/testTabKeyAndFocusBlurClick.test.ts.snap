@@ -32,18 +32,16 @@ exports[`click to focus button, click to blur button 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -88,38 +86,32 @@ exports[`click to focus button, click to blur button 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"
@@ -175,18 +167,16 @@ exports[`click to focus button, click to blur button 2`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -231,48 +221,40 @@ exports[`click to focus button, click to blur button 2`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"
@@ -328,38 +310,32 @@ exports[`focus blur via tab, tab, tab 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -404,18 +380,16 @@ exports[`focus blur via tab, tab, tab 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"
@@ -471,48 +445,40 @@ exports[`focus blur via tab, tab, tab 2`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -557,38 +523,32 @@ exports[`focus blur via tab, tab, tab 2`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"
@@ -644,48 +604,40 @@ exports[`focus blur via tab, tab, tab 3`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -730,48 +682,40 @@ exports[`focus blur via tab, tab, tab 3`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"
@@ -827,18 +771,16 @@ exports[`render 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     class="jsx-442929638"
@@ -883,18 +825,16 @@ exports[`render 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
   <div
     style="margin-bottom:24px"

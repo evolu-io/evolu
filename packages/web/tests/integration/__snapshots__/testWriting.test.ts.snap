@@ -23,68 +23,56 @@ exports[`insert text at end 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'ahoj'}]}"
     >
       ·5·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,4],"focus":[0,4]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'aho'}]}"
     >
       ·4·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,3],"focus":[0,3]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'ah'}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
 </div>
 `;
@@ -112,48 +100,40 @@ exports[`insert text at start then middle 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'bla'}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,2],"focus":[0,2]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
 </div>
 `;
@@ -181,48 +161,40 @@ exports[`remove text 1`] = `
     </div>
   </div>
   <pre
-    style="height:48px;overflow:auto"
+    class="jsx-2255726786"
   >
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·3·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color: rgb(136, 136, 136);"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·1·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
     <span
-      style="color:#888"
+      class="jsx-1782790912"
       title="{'tag':'div','children':[{'text':'a'}]}"
     >
       ·0·
       · ·
       ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
     </span>
-    <br />
-    <br />
   </pre>
 </div>
 `;
