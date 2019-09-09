@@ -8,5 +8,5 @@
       "use": "@now/next"
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "/packages/web/" }]
+  "routes": [{ "src": "/(.*)", "dest": "/packages/web/$1.html" }]
 }
