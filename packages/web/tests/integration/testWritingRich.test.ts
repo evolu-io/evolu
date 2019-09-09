@@ -1,6 +1,6 @@
 import { pageUrl } from './helpers/pageUrl';
 import { pageDom } from './helpers/pageDom';
-import { pressKeyWithModifier } from './helpers/keyboard';
+import { pressMany } from './helpers/keyboard';
 
 beforeEach(async () => {
   await page.goto(pageUrl('testWritingRich'));
@@ -8,7 +8,7 @@ beforeEach(async () => {
 });
 
 test('insert text at end', async () => {
-  await pressKeyWithModifier('alt', 'ArrowRight');
+  await pressMany('ArrowRight', 7);
   await page.waitFor(50);
   await page.keyboard.press('.');
   await page.waitFor(50);
