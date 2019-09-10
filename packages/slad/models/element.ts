@@ -1,9 +1,10 @@
 import { ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
+import flattenDeep from 'lodash.flattendeep';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
-import { EditorNodeIdentity } from './node';
+import { EditorNodeIdentity, id } from './node';
 import { EditorText } from './text';
 
 /**
@@ -32,6 +33,30 @@ export type EditorDOMElement = $Values<
     >;
   }
 >;
+
+/**
+ * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
+ */
+export function jsxToEditorDOMElement(element: JSX.Element): EditorDOMElement {
+  const {
+    type: tag,
+    props: { children, ...props },
+  } = element;
+  const editorChildren = flattenDeep([children]).map(child => {
+    if (typeof child === 'string') {
+      const text: EditorText = { id: id(), text: child };
+      return text;
+    }
+    return jsxToEditorDOMElement(child);
+  });
+  const editorProps = Object.keys(props).length > 0 ? props : undefined;
+  return {
+    id: id(),
+    tag,
+    props: editorProps,
+    children: editorChildren,
+  };
+}
 
 export type RenderEditorElement = (
   element: EditorElement,
