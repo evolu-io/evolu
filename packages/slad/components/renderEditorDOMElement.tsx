@@ -1,7 +1,7 @@
 import { createElement, Children } from 'react';
 import { EditorDOMElement, RenderEditorElement } from '../models/element';
 
-export const renderEditorDOMElement: RenderEditorElement<EditorDOMElement> = (
+export const renderEditorDOMElement: RenderEditorElement = (
   element,
   children,
   ref,
@@ -11,9 +11,11 @@ export const renderEditorDOMElement: RenderEditorElement<EditorDOMElement> = (
   // This issue is real, but not for us because Editor does not use SPAN wrappers.
   // But some generated EditorDOMElement can use it, so renderEditorDOMElement should warn.
 
+  const { tag, props } = element as EditorDOMElement;
+
   // To bypass React void elements invariant violation.
   if (Children.count(children) === 0) {
-    return createElement(element.tag, { ...element.props, ref });
+    return createElement(tag, { ...props, ref });
   }
-  return createElement(element.tag, { ...element.props, ref }, children);
+  return createElement(tag, { ...props, ref }, children);
 };

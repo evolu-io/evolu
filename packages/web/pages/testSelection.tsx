@@ -32,7 +32,7 @@ export const testSelectionElement: EditorDOMElement = {
   ],
 };
 
-const initialEditorState = createEditorState<EditorDOMElement>({
+const initialEditorState = createEditorState({
   element: testSelectionElement,
 });
 

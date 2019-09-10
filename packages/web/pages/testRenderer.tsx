@@ -5,7 +5,7 @@ import { initialEditorState as initialBasicEditorState } from '../components/exa
 import {
   initialEditorState as initialSchemaEditorState,
   useSchemaRenderElement,
-  SchemaRootElement,
+  SchemaDocumentElement,
 } from '../components/examples/SchemaExample';
 
 function TestRenderer() {
@@ -14,7 +14,9 @@ function TestRenderer() {
     <div>
       <Renderer element={initialBasicEditorState.element} />
       <Renderer
-        element={initialSchemaEditorState.element as Draft<SchemaRootElement>}
+        element={
+          initialSchemaEditorState.element as Draft<SchemaDocumentElement>
+        }
         renderElement={renderSchemaElement}
       />
       <Renderer<EditorDOMElement>

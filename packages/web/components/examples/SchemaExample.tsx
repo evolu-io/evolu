@@ -72,7 +72,7 @@ interface SchemaImageElement extends SchemaVoidElement {
   height: number;
 }
 
-export interface SchemaRootElement extends SchemaElement {
+export interface SchemaDocumentElement extends SchemaElement {
   type: 'document';
   children: (
     | SchemaHeadingElement
@@ -81,10 +81,10 @@ export interface SchemaRootElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type SchemaEditorState = EditorState<SchemaRootElement>;
+type SchemaEditorState = EditorState<SchemaDocumentElement>;
 
-// Export for testRenderer.
-export const initialEditorState = createEditorState<SchemaRootElement>({
+// Exported for testRenderer.
+export const initialEditorState = createEditorState<SchemaEditorState>({
   element: {
     id: id(),
     type: 'document',
@@ -139,11 +139,24 @@ export const initialEditorState = createEditorState<SchemaRootElement>({
   },
 });
 
+// Exported for testRenderer.
 export function useSchemaRenderElement() {
   const getStyledJsx = useStyledJsx();
 
-  return useCallback<RenderEditorElement<SchemaRootElement>>(
-    (element, children, ref) => {
+  const renderElement = useCallback<RenderEditorElement>(
+    (editorElement, children, ref) => {
+      // Recursive ThisAndChildTypes<SchemaDocumentElement> can only by finite.
+      // Therefore, we prefer explicit union type.
+      // https://github.com/microsoft/TypeScript/pull/33050#issuecomment-529683091
+      const element = editorElement as
+        | SchemaDocumentElement
+        | SchemaHeadingElement
+        | SchemaImageElement
+        | SchemaLinkElement
+        | SchemaListElement
+        | SchemaListItemElement
+        | SchemaParagraphElement;
+
       const styledJsx = element.style && getStyledJsx(element.style);
       // Because we don't want to render empty class attributes.
       const classNameObject = styledJsx
@@ -189,6 +202,8 @@ export function useSchemaRenderElement() {
     },
     [getStyledJsx],
   );
+
+  return renderElement;
 }
 
 export function SchemaExample({

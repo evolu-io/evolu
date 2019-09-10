@@ -183,20 +183,17 @@ export interface EditorState<T extends EditorElement = EditorDOMElement> {
 }
 
 /**
- * Create editor state. Remember to always pass generic argument, EditorDOMElement
- * or any other EditorElemement descendant, otherwise TS will show confusing errors.
- * If you have a better idea how to type it, feel free to send a PR.
+ * Create editor state. By default, the root element is EditorDOMElement.
  */
-export function createEditorState<T extends EditorElement>({
+export function createEditorState<
+  T extends EditorState<EditorElement> = EditorState
+>({
   element,
   selection = null,
   hasFocus = false,
   tabLostFocus = false,
-}: Optional<
-  EditorState<T>,
-  'hasFocus' | 'selection' | 'tabLostFocus'
->): EditorState<T> {
-  return { element, selection, hasFocus, tabLostFocus };
+}: Optional<T, 'hasFocus' | 'selection' | 'tabLostFocus'>): T {
+  return { element, selection, hasFocus, tabLostFocus } as T;
 }
 
 type UsefulReactDivAtttributes = Pick<
@@ -215,7 +212,7 @@ export interface EditorProps<T extends EditorElement = EditorElement>
   extends UsefulReactDivAtttributes {
   editorState: EditorState<T>;
   onChange: (editorState: EditorState<T>) => void;
-  renderElement?: RenderEditorElement<T>;
+  renderElement?: RenderEditorElement;
 }
 
 export function Editor<T extends EditorElement>({
@@ -414,14 +411,7 @@ export function Editor<T extends EditorElement>({
     return (
       <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
         <RenderEditorElementContext.Provider
-          value={
-            ((renderElement ||
-              // Not sure why unknown is required. Should not be possible to cast any
-              // element to EditorElement?
-              renderEditorDOMElement) as unknown) as RenderEditorElement<
-              EditorElement
-            >
-          }
+          value={renderElement || renderEditorDOMElement}
         >
           <EditorElementRenderer element={editorState.element} path={[]} />
         </RenderEditorElementContext.Provider>

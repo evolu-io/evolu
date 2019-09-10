@@ -7,8 +7,8 @@ import {
   id,
 } from 'slad';
 
-const initialEditorState = createEditorState<EditorDOMElement>({
-  element: normalizeEditorElement({
+const initialEditorState = createEditorState({
+  element: normalizeEditorElement<EditorDOMElement>({
     id: id(),
     tag: 'div',
     children: [

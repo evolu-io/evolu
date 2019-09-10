@@ -33,21 +33,8 @@ export type EditorDOMElement = $Values<
   }
 >;
 
-// TODO: Use upcoming recursive type references.
-// https://github.com/steida/slad/issues/28
-// https://github.com/microsoft/TypeScript/pull/33050
-// This is hacky workaround. It works but there must be ts-ignore for some reason.
-type OmitString<T> = T extends EditorText ? never : T;
-type UnionFromAray<T> = T extends (infer U)[] ? OmitString<U> : never;
-type UnionFromElementAndItsChildren<T extends EditorElement> =
-  | T
-  | UnionFromAray<T['children']>;
-// @ts-ignore Do not fix it, wait for recursive type references.
-type Union<T> = UnionFromElementAndItsChildren<T>;
-type DeepFiniteNestedUnion<T> = Union<Union<Union<Union<Union<Union<T>>>>>>;
-
-export type RenderEditorElement<T extends EditorElement> = (
-  element: DeepFiniteNestedUnion<T>,
+export type RenderEditorElement = (
+  element: EditorElement,
   children: ReactNode,
   ref: SetNodeEditorPathRef,
 ) => ReactNode;

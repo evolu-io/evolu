@@ -4,11 +4,10 @@ import {
   useLogEditorState,
   createEditorState,
   EditorState,
-  EditorDOMElement,
 } from 'slad';
 import { testSelectionElement } from './testSelection';
 
-const initialEditorState = createEditorState<EditorDOMElement>({
+const initialEditorState = createEditorState({
   element: testSelectionElement,
 });
 

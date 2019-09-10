@@ -5,14 +5,13 @@ import {
   useLogEditorState,
   Editor,
   createEditorState,
-  EditorDOMElement,
   id,
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 
-const initialEditorState = createEditorState<EditorDOMElement>({
+const initialEditorState = createEditorState({
   element: {
     id: id(),
     tag: 'div',
@@ -59,11 +58,9 @@ function Index() {
         <title>Sandbox</title>
       </Head>
       <Text size={2}>Sandbox</Text>
-      {/* <textarea /> */}
       <Editor
         editorState={editorState}
         onChange={handleEditorChange}
-        // TODO: Test
         // spellCheck
         style={defaultEditorProps.style}
       />

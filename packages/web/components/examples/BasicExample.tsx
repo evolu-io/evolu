@@ -5,15 +5,13 @@ import {
   useLogEditorState,
   EditorSelection,
   createEditorState,
-  EditorDOMElement,
   id,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testRenderer.
-export const initialEditorState = createEditorState<EditorDOMElement>({
-  // A co mit createElement?
+export const initialEditorState = createEditorState({
   element: {
     id: id(),
     tag: 'div',
@@ -40,9 +38,7 @@ export const initialEditorState = createEditorState<EditorDOMElement>({
   },
 });
 
-export const initialEditorStateWithTextOnly = createEditorState<
-  EditorDOMElement
->({
+export const initialEditorStateWithTextOnly = createEditorState({
   element: {
     id: id(),
     tag: 'div',

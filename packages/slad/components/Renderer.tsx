@@ -7,7 +7,7 @@ import {
 
 export interface RendererProps<T extends EditorElement> {
   element: T;
-  renderElement?: RenderEditorElement<T>;
+  renderElement?: RenderEditorElement;
 }
 
 /**
@@ -22,13 +22,7 @@ export function Renderer<T extends EditorElement>({
       return child.text.length === 0 ? <br key={child.id} /> : child.text;
     }
     return (
-      <Renderer
-        element={child}
-        renderElement={
-          renderElement as RenderEditorElement<EditorElement> | undefined
-        }
-        key={child.id}
-      />
+      <Renderer element={child} renderElement={renderElement} key={child.id} />
     );
   });
 
