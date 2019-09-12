@@ -49,5 +49,6 @@ module.exports = {
     // We often want serial operations.
     'no-await-in-loop': 'off',
     'react/destructuring-assignment': 'off',
+    'no-lonely-if': 'off',
   },
 };
