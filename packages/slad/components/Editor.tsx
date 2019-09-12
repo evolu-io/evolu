@@ -391,33 +391,54 @@ export function Editor<T extends EditorElement>({
     // This approach ensures iOS special typing like double space etc works out of the box.
     // https://github.com/facebook/draft-js/blob/master/src/component/handlers/composition/DOMObserver.js#L103
     const observer = new MutationObserver(mutationRecords => {
+      function isTextChange(): boolean {
+        return mutationRecords.every(
+          mutation => mutation.type === 'characterData',
+        );
+      }
+      if (isTextChange()) {
+        const lastMutation = mutationRecords[mutationRecords.length - 1];
+        const path = findPathFromNode(lastMutation.target);
+        const text = lastMutation.target.nodeValue || '';
+        // Ignore empty text, because it must be handled via childList mutation.
+        if (text.length === 0) return;
+        // EditTextRenderer checks DOM and if text is already updated, it will skip.
+        command({ type: 'writeTextToCollapsedSelection', path, text });
+      }
+
+      // type characterData
+      // added remove empty
+      // target je nodeType ta enumerace
+      // a je to jednou nebo 2x
+      // const its
+
       // console.log(mutationRecords);
       // // // if (mutationRecords[6]) {
       // // //   console.log(mutationRecords[6].removedNodes[0]);
       // // // }
 
-      mutationRecords.forEach(mutationRecord => {
-        if (mutationRecord.type === 'characterData') {
-          const path = findPathFromNode(mutationRecord.target);
-          const text = mutationRecord.target.nodeValue || '';
-          // Ignore, because it must be handled via childList.
-          if (text.length === 0) return;
-          // EditTextRenderer checks DOM and if text is already updated, it will skip.
-          command({ type: 'writeTextToCollapsedSelection', path, text });
-        } else if (mutationRecord.type === 'childList') {
-          // Browsers remove text node in order to inject BR instead.
-          const textNodeWasRemoved =
-            mutationRecord.removedNodes &&
-            mutationRecord.removedNodes.length === 1 &&
-            mutationRecord.removedNodes[0].nodeType === Node.TEXT_NODE;
-          if (!textNodeWasRemoved) return;
-          // console.log(mutationRecord);
-          const path = findPathFromNode(mutationRecord.removedNodes[0]);
-          // setNodeEditorPath('remove', mutationRecord.removedNodes[0] as Text, path)
-          // setNodeEditorPath('add', mutationRecord.removedNodes[0] as Text, path)
-          command({ type: 'writeTextToCollapsedSelection', path, text: '' });
-        }
-      });
+      // mutationRecords.forEach(mutationRecord => {
+      //   if (mutationRecord.type === 'characterData') {
+      //     const path = findPathFromNode(mutationRecord.target);
+      //     const text = mutationRecord.target.nodeValue || '';
+      //     // Ignore, because it must be handled via childList.
+      //     if (text.length === 0) return;
+      //     // EditTextRenderer checks DOM and if text is already updated, it will skip.
+      //     command({ type: 'writeTextToCollapsedSelection', path, text });
+      //   } else if (mutationRecord.type === 'childList') {
+      //     // // Browsers remove text node in order to inject BR instead.
+      //     // const textNodeWasRemoved =
+      //     //   mutationRecord.removedNodes &&
+      //     //   mutationRecord.removedNodes.length === 1 &&
+      //     //   mutationRecord.removedNodes[0].nodeType === Node.TEXT_NODE;
+      //     // if (!textNodeWasRemoved) return;
+      //     // // console.log(mutationRecord);
+      //     // const path = findPathFromNode(mutationRecord.removedNodes[0]);
+      //     // // setNodeEditorPath('remove', mutationRecord.removedNodes[0] as Text, path)
+      //     // // setNodeEditorPath('add', mutationRecord.removedNodes[0] as Text, path)
+      //     // command({ type: 'writeTextToCollapsedSelection', path, text: '' });
+      //   }
+      // });
     });
     observer.observe(divRef.current, {
       childList: true,

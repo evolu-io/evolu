@@ -40,7 +40,7 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading. '}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·9·
+      ·10·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,9],"focus":[0,0,9]},"tabLostFocus":false}·
     </span>
@@ -48,7 +48,7 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading.'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·8·
+      ·9·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,8],"focus":[0,0,8]},"tabLostFocus":false}·
     </span>
@@ -56,7 +56,7 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·7·
+      ·8·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,7],"focus":[0,0,7]},"tabLostFocus":false}·
     </span>
@@ -64,9 +64,17 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·6·
+      ·7·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·6·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,5],"focus":[0,0,5]},"tabLostFocus":false}·
     </span>
     <span
       class="jsx-1782790912"
