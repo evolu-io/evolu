@@ -5,6 +5,9 @@ const initialEditorState = createEditorState({
   element: {
     id: id(),
     tag: 'div',
+    props: {
+      className: 'root',
+    },
     children: [
       {
         id: id(),

@@ -157,11 +157,7 @@ export function useSchemaRenderElement() {
         | SchemaListItemElement
         | SchemaParagraphElement;
 
-      const styledJsx = element.style && getStyledJsx(element.style);
-      // Because we don't want to render empty class attributes.
-      const classNameObject = styledJsx
-        ? { className: styledJsx.className }
-        : null;
+      const styledJsx = getStyledJsx(element.style || {});
 
       const renderByType = (): ReactNode => {
         switch (element.type) {
@@ -172,7 +168,7 @@ export function useSchemaRenderElement() {
           case 'listitem':
           case 'paragraph':
             return (
-              <div ref={ref} {...classNameObject}>
+              <div ref={ref} className={styledJsx.className}>
                 {children}
               </div>
             );
@@ -180,7 +176,7 @@ export function useSchemaRenderElement() {
             return (
               <img
                 ref={ref}
-                {...classNameObject}
+                className={styledJsx.className}
                 src={element.src}
                 alt={element.alt}
                 width={element.width}
@@ -196,7 +192,7 @@ export function useSchemaRenderElement() {
       return (
         <>
           {renderByType()}
-          {styledJsx && styledJsx.styles}
+          {styledJsx.styles}
         </>
       );
     },

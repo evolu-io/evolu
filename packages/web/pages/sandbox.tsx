@@ -5,36 +5,20 @@ import {
   useLogEditorState,
   Editor,
   createEditorState,
-  id,
+  jsxToEditorDOMElement,
 } from 'slad';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 
 const initialEditorState = createEditorState({
-  element: {
-    id: id(),
-    tag: 'div',
-    children: [
-      // 'a',
-      {
-        id: id(),
-        tag: 'div',
-        props: {
-          style: { fontSize: '24px' },
-        },
-        children: [{ id: id(), text: 'heading' }],
-      },
-      {
-        id: id(),
-        tag: 'div',
-        props: {
-          style: { fontSize: '16px' },
-        },
-        children: [{ id: id(), text: 'paragraph' }],
-      },
-    ],
-  },
+  element: jsxToEditorDOMElement(
+    <div className="root">
+      <div style={{ fontSize: '24px' }}>heading</div>
+      <div style={{ fontSize: '16px' }}>paragraph</div>
+      <span className="text">fixx me</span>
+    </div>,
+  ),
 });
 
 function Index() {
@@ -61,8 +45,8 @@ function Index() {
       <Editor
         editorState={editorState}
         onChange={handleEditorChange}
-        // spellCheck
         style={defaultEditorProps.style}
+        // spellCheck
       />
       {logEditorStateElement}
     </Container>

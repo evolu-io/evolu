@@ -11,10 +11,16 @@ const initialEditorState = createEditorState({
   element: normalizeEditorElement<EditorDOMElement>({
     id: id(),
     tag: 'div',
+    props: {
+      className: 'root',
+    },
     children: [
       {
         id: id(),
         tag: 'div',
+        props: {
+          className: 'list',
+        },
         children: [
           { id: id(), text: 'a' },
           { id: id(), text: '' },

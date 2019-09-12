@@ -12,7 +12,9 @@ exports[`select 1`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -30,7 +32,7 @@ exports[`select 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -84,7 +86,9 @@ exports[`select 2`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -102,7 +106,7 @@ exports[`select 2`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -110,7 +114,7 @@ exports[`select 2`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -164,7 +168,9 @@ exports[`select 3`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -182,7 +188,7 @@ exports[`select 3`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -190,7 +196,7 @@ exports[`select 3`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -198,7 +204,7 @@ exports[`select 3`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -252,7 +258,9 @@ exports[`select 4`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -270,7 +278,7 @@ exports[`select 4`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -278,7 +286,7 @@ exports[`select 4`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -286,7 +294,7 @@ exports[`select 4`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -294,7 +302,7 @@ exports[`select 4`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -348,7 +356,9 @@ exports[`select 5`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -366,7 +376,7 @@ exports[`select 5`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·4·
       · ·
@@ -374,7 +384,7 @@ exports[`select 5`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -382,7 +392,7 @@ exports[`select 5`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -390,7 +400,7 @@ exports[`select 5`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -398,7 +408,7 @@ exports[`select 5`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -452,7 +462,9 @@ exports[`select 6`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -470,7 +482,7 @@ exports[`select 6`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·5·
       · ·
@@ -478,7 +490,7 @@ exports[`select 6`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·4·
       · ·
@@ -486,7 +498,7 @@ exports[`select 6`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -494,7 +506,7 @@ exports[`select 6`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -502,7 +514,7 @@ exports[`select 6`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
       · ·
@@ -510,7 +522,7 @@ exports[`select 6`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·

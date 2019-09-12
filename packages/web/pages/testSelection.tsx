@@ -12,6 +12,9 @@ import {
 export const testSelectionElement: EditorDOMElement = {
   id: id(),
   tag: 'div',
+  props: {
+    className: 'root',
+  },
   children: [
     {
       id: id(),

@@ -18,7 +18,9 @@ exports[`insert text at end 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       ·ahoj·
     </div>
   </div>
@@ -27,7 +29,7 @@ exports[`insert text at end 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'ahoj'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·5·
       · ·
@@ -35,7 +37,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'aho'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·4·
       · ·
@@ -43,7 +45,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'ah'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·3·
       · ·
@@ -51,7 +53,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·2·
       · ·
@@ -59,7 +61,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -67,7 +69,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·0·
       · ·
@@ -95,7 +97,9 @@ exports[`insert text at start then middle 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       ·bla·
     </div>
   </div>
@@ -104,7 +108,7 @@ exports[`insert text at start then middle 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'bla'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·3·
       · ·
@@ -112,7 +116,7 @@ exports[`insert text at start then middle 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'ba'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·2·
       · ·
@@ -120,7 +124,7 @@ exports[`insert text at start then middle 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -128,7 +132,7 @@ exports[`insert text at start then middle 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·0·
       · ·
@@ -156,7 +160,9 @@ exports[`remove text 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       ·a·
     </div>
   </div>
@@ -165,15 +171,7 @@ exports[`remove text 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
-    >
-      ·3·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
-    </span>
-    <span
-      class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'ba'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·2·
       · ·
@@ -181,7 +179,7 @@ exports[`remove text 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·1·
       · ·
@@ -189,7 +187,7 @@ exports[`remove text 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
     >
       ·0·
       · ·

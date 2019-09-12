@@ -5,7 +5,9 @@ exports[`render 1`] = `
   id="__next"
 >
   <div>
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -17,7 +19,9 @@ exports[`render 1`] = `
         ·paragraph·
       </div>
     </div>
-    <div>
+    <div
+      class="jsx-2162042882"
+    >
       <div
         class="jsx-3102962925"
       >
@@ -39,6 +43,7 @@ exports[`render 1`] = `
       </div>
       <img
         alt="Square placeholder image 80px"
+        class="jsx-2162042882"
         height="80"
         src="https://via.placeholder.com/80"
         width="80"

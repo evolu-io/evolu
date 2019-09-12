@@ -12,8 +12,12 @@ exports[`render 1`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
-      <div>
+    <div
+      class="root"
+    >
+      <div
+        class="list"
+      >
         ·ab·
       </div>
     </div>

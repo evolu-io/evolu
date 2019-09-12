@@ -12,7 +12,9 @@ exports[`render 1`] = `
     spellcheck="false"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >

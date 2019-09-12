@@ -16,6 +16,9 @@ export const initialEditorState = createEditorState({
   element: {
     id: id(),
     tag: 'div',
+    props: {
+      className: 'root',
+    },
     children: [
       {
         id: id(),
@@ -40,7 +43,7 @@ export const initialEditorState = createEditorState({
 });
 
 export const initialEditorStateWithTextOnly = createEditorState({
-  element: jsxToEditorDOMElement(<div>a</div>),
+  element: jsxToEditorDOMElement(<div className="root">a</div>),
 });
 
 export function BasicExample({

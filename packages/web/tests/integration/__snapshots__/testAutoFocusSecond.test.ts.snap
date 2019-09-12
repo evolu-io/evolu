@@ -18,7 +18,9 @@ exports[`render 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
     tabindex="0"
   >
-    <div>
+    <div
+      class="root"
+    >
       <div
         style="font-size:24px"
       >
@@ -36,7 +38,7 @@ exports[`render 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -57,7 +59,9 @@ exports[`render 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
     tabindex="0"
   >
-    <div>
+    <div
+      class="jsx-2162042882"
+    >
       <div
         class="jsx-3102962925"
       >
@@ -79,6 +83,7 @@ exports[`render 1`] = `
       </div>
       <img
         alt="Square placeholder image 80px"
+        class="jsx-2162042882"
         height="80"
         src="https://via.placeholder.com/80"
         width="80"
