@@ -38,17 +38,17 @@ exports[`insert text at end 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading. '}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·10·
+      ·9·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,9],"focus":[0,0,9]},"tabLostFocus":false}·
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading.'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·9·
+      ·8·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,8],"focus":[0,0,8]},"tabLostFocus":false}·
     </span>
@@ -56,7 +56,7 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·8·
+      ·7·
       · ·
       ·{"hasFocus":true,"selection":{"anchor":[0,0,7],"focus":[0,0,7]},"tabLostFocus":false}·
     </span>
@@ -64,17 +64,9 @@ exports[`insert text at end 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·7·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
-    </span>
-    <span
-      class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
-    >
       ·6·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,5],"focus":[0,0,5]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
     </span>
     <span
       class="jsx-1782790912"
@@ -166,7 +158,7 @@ exports[`insert text at start then middle 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'blheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -174,7 +166,7 @@ exports[`insert text at start then middle 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'bheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·
@@ -239,6 +231,14 @@ exports[`remove text 1`] = `
     <span
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'bheading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
       · ·

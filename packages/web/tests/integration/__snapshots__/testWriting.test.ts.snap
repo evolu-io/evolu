@@ -29,7 +29,7 @@ exports[`insert text at end 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'ahoj'}]}"
     >
       ·5·
       · ·
@@ -37,7 +37,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'aho'}]}"
     >
       ·4·
       · ·
@@ -45,7 +45,7 @@ exports[`insert text at end 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'ah'}]}"
     >
       ·3·
       · ·
@@ -108,7 +108,7 @@ exports[`insert text at start then middle 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'bla'}]}"
     >
       ·3·
       · ·
@@ -116,7 +116,7 @@ exports[`insert text at start then middle 1`] = `
     </span>
     <span
       class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
@@ -172,6 +172,14 @@ exports[`remove text 1`] = `
     <span
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+    >
+      ·3·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'ba'}]}"
     >
       ·2·
       · ·
