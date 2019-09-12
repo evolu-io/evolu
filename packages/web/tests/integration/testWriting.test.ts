@@ -31,5 +31,13 @@ test('remove text', async () => {
   await page.waitFor(50);
   await page.keyboard.press('Backspace');
   await page.waitFor(50);
+  await page.keyboard.press('ArrowRight');
+  await page.waitFor(50);
+  await page.keyboard.press('Backspace');
+  await page.waitFor(50);
+  await page.keyboard.press('b');
+  await page.waitFor(50);
+  await page.keyboard.press('Backspace');
+  await page.waitFor(50);
   await expect(await pageDom()).toMatchSnapshot();
 });

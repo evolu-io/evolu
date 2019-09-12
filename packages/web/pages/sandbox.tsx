@@ -7,6 +7,7 @@ import {
   createEditorState,
   jsxToEditorDOMElement,
 } from 'slad';
+import produce from 'immer';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
@@ -49,6 +50,21 @@ function Index() {
         // spellCheck
       />
       {logEditorStateElement}
+      <button
+        type="button"
+        onMouseDown={event => {
+          event.preventDefault();
+          const nextState = produce(editorState, draft => {
+            // @ts-ignore
+            // draft.element.children[0].children[0].text += ' foo';
+            // draft.element.children[0].children[0].text = '';
+            draft.element.children.splice(0, 1);
+          });
+          handleEditorChange(nextState);
+        }}
+      >
+        update model
+      </button>
     </Container>
   );
 }

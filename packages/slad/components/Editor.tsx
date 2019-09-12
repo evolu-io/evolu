@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useEffect,
   RefObject,
-  useLayoutEffect,
 } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
@@ -44,8 +43,7 @@ import {
   EditorPathsNodesMap,
 } from '../models/path';
 import { editorTextsAreEqual } from '../models/text';
-
-const isSSR = typeof window === 'undefined';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 
 const debug = Debug('editor');
 
@@ -72,6 +70,8 @@ function useDebugNodesEditorPaths(
         return count + 1 + childrenCount;
       };
       const nodesLength = countNodes(editorState.element);
+      // console.log(nodesLength, nodesEditorPathsMap.size);
+
       invariant(
         nodesLength === nodesEditorPathsMap.size,
         'It looks like the ref in the custom renderElement of Editor is not used.',
@@ -336,11 +336,11 @@ export function Editor<T extends EditorElement>({
 
     if (startNode == null || endNode == null) return;
 
+    // TODO: Invatiant, if startNode or endNode are not in DOM.
+
     const range = doc.createRange();
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
-
-    // console.log('update selection manually');
 
     selection.removeAllRanges();
     if (isBackward) {
@@ -362,7 +362,7 @@ export function Editor<T extends EditorElement>({
   // useLayoutEffect is must to keep browser selection in sync with editor state.
   // I suppose this is the case for "progressively enhancing hooks".
   // https://github.com/facebook/react/issues/14927
-  (isSSR ? useEffect : useLayoutEffect)(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
@@ -390,65 +390,101 @@ export function Editor<T extends EditorElement>({
     // It's neccessary for IME anyway, as described in DraftJS and ProseMirror.
     // This approach ensures iOS special typing like double space etc works out of the box.
     // https://github.com/facebook/draft-js/blob/master/src/component/handlers/composition/DOMObserver.js#L103
-    const observer = new MutationObserver(mutationRecords => {
-      function isTextChange(): boolean {
-        return mutationRecords.every(
-          mutation => mutation.type === 'characterData',
-        );
+    const observer = new MutationObserver(mutations => {
+      function onlyCharacterDataMutations(
+        mutations: MutationRecord[],
+      ): boolean {
+        return mutations.every(mutation => mutation.type === 'characterData');
       }
-      if (isTextChange()) {
-        const lastMutation = mutationRecords[mutationRecords.length - 1];
+
+      const textWasUpdatedByTypingOrModel = onlyCharacterDataMutations(
+        mutations,
+      );
+
+      if (textWasUpdatedByTypingOrModel) {
+        // mutations.length could be 1 or 2
+        // 2 for the whitespace, which generates two identical mutations for some reason
+        // We takes the last.
+        const lastMutation = mutations[mutations.length - 1];
         const path = findPathFromNode(lastMutation.target);
         const text = lastMutation.target.nodeValue || '';
         // Ignore empty text, because it must be handled via childList mutation.
         if (text.length === 0) return;
-        // EditTextRenderer checks DOM and if text is already updated, it will skip.
         command({ type: 'writeTextToCollapsedSelection', path, text });
+        return;
       }
 
-      // type characterData
-      // added remove empty
-      // target je nodeType ta enumerace
-      // a je to jednou nebo 2x
-      // const its
+      const textWasRemovedByTyping =
+        mutations.length === 3 &&
+        mutations[0].type === 'characterData' &&
+        mutations[1].type === 'childList' &&
+        mutations[1].removedNodes[0].nodeType === Node.TEXT_NODE &&
+        mutations[2].type === 'childList' &&
+        mutations[2].addedNodes[0].nodeName === 'BR';
 
-      // console.log(mutationRecords);
-      // // // if (mutationRecords[6]) {
-      // // //   console.log(mutationRecords[6].removedNodes[0]);
-      // // // }
+      if (textWasRemovedByTyping) {
+        const removedTextNode = mutations[1].removedNodes[0] as Text;
+        const path = findPathFromNode(removedTextNode);
+        setNodeEditorPath('remove', removedTextNode, path);
+        command({ type: 'writeTextToCollapsedSelection', path, text: '' });
+        return;
+      }
 
-      // mutationRecords.forEach(mutationRecord => {
-      //   if (mutationRecord.type === 'characterData') {
-      //     const path = findPathFromNode(mutationRecord.target);
-      //     const text = mutationRecord.target.nodeValue || '';
-      //     // Ignore, because it must be handled via childList.
-      //     if (text.length === 0) return;
-      //     // EditTextRenderer checks DOM and if text is already updated, it will skip.
-      //     command({ type: 'writeTextToCollapsedSelection', path, text });
-      //   } else if (mutationRecord.type === 'childList') {
-      //     // // Browsers remove text node in order to inject BR instead.
-      //     // const textNodeWasRemoved =
-      //     //   mutationRecord.removedNodes &&
-      //     //   mutationRecord.removedNodes.length === 1 &&
-      //     //   mutationRecord.removedNodes[0].nodeType === Node.TEXT_NODE;
-      //     // if (!textNodeWasRemoved) return;
-      //     // // console.log(mutationRecord);
-      //     // const path = findPathFromNode(mutationRecord.removedNodes[0]);
-      //     // // setNodeEditorPath('remove', mutationRecord.removedNodes[0] as Text, path)
-      //     // // setNodeEditorPath('add', mutationRecord.removedNodes[0] as Text, path)
-      //     // command({ type: 'writeTextToCollapsedSelection', path, text: '' });
-      //   }
-      // });
+      // In EditorTextRenderer manually.
+      const textWasRemovedByModel =
+        mutations.length === 1 &&
+        mutations[0].type === 'childList' &&
+        mutations[0].addedNodes.length === 1 &&
+        mutations[0].addedNodes[0].nodeName === 'BR' &&
+        mutations[0].removedNodes.length === 1 &&
+        mutations[0].removedNodes[0].nodeType === Node.TEXT_NODE;
+
+      if (textWasRemovedByModel) {
+        // setNodeEditorPath('remove', removedTextNode, path);
+        // TODO: Ensure selection here?
+        return;
+      }
+
+      const textWasAddedByTyping =
+        mutations[0].type === 'childList' &&
+        mutations[0].addedNodes.length === 1 &&
+        mutations[0].addedNodes[0].nodeType === Node.TEXT_NODE &&
+        mutations[1].type === 'childList' &&
+        mutations[1].removedNodes.length === 1 &&
+        mutations[1].removedNodes[0].nodeName === 'BR' &&
+        onlyCharacterDataMutations(mutations.slice(2));
+
+      if (textWasAddedByTyping) {
+        const addedTextNode = mutations[0].addedNodes[0] as Text;
+        const removedBR = mutations[1].removedNodes[0] as HTMLBRElement;
+        const path = findPathFromNode(removedBR);
+        setNodeEditorPath('remove', removedBR, path);
+        setNodeEditorPath('add', addedTextNode, path);
+        const text = addedTextNode.nodeValue || '';
+        command({ type: 'writeTextToCollapsedSelection', path, text });
+        return;
+      }
+
+      // TODO: Warning?
+      // eslint-disable-next-line no-console
+      console.log('Unknown DOM mutation in Editor MutationObserver:');
+      // eslint-disable-next-line no-console
+      console.log(mutations);
+      // invariant(false, 'Unknown DOM mutation in Editor MutationObserver.');
     });
+
     observer.observe(divRef.current, {
       childList: true,
       characterData: true,
       subtree: true,
     });
+
     return () => {
       observer.disconnect();
     };
-  }, [command, findPathFromNode, nodesEditorPathsMap]);
+  }, [command, findPathFromNode, setNodeEditorPath]);
+
+  const rootPath = useMemo(() => [], []);
 
   const children = useMemo(() => {
     return (
@@ -456,11 +492,14 @@ export function Editor<T extends EditorElement>({
         <RenderEditorElementContext.Provider
           value={renderElement || renderEditorDOMElement}
         >
-          <EditorElementRenderer element={editorState.element} path={[]} />
+          <EditorElementRenderer
+            element={editorState.element}
+            path={rootPath}
+          />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
-  }, [editorState.element, renderElement, setNodeEditorPath]);
+  }, [editorState.element, renderElement, rootPath, setNodeEditorPath]);
 
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();

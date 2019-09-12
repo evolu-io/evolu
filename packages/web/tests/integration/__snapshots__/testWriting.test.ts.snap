@@ -163,12 +163,44 @@ exports[`remove text 1`] = `
     <div
       class="root"
     >
-      ·a·
+      <br />
     </div>
   </div>
   <pre
     class="jsx-2255726786"
   >
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':''}]}"
+    >
+      ·7·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'b'}]}"
+    >
+      ·6·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':''}]}"
+    >
+      ·5·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,1],"focus":[0,1]},"tabLostFocus":false}·
+    </span>
     <span
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'text':'a'}]}"

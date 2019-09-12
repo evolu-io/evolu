@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useContext, useCallback } from 'react';
+import React, { memo, useMemo, useContext, useCallback, useRef } from 'react';
 import invariant from 'tiny-invariant';
 import {
   useSetNodeEditorPathRef,
@@ -35,9 +35,11 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
     const renderElement = useContext(RenderEditorElementContext);
     const setNodePathRef = useSetNodeEditorPathRef(path);
+    const elementRef = useRef<Node | null>(null);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
         if (node) invariantHTMLElementHasAttributes(node as HTMLElement);
+        elementRef.current = node;
         setNodePathRef(node);
       },
       [setNodePathRef],
@@ -52,6 +54,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
               key={child.id}
               text={child.text}
               path={childPath}
+              parentElementRef={elementRef}
             />
           );
         }
@@ -68,8 +71,8 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     return <>{renderElement(element, children, handleElementRef)}</>;
   },
   (prevProps, nextProps) => {
-    if (prevProps.element !== nextProps.element) return false;
     if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
+    if (prevProps.element !== nextProps.element) return false;
     return true;
   },
 );
