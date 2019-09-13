@@ -2,6 +2,8 @@ import { EditorNodeIdentity } from './node';
 
 /**
  * EditorText is object because even the two identical texts need own identity.
+ * Child index position is not enough for React key and CRDT.
+ * Empty string is rendered as BR.
  */
 export interface EditorText extends EditorNodeIdentity {
   text: string;
