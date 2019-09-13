@@ -40,11 +40,15 @@ export type EditorDOMElement = $Values<
 export function jsxToEditorDOMElement(element: JSX.Element): EditorDOMElement {
   const {
     type: tag,
-    props: { children, ...props },
+    props: { children = [], ...props },
   } = element;
   const editorChildren = flattenDeep([children]).map(child => {
     if (typeof child === 'string') {
       const text: EditorText = { id: id(), text: child };
+      return text;
+    }
+    if (child.type === 'br') {
+      const text: EditorText = { id: id(), text: '' };
       return text;
     }
     return jsxToEditorDOMElement(child);
