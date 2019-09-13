@@ -1,13 +1,27 @@
-import { EditorNodeIdentity } from './node';
+import invariant from 'tiny-invariant';
+import { EditorNode } from './node';
 
 /**
  * EditorText is object because even the two identical texts need own identity.
  * Child index position is not enough for React key and CRDT.
  * Empty string is rendered as BR.
  */
-export interface EditorText extends EditorNodeIdentity {
+export interface EditorText extends EditorNode {
   text: string;
 }
+
+export function isEditorText(node: EditorNode): node is EditorText {
+  return (node as EditorText).text !== undefined;
+}
+
+export function invariantIsEditorText(node: EditorNode): node is EditorText {
+  invariant(isEditorText(node), 'EditorElementChild is not EditorText.');
+  return true;
+}
+
+// export function editorTextIsBR(editorText: EditorText) {
+//   return editorText.text.length === 0;
+// }
 
 export function editorTextsAreEqual(
   text1: EditorText,

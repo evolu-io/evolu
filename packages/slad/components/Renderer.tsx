@@ -1,9 +1,6 @@
 import React, { createElement } from 'react';
-import {
-  RenderEditorElement,
-  EditorElement,
-  isEditorText,
-} from '../models/element';
+import { RenderEditorElement, EditorElement } from '../models/element';
+import { isEditorText } from '../models/text';
 
 export interface RendererProps<T extends EditorElement> {
   element: T;

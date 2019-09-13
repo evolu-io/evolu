@@ -5,8 +5,8 @@ import {
 } from './element';
 import { EditorNodeID } from './node';
 
+// TODO: Stable EditorNodeID per test. PR anyone?
 let lastID = 0;
-
 // Stable EditorNodeID factory for test snapshots.
 function id(): EditorNodeID {
   return (lastID++).toString() as EditorNodeID;
@@ -50,24 +50,42 @@ test('isNormalizedEditorElement', () => {
       children: [{ id: id(), text: 'a' }],
     }),
   ).toBe(true);
+
+  // Empty string is BR, that's ok.
   expect(
     isNormalizedEditorElement({
       id: id(),
       children: [{ id: id(), text: '' }],
     }),
   ).toBe(true);
+
+  // Two not empty string, that's not ok.
   expect(
     isNormalizedEditorElement({
       id: id(),
       children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
     }),
   ).toBe(false);
+
+  // Recursion works.
   expect(
     isNormalizedEditorElement({
       id: id(),
       children: [{ id: id(), children: [{ id: id(), text: '' }] }],
     }),
   ).toBe(true);
+
+  // Empty string is BR, so it's ok.
+  // expect(
+  //   isNormalizedEditorElement({
+  //     id: id(),
+  //     children: [
+  //       { id: id(), text: 'a' },
+  //       { id: id(), text: '' },
+  //       { id: id(), text: 'a' },
+  //     ],
+  //   }),
+  // ).toBe(true);
 });
 
 test('normalizeEditorElement do not add children', () => {
@@ -83,3 +101,5 @@ test('normalizeEditorElement do not remove children', () => {
     normalizeEditorElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
 });
+
+//

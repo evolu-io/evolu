@@ -6,8 +6,9 @@ import {
 } from '../hooks/useSetNodeEditorPathRef';
 import { EditorTextRenderer } from './EditorTextRenderer';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
-import { EditorElement, isEditorText } from '../models/element';
+import { EditorElement } from '../models/element';
 import { EditorPath, editorPathsAreEqual } from '../models/path';
+import { isEditorText } from '../models/text';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
 // Better to enforce right data model.

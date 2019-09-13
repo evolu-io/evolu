@@ -31,9 +31,7 @@ import {
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
-  invariantIsEditorText,
   EditorElementChild,
-  isEditorText,
 } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -42,7 +40,11 @@ import {
   NodesEditorPathsMap,
   EditorPathsNodesMap,
 } from '../models/path';
-import { editorTextsAreEqual } from '../models/text';
+import {
+  editorTextsAreEqual,
+  isEditorText,
+  invariantIsEditorText,
+} from '../models/text';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 
 const debug = Debug('editor');

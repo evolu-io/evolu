@@ -4,13 +4,13 @@ import { $Values } from 'utility-types';
 import flattenDeep from 'lodash.flattendeep';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
-import { EditorNodeIdentity, id } from './node';
-import { EditorText } from './text';
+import { EditorNode, id } from './node';
+import { EditorText, isEditorText } from './text';
 
 /**
  * EditorElement is the base model for all other editor elements.
  */
-export interface EditorElement extends EditorNodeIdentity {
+export interface EditorElement extends EditorNode {
   readonly children: readonly (EditorElementChild)[];
 }
 
@@ -67,18 +67,6 @@ export type RenderEditorElement = (
   children: ReactNode,
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
-
-// https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
-export function isEditorText(child: EditorElementChild): child is EditorText {
-  return (child as EditorText).text !== undefined;
-}
-
-export function invariantIsEditorText(
-  child: EditorElementChild,
-): child is EditorText {
-  invariant(isEditorText(child), 'EditorElementChild is not EditorText.');
-  return true;
-}
 
 export function invariantIsEditorElement(
   child: EditorElementChild,
