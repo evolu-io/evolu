@@ -8,7 +8,7 @@ export function useInvariantEditorElementIsNormalized(element: EditorElement) {
     useEffect(() => {
       invariant(
         isNormalizedEditorElement(element),
-        'EditorElement is not normalized. It means it contains empty or adjacent strings.' +
+        'EditorElement is not normalized. It means it contains adjacent strings.' +
           'You can use normalizeEditorElement to fix it.',
       );
     }, [element]);
