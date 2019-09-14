@@ -1,4 +1,5 @@
 import path from 'path';
+import { ClickOptions } from 'puppeteer';
 
 function pageUrl(name: string) {
   if (process.env.JEST_WATCH) {
@@ -10,6 +11,7 @@ function pageUrl(name: string) {
 export async function pageGoto(name: string) {
   const url = pageUrl(name);
   await page.goto(url);
+  // This waiting is required for CI.
   await page.waitFor(50);
 }
 
@@ -74,10 +76,16 @@ function ensurePrettyFormat(element: ElementJson) {
 }
 
 export async function pageDom() {
+  // This waiting is required for CI.
+  await page.waitFor(50);
   // https://jestjs.io/docs/en/expect#expectextendmatchers
   const json = await page.evaluate(serializeDom);
   ensurePrettyFormat(json);
   return json;
 }
 
-// TODO: Wrapper which will add waitFor 50 automatically.
+export async function pageClick(selector: string, options?: ClickOptions) {
+  await page.click(selector, options);
+  // This waiting is required for CI.
+  await page.waitFor(50);
+}
