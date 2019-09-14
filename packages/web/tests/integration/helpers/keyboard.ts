@@ -8,5 +8,11 @@
 // There will be platform dependent edge cases among elements etc. That's fine.
 
 export async function pressMany(key: string, count: number) {
-  for (let i = 0; i < count; i++) await page.keyboard.press(key);
+  for (let i = 0; i < count; i++) {
+    await page.keyboard.press(key);
+    // Waiting after key press is necessary, otherwise, Puppeteer will fail.
+    await page.waitFor(50);
+  }
 }
+
+// TODO: Wrapper which will add waitFor 50 automatically.
