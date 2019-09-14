@@ -1,9 +1,7 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
+import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testAutoFocusBoth'));
-  await page.waitFor(50);
+  await pageGoto('testAutoFocusBoth');
 });
 
 test('render', async () => {

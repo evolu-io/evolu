@@ -1,9 +1,7 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
+import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testSelection'));
-  await page.waitFor(50);
+  await pageGoto('testSelection');
 });
 
 test('select', async () => {

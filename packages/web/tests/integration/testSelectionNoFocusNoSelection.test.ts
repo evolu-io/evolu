@@ -1,9 +1,7 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
+import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testSelectionNoFocusNoSelection'));
-  await page.waitFor(50);
+  await pageGoto('testSelectionNoFocusNoSelection');
 });
 
 test('tab then key arrow right', async () => {

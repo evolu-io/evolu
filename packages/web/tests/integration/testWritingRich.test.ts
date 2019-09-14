@@ -1,10 +1,7 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
-import { pressMany } from './helpers/keyboard';
+import { pageDom, pressMany, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testWritingRich'));
-  await page.waitFor(50);
+  await pageGoto('testWritingRich');
 });
 
 test('insert text at end', async () => {

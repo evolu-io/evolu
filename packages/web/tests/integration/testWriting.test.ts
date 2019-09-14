@@ -1,9 +1,7 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
+import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await page.goto(pageUrl('testWriting'));
-  await page.waitFor(50);
+  await pageGoto('testWriting');
 });
 
 test('insert text at end', async () => {

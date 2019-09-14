@@ -1,12 +1,10 @@
-import { pageUrl } from './helpers/pageUrl';
-import { pageDom } from './helpers/pageDom';
+import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
   page.on('dialog', async dialog => {
     await dialog.dismiss();
   });
-  await page.goto(pageUrl('testAutoFocusFirst'));
-  await page.waitFor(50);
+  await pageGoto('testAutoFocusFirst');
 });
 
 test('render', async () => {
