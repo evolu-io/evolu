@@ -3,7 +3,6 @@ import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
   await page.goto(pageUrl('testSelection'));
-  await page.waitFor(50);
 });
 
 test('select', async () => {
