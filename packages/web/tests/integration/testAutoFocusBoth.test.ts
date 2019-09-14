@@ -3,6 +3,7 @@ import { pageDom } from './helpers/pageDom';
 
 beforeEach(async () => {
   await page.goto(pageUrl('testAutoFocusBoth'));
+  await page.waitFor(50);
 });
 
 test('render', async () => {
