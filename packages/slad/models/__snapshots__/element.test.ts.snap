@@ -3,14 +3,14 @@
 exports[`normalizeEditorElement do not add children 1`] = `
 Object {
   "children": Array [],
-  "id": "25",
+  "id": "29",
 }
 `;
 
 exports[`normalizeEditorElement do not remove children 1`] = `
 Object {
   "children": Array [],
-  "id": "26",
+  "id": "30",
 }
 `;
 
@@ -18,11 +18,11 @@ exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
   "children": Array [
     Object {
-      "id": "28",
+      "id": "32",
       "text": "",
     },
   ],
-  "id": "27",
+  "id": "31",
 }
 `;
 
@@ -30,11 +30,11 @@ exports[`normalizeEditorElement do not remove children 3`] = `
 Object {
   "children": Array [
     Object {
-      "id": "30",
+      "id": "34",
       "text": ".",
     },
   ],
-  "id": "29",
+  "id": "33",
 }
 `;
 
@@ -73,7 +73,15 @@ Object {
     },
     Object {
       "id": "12",
-      "text": "ab",
+      "text": "a",
+    },
+    Object {
+      "id": "13",
+      "text": "",
+    },
+    Object {
+      "id": "14",
+      "text": "b",
     },
   ],
   "id": "0",

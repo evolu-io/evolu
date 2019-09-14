@@ -19,6 +19,8 @@ exports[`render 1`] = `
         class="list"
       >
         ·ab·
+        <br />
+        ·c·
       </div>
     </div>
   </div>

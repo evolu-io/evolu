@@ -14,14 +14,14 @@ export function isEditorText(node: EditorNode): node is EditorText {
   return (node as EditorText).text !== undefined;
 }
 
-export function invariantIsEditorText(node: EditorNode): node is EditorText {
-  invariant(isEditorText(node), 'EditorElementChild is not EditorText.');
-  return true;
+export function editorTextIsBR(editorText: EditorText) {
+  return editorText.text.length === 0;
 }
 
-// export function editorTextIsBR(editorText: EditorText) {
-//   return editorText.text.length === 0;
-// }
+export function invariantIsEditorText(node: EditorNode): node is EditorText {
+  invariant(isEditorText(node), 'EditorNode is not EditorText.');
+  return true;
+}
 
 export function editorTextsAreEqual(
   text1: EditorText,

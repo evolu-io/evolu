@@ -76,16 +76,16 @@ test('isNormalizedEditorElement', () => {
   ).toBe(true);
 
   // Empty string is BR, so it's ok.
-  // expect(
-  //   isNormalizedEditorElement({
-  //     id: id(),
-  //     children: [
-  //       { id: id(), text: 'a' },
-  //       { id: id(), text: '' },
-  //       { id: id(), text: 'a' },
-  //     ],
-  //   }),
-  // ).toBe(true);
+  expect(
+    isNormalizedEditorElement({
+      id: id(),
+      children: [
+        { id: id(), text: 'a' },
+        { id: id(), text: '' },
+        { id: id(), text: 'a' },
+      ],
+    }),
+  ).toBe(true);
 });
 
 test('normalizeEditorElement do not add children', () => {
@@ -101,5 +101,3 @@ test('normalizeEditorElement do not remove children', () => {
     normalizeEditorElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
 });
-
-//

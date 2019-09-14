@@ -5,7 +5,7 @@ import flattenDeep from 'lodash.flattendeep';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
 import { EditorNode, id } from './node';
-import { EditorText, isEditorText } from './text';
+import { EditorText, isEditorText, editorTextIsBR } from './text';
 
 /**
  * EditorElement is the base model for all other editor elements.
@@ -77,7 +77,7 @@ export function invariantIsEditorElement(
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
- * except strings can be empty. Editor and Renderer render empty string as BR.
+ * except strings can be empty. Empty string is considered to be BR.
  */
 export function normalizeEditorElement<T extends EditorElement>(element: T): T {
   return {
@@ -88,10 +88,15 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
             (array, child) => {
               if (!isEditorText(child))
                 return [...array, normalizeEditorElement(child)];
+              if (editorTextIsBR(child)) return [...array, child];
               // Always check existence in an array manually.
               // https://stackoverflow.com/a/49450994/233902
               const previousChild = array.length > 0 && array[array.length - 1];
-              if (previousChild && isEditorText(previousChild)) {
+              if (
+                previousChild &&
+                isEditorText(previousChild) &&
+                !editorTextIsBR(previousChild)
+              ) {
                 array[array.length - 1] = {
                   ...previousChild,
                   text: previousChild.text + child.text,
@@ -109,17 +114,18 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
- * except strings can be empty. Editor and Renderer render empty string as BR.
+ * except strings can be empty. Empty string is considered to be BR.
  */
 export function isNormalizedEditorElement({
   children,
 }: EditorElement): boolean {
   return !children.some((child, i) => {
-    if (isEditorText(child)) {
-      if (i > 0 && isEditorText(children[i - 1])) return true;
-      return false;
-    }
-    return !isNormalizedEditorElement(child);
+    if (!isEditorText(child)) return !isNormalizedEditorElement(child);
+    if (editorTextIsBR(child)) return false;
+    const previous = children[i - 1];
+    if (previous && isEditorText(previous) && !editorTextIsBR(previous))
+      return true;
+    return false;
   });
 }
 

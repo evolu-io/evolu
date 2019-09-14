@@ -23,8 +23,9 @@ const initialEditorState = createEditorState({
         },
         children: [
           { id: id(), text: 'a' },
-          { id: id(), text: '' },
           { id: id(), text: 'b' },
+          { id: id(), text: '' },
+          { id: id(), text: 'c' },
         ],
       },
     ],
