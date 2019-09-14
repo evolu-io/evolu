@@ -224,7 +224,7 @@ exports[`remove text 1`] = `
       <div
         style="font-size:24px"
       >
-        ·heading·
+        ·ab·
       </div>
       <div
         style="font-size:16px"
@@ -236,6 +236,150 @@ exports[`remove text 1`] = `
   <pre
     class="jsx-2255726786"
   >
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'ab'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·21·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'a'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·20·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':''}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·19·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':''}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·18·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[1,0,0],"focus":[1,0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':''}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·17·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'h'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·16·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'he'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·15·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'hea'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·14·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,3],"focus":[0,0,3]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'head'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·13·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,4],"focus":[0,0,4]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'headi'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·12·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,5],"focus":[0,0,5]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'headin'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·11·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·10·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,7],"focus":[0,0,7]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·9·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,6],"focus":[0,0,6]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·8·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,5],"focus":[0,0,5]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·7·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,4],"focus":[0,0,4]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·6·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,3],"focus":[0,0,3]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·5·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·4·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]},"tabLostFocus":false}·
+    </span>
     <span
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"

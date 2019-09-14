@@ -148,6 +148,7 @@ export function useSchemaRenderElement() {
       // Recursive ThisAndChildTypes<SchemaDocumentElement> can only by finite.
       // Therefore, we prefer explicit union type.
       // https://github.com/microsoft/TypeScript/pull/33050#issuecomment-529683091
+      // TODO: There is a new hint, maybe i will be possible. Wait for TS 3.7.
       const element = editorElement as
         | SchemaDocumentElement
         | SchemaHeadingElement

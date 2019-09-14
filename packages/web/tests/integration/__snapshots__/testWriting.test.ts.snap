@@ -175,7 +175,7 @@ exports[`remove text 1`] = `
     >
       ·7·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0],"focus":[0]},"tabLostFocus":false}·
     </span>
     <span
       class="jsx-1782790912"
@@ -191,7 +191,7 @@ exports[`remove text 1`] = `
     >
       ·5·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0],"focus":[0,0]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0],"focus":[0]},"tabLostFocus":false}·
     </span>
     <span
       class="jsx-1782790912"

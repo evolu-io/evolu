@@ -155,14 +155,24 @@ function useEditorCommand<T extends EditorElement>(
             EditorElement
           >;
           const childIndex = path.slice(-1)[0];
-          const child = parent.children[childIndex];
-          if (!invariantIsEditorText(child)) return;
-          const newChild = { ...child, text };
-          if (editorTextsAreEqual(child, newChild)) return;
+          const currentChild = parent.children[childIndex];
+          if (!invariantIsEditorText(currentChild)) return;
+          const newChild = { ...currentChild, text };
+          if (editorTextsAreEqual(currentChild, newChild)) return;
           parent.children[childIndex] = newChild;
-          const offset = text.length - child.text.length;
-          draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
-          draft.selection.focus[draft.selection.focus.length - 1] += offset;
+          // Because empty text is BR, it can not have path to text node.
+          if (text.length === 0) {
+            draft.selection.anchor = path;
+            draft.selection.focus = path;
+            // Or we already have path to BR and we are going to render text.
+          } else if (currentChild.text.length === 0 && text.length > 0) {
+            draft.selection.anchor = path.concat(text.length);
+            draft.selection.focus = path.concat(text.length);
+          } else {
+            const offset = text.length - currentChild.text.length;
+            draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
+            draft.selection.focus[draft.selection.focus.length - 1] += offset;
+          }
           break;
         }
 
@@ -399,6 +409,9 @@ export function Editor<T extends EditorElement>({
         return mutations.every(mutation => mutation.type === 'characterData');
       }
 
+      // console.log(mutations);
+      // TODO: It should be list of rules, { whatHappen: predicate }
+
       const textWasUpdatedByTypingOrModel = onlyCharacterDataMutations(
         mutations,
       );
@@ -416,7 +429,7 @@ export function Editor<T extends EditorElement>({
         return;
       }
 
-      const textWasRemovedByTyping =
+      const textWasReplacedWithBRByTyping =
         mutations.length === 3 &&
         mutations[0].type === 'characterData' &&
         mutations[1].type === 'childList' &&
@@ -424,7 +437,7 @@ export function Editor<T extends EditorElement>({
         mutations[2].type === 'childList' &&
         mutations[2].addedNodes[0].nodeName === 'BR';
 
-      if (textWasRemovedByTyping) {
+      if (textWasReplacedWithBRByTyping) {
         const removedTextNode = mutations[1].removedNodes[0] as Text;
         const path = findPathFromNode(removedTextNode);
         setNodeEditorPath('remove', removedTextNode, path);
@@ -433,7 +446,7 @@ export function Editor<T extends EditorElement>({
       }
 
       // In EditorTextRenderer manually.
-      const textWasRemovedByModel =
+      const textWasReplacedWithBRByModel =
         mutations.length === 1 &&
         mutations[0].type === 'childList' &&
         mutations[0].addedNodes.length === 1 &&
@@ -441,13 +454,13 @@ export function Editor<T extends EditorElement>({
         mutations[0].removedNodes.length === 1 &&
         mutations[0].removedNodes[0].nodeType === Node.TEXT_NODE;
 
-      if (textWasRemovedByModel) {
+      if (textWasReplacedWithBRByModel) {
         // setNodeEditorPath('remove', removedTextNode, path);
         // TODO: Ensure selection here?
         return;
       }
 
-      const textWasAddedByTyping =
+      const brWasReplacedWithTextByTyping =
         mutations[0].type === 'childList' &&
         mutations[0].addedNodes.length === 1 &&
         mutations[0].addedNodes[0].nodeType === Node.TEXT_NODE &&
@@ -456,7 +469,7 @@ export function Editor<T extends EditorElement>({
         mutations[1].removedNodes[0].nodeName === 'BR' &&
         onlyCharacterDataMutations(mutations.slice(2));
 
-      if (textWasAddedByTyping) {
+      if (brWasReplacedWithTextByTyping) {
         const addedTextNode = mutations[0].addedNodes[0] as Text;
         const removedBR = mutations[1].removedNodes[0] as HTMLBRElement;
         const path = findPathFromNode(removedBR);
