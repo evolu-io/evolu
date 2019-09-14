@@ -1,4 +1,4 @@
-import { pageDom, pageGoto } from './helpers';
+import { pageDom, pageGoto, pageClick, pageKeyboard } from './helpers';
 
 beforeEach(async () => {
   await pageGoto('testTabKeyAndFocusBlurClick');
@@ -9,25 +9,20 @@ test('render', async () => {
 });
 
 test('focus blur via tab, tab, tab', async () => {
-  await page.keyboard.press('Tab');
-  // await page.waitFor(50);
+  await pageKeyboard.press('Tab');
   await expect(await pageDom()).toMatchSnapshot();
 
-  await page.keyboard.press('Tab');
-  // await page.waitFor(50);
+  await pageKeyboard.press('Tab');
   await expect(await pageDom()).toMatchSnapshot();
 
-  await page.keyboard.press('Tab');
-  // await page.waitFor(50);
+  await pageKeyboard.press('Tab');
   await expect(await pageDom()).toMatchSnapshot();
 });
 
 test('click to focus button, click to blur button', async () => {
-  await page.click('button.focus');
-  // await page.waitFor(50);
+  await pageClick('button.focus');
   await expect(await pageDom()).toMatchSnapshot();
 
-  await page.click('button.blur');
-  // await page.waitFor(50);
+  await pageClick('button.blur');
   await expect(await pageDom()).toMatchSnapshot();
 });

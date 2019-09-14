@@ -1,5 +1,8 @@
 import path from 'path';
-import { ClickOptions } from 'puppeteer';
+import { ClickOptions, Keyboard } from 'puppeteer';
+
+// This seems to be safe for CI.
+const waitForDuration = 50;
 
 function pageUrl(name: string) {
   if (process.env.JEST_WATCH) {
@@ -12,7 +15,7 @@ export async function pageGoto(name: string) {
   const url = pageUrl(name);
   await page.goto(url);
   // This waiting is required for CI.
-  await page.waitFor(50);
+  await page.waitFor(waitForDuration);
 }
 
 // Note on MacOS, keyboard shortcuts like ⌘ A -> Select All do not work. See #1313
@@ -27,7 +30,7 @@ export async function pressMany(key: string, count: number) {
   for (let i = 0; i < count; i++) {
     await page.keyboard.press(key);
     // Waiting after key press is necessary, otherwise, Puppeteer will fail.
-    await page.waitFor(50);
+    await page.waitFor(waitForDuration);
   }
 }
 
@@ -76,8 +79,6 @@ function ensurePrettyFormat(element: ElementJson) {
 }
 
 export async function pageDom() {
-  // This waiting is required for CI.
-  await page.waitFor(50);
   // https://jestjs.io/docs/en/expect#expectextendmatchers
   const json = await page.evaluate(serializeDom);
   ensurePrettyFormat(json);
@@ -87,5 +88,26 @@ export async function pageDom() {
 export async function pageClick(selector: string, options?: ClickOptions) {
   await page.click(selector, options);
   // This waiting is required for CI.
-  await page.waitFor(50);
+  await page.waitFor(waitForDuration);
 }
+
+export const pageKeyboard: Keyboard = [
+  'down',
+  'press',
+  'sendCharacter',
+  'type',
+  'up',
+].reduce(
+  (object, name) => {
+    return {
+      ...object,
+      // @ts-ignore
+      [name]: async (...args) => {
+        // @ts-ignore
+        await page.keyboard[name](...args);
+        await page.waitFor(waitForDuration);
+      },
+    };
+  },
+  {} as Keyboard,
+);

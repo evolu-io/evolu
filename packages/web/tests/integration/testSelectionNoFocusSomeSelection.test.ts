@@ -1,4 +1,4 @@
-import { pageDom, pageGoto } from './helpers';
+import { pageDom, pageGoto, pageKeyboard } from './helpers';
 
 beforeEach(async () => {
   await pageGoto('testSelectionNoFocusSomeSelection');
@@ -7,11 +7,9 @@ beforeEach(async () => {
 test('render then tab then key arrow right', async () => {
   await expect(await pageDom()).toMatchSnapshot();
 
-  await page.keyboard.press('Tab');
-  await page.waitFor(50);
+  await pageKeyboard.press('Tab');
   await expect(await pageDom()).toMatchSnapshot();
 
-  await page.keyboard.press('ArrowRight');
-  await page.waitFor(50);
+  await pageKeyboard.press('ArrowRight');
   await expect(await pageDom()).toMatchSnapshot();
 });
