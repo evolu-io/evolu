@@ -1,11 +1,5 @@
 /* eslint-env browser */
-import React, {
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-  RefObject,
-} from 'react';
+import React, { useRef, useCallback, useMemo, useEffect } from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import Debug from 'debug';
@@ -31,7 +25,6 @@ import {
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
-  EditorElementChild,
 } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -40,69 +33,11 @@ import {
   NodesEditorPathsMap,
   EditorPathsNodesMap,
 } from '../models/path';
-import {
-  editorTextsAreEqual,
-  isEditorText,
-  invariantIsEditorText,
-} from '../models/text';
+import { editorTextsAreEqual, invariantIsEditorText } from '../models/text';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
+import { useDebugNodesEditorPaths } from '../hooks/useDebugNodesEditorPaths';
 
 const debug = Debug('editor');
-
-function useDebugNodesEditorPaths(
-  nodesEditorPathsMap: NodesEditorPathsMap,
-  editorState: EditorState<EditorElement>,
-) {
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-      const nodes: [string, Node][] = [];
-      nodesEditorPathsMap.forEach((path, node) => {
-        nodes.push([path.join(), node]);
-      });
-      debug('nodesEditorPathsMap after render', nodes);
-
-      const countNodes = (node: EditorElementChild, count = 0) => {
-        if (isEditorText(node)) return count + 1;
-        let childrenCount = 0;
-        if (node.children)
-          node.children.forEach(child => {
-            childrenCount += countNodes(child, count);
-          });
-        return count + 1 + childrenCount;
-      };
-      const nodesLength = countNodes(editorState.element);
-      // console.log(nodesLength, nodesEditorPathsMap.size);
-
-      invariant(
-        nodesLength === nodesEditorPathsMap.size,
-        'It looks like the ref in the custom renderElement of Editor is not used.',
-      );
-    }, [nodesEditorPathsMap, editorState.element]);
-  }
-}
-
-function useEditorStateHasFocusOnDiv(
-  hasFocus: boolean,
-  divRef: RefObject<HTMLDivElement>,
-  tabLostFocus: boolean,
-) {
-  const hadFocus = usePrevious(hasFocus);
-  useEffect(() => {
-    const { current: div } = divRef;
-    if (div == null) return;
-    const divHasFocus =
-      div === (div.ownerDocument && div.ownerDocument.activeElement);
-    if (!hadFocus && hasFocus) {
-      if (!divHasFocus) div.focus();
-    } else if (hadFocus && !hasFocus) {
-      // Do not call blur when tab lost focus so editor can be focused back.
-      // For visual test, click to editor then press cmd-tab twice.
-      // Editor selection must be preserved.
-      if (divHasFocus && !tabLostFocus) div.blur();
-    }
-  }, [tabLostFocus, divRef, hadFocus, hasFocus]);
-}
 
 type EditorCommand = Immutable<
   | { type: 'focus' }
@@ -191,6 +126,7 @@ export interface EditorState<T extends EditorElement = EditorDOMElement> {
   readonly element: Immutable<T>;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
+  // jak to ma bejt interni?
   readonly tabLostFocus: boolean;
 }
 
@@ -240,6 +176,9 @@ export function Editor<T extends EditorElement>({
   const nodesEditorPathsMap = useRef<NodesEditorPathsMap>(new Map()).current;
   const editorPathsNodesMap = useRef<EditorPathsNodesMap>(new Map()).current;
 
+  useInvariantEditorElementIsNormalized(editorState.element);
+  useDebugNodesEditorPaths(nodesEditorPathsMap, editorState.element);
+
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (operation, node, path) => {
       switch (operation) {
@@ -260,14 +199,27 @@ export function Editor<T extends EditorElement>({
     [editorPathsNodesMap, nodesEditorPathsMap],
   );
 
-  useDebugNodesEditorPaths(nodesEditorPathsMap, editorState);
-  useInvariantEditorElementIsNormalized(editorState.element);
-
-  useEditorStateHasFocusOnDiv(
-    editorState.hasFocus,
-    divRef,
+  // Map editor declarative focus to imperative DOM focus and blur methods.
+  const editorStateHadFocus = usePrevious(editorState.hasFocus);
+  useEffect(() => {
+    const { current: div } = divRef;
+    if (div == null) return;
+    const divHasFocus =
+      div === (div.ownerDocument && div.ownerDocument.activeElement);
+    if (!editorStateHadFocus && editorState.hasFocus) {
+      if (!divHasFocus) div.focus();
+    } else if (editorStateHadFocus && !editorState.hasFocus) {
+      // Do not call blur when tab lost focus so editor can be focused back.
+      // For visual test, click to editor then press cmd-tab twice.
+      // Editor selection must be preserved.
+      if (divHasFocus && !editorState.tabLostFocus) div.blur();
+    }
+  }, [
     editorState.tabLostFocus,
-  );
+    divRef,
+    editorStateHadFocus,
+    editorState.hasFocus,
+  ]);
 
   const command = useEditorCommand<T>(editorState, onChange);
 
