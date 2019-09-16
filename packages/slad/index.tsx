@@ -12,4 +12,5 @@ export * from './models/element';
 export * from './models/node';
 export * from './models/path';
 export * from './models/selection';
+export * from './models/state';
 export * from './models/text';

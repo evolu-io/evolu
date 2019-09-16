@@ -1,6 +1,6 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
-import { EditorState } from '../components/Editor';
 import { EditorElement, recursiveRemoveID } from '../models/element';
+import { EditorState } from '../models/state';
 
 const Item = memo(
   <T extends EditorElement>({

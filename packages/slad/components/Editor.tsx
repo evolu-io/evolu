@@ -10,7 +10,6 @@ import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import Debug from 'debug';
 import invariant from 'tiny-invariant';
-import { Optional } from 'utility-types';
 import {
   SetNodeEditorPath,
   SetNodeEditorPathContext,
@@ -27,7 +26,6 @@ import {
 } from '../models/selection';
 import { renderEditorDOMElement } from './renderEditorDOMElement';
 import {
-  EditorDOMElement,
   RenderEditorElement,
   EditorElement,
   getParentElementByPath,
@@ -42,6 +40,7 @@ import {
 import { editorTextsAreEqual, invariantIsEditorText } from '../models/text';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import { useDebugNodesEditorPaths } from '../hooks/useDebugNodesEditorPaths';
+import { EditorState } from '../models/state';
 
 const debug = Debug('editor');
 
@@ -126,25 +125,6 @@ function useEditorCommand<T extends EditorElement>(
   return commandRef.current;
 }
 
-export interface EditorState<T extends EditorElement = EditorDOMElement> {
-  readonly element: Immutable<T>;
-  readonly selection: EditorSelection | null;
-  readonly hasFocus: boolean;
-}
-
-/**
- * Create editor state. By default, the root element is EditorDOMElement.
- */
-export function createEditorState<
-  T extends EditorState<EditorElement> = EditorState
->({
-  element,
-  selection = null,
-  hasFocus = false,
-}: Optional<T, 'hasFocus' | 'selection'>): T {
-  return { element, selection, hasFocus } as T;
-}
-
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'
@@ -174,6 +154,8 @@ export function Editor<T extends EditorElement>({
   ...rest
 }: EditorProps<T>) {
   const divRef = useRef<HTMLDivElement>(null);
+
+  // Nodes references to paths via React ref instead of explicit IDs in DOM.
   const nodesEditorPathsMap = useRef<NodesEditorPathsMap>(new Map()).current;
   const editorPathsNodesMap = useRef<EditorPathsNodesMap>(new Map()).current;
 
