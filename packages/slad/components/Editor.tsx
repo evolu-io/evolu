@@ -1,5 +1,11 @@
 /* eslint-env browser */
-import React, { useRef, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+  useState,
+} from 'react';
 import produce, { Draft, Immutable } from 'immer';
 import { assertNever } from 'assert-never';
 import Debug from 'debug';
@@ -41,7 +47,7 @@ const debug = Debug('editor');
 
 type EditorCommand = Immutable<
   | { type: 'focus' }
-  | { type: 'blur'; tabLostFocus: boolean }
+  | { type: 'blur' }
   | { type: 'select'; editorSelection: EditorSelection | null }
   | { type: 'writeTextToCollapsedSelection'; path: EditorPath; text: string }
 >;
@@ -63,13 +69,11 @@ function useEditorCommand<T extends EditorElement>(
       switch (command.type) {
         case 'focus': {
           draft.hasFocus = true;
-          draft.tabLostFocus = false;
           break;
         }
 
         case 'blur': {
           draft.hasFocus = false;
-          draft.tabLostFocus = command.tabLostFocus;
           break;
         }
 
@@ -126,8 +130,6 @@ export interface EditorState<T extends EditorElement = EditorDOMElement> {
   readonly element: Immutable<T>;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
-  // jak to ma bejt interni?
-  readonly tabLostFocus: boolean;
 }
 
 /**
@@ -139,9 +141,8 @@ export function createEditorState<
   element,
   selection = null,
   hasFocus = false,
-  tabLostFocus = false,
-}: Optional<T, 'hasFocus' | 'selection' | 'tabLostFocus'>): T {
-  return { element, selection, hasFocus, tabLostFocus } as T;
+}: Optional<T, 'hasFocus' | 'selection'>): T {
+  return { element, selection, hasFocus } as T;
 }
 
 type UsefulReactDivAtttributes = Pick<
@@ -199,6 +200,8 @@ export function Editor<T extends EditorElement>({
     [editorPathsNodesMap, nodesEditorPathsMap],
   );
 
+  const [tabLostFocus, setTabLostFocus] = useState(false);
+
   // Map editor declarative focus to imperative DOM focus and blur methods.
   const editorStateHadFocus = usePrevious(editorState.hasFocus);
   useEffect(() => {
@@ -212,14 +215,9 @@ export function Editor<T extends EditorElement>({
       // Do not call blur when tab lost focus so editor can be focused back.
       // For visual test, click to editor then press cmd-tab twice.
       // Editor selection must be preserved.
-      if (divHasFocus && !editorState.tabLostFocus) div.blur();
+      if (divHasFocus && !tabLostFocus) div.blur();
     }
-  }, [
-    editorState.tabLostFocus,
-    divRef,
-    editorStateHadFocus,
-    editorState.hasFocus,
-  ]);
+  }, [tabLostFocus, divRef, editorStateHadFocus, editorState.hasFocus]);
 
   const command = useEditorCommand<T>(editorState, onChange);
 
@@ -470,6 +468,7 @@ export function Editor<T extends EditorElement>({
 
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();
+    setTabLostFocus(false);
     command({ type: 'focus' });
   }, [command, ensureSelectionMatchesEditorSelection]);
 
@@ -479,7 +478,8 @@ export function Editor<T extends EditorElement>({
         divRef.current.ownerDocument &&
         divRef.current.ownerDocument.activeElement === divRef.current) ||
       false;
-    command({ type: 'blur', tabLostFocus });
+    setTabLostFocus(tabLostFocus);
+    command({ type: 'blur' });
   }, [command]);
 
   return useMemo(() => {

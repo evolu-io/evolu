@@ -36,7 +36,7 @@ exports[`render then tab then key arrow right 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
   </pre>
 </div>
@@ -78,7 +78,7 @@ exports[`render then tab then key arrow right 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
     <span
       class="jsx-1782790912"
@@ -86,7 +86,7 @@ exports[`render then tab then key arrow right 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
   </pre>
 </div>
@@ -128,7 +128,7 @@ exports[`render then tab then key arrow right 3`] = `
     >
       ·2·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,2]}}·
     </span>
     <span
       class="jsx-1782790912"
@@ -136,7 +136,7 @@ exports[`render then tab then key arrow right 3`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
     <span
       class="jsx-1782790912"
@@ -144,7 +144,7 @@ exports[`render then tab then key arrow right 3`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]},"tabLostFocus":false}·
+      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
   </pre>
 </div>

@@ -42,7 +42,7 @@ exports[`render 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]},"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
       class="jsx-1782790912"
@@ -50,7 +50,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null,"tabLostFocus":false}·
+      ·{"hasFocus":true,"selection":null}·
     </span>
   </pre>
   <div
@@ -107,7 +107,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null,"tabLostFocus":false}·
+      ·{"hasFocus":false,"selection":null}·
     </span>
   </pre>
   <div
