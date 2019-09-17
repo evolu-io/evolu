@@ -5,7 +5,7 @@ import { NodesEditorPathsMap } from '../models/path';
 import { EditorElement, EditorElementChild } from '../models/element';
 import { isEditorText } from '../models/text';
 
-const debug = Debug('useDebugNodesEditorPaths');
+const debug = Debug('debugNodesEditorPaths');
 
 export function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
@@ -18,7 +18,7 @@ export function useDebugNodesEditorPaths(
       nodesEditorPathsMap.forEach((path, node) => {
         nodes.push([path.join(), node]);
       });
-      debug('nodesEditorPathsMap after render', nodes);
+      debug('after render', nodes);
 
       const countNodes = (node: EditorElementChild, count = 0) => {
         if (isEditorText(node)) return count + 1;

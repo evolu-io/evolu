@@ -7,10 +7,10 @@ import nanoid from 'nanoid';
  */
 export type EditorNodeID = Brand<string, 'EditorNodeID'>;
 
-export function id(): EditorNodeID {
-  return nanoid() as EditorNodeID;
+export interface EditorNode {
+  readonly id: EditorNodeID;
 }
 
-export interface EditorNode {
-  id: EditorNodeID;
+export function id(): EditorNodeID {
+  return nanoid() as EditorNodeID;
 }

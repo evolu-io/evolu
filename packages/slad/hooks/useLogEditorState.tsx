@@ -14,7 +14,7 @@ const Item = memo(
     const { element, hasFocus, ...rest } = editorState;
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
-    const title = JSON.stringify(recursiveRemoveID(element))
+    const title = JSON.stringify(recursiveRemoveID(element as EditorElement))
       .split('"')
       .join("'");
     return (

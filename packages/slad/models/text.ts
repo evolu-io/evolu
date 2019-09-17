@@ -7,7 +7,7 @@ import { EditorNode } from './node';
  * Empty string is rendered as BR.
  */
 export interface EditorText extends EditorNode {
-  text: string;
+  readonly text: string;
 }
 
 export function isEditorText(node: EditorNode): node is EditorText {

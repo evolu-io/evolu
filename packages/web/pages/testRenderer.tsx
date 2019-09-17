@@ -1,6 +1,5 @@
 import React from 'react';
 import { Renderer, id, EditorDOMElement } from 'slad';
-import { Draft } from 'immer';
 import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
 import {
   initialEditorState as initialSchemaEditorState,
@@ -12,11 +11,9 @@ function TestRenderer() {
   const renderSchemaElement = useSchemaRenderElement();
   return (
     <div>
-      <Renderer element={initialBasicEditorState.element} />
+      <Renderer element={initialBasicEditorState.element as EditorDOMElement} />
       <Renderer
-        element={
-          initialSchemaEditorState.element as Draft<SchemaDocumentElement>
-        }
+        element={initialSchemaEditorState.element as SchemaDocumentElement}
         renderElement={renderSchemaElement}
       />
       <Renderer<EditorDOMElement>

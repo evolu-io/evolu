@@ -5,125 +5,36 @@ import React, {
   useMemo,
   useEffect,
   useState,
+  useReducer,
+  useLayoutEffect,
 } from 'react';
-import produce, { Draft, Immutable } from 'immer';
-import { assertNever } from 'assert-never';
-import Debug from 'debug';
 import invariant from 'tiny-invariant';
-import {
-  SetNodeEditorPath,
-  SetNodeEditorPathContext,
-} from '../contexts/SetNodeEditorPathContext';
+import Debug from 'debug';
+import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import {
-  EditorSelection,
   mapSelectionToEditorSelection,
   editorSelectionsAreEqual,
   editorSelectionIsBackward,
-  invariantEditorSelectionIsDefined,
-  invariantEditorSelectionIsCollapsed,
 } from '../models/selection';
 import { renderEditorDOMElement } from './renderEditorDOMElement';
-import {
-  RenderEditorElement,
-  EditorElement,
-  getParentElementByPath,
-} from '../models/element';
+import { RenderEditorElement, EditorElement } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
-import {
-  EditorPath,
-  NodesEditorPathsMap,
-  EditorPathsNodesMap,
-} from '../models/path';
-import { editorTextsAreEqual, invariantIsEditorText } from '../models/text';
-import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
+import { EditorPath } from '../models/path';
 import { useDebugNodesEditorPaths } from '../hooks/useDebugNodesEditorPaths';
-import { EditorState } from '../models/state';
+import { EditorState, editorStatesAreEqual } from '../models/state';
+import { editorReducer } from '../reducers/editorReducer';
+import { useReducerLogger } from '../hooks/useReducerLogger';
+import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
 
 const debug = Debug('editor');
 
-type EditorCommand = Immutable<
-  | { type: 'focus' }
-  | { type: 'blur' }
-  | { type: 'select'; editorSelection: EditorSelection | null }
-  | { type: 'writeTextToCollapsedSelection'; path: EditorPath; text: string }
->;
-
-function useEditorCommand<T extends EditorElement>(
-  editorState: EditorState<T>,
-  onChange: (editorState: EditorState<T>) => void,
-) {
-  const editorStateRef = useRef(editorState);
-  editorStateRef.current = editorState;
-
-  // To have stable command like useReducer dispatch is.
-  const commandRef = useRef((immutableCommand: EditorCommand) => {
-    if (process.env.NODE_ENV !== 'production') {
-      debug('command', immutableCommand);
-    }
-    const command = immutableCommand as Draft<EditorCommand>;
-    const nextEditorState = produce(editorStateRef.current, draft => {
-      switch (command.type) {
-        case 'focus': {
-          draft.hasFocus = true;
-          break;
-        }
-
-        case 'blur': {
-          draft.hasFocus = false;
-          break;
-        }
-
-        case 'select': {
-          const { editorSelection } = command;
-          if (editorSelectionsAreEqual(editorSelection, draft.selection))
-            return;
-          draft.selection = editorSelection;
-          break;
-        }
-
-        case 'writeTextToCollapsedSelection': {
-          if (!invariantEditorSelectionIsDefined(draft.selection)) return;
-          invariantEditorSelectionIsCollapsed(draft.selection);
-          const { path, text } = command;
-          // console.log(text.split('').map(char => char.charCodeAt(0)));
-          const parent = getParentElementByPath(draft.element, path) as Draft<
-            EditorElement
-          >;
-          const childIndex = path.slice(-1)[0];
-          const currentChild = parent.children[childIndex];
-          if (!invariantIsEditorText(currentChild)) return;
-          const newChild = { ...currentChild, text };
-          if (editorTextsAreEqual(currentChild, newChild)) return;
-          parent.children[childIndex] = newChild;
-          // Because empty text is BR, it can not have path to text node.
-          if (text.length === 0) {
-            draft.selection.anchor = path;
-            draft.selection.focus = path;
-            // Or we already have path to BR and we are going to render text.
-          } else if (currentChild.text.length === 0 && text.length > 0) {
-            draft.selection.anchor = path.concat(text.length);
-            draft.selection.focus = path.concat(text.length);
-          } else {
-            const offset = text.length - currentChild.text.length;
-            draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
-            draft.selection.focus[draft.selection.focus.length - 1] += offset;
-          }
-          break;
-        }
-
-        default:
-          assertNever(command);
-      }
-    });
-
-    if (nextEditorState === editorStateRef.current) return;
-    onChange(nextEditorState);
-  });
-  return commandRef.current;
-}
+// We need useLayoutEffect to block the browser from painting.
+// https://github.com/steida/slad/issues/21
+const useLayoutEffectHack =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -145,7 +56,7 @@ export interface EditorProps<T extends EditorElement = EditorElement>
 }
 
 export function Editor<T extends EditorElement>({
-  editorState,
+  editorState: parentEditorState,
   onChange,
   renderElement,
   autoCorrect = 'off',
@@ -153,39 +64,26 @@ export function Editor<T extends EditorElement>({
   role = 'textbox',
   ...rest
 }: EditorProps<T>) {
-  const divRef = useRef<HTMLDivElement>(null);
-
-  // Nodes references to paths via React ref instead of explicit IDs in DOM.
-  const nodesEditorPathsMap = useRef<NodesEditorPathsMap>(new Map()).current;
-  const editorPathsNodesMap = useRef<EditorPathsNodesMap>(new Map()).current;
+  const [editorState, dispatch] = useReducer(
+    useReducerLogger(editorReducer, debug),
+    parentEditorState,
+  );
+  const {
+    nodesEditorPathsMap,
+    editorPathsNodesMap,
+    setNodeEditorPath,
+  } = useNodesEditorPaths();
 
   useInvariantEditorElementIsNormalized(editorState.element);
   useDebugNodesEditorPaths(nodesEditorPathsMap, editorState.element);
 
-  const setNodeEditorPath = useCallback<SetNodeEditorPath>(
-    (operation, node, path) => {
-      switch (operation) {
-        case 'add': {
-          nodesEditorPathsMap.set(node, path);
-          editorPathsNodesMap.set(path.join(), node);
-          break;
-        }
-        case 'remove': {
-          nodesEditorPathsMap.delete(node);
-          editorPathsNodesMap.delete(path.join());
-          break;
-        }
-        default:
-          assertNever(operation);
-      }
-    },
-    [editorPathsNodesMap, nodesEditorPathsMap],
-  );
+  const divRef = useRef<HTMLDivElement>(null);
 
   const [tabLostFocus, setTabLostFocus] = useState(false);
 
-  // Map editor declarative focus to imperative DOM focus and blur methods.
   const editorStateHadFocus = usePrevious(editorState.hasFocus);
+
+  // Map editor declarative focus to imperative DOM focus and blur methods.
   useEffect(() => {
     const { current: div } = divRef;
     if (div == null) return;
@@ -200,8 +98,6 @@ export function Editor<T extends EditorElement>({
       if (divHasFocus && !tabLostFocus) div.blur();
     }
   }, [tabLostFocus, divRef, editorStateHadFocus, editorState.hasFocus]);
-
-  const command = useEditorCommand<T>(editorState, onChange);
 
   const getSelection = useCallback((): Selection | null => {
     const doc = divRef.current && divRef.current.ownerDocument;
@@ -223,17 +119,13 @@ export function Editor<T extends EditorElement>({
       // In Chrome, contentEditable does not do that.
       // That's why we ignore null values.
       if (editorSelection == null) return;
-      command({ type: 'select', editorSelection });
+      dispatch({ type: 'onSelectionChange', selection: editorSelection });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
       doc.removeEventListener('selectionchange', handleDocumentSelectionChange);
     };
-  }, [command, getSelection, nodesEditorPathsMap]);
-
-  // const setBrowserSelection = useCallback((editorSelection: Editor) => {
-  //   //
-  // }, []);
+  }, [getSelection, nodesEditorPathsMap]);
 
   const ensureSelectionMatchesEditorSelection = useCallback(() => {
     const selection = getSelection();
@@ -280,8 +172,6 @@ export function Editor<T extends EditorElement>({
 
     if (startNode == null || endNode == null) return;
 
-    // TODO: Invatiant, if startNode or endNode are not in DOM.
-
     const range = doc.createRange();
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
@@ -306,7 +196,7 @@ export function Editor<T extends EditorElement>({
   // useLayoutEffect is must to keep browser selection in sync with editor state.
   // I suppose this is the case for "progressively enhancing hooks".
   // https://github.com/facebook/react/issues/14927
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffectHack(() => {
     if (!editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
@@ -357,7 +247,7 @@ export function Editor<T extends EditorElement>({
         const text = lastMutation.target.nodeValue || '';
         // Ignore empty text, because it must be handled via childList mutation.
         if (text.length === 0) return;
-        command({ type: 'writeTextToCollapsedSelection', path, text });
+        dispatch({ type: 'onTextChange', path, text });
         return;
       }
 
@@ -373,7 +263,7 @@ export function Editor<T extends EditorElement>({
         const removedTextNode = mutations[1].removedNodes[0] as Text;
         const path = findPathFromNode(removedTextNode);
         setNodeEditorPath('remove', removedTextNode, path);
-        command({ type: 'writeTextToCollapsedSelection', path, text: '' });
+        dispatch({ type: 'onTextChange', path, text: '' });
         return;
       }
 
@@ -408,7 +298,7 @@ export function Editor<T extends EditorElement>({
         setNodeEditorPath('remove', removedBR, path);
         setNodeEditorPath('add', addedTextNode, path);
         const text = addedTextNode.nodeValue || '';
-        command({ type: 'writeTextToCollapsedSelection', path, text });
+        dispatch({ type: 'onTextChange', path, text });
         return;
       }
 
@@ -429,7 +319,7 @@ export function Editor<T extends EditorElement>({
     return () => {
       observer.disconnect();
     };
-  }, [command, findPathFromNode, setNodeEditorPath]);
+  }, [findPathFromNode, setNodeEditorPath]);
 
   const rootPath = useMemo(() => [], []);
 
@@ -451,8 +341,8 @@ export function Editor<T extends EditorElement>({
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();
     setTabLostFocus(false);
-    command({ type: 'focus' });
-  }, [command, ensureSelectionMatchesEditorSelection]);
+    dispatch({ type: 'onFocus' });
+  }, [ensureSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
     const tabLostFocus =
@@ -461,8 +351,44 @@ export function Editor<T extends EditorElement>({
         divRef.current.ownerDocument.activeElement === divRef.current) ||
       false;
     setTabLostFocus(tabLostFocus);
-    command({ type: 'blur' });
-  }, [command]);
+    dispatch({ type: 'onBlur' });
+  }, []);
+
+  // Sync editorState with parentEditorState.
+  // Note currentParentEditorStateRef, so the effect calling onChange do not
+  // depend on parentEditorState value.
+  const currentParentEditorStateRef = useRef<EditorState<T> | null>(null);
+  useLayoutEffectHack(() => {
+    currentParentEditorStateRef.current = parentEditorState;
+  }, [parentEditorState]);
+  useLayoutEffectHack(() => {
+    if (editorStatesAreEqual(editorState, currentParentEditorStateRef.current))
+      return;
+    onChange(editorState as EditorState<T>);
+  }, [editorState, onChange]);
+
+  // Sync parentEditorState with editorState.
+  // Propagate parentEditorState changes to editorState conditionally per prop,
+  // so { hasFocus: true, selection: null } will not override editorState
+  // selection meanwhile updated, for example.
+  useLayoutEffectHack(() => {
+    dispatch({
+      type: 'onParentElementChange',
+      element: parentEditorState.element,
+    });
+  }, [parentEditorState.element]);
+  useLayoutEffectHack(() => {
+    dispatch({
+      type: 'onParentHasFocusChange',
+      hasFocus: parentEditorState.hasFocus,
+    });
+  }, [parentEditorState.hasFocus]);
+  useLayoutEffectHack(() => {
+    dispatch({
+      type: 'onParentSelectionChange',
+      selection: parentEditorState.selection,
+    });
+  }, [parentEditorState.selection]);
 
   return useMemo(() => {
     return (

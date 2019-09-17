@@ -17,7 +17,6 @@ import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // We can describe a schema with TypeScript pretty well.
-// Immutablity is enforced via EditorState once for all.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
 interface SchemaElement extends EditorElement {
@@ -222,6 +221,8 @@ export function SchemaExample({
 
   const handleEditorChange = useCallback(
     (editorState: SchemaEditorState) => {
+      // logEditorState is here and not in an useEffect, because we
+      // want to log all onChange calls, even with identical values.
       logEditorState(editorState);
       setEditorState(editorState);
     },

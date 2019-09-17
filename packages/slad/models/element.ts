@@ -144,16 +144,14 @@ export function getParentElementByPath(
   return parent;
 }
 
-/**
- * This is just helper rarely needed.
- */
+// TODO: Fix types.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function recursiveRemoveID(object: EditorElement): any {
+export function recursiveRemoveID(element: EditorElement): any {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, ...objectWithoutID } = object;
+  const { id, ...objectWithoutID } = element;
   return {
     ...objectWithoutID,
-    children: object.children.map(child => {
+    children: element.children.map(child => {
       if (isEditorText(child)) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...childWithoutID } = child;

@@ -7,7 +7,7 @@ import {
   createEditorState,
   jsxToEditorDOMElement,
 } from 'slad';
-import produce from 'immer';
+// import produce from 'immer';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
@@ -15,9 +15,18 @@ import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 const initialEditorState = createEditorState({
   element: jsxToEditorDOMElement(
     <div className="root">
-      <div style={{ fontSize: '24px' }}>heading</div>
+      <div style={{ fontSize: '24px' }}>
+        {/* <br /> */}
+        heading
+      </div>
       <div style={{ fontSize: '16px' }}>paragraph</div>
-      <span className="text">fixx me</span>
+      {/* <span className="text">fixx me</span> */}
+      {/* <div style={{ fontSize: '16px' }}>
+        ahoj laksjf a;lkjf a;lksdjf ;alskjf ;alksdjf ;alksdjf ;alskdjf ;laksdjf
+        ;laksdjf ;laksdjfadlsk f alsdkfj alsdjf lak;sdjf
+        <br />
+        chcipni
+      </div> */}
     </div>,
   ),
 });
@@ -37,6 +46,10 @@ function Index() {
     [logEditorState],
   );
 
+  // const editorReducer = useCallback((editorState: EditorState) => {
+  //   return editorState
+  // }, [])
+
   return (
     <Container>
       <Head>
@@ -45,12 +58,13 @@ function Index() {
       <Text size={2}>Sandbox</Text>
       <Editor
         editorState={editorState}
+        // editorReducer={editorReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         // spellCheck
       />
       {logEditorStateElement}
-      <button
+      {/* <button
         type="button"
         onMouseDown={event => {
           event.preventDefault();
@@ -64,7 +78,7 @@ function Index() {
         }}
       >
         update model
-      </button>
+      </button> */}
     </Container>
   );
 }
