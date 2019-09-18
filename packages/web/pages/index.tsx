@@ -45,8 +45,7 @@ function Index() {
         <LinkToTest name="testAutoFocusFirst" />
         <LinkToTest name="testAutoFocusSecond" />
         <LinkToTest name="testNormalizeEditorElement" />
-        <LinkToTest name="testRenderer" />
-        <LinkToTest name="testRenderReactDOMElement" />
+        <LinkToTest name="testEditorServer" />
         <LinkToTest name="testSelection" />
         <LinkToTest name="testSelectionHasFocusNoSelection" />
         <LinkToTest name="testSelectionNoFocusNoSelection" />

@@ -82,7 +82,7 @@ export interface SchemaDocumentElement extends SchemaElement {
 
 type SchemaEditorState = EditorState<SchemaDocumentElement>;
 
-// Exported for testRenderer.
+// Exported for testEditorServer.
 export const initialEditorState = createEditorState<SchemaEditorState>({
   element: {
     id: id(),
@@ -138,7 +138,7 @@ export const initialEditorState = createEditorState<SchemaEditorState>({
   },
 });
 
-// Exported for testRenderer.
+// Exported for testEditorServer.
 export function useSchemaRenderElement() {
   const getStyledJsx = useStyledJsx();
 

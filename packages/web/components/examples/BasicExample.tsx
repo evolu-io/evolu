@@ -11,7 +11,7 @@ import {
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
-// Export for testRenderer.
+// Export for testEditorServer.
 export const initialEditorState = createEditorState({
   element: {
     id: id(),

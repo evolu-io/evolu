@@ -18,7 +18,6 @@ import {
   editorSelectionsAreEqual,
   editorSelectionIsBackward,
 } from '../models/selection';
-import { renderEditorDOMElement } from './renderEditorDOMElement';
 import { RenderEditorElement, EditorElement } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -31,6 +30,7 @@ import {
 } from '../reducers/editorReducer';
 import { useReducerLogger } from '../hooks/useReducerLogger';
 import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
+import { renderEditorDOMElement } from './EditorServer';
 
 const debug = Debug('editor');
 

@@ -1,7 +1,7 @@
 import { pageDom, pageGoto } from './helpers';
 
 beforeEach(async () => {
-  await pageGoto('testRenderer');
+  await pageGoto('testEditorServer');
 });
 
 test('render', async () => {

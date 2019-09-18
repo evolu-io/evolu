@@ -1,9 +1,8 @@
 // Export everything. Rethink before the release.
 export * from './components/Editor';
 export * from './components/EditorElementRenderer';
+export * from './components/EditorServer';
 export * from './components/EditorTextRenderer';
-export * from './components/renderEditorDOMElement';
-export * from './components/Renderer';
 export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/useLogEditorState';
