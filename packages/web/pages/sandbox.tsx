@@ -6,11 +6,16 @@ import {
   Editor,
   createEditorState,
   jsxToEditorDOMElement,
+  createEditorReducer,
+  editorReducer,
 } from 'slad';
-// import produce from 'immer';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
+
+const customReducer = createEditorReducer((draft, action) => {
+  return editorReducer(draft, action);
+});
 
 const initialEditorState = createEditorState({
   element: jsxToEditorDOMElement(
@@ -46,10 +51,6 @@ function Index() {
     [logEditorState],
   );
 
-  // const editorReducer = useCallback((editorState: EditorState) => {
-  //   return editorState
-  // }, [])
-
   return (
     <Container>
       <Head>
@@ -58,7 +59,7 @@ function Index() {
       <Text size={2}>Sandbox</Text>
       <Editor
         editorState={editorState}
-        // editorReducer={editorReducer}
+        editorReducer={customReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         // spellCheck

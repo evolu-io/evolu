@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`onBlur 1`] = `
+Object {
+  "element": Object {
+    "children": Array [
+      Object {
+        "text": "",
+      },
+    ],
+    "props": Object {
+      "className": "root",
+    },
+    "tag": "div",
+  },
+  "hasFocus": false,
+  "selection": null,
+}
+`;
+
+exports[`onFocus 1`] = `
+Object {
+  "element": Object {
+    "children": Array [
+      Object {
+        "text": "",
+      },
+    ],
+    "props": Object {
+      "className": "root",
+    },
+    "tag": "div",
+  },
+  "hasFocus": true,
+  "selection": null,
+}
+`;

@@ -1,5 +1,10 @@
 import { Optional } from 'utility-types';
-import { EditorElement, EditorDOMElement } from './element';
+import { createElement } from 'react';
+import {
+  EditorElement,
+  EditorDOMElement,
+  jsxToEditorDOMElement,
+} from './element';
 import { EditorSelection, editorSelectionsAreEqual } from './selection';
 
 export interface EditorState<T extends EditorElement = EditorDOMElement> {
@@ -20,6 +25,29 @@ export function createEditorState<
 }: Optional<T, 'hasFocus' | 'selection'>): T {
   return { element, selection, hasFocus } as T;
 }
+
+export function createEditorStateWithText({
+  text = '',
+  selection = null,
+  hasFocus = false,
+}: {
+  text?: string;
+  selection?: EditorSelection | null;
+  hasFocus?: boolean;
+}) {
+  return createEditorState({
+    element: jsxToEditorDOMElement(
+      createElement('div', { className: 'root' }, text),
+    ),
+    selection,
+    hasFocus,
+  });
+}
+
+// pokud neni, hmm, proc nemuze bejt jen nic?
+// editor el nevi jak kreslit, jedine snad jako... ne, nevi
+// ok
+// element: jsxToEditorDOMElement(<div className="root">a</div>),
 
 export function editorStatesAreEqual<T extends EditorElement>(
   editorState1: EditorState<T> | null,

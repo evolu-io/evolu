@@ -25,7 +25,10 @@ import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEdit
 import { EditorPath } from '../models/path';
 import { useDebugNodesEditorPaths } from '../hooks/useDebugNodesEditorPaths';
 import { EditorState, editorStatesAreEqual } from '../models/state';
-import { editorReducer } from '../reducers/editorReducer';
+import {
+  editorReducer as defaultEditorReducer,
+  EditorReducer,
+} from '../reducers/editorReducer';
 import { useReducerLogger } from '../hooks/useReducerLogger';
 import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
 
@@ -53,12 +56,14 @@ export interface EditorProps<T extends EditorElement = EditorElement>
   editorState: EditorState<T>;
   onChange: (editorState: EditorState<T>) => void;
   renderElement?: RenderEditorElement;
+  editorReducer?: EditorReducer<EditorElement>;
 }
 
 export function Editor<T extends EditorElement>({
   editorState: parentEditorState,
   onChange,
   renderElement,
+  editorReducer = defaultEditorReducer,
   autoCorrect = 'off',
   spellCheck = false,
   role = 'textbox',
@@ -354,23 +359,18 @@ export function Editor<T extends EditorElement>({
     dispatch({ type: 'onBlur' });
   }, []);
 
-  // Sync editorState with parentEditorState.
-  // Note currentParentEditorStateRef, so the effect calling onChange do not
-  // depend on parentEditorState value.
-  const currentParentEditorStateRef = useRef<EditorState<T> | null>(null);
+  // Sync editorState with parentEditorState conditionally per last parentEditorState.
+  const lastParentEditorStateRef = useRef<EditorState<T> | null>(null);
   useLayoutEffectHack(() => {
-    currentParentEditorStateRef.current = parentEditorState;
+    lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
   useLayoutEffectHack(() => {
-    if (editorStatesAreEqual(editorState, currentParentEditorStateRef.current))
+    if (editorStatesAreEqual(editorState, lastParentEditorStateRef.current))
       return;
     onChange(editorState as EditorState<T>);
   }, [editorState, onChange]);
 
-  // Sync parentEditorState with editorState.
-  // Propagate parentEditorState changes to editorState conditionally per prop,
-  // so { hasFocus: true, selection: null } will not override editorState
-  // selection meanwhile updated, for example.
+  // Sync parentEditorState with editorState conditionally per parentEditorState props.
   useLayoutEffectHack(() => {
     dispatch({
       type: 'onParentElementChange',

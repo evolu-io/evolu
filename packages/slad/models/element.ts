@@ -147,6 +147,7 @@ export function getParentElementByPath(
 // TODO: Fix types.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function recursiveRemoveID(element: EditorElement): any {
+  if (element == null) return element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
   return {
