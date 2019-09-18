@@ -4,7 +4,10 @@
     [
       "@emotion/babel-preset-css-prop",
       {
-        "sourceMap": false
+        // Normalize sourceMap and autoLabel both for the production and the dev
+        // so integration tests are always the same.
+        "sourceMap": false,
+        "autoLabel": true
       }
     ]
   ]
