@@ -183,9 +183,8 @@ export function useSchemaRenderElement() {
                 height={element.height}
               />
             );
-          default: {
+          default:
             assertNever(element);
-          }
         }
       };
 

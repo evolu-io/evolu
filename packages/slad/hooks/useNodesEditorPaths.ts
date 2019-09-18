@@ -14,16 +14,14 @@ export function useNodesEditorPaths(): {
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (operation, node, path) => {
       switch (operation) {
-        case 'add': {
+        case 'add':
           nodesEditorPathsMap.set(node, path);
           editorPathsNodesMap.set(path.join(), node);
           break;
-        }
-        case 'remove': {
+        case 'remove':
           nodesEditorPathsMap.delete(node);
           editorPathsNodesMap.delete(path.join());
           break;
-        }
         default:
           assertNever(operation);
       }
