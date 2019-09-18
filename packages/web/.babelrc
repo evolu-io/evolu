@@ -1,0 +1,11 @@
+{
+  "presets": [
+    "next/babel",
+    [
+      "@emotion/babel-preset-css-prop",
+      {
+        "sourceMap": false
+      }
+    ]
+  ]
+}

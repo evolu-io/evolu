@@ -60,30 +60,29 @@ exports[`render after JavaScript is executed 1`] = `
     tabindex="0"
   >
     <div
-      class="jsx-2162042882"
+      class="css-0"
     >
       <div
-        class="jsx-3102962925"
+        class="css-1s76os7-heading"
       >
         ·heading·
       </div>
       <div
-        class="jsx-1758464876"
+        class="css-1mzu32r-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="jsx-44984361"
+        class="css-1kkfp6h-list"
       >
         <div
-          class="jsx-1758464876"
+          class="css-0"
         >
           ·listitem·
         </div>
       </div>
       <img
         alt="Square placeholder image 80px"
-        class="jsx-2162042882"
         height="80"
         src="https://via.placeholder.com/80"
         width="80"
@@ -95,7 +94,7 @@ exports[`render after JavaScript is executed 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
@@ -172,30 +171,44 @@ exports[`render before JavaScript is executed 1`] = `
     style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
   >
     <div
-      class="jsx-2162042882"
+      class="css-0"
     >
+      <style
+        data-emotion-css="1s76os7-heading"
+      >
+        ·.css-1s76os7-heading{font-size:24px;}·
+      </style>
       <div
-        class="jsx-3102962925"
+        class="css-1s76os7-heading"
       >
         ·heading·
       </div>
+      <style
+        data-emotion-css="1mzu32r-paragraph"
+      >
+        ·.css-1mzu32r-paragraph{font-size:16px;}·
+      </style>
       <div
-        class="jsx-1758464876"
+        class="css-1mzu32r-paragraph"
       >
         ·paragraph·
       </div>
+      <style
+        data-emotion-css="1kkfp6h-list"
+      >
+        ·.css-1kkfp6h-list{margin:16px;}·
+      </style>
       <div
-        class="jsx-44984361"
+        class="css-1kkfp6h-list"
       >
         <div
-          class="jsx-1758464876"
+          class="css-0"
         >
           ·listitem·
         </div>
       </div>
       <img
         alt="Square placeholder image 80px"
-        class="jsx-2162042882"
         height="80"
         src="https://via.placeholder.com/80"
         width="80"
@@ -207,7 +220,7 @@ exports[`render before JavaScript is executed 1`] = `
   >
     <span
       class="jsx-1782790912"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·

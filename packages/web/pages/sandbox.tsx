@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { css } from '@emotion/core';
 import Head from 'next/head';
 import {
   EditorState,
@@ -27,13 +28,20 @@ const initialEditorState = createEditorState({
       <div style={{ fontSize: '16px' }}>paragraph</div>
       {/* <span className="text">fixx me</span> */}
       {/* <div style={{ fontSize: '16px' }}>
-        ahoj laksjf a;lkjf a;lksdjf ;alskjf ;alksdjf ;alksdjf ;alskdjf ;laksdjf
-        ;laksdjf ;laksdjfadlsk f alsdkfj alsdjf lak;sdjf
+        foo
         <br />
-        chcipni
+        bla
       </div> */}
     </div>,
   ),
+});
+
+const testStyle = css({
+  backgroundColor: 'hotpink',
+  // boxSizing: 'border-boxd',
+  '&:hover': {
+    color: 'lightgreen',
+  },
 });
 
 function Index() {
@@ -80,6 +88,7 @@ function Index() {
       >
         update model
       </button> */}
+      <div css={testStyle}>This has a hotpink background.</div>
     </Container>
   );
 }

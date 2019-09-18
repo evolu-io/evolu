@@ -10,10 +10,9 @@ import {
   useLogEditorState,
   id,
 } from 'slad';
-import { StandardPropertiesHyphen } from 'csstype';
 import { assertNever } from 'assert-never';
+import { css, SerializedStyles } from '@emotion/core';
 import { Text } from '../Text';
-import { useStyledJsx } from '../../hooks/useStyledJsx';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // We can describe a schema with TypeScript pretty well.
@@ -21,8 +20,6 @@ import { defaultEditorProps } from './_defaultEditorProps';
 
 interface SchemaElement extends EditorElement {
   type: string;
-  // For css-in-js via styled-jsx, foo-bla is better than fooBla.
-  style?: StandardPropertiesHyphen;
   children: (SchemaElement | EditorText)[];
 }
 
@@ -91,33 +88,31 @@ export const initialEditorState = createEditorState<SchemaEditorState>({
       {
         id: id(),
         type: 'heading',
-        style: { 'font-size': '24px' },
         children: [{ id: id(), text: 'heading' }],
       },
       {
         id: id(),
         type: 'paragraph',
-        style: { 'font-size': '16px' },
         children: [{ id: id(), text: 'paragraph' }],
       },
       {
         id: id(),
         type: 'list',
-        style: { margin: '16px' },
         children: [
           {
             id: id(),
             type: 'listitem',
-            style: { 'font-size': '16px' },
             children: [
               { id: id(), text: 'listitem' },
-              // List can be nested. With type checking of course.
+              // List can be nested. With recursive type checking of course.
               // {
+              //   id: id(),
               //   type: 'list',
               //   children: [
               //     {
+              //       id: id(),
               //       type: 'listitem',
-              //       children: [{ text: 'nested' }],
+              //       children: [{ id: id(), text: 'nested' }],
               //     },
               //   ],
               // },
@@ -140,14 +135,9 @@ export const initialEditorState = createEditorState<SchemaEditorState>({
 
 // Exported for testEditorServer.
 export function useSchemaRenderElement() {
-  const getStyledJsx = useStyledJsx();
-
   const renderElement = useCallback<RenderEditorElement>(
     (editorElement, children, ref) => {
-      // Recursive ThisAndChildTypes<SchemaDocumentElement> can only by finite.
-      // Therefore, we prefer explicit union type.
-      // https://github.com/microsoft/TypeScript/pull/33050#issuecomment-529683091
-      // TODO: There is a new hint, maybe i will be possible. Wait for TS 3.7.
+      // https://github.com/steida/slad/issues/28
       const element = editorElement as
         | SchemaDocumentElement
         | SchemaHeadingElement
@@ -157,8 +147,6 @@ export function useSchemaRenderElement() {
         | SchemaListItemElement
         | SchemaParagraphElement;
 
-      const styledJsx = getStyledJsx(element.style || {});
-
       const renderByType = (): ReactNode => {
         switch (element.type) {
           case 'document':
@@ -166,17 +154,23 @@ export function useSchemaRenderElement() {
           case 'link':
           case 'list':
           case 'listitem':
-          case 'paragraph':
+          case 'paragraph': {
+            // This is just an example.
+            const elementCSS: { [key: string]: SerializedStyles } = {
+              heading: css({ fontSize: '24px' }),
+              paragraph: css({ fontSize: '16px' }),
+              list: css({ margin: '16px' }),
+            };
             return (
-              <div ref={ref} className={styledJsx.className}>
+              <div ref={ref} css={elementCSS[element.type] || {}}>
                 {children}
               </div>
             );
+          }
           case 'image':
             return (
               <img
                 ref={ref}
-                className={styledJsx.className}
                 src={element.src}
                 alt={element.alt}
                 width={element.width}
@@ -188,14 +182,9 @@ export function useSchemaRenderElement() {
         }
       };
 
-      return (
-        <>
-          {renderByType()}
-          {styledJsx.styles}
-        </>
-      );
+      return renderByType();
     },
-    [getStyledJsx],
+    [],
   );
 
   return renderElement;

@@ -44,12 +44,13 @@ function Index() {
         <LinkToTest name="testAutoFocusBoth" />
         <LinkToTest name="testAutoFocusFirst" />
         <LinkToTest name="testAutoFocusSecond" />
-        <LinkToTest name="testNormalizeEditorElement" />
         <LinkToTest name="testEditorServer" />
+        <LinkToTest name="testNormalizeEditorElement" />
         <LinkToTest name="testSelection" />
         <LinkToTest name="testSelectionHasFocusNoSelection" />
         <LinkToTest name="testSelectionNoFocusNoSelection" />
         <LinkToTest name="testSelectionNoFocusSomeSelection" />
+        <LinkToTest name="testSSR" />
         <LinkToTest name="testTabKeyAndFocusBlurClick" />
         <LinkToTest name="testWriting" />
         <LinkToTest name="testWritingRich" />

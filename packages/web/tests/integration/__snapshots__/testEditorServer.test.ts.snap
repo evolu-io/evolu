@@ -23,30 +23,29 @@ exports[`render 1`] = `
     </div>
     <div>
       <div
-        class="jsx-2162042882"
+        class="css-0"
       >
         <div
-          class="jsx-3102962925"
+          class="css-1s76os7-heading"
         >
           ·heading·
         </div>
         <div
-          class="jsx-1758464876"
+          class="css-1mzu32r-paragraph"
         >
           ·paragraph·
         </div>
         <div
-          class="jsx-44984361"
+          class="css-1kkfp6h-list"
         >
           <div
-            class="jsx-1758464876"
+            class="css-0"
           >
             ·listitem·
           </div>
         </div>
         <img
           alt="Square placeholder image 80px"
-          class="jsx-2162042882"
           height="80"
           src="https://via.placeholder.com/80"
           width="80"
