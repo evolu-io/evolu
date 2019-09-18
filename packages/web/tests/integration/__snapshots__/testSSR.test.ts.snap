@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render 1`] = `
+exports[`render after JavaScript is executed 1`] = `
 <div
   id="__next"
 >
@@ -40,17 +40,9 @@ exports[`render 1`] = `
       class="jsx-1782790912"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":false,"selection":null}·
-    </span>
-    <span
-      class="jsx-1782790912"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
-    >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":false,"selection":null}·
     </span>
   </pre>
   <div
@@ -105,17 +97,9 @@ exports[`render 1`] = `
       class="jsx-1782790912"
       title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
-    </span>
-    <span
-      class="jsx-1782790912"
-      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
-    >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":false,"selection":null}·
     </span>
   </pre>
   <div
@@ -123,15 +107,127 @@ exports[`render 1`] = `
   >
     <button
       class="focus"
-      disabled=""
-      tabindex="0"
+      tabindex="-1"
       type="button"
     >
       ·focus·
     </button>
     <button
       class="blur"
+      disabled=""
+      tabindex="0"
+      type="button"
+    >
+      ·blur·
+    </button>
+  </div>
+</div>
+`;
+
+exports[`render before JavaScript is executed 1`] = `
+<div
+  id="__next"
+>
+  <div
+    class="jsx-442929638"
+  >
+    ·Basic Example·
+  </div>
+  <div
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+  >
+    <div
+      class="root"
+    >
+      <div
+        style="font-size:24px"
+      >
+        ·heading·
+      </div>
+      <div
+        style="font-size:16px"
+      >
+        ·paragraph·
+      </div>
+    </div>
+  </div>
+  <pre
+    class="jsx-2255726786"
+  >
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":false,"selection":null}·
+    </span>
+  </pre>
+  <div
+    class="jsx-442929638"
+  >
+    ·Schema Example·
+  </div>
+  <div
+    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+  >
+    <div
+      class="jsx-2162042882"
+    >
+      <div
+        class="jsx-3102962925"
+      >
+        ·heading·
+      </div>
+      <div
+        class="jsx-1758464876"
+      >
+        ·paragraph·
+      </div>
+      <div
+        class="jsx-44984361"
+      >
+        <div
+          class="jsx-1758464876"
+        >
+          ·listitem·
+        </div>
+      </div>
+      <img
+        alt="Square placeholder image 80px"
+        class="jsx-2162042882"
+        height="80"
+        src="https://via.placeholder.com/80"
+        width="80"
+      />
+    </div>
+  </div>
+  <pre
+    class="jsx-2255726786"
+  >
+    <span
+      class="jsx-1782790912"
+      title="{'type':'document','children':[{'type':'heading','style':{'font-size':'24px'},'children':[{'text':'heading'}]},{'type':'paragraph','style':{'font-size':'16px'},'children':[{'text':'paragraph'}]},{'type':'list','style':{'margin':'16px'},'children':[{'type':'listitem','style':{'font-size':'16px'},'children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":false,"selection":null}·
+    </span>
+  </pre>
+  <div
+    style="margin-bottom:24px"
+  >
+    <button
+      class="focus"
       tabindex="-1"
+      type="button"
+    >
+      ·focus·
+    </button>
+    <button
+      class="blur"
+      disabled=""
+      tabindex="0"
       type="button"
     >
       ·blur·

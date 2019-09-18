@@ -15,19 +15,19 @@ exports[`insert text at end 1`] = `
     data-gramm="true"
     role="textbox"
     spellcheck="false"
-    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    style="background-color: rgb(238, 238, 238); margin-bottom: 24px; outline: none; padding: 8px; width: 300px;"
     tabindex="0"
   >
     <div
       class="root"
     >
       <div
-        style="font-size:24px"
+        style="font-size: 24px;"
       >
         ·heading. ·
       </div>
       <div
-        style="font-size:16px"
+        style="font-size: 16px;"
       >
         ·paragraph·
       </div>
@@ -143,19 +143,19 @@ exports[`insert text at start then middle 1`] = `
     data-gramm="true"
     role="textbox"
     spellcheck="false"
-    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    style="background-color: rgb(238, 238, 238); margin-bottom: 24px; outline: none; padding: 8px; width: 300px;"
     tabindex="0"
   >
     <div
       class="root"
     >
       <div
-        style="font-size:24px"
+        style="font-size: 24px;"
       >
         ·blheading·
       </div>
       <div
-        style="font-size:16px"
+        style="font-size: 16px;"
       >
         ·paragraph·
       </div>
@@ -215,19 +215,19 @@ exports[`remove text 1`] = `
     data-gramm="true"
     role="textbox"
     spellcheck="false"
-    style="background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px"
+    style="background-color: rgb(238, 238, 238); margin-bottom: 24px; outline: none; padding: 8px; width: 300px;"
     tabindex="0"
   >
     <div
       class="root"
     >
       <div
-        style="font-size:24px"
+        style="font-size: 24px;"
       >
         ·ab·
       </div>
       <div
-        style="font-size:16px"
+        style="font-size: 16px;"
       >
         ·paragraph·
       </div>

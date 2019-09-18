@@ -16,12 +16,12 @@ exports[`tab then key arrow right 1`] = `
       class="root"
     >
       <div
-        style="font-size:24px"
+        style="font-size: 24px;"
       >
         ·heading·
       </div>
       <div
-        style="font-size:16px"
+        style="font-size: 16px;"
       >
         ·paragraph·
       </div>
@@ -74,12 +74,12 @@ exports[`tab then key arrow right 2`] = `
       class="root"
     >
       <div
-        style="font-size:24px"
+        style="font-size: 24px;"
       >
         ·heading·
       </div>
       <div
-        style="font-size:16px"
+        style="font-size: 16px;"
       >
         ·paragraph·
       </div>
