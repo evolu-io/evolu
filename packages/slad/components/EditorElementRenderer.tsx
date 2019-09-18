@@ -11,12 +11,14 @@ import { EditorPath, editorPathsAreEqual } from '../models/path';
 import { isEditorText } from '../models/text';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
-// Better to enforce right data model.
-export function invariantHTMLElementHasAttributes(element: HTMLElement) {
+// Better to enforce the right data model. Check invariant message.
+export function invariantHTMLElementHasToHaveAtLeastOneAttribute(
+  element: HTMLElement,
+) {
   if (process.env.NODE_ENV !== 'production') {
     invariant(
       element.hasAttributes(),
-      "HTML element has to have at least one attribute. That's because contentEditable " +
+      "Editor element has to have at least one attribute. That's because contentEditable " +
         'does not like naked elements. For inline elements, it can split or wrap nodes. ' +
         'Check https://git.io/Jemyy. ' +
         'For block elements, it can remove then add parents on text mutation. ' +
@@ -39,7 +41,8 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const elementRef = useRef<Node | null>(null);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
-        if (node) invariantHTMLElementHasAttributes(node as HTMLElement);
+        if (node)
+          invariantHTMLElementHasToHaveAtLeastOneAttribute(node as HTMLElement);
         elementRef.current = node;
         setNodePathRef(node);
       },
