@@ -5,52 +5,58 @@ exports[`render 1`] = `
   id="__next"
 >
   <div>
-    <div
-      class="root"
-    >
+    <div>
       <div
-        style="font-size:24px"
+        class="root"
       >
-        ·heading·
-      </div>
-      <div
-        style="font-size:16px"
-      >
-        ·paragraph·
+        <div
+          style="font-size:24px"
+        >
+          ·heading·
+        </div>
+        <div
+          style="font-size:16px"
+        >
+          ·paragraph·
+        </div>
       </div>
     </div>
-    <div
-      class="jsx-2162042882"
-    >
+    <div>
       <div
-        class="jsx-3102962925"
+        class="jsx-2162042882"
       >
-        ·heading·
-      </div>
-      <div
-        class="jsx-1758464876"
-      >
-        ·paragraph·
-      </div>
-      <div
-        class="jsx-44984361"
-      >
+        <div
+          class="jsx-3102962925"
+        >
+          ·heading·
+        </div>
         <div
           class="jsx-1758464876"
         >
-          ·listitem·
+          ·paragraph·
         </div>
+        <div
+          class="jsx-44984361"
+        >
+          <div
+            class="jsx-1758464876"
+          >
+            ·listitem·
+          </div>
+        </div>
+        <img
+          alt="Square placeholder image 80px"
+          class="jsx-2162042882"
+          height="80"
+          src="https://via.placeholder.com/80"
+          width="80"
+        />
       </div>
-      <img
-        alt="Square placeholder image 80px"
-        class="jsx-2162042882"
-        height="80"
-        src="https://via.placeholder.com/80"
-        width="80"
-      />
     </div>
     <div>
-      <br />
+      <div>
+        <br />
+      </div>
     </div>
   </div>
 </div>

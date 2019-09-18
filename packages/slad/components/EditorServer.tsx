@@ -20,7 +20,7 @@ export const renderEditorDOMElement: RenderEditorElement = (
   return createElement(tag, { ...props, ref }, children);
 };
 
-function refNoop() {
+export function refNoop() {
   // do nothing
 }
 
@@ -51,14 +51,22 @@ export function EditorServerElement<T extends EditorElement>({
   return <>{renderEditorDOMElement(element, children, refNoop)}</>;
 }
 
+export type UsefulReactDivAtttributesServer = Pick<
+  React.HTMLAttributes<HTMLDivElement>,
+  'className' | 'id' | 'style'
+>;
+
 /**
  * Just render. No edit. Good for performance and tree shaking.
  */
 export function EditorServer<T extends EditorElement>({
   element,
   renderElement,
-}: EditorServerProps<T>) {
+  ...rest
+}: EditorServerProps<T> & UsefulReactDivAtttributesServer) {
   return (
-    <EditorServerElement element={element} renderElement={renderElement} />
+    <div {...rest}>
+      <EditorServerElement element={element} renderElement={renderElement} />
+    </div>
   );
 }
