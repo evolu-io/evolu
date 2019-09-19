@@ -30,7 +30,7 @@ import {
 } from '../reducers/editorReducer';
 import { useReducerLogger } from '../hooks/useReducerLogger';
 import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
-import { renderEditorDOMElement } from './EditorServer';
+import { renderEditorReactElement } from './EditorServer';
 
 const debug = Debug('editor');
 
@@ -325,7 +325,7 @@ export function EditorClient<T extends EditorElement>({
     return (
       <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
         <RenderEditorElementContext.Provider
-          value={renderElement || renderEditorDOMElement}
+          value={renderElement || renderEditorReactElement}
         >
           <EditorElementRenderer
             element={editorState.element}

@@ -2,19 +2,19 @@ import { Optional } from 'utility-types';
 import { createElement } from 'react';
 import {
   EditorElement,
-  EditorDOMElement,
-  jsxToEditorDOMElement,
+  EditorReactElement,
+  jsxToEditorReactElement,
 } from './element';
 import { EditorSelection, editorSelectionsAreEqual } from './selection';
 
-export interface EditorState<T extends EditorElement = EditorDOMElement> {
+export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
 }
 
 /**
- * Create editor state. By default, the root element is EditorDOMElement.
+ * Create editor state. By default, the root element is EditorReactElement.
  */
 export function createEditorState<
   T extends EditorState<EditorElement> = EditorState
@@ -36,18 +36,13 @@ export function createEditorStateWithText({
   hasFocus?: boolean;
 }) {
   return createEditorState({
-    element: jsxToEditorDOMElement(
+    element: jsxToEditorReactElement(
       createElement('div', { className: 'root' }, text),
     ),
     selection,
     hasFocus,
   });
 }
-
-// pokud neni, hmm, proc nemuze bejt jen nic?
-// editor el nevi jak kreslit, jedine snad jako... ne, nevi
-// ok
-// element: jsxToEditorDOMElement(<div className="root">a</div>),
 
 export function editorStatesAreEqual<T extends EditorElement>(
   editorState1: EditorState<T> | null,

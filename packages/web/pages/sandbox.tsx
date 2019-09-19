@@ -6,7 +6,7 @@ import {
   useLogEditorState,
   Editor,
   createEditorState,
-  jsxToEditorDOMElement,
+  jsxToEditorReactElement,
   createEditorReducer,
   editorReducer,
 } from 'slad';
@@ -19,7 +19,7 @@ const customReducer = createEditorReducer((draft, action) => {
 });
 
 const initialEditorState = createEditorState({
-  element: jsxToEditorDOMElement(
+  element: jsxToEditorReactElement(
     <div className="root">
       <div style={{ fontSize: '24px' }}>
         {/* <br /> */}

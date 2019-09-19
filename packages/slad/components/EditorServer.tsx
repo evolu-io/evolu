@@ -2,16 +2,16 @@ import React, { createElement, Children } from 'react';
 import {
   RenderEditorElement,
   EditorElement,
-  EditorDOMElement,
+  EditorReactElement,
 } from '../models/element';
 import { isEditorText } from '../models/text';
 
-export const renderEditorDOMElement: RenderEditorElement = (
+export const renderEditorReactElement: RenderEditorElement = (
   element,
   children,
   ref,
 ) => {
-  const { tag, props } = element as EditorDOMElement;
+  const { tag, props } = element as EditorReactElement;
   // To bypass React void elements invariant violation.
   // We don't want to pass children are many args because they already have keys.
   if (Children.count(children) === 0) {
@@ -48,7 +48,7 @@ export function EditorServerElement<T extends EditorElement>({
   if (renderElement) {
     return <>{renderElement(element, children, refNoop)}</>;
   }
-  return <>{renderEditorDOMElement(element, children, refNoop)}</>;
+  return <>{renderEditorReactElement(element, children, refNoop)}</>;
 }
 
 export type UsefulReactDivAtttributesServer = Pick<

@@ -5,11 +5,11 @@ import {
   useLogEditorState,
   EditorSelection,
   createEditorState,
-  EditorDOMElement,
+  EditorReactElement,
   id,
 } from 'slad';
 
-export const testSelectionElement: EditorDOMElement = {
+export const testSelectionElement: EditorReactElement = {
   id: id(),
   tag: 'div',
   props: {

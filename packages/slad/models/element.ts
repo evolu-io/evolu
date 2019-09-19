@@ -16,18 +16,15 @@ export interface EditorElement extends EditorNode {
 
 export type EditorElementChild = EditorElement | EditorText;
 
-interface EditorDOMElementFactory<T, P> extends EditorElement {
+interface EditorReactElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
-  readonly children: readonly (EditorDOMElement | EditorText)[];
+  readonly children: readonly (EditorReactElement | EditorText)[];
 }
 
-/**
- * EditorDOMElement has the same props as ReactDOM.
- */
-export type EditorDOMElement = $Values<
+export type EditorReactElement = $Values<
   {
-    [T in keyof ReactDOM]: EditorDOMElementFactory<
+    [T in keyof ReactDOM]: EditorReactElementFactory<
       T,
       ReturnType<ReactDOM[T]>['props']
     >;
@@ -37,7 +34,9 @@ export type EditorDOMElement = $Values<
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
  */
-export function jsxToEditorDOMElement(element: JSX.Element): EditorDOMElement {
+export function jsxToEditorReactElement(
+  element: JSX.Element,
+): EditorReactElement {
   const {
     type: tag,
     props: { children = [], ...props },
@@ -51,7 +50,7 @@ export function jsxToEditorDOMElement(element: JSX.Element): EditorDOMElement {
       const text: EditorText = { id: id(), text: '' };
       return text;
     }
-    return jsxToEditorDOMElement(child);
+    return jsxToEditorReactElement(child);
   });
   const editorProps = Object.keys(props).length > 0 ? props : undefined;
   return {

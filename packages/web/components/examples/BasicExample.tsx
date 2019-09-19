@@ -6,7 +6,7 @@ import {
   EditorSelection,
   createEditorState,
   id,
-  jsxToEditorDOMElement,
+  jsxToEditorReactElement,
 } from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
@@ -43,7 +43,7 @@ export const initialEditorState = createEditorState({
 });
 
 export const initialEditorStateWithTextOnly = createEditorState({
-  element: jsxToEditorDOMElement(<div className="root">a</div>),
+  element: jsxToEditorReactElement(<div className="root">a</div>),
 });
 
 export function BasicExample({
