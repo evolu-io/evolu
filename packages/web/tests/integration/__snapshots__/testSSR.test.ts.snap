@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render after JavaScript is executed 1`] = `
+exports[`dom after JS is executed 1`] = `
 <div
   id="__next"
 >
@@ -123,7 +123,7 @@ exports[`render after JavaScript is executed 1`] = `
 </div>
 `;
 
-exports[`render before JavaScript is executed 1`] = `
+exports[`dom before JS is executed 1`] = `
 <div
   id="__next"
 >
@@ -247,4 +247,91 @@ exports[`render before JavaScript is executed 1`] = `
     </button>
   </div>
 </div>
+`;
+
+exports[`dom diff before and after JS is executed 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -5,22 +5,28 @@
+      class=\\"jsx-442929638\\"
+    >
+      ·Basic Example·
+    </div>
+    <div
+-     style=\\"background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px\\"
++     autocorrect=\\"off\\"
++     contenteditable=\\"true\\"
++     data-gramm=\\"true\\"
++     role=\\"textbox\\"
++     spellcheck=\\"false\\"
++     style=\\"background-color: rgb(238, 238, 238); margin-bottom: 24px; outline: none; padding: 8px; width: 300px;\\"
++     tabindex=\\"0\\"
+    >
+      <div
+        class=\\"root\\"
+      >
+        <div
+-         style=\\"font-size:24px\\"
++         style=\\"font-size: 24px;\\"
+        >
+          ·heading·
+        </div>
+        <div
+-         style=\\"font-size:16px\\"
++         style=\\"font-size: 16px;\\"
+        >
+          ·paragraph·
+        </div>
+      </div>
+    </div>
+@@ -40,40 +46,31 @@
+      class=\\"jsx-442929638\\"
+    >
+      ·Schema Example·
+    </div>
+    <div
+-     style=\\"background-color:#eee;margin-bottom:24px;outline:none;padding:8px;width:300px\\"
++     autocorrect=\\"off\\"
++     contenteditable=\\"true\\"
++     data-gramm=\\"true\\"
++     role=\\"textbox\\"
++     spellcheck=\\"false\\"
++     style=\\"background-color: rgb(238, 238, 238); margin-bottom: 24px; outline: none; padding: 8px; width: 300px;\\"
++     tabindex=\\"0\\"
+    >
+      <div
+        class=\\"css-0\\"
+-     >
+-       <style
+-         data-emotion-css=\\"1s76os7-heading\\"
+      >
+-         ·.css-1s76os7-heading{font-size:24px;}·
+-       </style>
+        <div
+          class=\\"css-1s76os7-heading\\"
+        >
+          ·heading·
+        </div>
+-       <style
+-         data-emotion-css=\\"1mzu32r-paragraph\\"
+-       >
+-         ·.css-1mzu32r-paragraph{font-size:16px;}·
+-       </style>
+        <div
+          class=\\"css-1mzu32r-paragraph\\"
+        >
+          ·paragraph·
+        </div>
+-       <style
+-         data-emotion-css=\\"1kkfp6h-list\\"
+-       >
+-         ·.css-1kkfp6h-list{margin:16px;}·
+-       </style>
+        <div
+          class=\\"css-1kkfp6h-list\\"
+        >
+          <div
+            class=\\"css-0\\""
 `;
