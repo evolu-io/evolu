@@ -46,9 +46,11 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'error',
     // Shadowing has deterministic behavior.
     'no-shadow': 'off',
-    // We often want serial operations.
+    // We want serial operations.
     'no-await-in-loop': 'off',
+    // Just annoying.
     'react/destructuring-assignment': 'off',
     'no-lonely-if': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
 };
