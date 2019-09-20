@@ -28,9 +28,9 @@ import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
-import { useReducerLogger } from '../hooks/useReducerLogger';
 import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
 import { renderEditorReactElement } from './EditorServer';
+import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
 
 const debug = Debug('editor');
 
@@ -64,10 +64,11 @@ export function EditorClient<T extends EditorElement>({
   role = 'textbox',
   ...rest
 }: EditorClientProps<T>) {
-  const [editorState, dispatch] = useReducer(
-    useReducerLogger(editorReducer, debug),
-    parentEditorState,
+  const [editorState, dispatch] = useReducerWithLogger(
+    useReducer(editorReducer, parentEditorState),
+    debug,
   );
+
   const {
     nodesEditorPathsMap,
     editorPathsNodesMap,
@@ -125,7 +126,7 @@ export function EditorClient<T extends EditorElement>({
     return () => {
       doc.removeEventListener('selectionchange', handleDocumentSelectionChange);
     };
-  }, [getSelection, nodesEditorPathsMap]);
+  }, [dispatch, getSelection, nodesEditorPathsMap]);
 
   const ensureSelectionMatchesEditorSelection = useCallback(() => {
     const selection = getSelection();
@@ -317,7 +318,7 @@ export function EditorClient<T extends EditorElement>({
     return () => {
       observer.disconnect();
     };
-  }, [findPathFromNode, setNodeEditorPath]);
+  }, [dispatch, findPathFromNode, setNodeEditorPath]);
 
   const rootPath = useMemo(() => [], []);
 
@@ -340,7 +341,7 @@ export function EditorClient<T extends EditorElement>({
     ensureSelectionMatchesEditorSelection();
     setTabLostFocus(false);
     dispatch({ type: 'onFocus' });
-  }, [ensureSelectionMatchesEditorSelection]);
+  }, [dispatch, ensureSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
     const tabLostFocus =
@@ -350,7 +351,7 @@ export function EditorClient<T extends EditorElement>({
       false;
     setTabLostFocus(tabLostFocus);
     dispatch({ type: 'onBlur' });
-  }, []);
+  }, [dispatch]);
 
   // Sync editorState with parentEditorState conditionally per last parentEditorState.
   const lastParentEditorStateRef = useRef<EditorState<T> | null>(null);
@@ -364,24 +365,32 @@ export function EditorClient<T extends EditorElement>({
   }, [editorState, onChange]);
 
   // Sync parentEditorState with editorState conditionally per parentEditorState props.
+  const editorStateRef = useRef<EditorState<T>>(editorState as EditorState<T>);
   useLayoutEffect(() => {
+    editorStateRef.current = editorState as EditorState<T>;
+  }, [editorState]);
+  useLayoutEffect(() => {
+    if (parentEditorState.element === editorStateRef.current.element) return;
     dispatch({
       type: 'onParentElementChange',
       element: parentEditorState.element,
     });
-  }, [parentEditorState.element]);
+  }, [dispatch, parentEditorState.element]);
   useLayoutEffect(() => {
+    if (parentEditorState.hasFocus === editorStateRef.current.hasFocus) return;
     dispatch({
       type: 'onParentHasFocusChange',
       hasFocus: parentEditorState.hasFocus,
     });
-  }, [parentEditorState.hasFocus]);
+  }, [dispatch, parentEditorState.hasFocus]);
   useLayoutEffect(() => {
+    if (parentEditorState.selection === editorStateRef.current.selection)
+      return;
     dispatch({
       type: 'onParentSelectionChange',
       selection: parentEditorState.selection,
     });
-  }, [parentEditorState.selection]);
+  }, [dispatch, parentEditorState.selection]);
 
   return useMemo(() => {
     return (

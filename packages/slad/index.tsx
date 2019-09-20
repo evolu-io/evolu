@@ -6,7 +6,7 @@ export * from './components/EditorTextRenderer';
 export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/useLogEditorState';
-export * from './hooks/useReducerLogger';
+export * from './hooks/useReducerWithLogger';
 export * from './hooks/useSetNodeEditorPathRef';
 export * from './models/element';
 export * from './models/node';
