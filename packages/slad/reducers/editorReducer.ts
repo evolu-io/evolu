@@ -16,9 +16,10 @@ export type EditorAction =
   | { type: 'onBlur' }
   | { type: 'onSelectionChange'; selection: EditorSelection | null }
   | { type: 'onTextChange'; path: EditorPath; text: string }
-  | { type: 'onParentElementChange'; element: EditorElement }
-  | { type: 'onParentHasFocusChange'; hasFocus: boolean }
-  | { type: 'onParentSelectionChange'; selection: EditorSelection | null };
+  | {
+      type: 'onParentEditorStateChange';
+      change: Partial<EditorState<EditorElement>>;
+    };
 
 export type EditorReducer<T extends EditorElement> = Reducer<
   EditorState<T>,
@@ -73,7 +74,8 @@ export const editorReducer = createEditorReducer((draft, action) => {
         draft.selection.anchor = path.concat(text.length);
         draft.selection.focus = path.concat(text.length);
       } else {
-        // This is probably not good enough for mobiles.
+        // Update selection to match added text. This is probably not good enough
+        // for mobile devices.
         const offset = text.length - currentChild.text.length;
         draft.selection.anchor[draft.selection.anchor.length - 1] += offset;
         draft.selection.focus[draft.selection.focus.length - 1] += offset;
@@ -81,17 +83,13 @@ export const editorReducer = createEditorReducer((draft, action) => {
       return;
     }
 
-    case 'onParentElementChange':
-      draft.element = action.element as Draft<EditorElement>;
+    case 'onParentEditorStateChange': {
+      Object.keys(action.change).forEach(prop => {
+        // @ts-ignore Pull request please.
+        draft[prop] = action.change[prop];
+      });
       return;
-
-    case 'onParentHasFocusChange':
-      draft.hasFocus = action.hasFocus;
-      return;
-
-    case 'onParentSelectionChange':
-      draft.selection = action.selection as Draft<EditorSelection>;
-      return;
+    }
 
     default:
       return assertNever(action);

@@ -217,6 +217,7 @@ export function EditorClient<T extends EditorElement>({
     [nodesEditorPathsMap],
   );
 
+  // TODO: Refactor out as text mutation transformation to editor action.
   useEffect(() => {
     if (divRef.current == null) return;
     // The idea is to let browsers to do their things for typing and backspacing text.
@@ -236,6 +237,10 @@ export function EditorClient<T extends EditorElement>({
       const textWasUpdatedByTypingOrModel = onlyCharacterDataMutations(
         mutations,
       );
+
+      // TODO: We should skip changes made by model changes.
+      // We should somehow handle only IME.
+      // But composition events and beforeinput are async tricky.
 
       if (textWasUpdatedByTypingOrModel) {
         // mutations.length could be 1 or 2
@@ -353,43 +358,44 @@ export function EditorClient<T extends EditorElement>({
     dispatch({ type: 'onBlur' });
   }, [dispatch]);
 
-  // Sync editorState with parentEditorState conditionally per last parentEditorState.
+  // Sync inner editor state with outer.
   const lastParentEditorStateRef = useRef<EditorState<T> | null>(null);
   useLayoutEffect(() => {
     lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
   useLayoutEffect(() => {
-    if (editorStatesAreEqual(editorState, lastParentEditorStateRef.current))
-      return;
-    onChange(editorState as EditorState<T>);
+    if (!editorStatesAreEqual(editorState, lastParentEditorStateRef.current))
+      onChange(editorState as EditorState<T>);
   }, [editorState, onChange]);
 
-  // Sync parentEditorState with editorState conditionally per parentEditorState props.
+  // Sync outer editor state with inner.
   const editorStateRef = useRef<EditorState<T>>(editorState as EditorState<T>);
   useLayoutEffect(() => {
     editorStateRef.current = editorState as EditorState<T>;
   }, [editorState]);
+  // We can not just override editorState, because that could override meanwhile
+  // updated props. That's why we use one effect per prop.
+  // The code is intentionally verbose and explicit.
   useLayoutEffect(() => {
-    if (parentEditorState.element === editorStateRef.current.element) return;
-    dispatch({
-      type: 'onParentElementChange',
-      element: parentEditorState.element,
-    });
+    if (parentEditorState.element !== editorStateRef.current.element)
+      dispatch({
+        type: 'onParentEditorStateChange',
+        change: { element: parentEditorState.element },
+      });
   }, [dispatch, parentEditorState.element]);
   useLayoutEffect(() => {
-    if (parentEditorState.hasFocus === editorStateRef.current.hasFocus) return;
-    dispatch({
-      type: 'onParentHasFocusChange',
-      hasFocus: parentEditorState.hasFocus,
-    });
+    if (parentEditorState.hasFocus !== editorStateRef.current.hasFocus)
+      dispatch({
+        type: 'onParentEditorStateChange',
+        change: { hasFocus: parentEditorState.hasFocus },
+      });
   }, [dispatch, parentEditorState.hasFocus]);
   useLayoutEffect(() => {
-    if (parentEditorState.selection === editorStateRef.current.selection)
-      return;
-    dispatch({
-      type: 'onParentSelectionChange',
-      selection: parentEditorState.selection,
-    });
+    if (parentEditorState.selection !== editorStateRef.current.selection)
+      dispatch({
+        type: 'onParentEditorStateChange',
+        change: { selection: parentEditorState.selection },
+      });
   }, [dispatch, parentEditorState.selection]);
 
   return useMemo(() => {
