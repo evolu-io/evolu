@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
-import Debug from 'debug';
 import invariant from 'tiny-invariant';
 import { NodesEditorPathsMap } from '../models/path';
 import { EditorElement, EditorElementChild } from '../models/element';
 import { isEditorText } from '../models/text';
-
-const debug = Debug('debugNodesEditorPaths');
 
 export function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
@@ -14,11 +11,11 @@ export function useDebugNodesEditorPaths(
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-      const nodes: [string, Node][] = [];
-      nodesEditorPathsMap.forEach((path, node) => {
-        nodes.push([path.join(), node]);
-      });
-      debug('after render', nodes);
+      // const nodes: [string, Node][] = [];
+      // nodesEditorPathsMap.forEach((path, node) => {
+      //   nodes.push([path.join(), node]);
+      // });
+      // console.log(nodes);
 
       const countNodes = (node: EditorElementChild, count = 0) => {
         if (isEditorText(node)) return count + 1;
