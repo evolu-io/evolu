@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import invariant from 'tiny-invariant';
-import { NodesEditorPathsMap } from '../models/path';
-import { EditorElement, EditorElementChild } from '../models/element';
-import { isEditorText } from '../models/text';
+import { NodesEditorPathsMap } from '../../models/path';
+import { EditorElement, EditorElementChild } from '../../models/element';
+import { isEditorText } from '../../models/text';
 
 export function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,

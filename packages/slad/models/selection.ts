@@ -1,5 +1,7 @@
 import invariant from 'tiny-invariant';
+import produce from 'immer';
 import { editorPathsAreEqual, EditorPath, NodesEditorPathsMap } from './path';
+import { pipe } from '../pipe';
 
 export interface EditorSelection {
   readonly anchor: EditorPath;
@@ -24,7 +26,7 @@ export function editorSelectionsAreEqual(
   );
 }
 
-export function mapSelectionToEditorSelection(
+export function selectionToEditorSelection(
   selection: Selection | null,
   nodesEditorPathsMap: NodesEditorPathsMap,
 ): EditorSelection | null {
@@ -63,3 +65,22 @@ export function invariantEditorSelectionIsCollapsed(
   );
   return true;
 }
+
+export const moveAnchor = (offset: number) => (selection: EditorSelection) =>
+  produce(selection, draft => {
+    draft.anchor[draft.anchor.length - 1] += offset;
+  });
+
+export const moveFocus = (offset: number) => (selection: EditorSelection) =>
+  produce(selection, draft => {
+    draft.focus[draft.focus.length - 1] += offset;
+  });
+
+export const move = (offset: number) => (
+  selection: EditorSelection,
+): EditorSelection =>
+  pipe(
+    selection,
+    moveAnchor(offset),
+    moveFocus(offset),
+  );

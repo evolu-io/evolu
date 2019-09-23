@@ -8,13 +8,12 @@ import React, {
   useReducer,
   useLayoutEffect,
 } from 'react';
-import invariant from 'tiny-invariant';
 import Debug from 'debug';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import {
-  mapSelectionToEditorSelection,
+  selectionToEditorSelection,
   editorSelectionsAreEqual,
   editorSelectionIsBackward,
 } from '../models/selection';
@@ -22,17 +21,18 @@ import { RenderEditorElement, EditorElement } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { EditorPath } from '../models/path';
-import { useDebugNodesEditorPaths } from '../hooks/useDebugNodesEditorPaths';
+import { useDebugNodesEditorPaths } from '../hooks/editor/useDebugNodesEditorPaths';
 import { EditorState, editorStatesAreEqual } from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
-import { useNodesEditorPaths } from '../hooks/useNodesEditorPaths';
+import { useNodesEditorPaths } from '../hooks/editor/useNodesEditorPaths';
 import { renderEditorReactElement } from './EditorServer';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
+import { useBeforeInput } from '../hooks/editor/useBeforeInput';
 
-const debug = Debug('editor');
+const debugEditorAction = Debug('editor:action');
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -64,10 +64,14 @@ export function EditorClient<T extends EditorElement>({
   role = 'textbox',
   ...rest
 }: EditorClientProps<T>) {
-  const [editorState, dispatch] = useReducerWithLogger(
+  // Inner state is required because of IME etc. intermediate states.
+  const [editorStateWithEditorElementType, dispatch] = useReducerWithLogger(
     useReducer(editorReducer, parentEditorState),
-    debug,
+    debugEditorAction,
   );
+  // I don't know how to pass T to useReducer and editorReducer properly.
+  // That's why we cast editorState once for all here.
+  const editorState = editorStateWithEditorElementType as EditorState<T>;
 
   const {
     nodesEditorPathsMap,
@@ -80,6 +84,7 @@ export function EditorClient<T extends EditorElement>({
 
   const divRef = useRef<HTMLDivElement>(null);
 
+  // Internal states.
   const [tabLostFocus, setTabLostFocus] = useState(false);
 
   const editorStateHadFocus = usePrevious(editorState.hasFocus);
@@ -111,7 +116,7 @@ export function EditorClient<T extends EditorElement>({
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
       const selection = getSelection();
-      const editorSelection = mapSelectionToEditorSelection(
+      const editorSelection = selectionToEditorSelection(
         selection,
         nodesEditorPathsMap,
       );
@@ -120,7 +125,10 @@ export function EditorClient<T extends EditorElement>({
       // In Chrome, contentEditable does not do that.
       // That's why we ignore null values.
       if (editorSelection == null) return;
-      dispatch({ type: 'onSelectionChange', selection: editorSelection });
+      dispatch({
+        type: 'selectionChange',
+        selection: editorSelection,
+      });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {
@@ -131,7 +139,7 @@ export function EditorClient<T extends EditorElement>({
   const ensureSelectionMatchesEditorSelection = useCallback(() => {
     const selection = getSelection();
     if (selection == null) return;
-    const currentSelection = mapSelectionToEditorSelection(
+    const currentSelection = selectionToEditorSelection(
       selection,
       nodesEditorPathsMap,
     );
@@ -195,135 +203,13 @@ export function EditorClient<T extends EditorElement>({
   ]);
 
   // useLayoutEffect is must to keep browser selection in sync with editor state.
+  // TODO: Do we still need it?
   useLayoutEffect(() => {
     if (!editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
 
-  const findPathFromNode = useCallback(
-    (node: Node): EditorPath => {
-      const path = nodesEditorPathsMap.get(node);
-      // Watch when it happens, maybe force rerender via key as Draft does that.
-      if (path == null) {
-        invariant(
-          false,
-          'MutationObserver characterData target is not in nodesEditorPathsMap.',
-        );
-        // @ts-ignore It will never happen because invariant throws.
-        return;
-      }
-      return path;
-    },
-    [nodesEditorPathsMap],
-  );
-
-  // TODO: Refactor out as text mutation transformation to editor action.
-  useEffect(() => {
-    if (divRef.current == null) return;
-    // The idea is to let browsers to do their things for typing and backspacing text.
-    // It's neccessary for IME anyway, as described in DraftJS and ProseMirror.
-    // This approach ensures iOS special typing like double space etc works out of the box.
-    // https://github.com/facebook/draft-js/blob/master/src/component/handlers/composition/DOMObserver.js#L103
-    const observer = new MutationObserver(mutations => {
-      function onlyCharacterDataMutations(
-        mutations: MutationRecord[],
-      ): boolean {
-        return mutations.every(mutation => mutation.type === 'characterData');
-      }
-
-      // console.log(mutations);
-      // TODO: It should be list of rules, { whatHappen: predicate }
-
-      const textWasUpdatedByTypingOrModel = onlyCharacterDataMutations(
-        mutations,
-      );
-
-      // TODO: We should skip changes made by model changes.
-      // We should somehow handle only IME.
-      // But composition events and beforeinput are async tricky.
-
-      if (textWasUpdatedByTypingOrModel) {
-        // mutations.length could be 1 or 2
-        // 2 for the whitespace, which generates two identical mutations for some reason
-        // We takes the last.
-        const lastMutation = mutations[mutations.length - 1];
-        const path = findPathFromNode(lastMutation.target);
-        const text = lastMutation.target.nodeValue || '';
-        // Ignore empty text, because it must be handled via childList mutation.
-        if (text.length === 0) return;
-        dispatch({ type: 'onTextChange', path, text });
-        return;
-      }
-
-      const textWasReplacedWithBRByTyping =
-        mutations.length === 3 &&
-        mutations[0].type === 'characterData' &&
-        mutations[1].type === 'childList' &&
-        mutations[1].removedNodes[0].nodeType === Node.TEXT_NODE &&
-        mutations[2].type === 'childList' &&
-        mutations[2].addedNodes[0].nodeName === 'BR';
-
-      if (textWasReplacedWithBRByTyping) {
-        const removedTextNode = mutations[1].removedNodes[0] as Text;
-        const path = findPathFromNode(removedTextNode);
-        setNodeEditorPath('remove', removedTextNode, path);
-        dispatch({ type: 'onTextChange', path, text: '' });
-        return;
-      }
-
-      // In EditorTextRenderer manually.
-      const textWasReplacedWithBRByModel =
-        mutations.length === 1 &&
-        mutations[0].type === 'childList' &&
-        mutations[0].addedNodes.length === 1 &&
-        mutations[0].addedNodes[0].nodeName === 'BR' &&
-        mutations[0].removedNodes.length === 1 &&
-        mutations[0].removedNodes[0].nodeType === Node.TEXT_NODE;
-
-      if (textWasReplacedWithBRByModel) {
-        // setNodeEditorPath('remove', removedTextNode, path);
-        // TODO: Ensure selection here?
-        return;
-      }
-
-      const brWasReplacedWithTextByTyping =
-        mutations[0].type === 'childList' &&
-        mutations[0].addedNodes.length === 1 &&
-        mutations[0].addedNodes[0].nodeType === Node.TEXT_NODE &&
-        mutations[1].type === 'childList' &&
-        mutations[1].removedNodes.length === 1 &&
-        mutations[1].removedNodes[0].nodeName === 'BR' &&
-        onlyCharacterDataMutations(mutations.slice(2));
-
-      if (brWasReplacedWithTextByTyping) {
-        const addedTextNode = mutations[0].addedNodes[0] as Text;
-        const removedBR = mutations[1].removedNodes[0] as HTMLBRElement;
-        const path = findPathFromNode(removedBR);
-        setNodeEditorPath('remove', removedBR, path);
-        setNodeEditorPath('add', addedTextNode, path);
-        const text = addedTextNode.nodeValue || '';
-        dispatch({ type: 'onTextChange', path, text });
-        return;
-      }
-
-      // TODO: Warning?
-      // eslint-disable-next-line no-console
-      console.log('Unknown DOM mutation in Editor MutationObserver:');
-      // eslint-disable-next-line no-console
-      console.log(mutations);
-      // invariant(false, 'Unknown DOM mutation in Editor MutationObserver.');
-    });
-
-    observer.observe(divRef.current, {
-      childList: true,
-      characterData: true,
-      subtree: true,
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [dispatch, findPathFromNode, setNodeEditorPath]);
+  useBeforeInput(divRef, dispatch);
 
   const rootPath = useMemo(() => [], []);
 
@@ -345,7 +231,7 @@ export function EditorClient<T extends EditorElement>({
   const handleDivFocus = useCallback(() => {
     ensureSelectionMatchesEditorSelection();
     setTabLostFocus(false);
-    dispatch({ type: 'onFocus' });
+    dispatch({ type: 'focus' });
   }, [dispatch, ensureSelectionMatchesEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
@@ -355,7 +241,7 @@ export function EditorClient<T extends EditorElement>({
         divRef.current.ownerDocument.activeElement === divRef.current) ||
       false;
     setTabLostFocus(tabLostFocus);
-    dispatch({ type: 'onBlur' });
+    dispatch({ type: 'blur' });
   }, [dispatch]);
 
   // Sync inner editor state with outer.
@@ -365,35 +251,34 @@ export function EditorClient<T extends EditorElement>({
   }, [parentEditorState]);
   useLayoutEffect(() => {
     if (!editorStatesAreEqual(editorState, lastParentEditorStateRef.current))
-      onChange(editorState as EditorState<T>);
+      onChange(editorState);
   }, [editorState, onChange]);
 
   // Sync outer editor state with inner.
-  const editorStateRef = useRef<EditorState<T>>(editorState as EditorState<T>);
+  const editorStateRef = useRef<EditorState<T>>(editorState);
   useLayoutEffect(() => {
-    editorStateRef.current = editorState as EditorState<T>;
+    editorStateRef.current = editorState;
   }, [editorState]);
   // We can not just override editorState, because that could override meanwhile
-  // updated props. That's why we use one effect per prop.
-  // The code is intentionally verbose and explicit.
+  // updated state props. That's why we use one effect per one prop.
   useLayoutEffect(() => {
     if (parentEditorState.element !== editorStateRef.current.element)
       dispatch({
-        type: 'onParentEditorStateChange',
+        type: 'setEditorStatePartial',
         change: { element: parentEditorState.element },
       });
   }, [dispatch, parentEditorState.element]);
   useLayoutEffect(() => {
     if (parentEditorState.hasFocus !== editorStateRef.current.hasFocus)
       dispatch({
-        type: 'onParentEditorStateChange',
+        type: 'setEditorStatePartial',
         change: { hasFocus: parentEditorState.hasFocus },
       });
   }, [dispatch, parentEditorState.hasFocus]);
   useLayoutEffect(() => {
     if (parentEditorState.selection !== editorStateRef.current.selection)
       dispatch({
-        type: 'onParentEditorStateChange',
+        type: 'setEditorStatePartial',
         change: { selection: parentEditorState.selection },
       });
   }, [dispatch, parentEditorState.selection]);

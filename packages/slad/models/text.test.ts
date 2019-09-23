@@ -1,6 +1,6 @@
-import { insertText } from './text';
+import { insertTextToString } from './text';
 
-test('insertText', () => {
-  expect(insertText('', 'a', 0)).toBe('a');
-  expect(insertText('ac', 'b', 1)).toBe('abc');
+test('insertTextToString', () => {
+  expect(insertTextToString('', 'a', 0)).toBe('a');
+  expect(insertTextToString('ac', 'b', 1)).toBe('abc');
 });

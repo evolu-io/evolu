@@ -115,11 +115,11 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-export function isNormalizedEditorElement({
+export function editorElementIsNormalized({
   children,
 }: EditorElement): boolean {
   return !children.some((child, i) => {
-    if (!isEditorText(child)) return !isNormalizedEditorElement(child);
+    if (!isEditorText(child)) return !editorElementIsNormalized(child);
     if (editorTextIsBR(child)) return false;
     const previous = children[i - 1];
     if (previous && isEditorText(previous) && !editorTextIsBR(previous))
@@ -128,19 +128,18 @@ export function isNormalizedEditorElement({
   });
 }
 
-export function getParentElementByPath(
+export function editorElementChild(
   element: EditorElement,
   path: EditorPath,
-): EditorElement {
-  invariant(path.length > 0, 'getParentElementByPath: Path can not be empty.');
-  let parent = element;
-  const pathToParent = path.slice(0, -1);
-  pathToParent.forEach(index => {
-    const child = parent.children[index];
-    if (!invariantIsEditorElement(child)) return;
-    parent = child;
-  });
-  return parent;
+): EditorElementChild {
+  return path.reduce(
+    (editorElementChild, index) => {
+      if (!invariantIsEditorElement(editorElementChild))
+        return editorElementChild;
+      return editorElementChild.children[index];
+    },
+    element as EditorElementChild,
+  );
 }
 
 // TODO: Fix types.

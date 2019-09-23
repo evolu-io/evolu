@@ -1,7 +1,7 @@
 import {
   normalizeEditorElement,
   EditorElement,
-  isNormalizedEditorElement,
+  editorElementIsNormalized,
 } from './element';
 import { EditorNodeID } from './node';
 
@@ -43,9 +43,9 @@ test('normalizeEditorElement merges adjacent strings', () => {
   expect(normalizeEditorElement(element)).toMatchSnapshot();
 });
 
-test('isNormalizedEditorElement', () => {
+test('editorElementIsNormalized', () => {
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: 'a' }],
     }),
@@ -53,7 +53,7 @@ test('isNormalizedEditorElement', () => {
 
   // Empty string is BR, that's ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: '' }],
     }),
@@ -61,7 +61,7 @@ test('isNormalizedEditorElement', () => {
 
   // Two not empty string, that's not ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
     }),
@@ -69,7 +69,7 @@ test('isNormalizedEditorElement', () => {
 
   // Recursion works.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), children: [{ id: id(), text: '' }] }],
     }),
@@ -77,7 +77,7 @@ test('isNormalizedEditorElement', () => {
 
   // Empty string is BR, so it's ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [
         { id: id(), text: 'a' },
