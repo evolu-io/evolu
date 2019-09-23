@@ -9,6 +9,14 @@ import {
   invariantEditorStateHasSelection,
 } from '../models/state';
 
+// TODO: Enforce actions are side effects free aka action can not contain DOM nodes
+// or anything else than plain JSON.
+// With TypeScript 3.7, we will be able to leverage this recursive syntax:
+// type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+// type EditorActionBase = object with string type and json object props only.
+// type NoSideEffects<T extends EditorActionBase> = T;
+// export type EditorAction = NoSideEffects<
+// https://github.com/microsoft/TypeScript/pull/33050
 export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
