@@ -87,21 +87,27 @@ export function invariantEditorSelectionIsCollapsed(
   return true;
 }
 
-export const moveAnchor = (offset: number) => (selection: EditorSelection) =>
-  produce(selection, draft => {
-    draft.anchor[draft.anchor.length - 1] += offset;
-  });
+// TODO: moveSelection*
+// nebude to matouci? ne, je to kratsi, ok!
+export function moveAnchor(offset: number) {
+  return (selection: EditorSelection) =>
+    produce(selection, draft => {
+      draft.anchor[draft.anchor.length - 1] += offset;
+    });
+}
 
-export const moveFocus = (offset: number) => (selection: EditorSelection) =>
-  produce(selection, draft => {
-    draft.focus[draft.focus.length - 1] += offset;
-  });
+export function moveFocus(offset: number) {
+  return (selection: EditorSelection) =>
+    produce(selection, draft => {
+      draft.focus[draft.focus.length - 1] += offset;
+    });
+}
 
-export const move = (offset: number) => (
-  selection: EditorSelection,
-): EditorSelection =>
-  pipe(
-    selection,
-    moveAnchor(offset),
-    moveFocus(offset),
-  );
+export function move(offset: number) {
+  return (selection: EditorSelection): EditorSelection =>
+    pipe(
+      selection,
+      moveAnchor(offset),
+      moveFocus(offset),
+    );
+}
