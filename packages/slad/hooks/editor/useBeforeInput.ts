@@ -6,7 +6,6 @@ import {
   invariantEditorSelectionIsDefined,
 } from '../../models/selection';
 
-// potrebuju okok
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
   nodesEditorPathsMap: NodesEditorPathsMap,
@@ -41,7 +40,7 @@ export function useBeforeInput(
           dispatch({ type: 'insertText', text: event.data });
           break;
 
-        // It seems we don't need directions because the result selection will be collapsed.
+        // We don't need directions because the result selection is always collapsed.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
           // @ts-ignore Outdated types.
