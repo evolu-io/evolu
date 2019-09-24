@@ -3,6 +3,12 @@ import produce from 'immer';
 import { editorPathsAreEqual, EditorPath, NodesEditorPathsMap } from './path';
 import { pipe } from '../pipe';
 
+/**
+ * Like browser Selection, but with EditorPath for the anchor and the focus.
+ * I suppose that's all we need. Browser Range is superfluous abstraction for
+ * pure model. Also, we don't support multiple selections, because the only browser
+ * supporting them is Firefox.
+ */
 export interface EditorSelection {
   readonly anchor: EditorPath;
   readonly focus: EditorPath;
@@ -39,6 +45,21 @@ export function selectionToEditorSelection(
   return {
     anchor: [...anchorPath, anchorOffset],
     focus: [...focusPath, focusOffset],
+  };
+}
+
+export function rangeToEditorSelection(
+  range: Range | null,
+  nodesEditorPathsMap: NodesEditorPathsMap,
+): EditorSelection | null {
+  if (range == null) return null;
+  const { startContainer, startOffset, endContainer, endOffset } = range;
+  const anchorPath = nodesEditorPathsMap.get(startContainer);
+  const focusPath = nodesEditorPathsMap.get(endContainer);
+  if (!anchorPath || !focusPath) return null;
+  return {
+    anchor: [...anchorPath, startOffset],
+    focus: [...focusPath, endOffset],
   };
 }
 

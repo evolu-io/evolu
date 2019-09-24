@@ -2,12 +2,12 @@ import { assertNever } from 'assert-never';
 import produce, { Draft } from 'immer';
 import { Reducer } from 'react';
 import { EditorElement } from '../models/element';
-import { EditorSelection, editorSelectionsAreEqual } from '../models/selection';
 import {
-  EditorState,
-  insertText,
-  invariantEditorStateHasSelection,
-} from '../models/state';
+  EditorSelection,
+  editorSelectionsAreEqual,
+  invariantEditorSelectionIsDefined,
+} from '../models/selection';
+import { EditorState, insertText } from '../models/state';
 
 // TODO: Enforce actions are side effects free aka action can not contain DOM nodes
 // or anything else than plain JSON.
@@ -26,7 +26,8 @@ export type EditorAction =
       change: Partial<EditorState<EditorElement>>;
     }
   // beforeinput actions
-  | { type: 'insertText'; text: string };
+  | { type: 'insertText'; text: string }
+  | { type: 'deleteContent'; selection: EditorSelection };
 
 export type EditorReducer<T extends EditorElement = EditorElement> = Reducer<
   EditorState<T>,
@@ -67,10 +68,15 @@ export const editorReducer = createEditorReducer((draft, action) => {
       });
       return;
 
-    case 'insertText': {
-      if (!invariantEditorStateHasSelection(draft)) return;
-      return insertText(action.text)(draft);
-    }
+    case 'insertText':
+      if (!invariantEditorSelectionIsDefined(draft.selection)) return;
+      return insertText(action.text, draft.selection)(draft);
+
+    case 'deleteContent':
+      // deleteContent(selection)(draft)
+      // console.log(action.selection);
+
+      return;
 
     default:
       return assertNever(action);

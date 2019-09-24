@@ -209,7 +209,7 @@ export function EditorClient<T extends EditorElement>({
     ensureSelectionMatchesEditorSelection();
   }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
 
-  useBeforeInput(divRef, dispatch);
+  useBeforeInput(divRef, nodesEditorPathsMap, dispatch);
 
   const rootPath = useMemo(() => [], []);
 

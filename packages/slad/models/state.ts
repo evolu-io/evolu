@@ -1,7 +1,6 @@
 import { Optional } from 'utility-types';
 import { createElement } from 'react';
 import produce, { Draft } from 'immer';
-import invariant from 'tiny-invariant';
 import {
   EditorElement,
   EditorReactElement,
@@ -22,12 +21,6 @@ export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
-}
-
-export interface EditorStateWithSelection<
-  T extends EditorElement = EditorReactElement
-> extends EditorState<T> {
-  readonly selection: EditorSelection;
 }
 
 /**
@@ -74,31 +67,19 @@ export function editorStatesAreEqual<T extends EditorElement>(
   );
 }
 
-export function invariantEditorStateHasSelection<T extends EditorElement>(
-  editorState: EditorState<T>,
-): editorState is EditorStateWithSelection<T> {
-  invariant(editorState.selection != null, 'EditorState selection is null.');
-  return true;
-}
+export const insertText = (text: string, selection: EditorSelection) =>
+  produce(<T extends EditorElement>(draft: Draft<EditorState<T>>) => {
+    if (editorSelectionIsCollapsed(selection)) {
+      const [parentPath, index] = getParentPathAndLastIndex(selection.anchor);
+      const editorText = editorElementChild(draft.element, parentPath) as Draft<
+        EditorElementChild
+      >;
+      if (!invariantIsEditorText(editorText)) return;
+      editorText.text = insertTextToString(editorText.text, text, index);
+      draft.selection = move(text.length)(selection) as Draft<EditorSelection>;
+    } else {
+      // TODO: Insert text over selection.
+    }
+  });
 
-export const insertText = (text: string) =>
-  produce(
-    <T extends EditorElement>(draft: Draft<EditorStateWithSelection<T>>) => {
-      if (editorSelectionIsCollapsed(draft.selection)) {
-        const [parentPath, index] = getParentPathAndLastIndex(
-          draft.selection.anchor,
-        );
-        const editorText = editorElementChild(
-          draft.element,
-          parentPath,
-        ) as Draft<EditorElementChild>;
-        if (!invariantIsEditorText(editorText)) return;
-        editorText.text = insertTextToString(editorText.text, text, index);
-        draft.selection = move(text.length)(draft.selection) as Draft<
-          EditorSelection
-        >;
-      } else {
-        // TODO: Insert text over selection.
-      }
-    },
-  );
+// export const deleteContent = (selection: EditorSelection) =>
