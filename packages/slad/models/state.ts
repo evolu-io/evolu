@@ -13,6 +13,7 @@ import {
   editorSelectionsAreEqual,
   editorSelectionIsCollapsed,
   move,
+  invariantEditorSelectionIsDefined,
 } from './selection';
 import { getParentPathAndLastIndex } from './path';
 import { invariantIsEditorText, insertTextToString } from './text';
@@ -67,8 +68,23 @@ export function editorStatesAreEqual<T extends EditorElement>(
   );
 }
 
-export const insertText = (text: string, selection: EditorSelection) =>
-  produce(<T extends EditorElement>(draft: Draft<EditorState<T>>) => {
+// move na editorState
+// pipe(
+//   editorState,
+//   editor.insertText(text),
+//   editor.moveFocus(2)
+// );
+
+export function produceEditorState<T extends EditorElement>(
+  recipe: (draft: Draft<EditorState<T>>) => Draft<EditorState<T>> | void,
+) {
+  return produce(recipe);
+}
+
+export function insertText(text: string, optionalSelection?: EditorSelection) {
+  return produceEditorState(draft => {
+    const selection = optionalSelection || draft.selection;
+    if (!invariantEditorSelectionIsDefined(selection)) return;
     if (editorSelectionIsCollapsed(selection)) {
       const [parentPath, index] = getParentPathAndLastIndex(selection.anchor);
       const editorText = editorElementChild(draft.element, parentPath) as Draft<
@@ -81,5 +97,6 @@ export const insertText = (text: string, selection: EditorSelection) =>
       // TODO: Insert text over selection.
     }
   });
+}
 
 // export const deleteContent = (selection: EditorSelection) =>
