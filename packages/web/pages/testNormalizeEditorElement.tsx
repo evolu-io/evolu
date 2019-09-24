@@ -1,31 +1,25 @@
 import React, { useState } from 'react';
-import {
-  Editor,
-  normalizeEditorElement,
-  createEditorState,
-  EditorReactElement,
-  id,
-} from 'slad';
+import * as editor from 'slad';
 
-const initialEditorState = createEditorState({
-  element: normalizeEditorElement<EditorReactElement>({
-    id: id(),
+const initialEditorState = editor.createEditorState({
+  element: editor.normalizeEditorElement<editor.EditorReactElement>({
+    id: editor.id(),
     tag: 'div',
     props: {
       className: 'root',
     },
     children: [
       {
-        id: id(),
+        id: editor.id(),
         tag: 'div',
         props: {
           className: 'list',
         },
         children: [
-          { id: id(), text: 'a' },
-          { id: id(), text: 'b' },
-          { id: id(), text: '' },
-          { id: id(), text: 'c' },
+          { id: editor.id(), text: 'a' },
+          { id: editor.id(), text: 'b' },
+          { id: editor.id(), text: '' },
+          { id: editor.id(), text: 'c' },
         ],
       },
     ],
@@ -35,7 +29,7 @@ const initialEditorState = createEditorState({
 function TestNormalizeEditorElement() {
   const [editorState, setEditorState] = useState(initialEditorState);
 
-  return <Editor editorState={editorState} onChange={setEditorState} />;
+  return <editor.Editor editorState={editorState} onChange={setEditorState} />;
 }
 
 export default TestNormalizeEditorElement;

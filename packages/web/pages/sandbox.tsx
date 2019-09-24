@@ -1,19 +1,13 @@
 import { produce } from 'immer';
 import Head from 'next/head';
 import React, { useCallback, useState } from 'react';
-import {
-  createEditorState,
-  Editor,
-  EditorState,
-  jsxToEditorReactElement,
-  useLogEditorState,
-} from 'slad';
+import * as editor from 'slad';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
-const initialEditorState = createEditorState({
-  element: jsxToEditorReactElement(
+const initialEditorState = editor.createEditorState({
+  element: editor.jsxToEditorReactElement(
     <div className="root">
       <div style={{ fontSize: '24px' }}>
         {/* <br /> */}
@@ -45,12 +39,12 @@ const initialEditorState = createEditorState({
 function Index() {
   const [editorState, setEditorState] = useState(initialEditorState);
 
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
+  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
     editorState,
   );
 
   const handleEditorChange = useCallback(
-    (editorState: EditorState) => {
+    (editorState: editor.EditorState) => {
       logEditorState(editorState);
       setEditorState(editorState);
     },
@@ -63,7 +57,7 @@ function Index() {
         <title>Sandbox</title>
       </Head>
       <Text size={2}>Sandbox</Text>
-      <Editor
+      <editor.Editor
         editorState={editorState}
         // TODO:
         // editorReducer={customReducer}

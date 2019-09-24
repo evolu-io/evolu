@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditorServer, id, EditorReactElement } from 'slad';
+import * as editor from 'slad';
 import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
 import {
   initialEditorState as initialSchemaEditorState,
@@ -11,18 +11,18 @@ function TestEditorServer() {
   const renderSchemaElement = useSchemaRenderElement();
   return (
     <div>
-      <EditorServer
-        element={initialBasicEditorState.element as EditorReactElement}
+      <editor.EditorServer
+        element={initialBasicEditorState.element as editor.EditorReactElement}
       />
-      <EditorServer
+      <editor.EditorServer
         element={initialSchemaEditorState.element as SchemaDocumentElement}
         renderElement={renderSchemaElement}
       />
-      <EditorServer<EditorReactElement>
+      <editor.EditorServer<editor.EditorReactElement>
         element={{
-          id: id(),
+          id: editor.id(),
           tag: 'div',
-          children: [{ id: id(), text: '' }],
+          children: [{ id: editor.id(), text: '' }],
         }}
       />
     </div>

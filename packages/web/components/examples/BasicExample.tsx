@@ -1,49 +1,41 @@
 import React, { useState, useCallback } from 'react';
-import {
-  Editor,
-  EditorState,
-  useLogEditorState,
-  EditorSelection,
-  createEditorState,
-  id,
-  jsxToEditorReactElement,
-} from 'slad';
+import * as editor from 'slad';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testEditorServer.
-export const initialEditorState = createEditorState({
+export const initialEditorState = editor.createEditorState({
   element: {
-    id: id(),
+    id: editor.id(),
     tag: 'div',
     props: {
       className: 'root',
     },
     children: [
       {
-        id: id(),
+        id: editor.id(),
         tag: 'div',
         props: {
           // Uncomment 'width: 1' to check types.
           // width: 1,
           style: { fontSize: '24px' },
         },
-        children: [{ id: id(), text: 'heading' }],
+        children: [{ id: editor.id(), text: 'heading' }],
       },
       {
-        id: id(),
+        id: editor.id(),
         tag: 'div',
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ id: id(), text: 'paragraph' }],
+        children: [{ id: editor.id(), text: 'paragraph' }],
       },
     ],
   },
 });
 
-export const initialEditorStateWithTextOnly = createEditorState({
-  element: jsxToEditorReactElement(<div className="root">a</div>),
+export const initialEditorStateWithTextOnly = editor.createEditorState({
+  element: editor.jsxToEditorReactElement(<div className="root">a</div>),
 });
 
 export function BasicExample({
@@ -52,7 +44,7 @@ export function BasicExample({
   onlyText = false,
 }: {
   autoFocus?: boolean;
-  initialSelection?: EditorSelection | null;
+  initialSelection?: editor.EditorSelection | null;
   onlyText?: boolean;
 }) {
   const [editorState, setEditorState] = useState({
@@ -61,12 +53,12 @@ export function BasicExample({
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
+  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
     editorState,
   );
 
   const handleEditorChange = useCallback(
-    (editorState: EditorState) => {
+    (editorState: editor.EditorState) => {
       logEditorState(editorState);
       setEditorState(editorState);
     },
@@ -76,7 +68,7 @@ export function BasicExample({
   return (
     <>
       <Text size={1}>Basic Example</Text>
-      <Editor
+      <editor.Editor
         {...defaultEditorProps}
         editorState={editorState}
         onChange={handleEditorChange}

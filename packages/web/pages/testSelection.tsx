@@ -1,66 +1,58 @@
 import React, { useState, useCallback } from 'react';
-import {
-  Editor,
-  EditorState,
-  useLogEditorState,
-  EditorSelection,
-  createEditorState,
-  EditorReactElement,
-  id,
-} from 'slad';
+import * as editor from 'slad';
 
-export const testSelectionElement: EditorReactElement = {
-  id: id(),
+export const testSelectionElement: editor.EditorReactElement = {
+  id: editor.id(),
   tag: 'div',
   props: {
     className: 'root',
   },
   children: [
     {
-      id: id(),
+      id: editor.id(),
       tag: 'div',
       props: {
         style: { fontSize: '24px' },
       },
-      children: [{ id: id(), text: 'heading' }],
+      children: [{ id: editor.id(), text: 'heading' }],
     },
     {
-      id: id(),
+      id: editor.id(),
       tag: 'div',
       props: {
         style: { fontSize: '16px' },
       },
-      children: [{ id: id(), text: 'paragraph' }],
+      children: [{ id: editor.id(), text: 'paragraph' }],
     },
   ],
 };
 
-const initialEditorState = createEditorState({
+const initialEditorState = editor.createEditorState({
   element: testSelectionElement,
 });
 
 function TestSelection() {
   const [editorState, setEditorState] = useState(initialEditorState);
 
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
+  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
     editorState,
   );
 
   const handleEditorChange = useCallback(
-    (editorState: EditorState) => {
+    (editorState: editor.EditorState) => {
       logEditorState(editorState);
       setEditorState(editorState);
     },
     [logEditorState],
   );
 
-  function select(selection: EditorSelection | null) {
+  function select(selection: editor.EditorSelection | null) {
     handleEditorChange({ ...editorState, hasFocus: true, selection });
   }
 
   return (
     <>
-      <Editor editorState={editorState} onChange={handleEditorChange} />
+      <editor.Editor editorState={editorState} onChange={handleEditorChange} />
       {logEditorStateElement}
       <div>
         <button

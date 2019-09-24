@@ -1,15 +1,5 @@
 import React, { useState, useCallback, ReactNode } from 'react';
-import {
-  createEditorState,
-  Editor,
-  EditorElement,
-  EditorSelection,
-  EditorState,
-  EditorText,
-  RenderEditorElement,
-  useLogEditorState,
-  id,
-} from 'slad';
+import * as editor from 'slad';
 import { assertNever } from 'assert-never';
 import { css, SerializedStyles } from '@emotion/core';
 import { Text } from '../Text';
@@ -18,9 +8,9 @@ import { defaultEditorProps } from './_defaultEditorProps';
 // We can describe a schema with TypeScript pretty well.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-interface SchemaElement extends EditorElement {
+interface SchemaElement extends editor.EditorElement {
   type: string;
-  children: (SchemaElement | EditorText)[];
+  children: (SchemaElement | editor.EditorText)[];
 }
 
 // For images and the other void elements.
@@ -31,17 +21,17 @@ interface SchemaVoidElement extends SchemaElement {
 interface SchemaHeadingElement extends SchemaElement {
   type: 'heading';
   // Just one text.
-  children: [EditorText];
+  children: [editor.EditorText];
 }
 
 interface SchemaLinkElement extends SchemaElement {
   type: 'link';
   href: string;
   // Just one text.
-  children: [EditorText];
+  children: [editor.EditorText];
 }
 
-type SchemaParagraphElementChild = EditorText | SchemaLinkElement;
+type SchemaParagraphElementChild = editor.EditorText | SchemaLinkElement;
 
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
@@ -52,7 +42,7 @@ interface SchemaParagraphElement extends SchemaElement {
 interface SchemaListItemElement extends SchemaElement {
   type: 'listitem';
   // Just one text or text with SchemaListElement.
-  children: [EditorText] | [EditorText, SchemaListElement];
+  children: [editor.EditorText] | [editor.EditorText, SchemaListElement];
 }
 
 interface SchemaListElement extends SchemaElement {
@@ -77,33 +67,33 @@ export interface SchemaDocumentElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type SchemaEditorState = EditorState<SchemaDocumentElement>;
+type SchemaEditorState = editor.EditorState<SchemaDocumentElement>;
 
 // Exported for testEditorServer.
-export const initialEditorState = createEditorState<SchemaEditorState>({
+export const initialEditorState = editor.createEditorState<SchemaEditorState>({
   element: {
-    id: id(),
+    id: editor.id(),
     type: 'document',
     children: [
       {
-        id: id(),
+        id: editor.id(),
         type: 'heading',
-        children: [{ id: id(), text: 'heading' }],
+        children: [{ id: editor.id(), text: 'heading' }],
       },
       {
-        id: id(),
+        id: editor.id(),
         type: 'paragraph',
-        children: [{ id: id(), text: 'paragraph' }],
+        children: [{ id: editor.id(), text: 'paragraph' }],
       },
       {
-        id: id(),
+        id: editor.id(),
         type: 'list',
         children: [
           {
-            id: id(),
+            id: editor.id(),
             type: 'listitem',
             children: [
-              { id: id(), text: 'listitem' },
+              { id: editor.id(), text: 'listitem' },
               // List can be nested. With recursive type checking of course.
               // {
               //   id: id(),
@@ -121,7 +111,7 @@ export const initialEditorState = createEditorState<SchemaEditorState>({
         ],
       },
       {
-        id: id(),
+        id: editor.id(),
         type: 'image',
         src: 'https://via.placeholder.com/80',
         alt: 'Square placeholder image 80px',
@@ -135,7 +125,7 @@ export const initialEditorState = createEditorState<SchemaEditorState>({
 
 // Exported for testEditorServer.
 export function useSchemaRenderElement() {
-  const renderElement = useCallback<RenderEditorElement>(
+  const renderElement = useCallback<editor.RenderEditorElement>(
     (editorElement, children, ref) => {
       // https://github.com/steida/slad/issues/28
       const element = editorElement as
@@ -195,7 +185,7 @@ export function SchemaExample({
   initialSelection = null,
 }: {
   autoFocus?: boolean;
-  initialSelection?: EditorSelection | null;
+  initialSelection?: editor.EditorSelection | null;
 }) {
   const [editorState, setEditorState] = useState({
     ...initialEditorState,
@@ -203,7 +193,7 @@ export function SchemaExample({
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
+  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
     editorState,
   );
 
@@ -234,7 +224,7 @@ export function SchemaExample({
   return (
     <>
       <Text size={1}>Schema Example</Text>
-      <Editor
+      <editor.Editor
         {...defaultEditorProps}
         editorState={editorState}
         onChange={handleEditorChange}
