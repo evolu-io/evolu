@@ -2,6 +2,7 @@ import {
   editorSelectionIsCollapsed,
   editorSelectionsAreEqual,
   editorSelectionIsForward,
+  editorSelectionAsRange,
 } from './selection';
 
 test('editorSelectionIsCollapsed', () => {
@@ -24,4 +25,15 @@ test('editorSelectionIsForward', () => {
   expect(editorSelectionIsForward({ anchor: [0], focus: [0] })).toBe(true);
   expect(editorSelectionIsForward({ anchor: [0], focus: [1] })).toBe(true);
   expect(editorSelectionIsForward({ anchor: [1], focus: [0] })).toBe(false);
+});
+
+test('editorSelectionAsRange', () => {
+  expect(editorSelectionAsRange({ anchor: [0], focus: [1] })).toMatchObject({
+    anchor: [0],
+    focus: [1],
+  });
+  expect(editorSelectionAsRange({ anchor: [1], focus: [0] })).toMatchObject({
+    anchor: [0],
+    focus: [1],
+  });
 });
