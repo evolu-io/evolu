@@ -1,17 +1,49 @@
 import invariant from 'tiny-invariant';
 import produce from 'immer';
-import { editorPathsAreEqual, EditorPath, NodesEditorPathsMap } from './path';
+import {
+  editorPathsAreEqual,
+  EditorPath,
+  NodesEditorPathsMap,
+  editorPathsAreForward,
+} from './path';
 import { pipe } from '../pipe';
 
 /**
  * Like browser Selection, but with EditorPath for the anchor and the focus.
- * I suppose that's all we need. Browser Range is superfluous abstraction for
- * pure model. Also, we don't support multiple selections, because the only browser
- * supporting them is Firefox.
+ * The anchor is where the selection starts and the focus is where the selection ends.
+ * Therefore, EditorSelection can be forward or backward.
  */
 export interface EditorSelection {
   readonly anchor: EditorPath;
   readonly focus: EditorPath;
+}
+
+// Why not Range type?
+// Range is technically forwarded Selection. Having a special type for that,
+// like DOM Range with start and end props, would complicate API I suppose.
+// For example, isCollapsed, should it accept selection, range, or both?
+// I suppose forward and backward orientation should be an implementation detail.
+// I don't think we have to optimize functions via explicit Range argument,
+// because comparing paths is super fast compared to rendering itself.
+// Also, we don't support multiple ranges, because the only browser supporting
+// them is Firefox.
+
+/**
+ * Forward selection is not flipped aka the focus in not before the anchor.
+ */
+export function editorSelectionIsForward(selection: EditorSelection) {
+  return editorPathsAreForward(selection.anchor, selection.focus);
+}
+
+/**
+ * Range is forward Selection.
+ */
+export function editorSelectionAsRange(
+  selection: EditorSelection,
+): EditorSelection {
+  if (editorSelectionIsForward(selection)) return selection;
+  const { anchor: focus, focus: anchor } = selection;
+  return { anchor, focus };
 }
 
 export function editorSelectionIsCollapsed(
