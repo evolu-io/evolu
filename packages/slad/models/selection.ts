@@ -95,13 +95,6 @@ export function rangeToEditorSelection(
   };
 }
 
-export function editorSelectionIsBackward(selection: EditorSelection): boolean {
-  if (editorSelectionIsCollapsed(selection)) return false;
-  return selection.anchor.some(
-    (value, index) => value > selection.focus[index],
-  );
-}
-
 export function invariantEditorSelectionIsDefined(
   selection: EditorSelection | null,
 ): selection is EditorSelection {

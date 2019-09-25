@@ -54,11 +54,5 @@ export function editorPathsAreForward(
   anchorPath: EditorPath,
   focusPath: EditorPath,
 ): boolean {
-  for (let i = 0; i < anchorPath.length; i++) {
-    const anchorIndex = anchorPath[i];
-    const focusIndex = focusPath[i];
-    if (focusIndex == null) return true;
-    if (focusIndex < anchorIndex) return false;
-  }
-  return true;
+  return !anchorPath.some((value, index) => value > focusPath[index]);
 }

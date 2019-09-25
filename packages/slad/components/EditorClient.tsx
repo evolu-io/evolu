@@ -15,7 +15,7 @@ import { RenderEditorElementContext } from '../contexts/RenderEditorElementConte
 import {
   selectionToEditorSelection,
   editorSelectionsAreEqual,
-  editorSelectionIsBackward,
+  editorSelectionIsForward,
 } from '../models/selection';
 import { RenderEditorElement, EditorElement } from '../models/element';
 import { usePrevious } from '../hooks/usePrevious';
@@ -170,13 +170,13 @@ export function EditorClient<T extends EditorElement>({
       return [textNode, path[path.length - 1]];
     }
 
-    const isBackward = editorSelectionIsBackward(editorState.selection);
+    const isForward = editorSelectionIsForward(editorState.selection);
 
     const [startNode, startOffset] = editorPathToNodeOffset(
-      isBackward ? editorState.selection.focus : editorState.selection.anchor,
+      isForward ? editorState.selection.anchor : editorState.selection.focus,
     );
     const [endNode, endOffset] = editorPathToNodeOffset(
-      isBackward ? editorState.selection.anchor : editorState.selection.focus,
+      isForward ? editorState.selection.focus : editorState.selection.anchor,
     );
 
     if (startNode == null || endNode == null) return;
@@ -186,14 +186,14 @@ export function EditorClient<T extends EditorElement>({
     range.setEnd(endNode, endOffset);
 
     selection.removeAllRanges();
-    if (isBackward) {
+    if (isForward) {
+      selection.addRange(range);
+    } else {
       // https://stackoverflow.com/a/4802994/233902
       const endRange = range.cloneRange();
       endRange.collapse(false);
       selection.addRange(endRange);
       selection.extend(range.startContainer, range.startOffset);
-    } else {
-      selection.addRange(range);
     }
   }, [
     getSelection,

@@ -1,7 +1,7 @@
 import {
   editorSelectionIsCollapsed,
   editorSelectionsAreEqual,
-  editorSelectionIsBackward,
+  editorSelectionIsForward,
 } from './selection';
 
 test('editorSelectionIsCollapsed', () => {
@@ -20,8 +20,8 @@ test('editorSelectionsAreEqual', () => {
   expect(editorSelectionsAreEqual(null, s3)).toBe(false);
 });
 
-test('editorSelectionIsBackward', () => {
-  expect(editorSelectionIsBackward({ anchor: [0], focus: [0] })).toBe(false);
-  expect(editorSelectionIsBackward({ anchor: [0], focus: [1] })).toBe(false);
-  expect(editorSelectionIsBackward({ anchor: [1], focus: [0] })).toBe(true);
+test('editorSelectionIsForward', () => {
+  expect(editorSelectionIsForward({ anchor: [0], focus: [0] })).toBe(true);
+  expect(editorSelectionIsForward({ anchor: [0], focus: [1] })).toBe(true);
+  expect(editorSelectionIsForward({ anchor: [1], focus: [0] })).toBe(false);
 });
