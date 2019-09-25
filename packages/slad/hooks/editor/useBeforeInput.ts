@@ -4,6 +4,7 @@ import { NodesEditorPathsMap } from '../../models/path';
 import {
   rangeToEditorSelection,
   invariantEditorSelectionIsDefined,
+  EditorSelection,
 } from '../../models/selection';
 
 export function useBeforeInput(
@@ -30,23 +31,35 @@ export function useBeforeInput(
       //  - deleteContentBackward and deleteContentForward with collapsed selection on text.
       //    Otherwise, it should be blocked because model change will update it.
 
+      // TODO:
+      // const isTextOnlyChange = false
+
       event.preventDefault();
+
+      function editorSelectionFromInputEvent(): EditorSelection {
+        // We only get the first range, because only Firefox supports multiple ranges.
+        // @ts-ignore Outdated types.
+        const range = event.getTargetRanges()[0] as Range;
+        const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
+        if (!invariantEditorSelectionIsDefined(selection))
+          return selection as any; // To make TS happy. Invariant throws anyway.
+        return selection;
+      }
 
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
       switch (event.inputType) {
-        case 'insertText':
+        case 'insertText': {
           if (event.data == null) return;
-          dispatch({ type: 'insertText', text: event.data });
+          const selection = editorSelectionFromInputEvent();
+          dispatch({ type: 'insertText', selection, text: event.data });
           break;
+        }
 
-        // We don't need directions because the result selection is always collapsed.
+        // I don't think we need directions, because the result is collapsed.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          // @ts-ignore Outdated types.
-          const range = event.getTargetRanges()[0] as Range;
-          const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
-          if (!invariantEditorSelectionIsDefined(selection)) return;
+          const selection = editorSelectionFromInputEvent();
           dispatch({ type: 'deleteContent', selection });
           break;
         }
