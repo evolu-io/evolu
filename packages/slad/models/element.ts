@@ -2,6 +2,7 @@ import { ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
 import flattenDeep from 'lodash.flattendeep';
+import produce, { Draft } from 'immer';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
 import { EditorNode, id, isEditorNode } from './node';
@@ -217,26 +218,41 @@ export function recursiveRemoveID(element: EditorElement): any {
   };
 }
 
-// produceEditorElement? asi jo
+export function produceEditorElement<T extends EditorElement>(
+  recipe: (draft: Draft<T>) => Draft<T> | void,
+) {
+  return produce(recipe);
+}
 
 export function deleteContentElement(selection: EditorSelection) {
-  return <T extends EditorElement>(element: T): T => {
+  return produceEditorElement(draft => {
     const range = editorSelectionAsRange(selection);
-    // console.log(range);
-    // pokud dva stejne, zmenit jen text, a to pro ted staci
-
-    // nemuzu mit neco, co mi vrati bud el nebo text s indexem?
-    // const anchorChild = editorElementChild()
-    // editorElementChild
-    // range,
-    // deleteWithinEditorTexts
-    // const [parentPath, index] = getParentPathAndLastIndex(selection.anchor);
-
+    const anchorPoint = editorElementPath(range.anchor)(draft);
+    const focusPoint = editorElementPath(range.focus)(draft);
+    if (anchorPoint == null || focusPoint == null) {
+      invariant(
+        false,
+        'deleteContentElement: The selection does not match the element.',
+      );
+      // Just for types. We will have a better approach with asserts with predicates
+      // in TypeScript 3.7.
+      return draft;
+    }
     // TODO: Handle other cases, with one logic, if possible.
-    // @ts-ignore
-    return {
-      id: element.id,
-      children: [{ id: element.children[0].id, text: '' }],
-    };
-  };
+    if (
+      // Just deleting text on the same EditorTexts.
+      isEditorTextWithOffset(anchorPoint.to) &&
+      isEditorTextWithOffset(focusPoint.to) &&
+      anchorPoint.to.editorText === focusPoint.to.editorText
+    ) {
+      const { editorText, offset } = anchorPoint.to as Draft<
+        EditorTextWithOffset
+      >;
+      editorText.text =
+        editorText.text.slice(0, offset) +
+        editorText.text.slice(focusPoint.to.offset);
+      return;
+    }
+    return draft;
+  });
 }

@@ -1,26 +1,23 @@
-import { Optional } from 'utility-types';
-import { createElement } from 'react';
 import produce, { Draft } from 'immer';
+import { createElement } from 'react';
+import { Optional } from 'utility-types';
 import {
-  EditorElement,
-  EditorReactElement,
-  jsxToEditorReactElement,
   deleteContentElement,
+  EditorElement,
   editorElementPath,
+  EditorReactElement,
   invariantIsEditorElementPoint,
+  jsxToEditorReactElement,
 } from './element';
 import {
   EditorSelection,
-  editorSelectionsAreEqual,
   editorSelectionIsCollapsed,
-  moveEditorSelection,
+  editorSelectionsAreEqual,
   invariantEditorSelectionIsDefined,
+  moveEditorSelection,
+  collapseEditorSelectionToStart,
 } from './selection';
-import {
-  insertTextToString,
-  invariantIsEditorTextWithOffset,
-  EditorTextWithOffset,
-} from './text';
+import { EditorTextWithOffset, invariantIsEditorTextWithOffset } from './text';
 
 export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
@@ -87,7 +84,8 @@ export function insertText(text: string, optionalSelection?: EditorSelection) {
       if (!invariantIsEditorElementPoint(point)) return;
       if (!invariantIsEditorTextWithOffset(point.to)) return;
       const { editorText, offset } = point.to as Draft<EditorTextWithOffset>;
-      editorText.text = insertTextToString(editorText.text, text, offset);
+      editorText.text =
+        editorText.text.slice(0, offset) + text + editorText.text.slice(offset);
       draft.selection = moveEditorSelection(text.length)(selection) as Draft<
         EditorSelection
       >;
@@ -108,9 +106,15 @@ export function move(offset: number) {
 
 export function deleteContent(selection: EditorSelection) {
   return produceEditorState(draft => {
-    // TODO: Nastavit novej
-    deleteContentElement(selection)(draft.element);
-    // draft.element =
+    draft.element = deleteContentElement(selection)(draft.element);
+    draft.selection = collapseEditorSelectionToStart(selection) as Draft<
+      EditorSelection
+    >;
+    // draft.
+    // collapse selection to start
+    // co selekce? collapse kam?
+    // aha, ja muzu mit collapse to tam ci tam
+    // ale tady je to jedno, kdyz ostranim
     // draft.selection = collapse na start, hura!
   });
 }

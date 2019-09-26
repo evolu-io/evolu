@@ -109,20 +109,10 @@ test('normalizeEditorElement do not remove children', () => {
 });
 
 test('deleteContentElement', () => {
-  const el = {
-    id: id(),
-    children: [{ id: id(), text: 'a' }],
-  };
+  const el = { id: id(), children: [{ id: id(), text: 'a' }] };
   expect(
     deleteContentElement({ anchor: [0, 0], focus: [0, 1] })(el),
   ).toMatchSnapshot();
-  // a dalsi cases
-  // expect(
-  //   deleteContentElement({ anchor: [0, 0], focus: [0, 1] })({
-  //     id: id(),
-  //     children: [{ id: id(), text: 'a' }],
-  //   }),
-  // ).toMatchSnapshot();
 });
 
 test('editorElementPath', () => {
