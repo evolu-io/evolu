@@ -110,11 +110,5 @@ export function deleteContent(selection: EditorSelection) {
     draft.selection = collapseEditorSelectionToStart(selection) as Draft<
       EditorSelection
     >;
-    // draft.
-    // collapse selection to start
-    // co selekce? collapse kam?
-    // aha, ja muzu mit collapse to tam ci tam
-    // ale tady je to jedno, kdyz ostranim
-    // draft.selection = collapse na start, hura!
   });
 }
