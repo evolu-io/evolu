@@ -1,3 +1,5 @@
+import { setAutoFreeze } from 'immer';
+
 // Export everything. Rethink before the release.
 export * from './components/Editor';
 export * from './components/EditorClient';
@@ -22,3 +24,6 @@ export * from './models/state';
 export * from './models/text';
 export * from './pipe';
 export * from './reducers/editorReducer';
+
+// https://github.com/immerjs/immer/issues/430
+setAutoFreeze(false);
