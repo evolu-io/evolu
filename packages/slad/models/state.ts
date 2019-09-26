@@ -5,18 +5,22 @@ import {
   EditorElement,
   EditorReactElement,
   jsxToEditorReactElement,
-  editorElementChild,
-  EditorElementChild,
+  deleteContentElement,
+  editorElementPath,
+  invariantIsEditorElementPoint,
 } from './element';
 import {
   EditorSelection,
   editorSelectionsAreEqual,
   editorSelectionIsCollapsed,
-  moveSelection,
+  moveEditorSelection,
   invariantEditorSelectionIsDefined,
 } from './selection';
-import { getParentPathAndLastIndex } from './path';
-import { invariantIsEditorText, insertTextToString } from './text';
+import {
+  insertTextToString,
+  invariantIsEditorTextWithOffset,
+  EditorTextWithOffset,
+} from './text';
 
 export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
@@ -79,13 +83,12 @@ export function insertText(text: string, optionalSelection?: EditorSelection) {
     const selection = optionalSelection || draft.selection;
     if (!invariantEditorSelectionIsDefined(selection)) return;
     if (editorSelectionIsCollapsed(selection)) {
-      const [parentPath, index] = getParentPathAndLastIndex(selection.anchor);
-      const editorText = editorElementChild(draft.element, parentPath) as Draft<
-        EditorElementChild
-      >;
-      if (!invariantIsEditorText(editorText)) return;
-      editorText.text = insertTextToString(editorText.text, text, index);
-      draft.selection = moveSelection(text.length)(selection) as Draft<
+      const point = editorElementPath(selection.anchor)(draft.element);
+      if (!invariantIsEditorElementPoint(point)) return;
+      if (!invariantIsEditorTextWithOffset(point.to)) return;
+      const { editorText, offset } = point.to as Draft<EditorTextWithOffset>;
+      editorText.text = insertTextToString(editorText.text, text, offset);
+      draft.selection = moveEditorSelection(text.length)(selection) as Draft<
         EditorSelection
       >;
     } else {
@@ -97,10 +100,17 @@ export function insertText(text: string, optionalSelection?: EditorSelection) {
 export function move(offset: number) {
   return produceEditorState(draft => {
     if (!invariantEditorSelectionIsDefined(draft.selection)) return;
-    draft.selection = moveSelection(offset)(draft.selection) as Draft<
+    draft.selection = moveEditorSelection(offset)(draft.selection) as Draft<
       EditorSelection
     >;
   });
 }
 
-// export const deleteContent = (selection: EditorSelection) =>
+export function deleteContent(selection: EditorSelection) {
+  return produceEditorState(draft => {
+    // TODO: Nastavit novej
+    deleteContentElement(selection)(draft.element);
+    // draft.element =
+    // draft.selection = collapse na start, hura!
+  });
+}

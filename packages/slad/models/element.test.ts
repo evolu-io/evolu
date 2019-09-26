@@ -2,10 +2,16 @@ import {
   normalizeEditorElement,
   EditorElement,
   editorElementIsNormalized,
+  deleteContentElement,
+  editorElementPath,
 } from './element';
 import { EditorNodeID } from './node';
 
-// TODO: Stable EditorNodeID per test. PR anyone?
+// TODO: Use JSX <element><text>a<text></element> syntax for tests and snapshots.
+// Need to investigate how to run React JSX in Jest tests.
+// We can add .tsx, but there is some transpilation error.
+// Then, we can have stable IDs and nice syntax.
+// PR anyone?
 let lastID = 0;
 // Stable EditorNodeID factory for test snapshots.
 function id(): EditorNodeID {
@@ -100,4 +106,56 @@ test('normalizeEditorElement do not remove children', () => {
   expect(
     normalizeEditorElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
+});
+
+test('deleteContentElement', () => {
+  const el = {
+    id: id(),
+    children: [{ id: id(), text: 'a' }],
+  };
+  expect(
+    deleteContentElement({ anchor: [0, 0], focus: [0, 1] })(el),
+  ).toMatchSnapshot();
+  // a dalsi cases
+  // expect(
+  //   deleteContentElement({ anchor: [0, 0], focus: [0, 1] })({
+  //     id: id(),
+  //     children: [{ id: id(), text: 'a' }],
+  //   }),
+  // ).toMatchSnapshot();
+});
+
+test('editorElementPath', () => {
+  // <div><b>a</b></div>
+  const text = { id: id(), text: 'a' };
+  const b = { id: id(), children: [text] };
+  const div = { id: id(), children: [b] };
+
+  // Points.
+  expect(editorElementPath([])(div)).toMatchObject({
+    parents: [],
+    to: div,
+  });
+  expect(editorElementPath([0])(div)).toMatchObject({
+    parents: [div],
+    to: b,
+  });
+  expect(editorElementPath([0, 0])(div)).toMatchObject({
+    parents: [div, b],
+    to: text,
+  });
+  expect(editorElementPath([0, 0, 0])(div)).toMatchObject({
+    parents: [div, b],
+    to: { editorText: text, offset: 0 },
+  });
+  expect(editorElementPath([0, 0, 1])(div)).toMatchObject({
+    parents: [div, b],
+    to: { editorText: text, offset: 1 },
+  });
+
+  // Nulls.
+  expect(editorElementPath([0, 0, 0, 0])(div)).toBeNull();
+  expect(editorElementPath([1])(div)).toBeNull();
+  expect(editorElementPath([0, 1])(div)).toBeNull();
+  expect(editorElementPath([0, 0, 2])(div)).toBeNull();
 });

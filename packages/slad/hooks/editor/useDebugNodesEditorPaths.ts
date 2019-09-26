@@ -17,11 +17,11 @@ export function useDebugNodesEditorPaths(
       // });
       // console.log(nodes);
 
-      const countNodes = (node: EditorElementChild, count = 0) => {
-        if (isEditorText(node)) return count + 1;
+      const countNodes = (child: EditorElementChild, count = 0) => {
+        if (isEditorText(child)) return count + 1;
         let childrenCount = 0;
-        if (node.children)
-          node.children.forEach(child => {
+        if (child.children)
+          child.children.forEach(child => {
             childrenCount += countNodes(child, count);
           });
         return count + 1 + childrenCount;

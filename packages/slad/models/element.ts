@@ -4,8 +4,15 @@ import { $Values } from 'utility-types';
 import flattenDeep from 'lodash.flattendeep';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
-import { EditorNode, id } from './node';
-import { EditorText, isEditorText, editorTextIsBR } from './text';
+import { EditorNode, id, isEditorNode } from './node';
+import {
+  EditorText,
+  editorTextIsBR,
+  isEditorText,
+  EditorTextWithOffset,
+  isEditorTextWithOffset,
+} from './text';
+import { EditorSelection, editorSelectionAsRange } from './selection';
 
 /**
  * EditorElement is the base model for all other editor elements.
@@ -14,7 +21,24 @@ export interface EditorElement extends EditorNode {
   readonly children: readonly (EditorElementChild)[];
 }
 
+export function isEditorElement(value: unknown): value is EditorElement {
+  return (
+    isEditorNode(value) && Array.isArray((value as EditorElement).children)
+  );
+}
+
+export function invariantIsEditorElement(
+  value: unknown,
+): value is EditorElement {
+  invariant(isEditorElement(value), 'Value is not EditorElement.');
+  return true;
+}
+
+// Do we really need that? Isn't EditorNode good enough?
+// TODO: Explain or replace it with EditorNode.
 export type EditorElementChild = EditorElement | EditorText;
+
+// export type EditorFragment = readonly EditorElementChild[];
 
 interface EditorReactElementFactory<T, P> extends EditorElement {
   readonly tag: T;
@@ -30,6 +54,36 @@ export type EditorReactElement = $Values<
     >;
   }
 >;
+
+/**
+ * EditorElementPoint is a position in EditorElement defined by EditorPath.
+ * It's like materialized EditorPath. EditorPath points to EditorElement,
+ * EditorText, or EditorTextWithOffset.
+ */
+export interface EditorElementPoint {
+  to: EditorElement | EditorText | EditorTextWithOffset;
+  parents: EditorElement[];
+}
+
+export function isEditorElementPoint(
+  value: unknown,
+): value is EditorElementPoint {
+  if (value == null) return false;
+  const point = value as EditorElementPoint;
+  if (!Array.isArray(point.parents)) return false;
+  return (
+    isEditorElement(point.to) ||
+    isEditorText(point.to) ||
+    isEditorTextWithOffset(point.to)
+  );
+}
+
+export function invariantIsEditorElementPoint(
+  value: unknown,
+): value is EditorElementPoint {
+  invariant(isEditorElementPoint(value), 'Value is not EditorElementPoint.');
+  return true;
+}
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -67,13 +121,6 @@ export type RenderEditorElement = (
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
-export function invariantIsEditorElement(
-  child: EditorElementChild,
-): child is EditorElement {
-  invariant(!isEditorText(child), 'EditorElementChild is not EditorElement.');
-  return true;
-}
-
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
@@ -85,7 +132,7 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
       ? {
           children: element.children.reduce<(EditorElementChild)[]>(
             (array, child) => {
-              if (!isEditorText(child))
+              if (isEditorElement(child))
                 return [...array, normalizeEditorElement(child)];
               if (editorTextIsBR(child)) return [...array, child];
               // Always check existence in an array manually.
@@ -128,18 +175,27 @@ export function editorElementIsNormalized({
   });
 }
 
-export function editorElementChild(
-  element: EditorElement,
-  path: EditorPath,
-): EditorElementChild {
-  return path.reduce(
-    (editorElementChild, index) => {
-      if (!invariantIsEditorElement(editorElementChild))
-        return editorElementChild;
-      return editorElementChild.children[index];
-    },
-    element as EditorElementChild,
-  );
+/**
+ * Resolve EditorPath on EditorElement to EditorElementPoint or null.
+ */
+export function editorElementPath(path: EditorPath) {
+  return (element: EditorElement): EditorElementPoint | null => {
+    const parents: EditorElementPoint['parents'] = [];
+    let to: EditorElementPoint['to'] = element;
+    for (let i = 0; i < path.length; i++) {
+      const pathIndex = path[i];
+      if (isEditorElement(to)) {
+        parents.push(to);
+        to = to.children[pathIndex];
+        if (to == null) return null;
+      } else if (isEditorText(to)) {
+        const pathContinues = i < path.length - 1;
+        if (pathContinues || pathIndex > to.text.length) return null;
+        return { parents, to: { editorText: to, offset: pathIndex } };
+      }
+    }
+    return { parents, to };
+  };
 }
 
 // TODO: Fix types.
@@ -158,5 +214,29 @@ export function recursiveRemoveID(element: EditorElement): any {
       }
       return recursiveRemoveID(child);
     }),
+  };
+}
+
+// produceEditorElement? asi jo
+
+export function deleteContentElement(selection: EditorSelection) {
+  return <T extends EditorElement>(element: T): T => {
+    const range = editorSelectionAsRange(selection);
+    // console.log(range);
+    // pokud dva stejne, zmenit jen text, a to pro ted staci
+
+    // nemuzu mit neco, co mi vrati bud el nebo text s indexem?
+    // const anchorChild = editorElementChild()
+    // editorElementChild
+    // range,
+    // deleteWithinEditorTexts
+    // const [parentPath, index] = getParentPathAndLastIndex(selection.anchor);
+
+    // TODO: Handle other cases, with one logic, if possible.
+    // @ts-ignore
+    return {
+      id: element.id,
+      children: [{ id: element.children[0].id, text: '' }],
+    };
   };
 }
