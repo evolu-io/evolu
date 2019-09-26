@@ -64,6 +64,17 @@ export function editorSelectionsAreEqual(
   );
 }
 
+export function invariantEditorSelectionsAreEqual(
+  selection1: EditorSelection | null,
+  selection2: EditorSelection | null,
+) {
+  invariant(
+    editorSelectionsAreEqual(selection1, selection2),
+    'EditorSelections are not equal.',
+  );
+  return true;
+}
+
 export function selectionToEditorSelection(
   selection: Selection | null,
   nodesEditorPathsMap: NodesEditorPathsMap,
