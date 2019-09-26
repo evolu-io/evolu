@@ -19,7 +19,7 @@ export interface EditorSelection {
 }
 
 // Why not Range type?
-// Range is technically forwarded Selection. Having a special type for that,
+// Range is technically forward Selection. Having a special type for that,
 // like DOM Range with start and end props, would complicate API I suppose.
 // For example, isCollapsed, should it accept selection, range, or both?
 // I suppose forward and backward orientation should be an implementation detail.
@@ -112,25 +112,25 @@ export function invariantEditorSelectionIsCollapsed(
   return true;
 }
 
-export function moveSelectionAnchor(offset: number) {
+export function moveEditorSelectionAnchor(offset: number) {
   return (selection: EditorSelection) =>
     produce(selection, draft => {
       draft.anchor[draft.anchor.length - 1] += offset;
     });
 }
 
-export function moveSelectionFocus(offset: number) {
+export function moveEditorSelectionFocus(offset: number) {
   return (selection: EditorSelection) =>
     produce(selection, draft => {
       draft.focus[draft.focus.length - 1] += offset;
     });
 }
 
-export function moveSelection(offset: number) {
+export function moveEditorSelection(offset: number) {
   return (selection: EditorSelection): EditorSelection =>
     pipe(
       selection,
-      moveSelectionAnchor(offset),
-      moveSelectionFocus(offset),
+      moveEditorSelectionAnchor(offset),
+      moveEditorSelectionFocus(offset),
     );
 }
