@@ -56,7 +56,11 @@ export function useBeforeInput(
           break;
         }
 
-        // I don't think we need directions, because the result is collapsed.
+        // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
+        // "...or delete the selection with the selection collapsing to its start after the deletion"
+        // "...or delete the selection with the selection collapsing to its end after the deletion"
+        // I don't understand why the direction matters, because when a content is
+        // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
           const selection = editorSelectionFromInputEvent();
