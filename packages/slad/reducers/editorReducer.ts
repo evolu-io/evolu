@@ -8,8 +8,6 @@ import { EditorState, insertText, deleteContent } from '../models/state';
 /**
  * Various browser actions for updating EditorState.
  */
-// Maybe enforce EditorAction is plain JS object without side effects.
-// https://twitter.com/steida/status/1177217187150540801
 export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
