@@ -22,7 +22,7 @@ export interface EditorSelection {
 // Range is technically forward Selection. Having a special type for that,
 // like DOM Range with start and end props, would complicate API I suppose.
 // For example, isCollapsed, should it accept selection, range, or both?
-// I suppose forward and backward orientation should be an implementation detail.
+// I suppose forward and backward direction should be an implementation detail.
 // I don't think we have to optimize functions via explicit Range argument,
 // because comparing paths is super fast compared to rendering itself.
 // Also, we don't support multiple ranges, because the only browser supporting
@@ -36,7 +36,7 @@ export function editorSelectionIsForward(selection: EditorSelection) {
 }
 
 /**
- * Range is forward Selection.
+ * Range is forward Selection. It ensures the focus is not before the anchor.
  */
 export function editorSelectionAsRange(
   selection: EditorSelection,
@@ -133,4 +133,20 @@ export function moveEditorSelection(offset: number) {
       moveEditorSelectionAnchor(offset),
       moveEditorSelectionFocus(offset),
     );
+}
+
+export function collapseEditorSelectionToStart(
+  selection: EditorSelection,
+): EditorSelection {
+  if (editorSelectionIsCollapsed(selection)) return selection;
+  const range = editorSelectionAsRange(selection);
+  return { anchor: range.anchor, focus: range.anchor };
+}
+
+export function collapseEditorSelectionToEnd(
+  selection: EditorSelection,
+): EditorSelection {
+  if (editorSelectionIsCollapsed(selection)) return selection;
+  const range = editorSelectionAsRange(selection);
+  return { anchor: range.focus, focus: range.focus };
 }
