@@ -48,9 +48,10 @@ module.exports = {
     'no-shadow': 'off',
     // We want serial operations.
     'no-await-in-loop': 'off',
-    // Just annoying.
+    // Just annoying or bullshit.
     'react/destructuring-assignment': 'off',
     'no-lonely-if': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'max-classes-per-file': 'off',
   },
 };
