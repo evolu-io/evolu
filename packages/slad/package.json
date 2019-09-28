@@ -14,6 +14,7 @@
     "immer": "^4.0.0",
     "lodash.flattendeep": "^4.4.0",
     "nanoid": "^2.1.0",
+    "setimmediate": "^1.0.5",
     "tiny-invariant": "^1.0.6",
     "utility-types": "^3.7.0"
   },

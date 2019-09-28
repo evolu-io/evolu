@@ -86,15 +86,9 @@ export function insertText(text: string, optionalSelection?: EditorSelection) {
       const { editorText, offset } = point.to as Draft<EditorTextWithOffset>;
       editorText.text =
         editorText.text.slice(0, offset) + text + editorText.text.slice(offset);
-      // TODO: Tohle neni spravne. Nebo uz je? Imho jo.
-      // Ale nekde tam strasilo neco, ze snad mam porovnavat s tim, co mam.
-      // TODO: Poradne to zkontrolovat!
-      draft.selection = selection as Draft<EditorSelection>;
-      // Tohle funguje jen kdyz blokuju. Pokud neblokuju, tak se to posuna 2x,
-      // a spadne to, ok.
-      // draft.selection = moveEditorSelection(text.length)(selection) as Draft<
-      //   EditorSelection
-      // >;
+      draft.selection = moveEditorSelection(text.length)(selection) as Draft<
+        EditorSelection
+      >;
     } else {
       // TODO: Insert text over selection.
     }

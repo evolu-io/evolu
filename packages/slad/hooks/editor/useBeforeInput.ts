@@ -40,49 +40,31 @@ export function useBeforeInput(
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
       switch (event.inputType) {
         case 'insertText': {
-          // We do not read event.data because
-          // 1) It's not reliable for whitespaces. For example, space on the
-          //    end of a line in whiteSpace: normal element returns breaking
-          //    space while in DOM it's actually a non-breaking space.
-          //    Browsers have own strategy how to insert mix of breaking and
-          //    non-breaking spaces depending on whiteSpace style of parent.
-          // 2) We do not preventDefault anyway, because it can not work
-          //    with IME, as it's described in the specification.
-          // Therefore, we prefer to read from DOM.
-          // Theoretically, we could read current style here and normalize,
-          // but that's tricky and I believe unnecessary.
-          // Or we can normalize whitespaces once for all. Let's see.
-
-          // Note that in this phase event.target is already updated, but the change
-          // is not yet propagated to DOM. So we can read from event, but we can not
-          // dispatch event, because DOM change is still pending.
-          // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/editOnBeforeInput.js
-
-          // So we have to postpone dispatch until DOM is updated.
-          // We can not use input, because it's too late because of IME composition.
-          // Draft.js uses setImmediate from fbjs which uses npm setImmediate which uses PostMessage:
-          // https://github.com/YuzuJS/setImmediate
-          // We can not use Promise based resolveImmediate, because it's too early as I manually tested.
-          // https://github.com/facebook/fbjs/blob/master/packages/fbjs/src/core/resolveImmediate.js
-          // Maybe we can use setTimeout 0
-          //  - https://github.com/facebook/draft-js/issues/2127#issue-466994456
-          //  - https://github.com/sindresorhus/set-immediate-shim/blob/master/index.js
-          // Maybe we can use requestAnimationFrame as suggested in YuzuJS/setImmediate.
-          // https://github.com/YuzuJS/setImmediate
-          // So we can use: YuzuJS/setImmediate, setTimeout, requestAnimationFrame.
-          // I suppose requestAnimationFrame can be too late.
-          // I suppose setTimeout is good enough. If not, use YuzuJS/setImmediate like Draft,
-          // or extract its modern browsers logic rather.
+          // There is a problem with event.data.
+          // When an user press space on text line end with style whiteSpace != pre,
+          // event.data returns a space, but in DOM a non-breaking space is rendered.
+          // It happens when we do not prevent default for insertText,
+          // which we can't because of IME anyway.
+          // Therefore, we have two options:
+          //  1) Normalize whitespace manually all the time.
+          //  2) Extract inserted text from event.target. Note we can not read from DOM,
+          //     because DOM is not yet updated in this phase.
+          // We can not use input event, because it's too late for IME.
 
           // TODO: Read insertedText from event.target because of whitespaces. Or normalize them.
-          const insertedText = '\xa0';
-          // const insertedText = event.data || '';
-
+          const insertText = '\xa0';
+          // const insertText = event.data || '';
           const selection = editorSelectionFromInputEvent();
 
-          setTimeout(() => {
-            dispatch({ type: 'insertText', selection, text: insertedText });
-          }, 0);
+          // We have to postpone dispatch until DOM is updated because EditorTextRenderer
+          // reads from it. Draft.js uses setImmediate from fbjs which uses npm setImmediate.
+          // I have tried several other approaches, but setTimeout and requestAnimationFrame
+          // are too slow, and Promise.then to early. Old YuzuJS/setImmediate is still the best.
+          // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/editOnBeforeInput.js
+          setImmediate(() => {
+            console.log('g');
+            dispatch({ type: 'insertText', selection, text: insertText });
+          });
 
           break;
         }
