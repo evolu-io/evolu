@@ -40,16 +40,14 @@ export interface EditorElementRendererProps {
 export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
     const renderElement = useContext(RenderEditorElementContext);
-    const setNodePathRef = useSetNodeEditorPathRef(path);
-    const elementRef = useRef<HTMLElement | null>(null);
+    const setNodeEditorPathRef = useSetNodeEditorPathRef(path);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
         if (node)
           invariantHTMLElementHasToHaveAtLeastOneAttribute(node as HTMLElement);
-        elementRef.current = node as HTMLElement;
-        setNodePathRef(node);
+        setNodeEditorPathRef(node);
       },
-      [setNodePathRef],
+      [setNodeEditorPathRef],
     );
 
     const children = useMemo(() => {
@@ -61,10 +59,6 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
               key={child.id}
               text={child.text}
               path={childPath}
-              // We are passing parent ref element, so EditorTextRenderer can read
-              // from DOM, to check whether it needs to touch it.
-              // https://twitter.com/steida/status/1177610944106651653
-              parentRef={elementRef}
             />
           );
         }
