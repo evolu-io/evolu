@@ -44,6 +44,10 @@ export function invariantIsEditorTextWithOffset(
   return true;
 }
 
+export function textIsBR(text: string) {
+  return text.length === 0;
+}
+
 export function editorTextIsBR(editorText: EditorText) {
-  return editorText.text.length === 0;
+  return textIsBR(editorText.text);
 }

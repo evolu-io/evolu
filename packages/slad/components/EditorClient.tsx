@@ -262,25 +262,26 @@ export function EditorClient<T extends EditorElement>({
   // We can not just override editorState, because that could override meanwhile
   // updated state props. That's why we use one effect per one prop.
   useLayoutEffect(() => {
-    if (parentEditorState.element !== editorStateRef.current.element)
-      dispatch({
-        type: 'setEditorStatePartial',
-        change: { element: parentEditorState.element },
-      });
+    if (parentEditorState.element === editorStateRef.current.element) return;
+    dispatch({
+      type: 'setEditorStatePartial',
+      change: { element: parentEditorState.element },
+    });
   }, [dispatch, parentEditorState.element]);
   useLayoutEffect(() => {
-    if (parentEditorState.hasFocus !== editorStateRef.current.hasFocus)
-      dispatch({
-        type: 'setEditorStatePartial',
-        change: { hasFocus: parentEditorState.hasFocus },
-      });
+    if (parentEditorState.hasFocus === editorStateRef.current.hasFocus) return;
+    dispatch({
+      type: 'setEditorStatePartial',
+      change: { hasFocus: parentEditorState.hasFocus },
+    });
   }, [dispatch, parentEditorState.hasFocus]);
   useLayoutEffect(() => {
-    if (parentEditorState.selection !== editorStateRef.current.selection)
-      dispatch({
-        type: 'setEditorStatePartial',
-        change: { selection: parentEditorState.selection },
-      });
+    if (parentEditorState.selection === editorStateRef.current.selection)
+      return;
+    dispatch({
+      type: 'setEditorStatePartial',
+      change: { selection: parentEditorState.selection },
+    });
   }, [dispatch, parentEditorState.selection]);
 
   return useMemo(() => {

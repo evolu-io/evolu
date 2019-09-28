@@ -6,7 +6,7 @@ import {
   NodesEditorPathsMap,
   editorPathsAreForward,
 } from './path';
-import { pipe } from '../pipe';
+import { pipe } from '../utils/pipe';
 
 /**
  * Like browser Selection, but with EditorPath for the anchor and the focus.

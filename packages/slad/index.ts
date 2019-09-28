@@ -22,8 +22,8 @@ export * from './models/path';
 export * from './models/selection';
 export * from './models/state';
 export * from './models/text';
-export * from './pipe';
 export * from './reducers/editorReducer';
+export * from './utils/pipe';
 
 // https://github.com/immerjs/immer/issues/430
 setAutoFreeze(false);
