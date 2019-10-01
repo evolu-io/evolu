@@ -18,6 +18,10 @@ export interface EditorSelection {
   readonly focus: EditorPath;
 }
 
+export type MapEditorSelection = (
+  selection: EditorSelection,
+) => EditorSelection;
+
 // Why not Range type?
 // Range is technically forward Selection. Having a special type for that,
 // like DOM Range with start and end props, would complicate API I suppose.
@@ -31,7 +35,7 @@ export interface EditorSelection {
 /**
  * Forward selection is not flipped aka the focus in not before the anchor.
  */
-export function editorSelectionIsForward(selection: EditorSelection) {
+export function editorSelectionIsForward(selection: EditorSelection): boolean {
   return editorPathsAreForward(selection.anchor, selection.focus);
 }
 
@@ -67,7 +71,7 @@ export function editorSelectionsAreEqual(
 export function invariantEditorSelectionsAreEqual(
   selection1: EditorSelection | null,
   selection2: EditorSelection | null,
-) {
+): boolean {
   invariant(
     editorSelectionsAreEqual(selection1, selection2),
     'EditorSelections are not equal.',
@@ -123,8 +127,8 @@ export function invariantEditorSelectionIsCollapsed(
   return true;
 }
 
-export function moveEditorSelectionAnchor(offset: number) {
-  return (selection: EditorSelection) => {
+export function moveEditorSelectionAnchor(offset: number): MapEditorSelection {
+  return selection => {
     return {
       ...selection,
       anchor: movePath(offset)(selection.anchor),
@@ -132,8 +136,8 @@ export function moveEditorSelectionAnchor(offset: number) {
   };
 }
 
-export function moveEditorSelectionFocus(offset: number) {
-  return (selection: EditorSelection) => {
+export function moveEditorSelectionFocus(offset: number): MapEditorSelection {
+  return selection => {
     return {
       ...selection,
       focus: movePath(offset)(selection.focus),
@@ -141,8 +145,8 @@ export function moveEditorSelectionFocus(offset: number) {
   };
 }
 
-export function moveEditorSelection(offset: number) {
-  return (selection: EditorSelection): EditorSelection =>
+export function moveEditorSelection(offset: number): MapEditorSelection {
+  return selection =>
     pipe(
       selection,
       moveEditorSelectionAnchor(offset),

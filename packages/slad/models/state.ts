@@ -21,6 +21,10 @@ export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly hasFocus: boolean;
 }
 
+export type MapEditorState<T extends EditorElement = EditorElement> = (
+  state: EditorState<T>,
+) => EditorState<T>;
+
 /**
  * Create editor state. By default, the root element is EditorReactElement.
  */
@@ -65,27 +69,20 @@ export function editorStatesAreEqual<T extends EditorElement>(
   );
 }
 
-export function mapEditorState<
-  E extends EditorElement,
-  M extends (element: EditorState<E>) => EditorState<E>
->(mapper: M): M {
-  return mapper;
-}
-
-export function select(selection: EditorSelection) {
-  return mapEditorState(state => {
+export function select(selection: EditorSelection): MapEditorState {
+  return state => {
     return { ...state, selection };
-  });
+  };
 }
 
-export function setText(text: string) {
-  return mapEditorState(state => {
+export function setText(text: string): MapEditorState {
+  return state => {
     if (!invariantEditorSelectionIsDefined(state.selection)) return state;
     return {
       ...state,
       element: setTextElement(text, state.selection)(state.element),
     };
-  });
+  };
 }
 
 // export function insertText(text: string, optionalSelection?: EditorSelection) {
@@ -108,22 +105,22 @@ export function setText(text: string) {
 //   });
 // }
 
-export function move(offset: number) {
-  return mapEditorState(state => {
+export function move(offset: number): MapEditorState {
+  return state => {
     if (!invariantEditorSelectionIsDefined(state.selection)) return state;
     return {
       ...state,
       selection: moveEditorSelection(offset)(state.selection),
     };
-  });
+  };
 }
 
-export function deleteContent(selection: EditorSelection) {
-  return mapEditorState(state => {
+export function deleteContent(selection: EditorSelection): MapEditorState {
+  return state => {
     return {
       ...state,
       element: deleteContentElement(selection)(state.element),
       selection: collapseEditorSelectionToStart(selection),
     };
-  });
+  };
 }
