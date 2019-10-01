@@ -1,23 +1,19 @@
-import produce, { Draft } from 'immer';
 import { createElement } from 'react';
 import { Optional } from 'utility-types';
 import {
   deleteContentElement,
   EditorElement,
-  editorElementPath,
   EditorReactElement,
-  invariantIsEditorElementPoint,
   jsxToEditorReactElement,
+  setTextElement,
 } from './element';
 import {
+  collapseEditorSelectionToStart,
   EditorSelection,
-  editorSelectionIsCollapsed,
   editorSelectionsAreEqual,
   invariantEditorSelectionIsDefined,
   moveEditorSelection,
-  collapseEditorSelectionToStart,
 } from './selection';
-import { EditorTextWithOffset, invariantIsEditorTextWithOffset } from './text';
 
 export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
@@ -69,46 +65,65 @@ export function editorStatesAreEqual<T extends EditorElement>(
   );
 }
 
-export function produceEditorState<T extends EditorElement>(
-  recipe: (draft: Draft<EditorState<T>>) => Draft<EditorState<T>> | void,
-) {
-  return produce(recipe);
+export function mapEditorState<
+  E extends EditorElement,
+  M extends (element: EditorState<E>) => EditorState<E>
+>(mapper: M): M {
+  return mapper;
 }
 
-export function insertText(text: string, optionalSelection?: EditorSelection) {
-  return produceEditorState(draft => {
-    const selection = optionalSelection || draft.selection;
-    if (!invariantEditorSelectionIsDefined(selection)) return;
-    if (editorSelectionIsCollapsed(selection)) {
-      const point = editorElementPath(selection.anchor)(draft.element);
-      if (!invariantIsEditorElementPoint(point)) return;
-      if (!invariantIsEditorTextWithOffset(point.to)) return;
-      const { editorText, offset } = point.to as Draft<EditorTextWithOffset>;
-      editorText.text =
-        editorText.text.slice(0, offset) + text + editorText.text.slice(offset);
-      draft.selection = moveEditorSelection(text.length)(selection) as Draft<
-        EditorSelection
-      >;
-    } else {
-      // TODO: Insert text over selection.
-    }
+export function select(selection: EditorSelection) {
+  return mapEditorState(state => {
+    return { ...state, selection };
   });
 }
 
+export function setText(text: string) {
+  return mapEditorState(state => {
+    if (!invariantEditorSelectionIsDefined(state.selection)) return state;
+    return {
+      ...state,
+      element: setTextElement(text, state.selection)(state.element),
+    };
+  });
+}
+
+// export function insertText(text: string, optionalSelection?: EditorSelection) {
+//   return produceEditorState(draft => {
+//     const selection = optionalSelection || draft.selection;
+//     if (!invariantEditorSelectionIsDefined(selection)) return;
+//     if (editorSelectionIsCollapsed(selection)) {
+//       const point = editorElementPoint(selection.anchor)(draft.element);
+//       if (!invariantIsEditorElementPoint(point)) return;
+//       if (!invariantIsEditorTextWithOffset(point.to)) return;
+//       const { editorText, offset } = point.to as Draft<EditorTextWithOffset>;
+//       editorText.text =
+//         editorText.text.slice(0, offset) + text + editorText.text.slice(offset);
+//       draft.selection = moveEditorSelection(text.length)(selection) as Draft<
+//         EditorSelection
+//       >;
+//     } else {
+//       // TODO: Insert text over selection.
+//     }
+//   });
+// }
+
 export function move(offset: number) {
-  return produceEditorState(draft => {
-    if (!invariantEditorSelectionIsDefined(draft.selection)) return;
-    draft.selection = moveEditorSelection(offset)(draft.selection) as Draft<
-      EditorSelection
-    >;
+  return mapEditorState(state => {
+    if (!invariantEditorSelectionIsDefined(state.selection)) return state;
+    return {
+      ...state,
+      selection: moveEditorSelection(offset)(state.selection),
+    };
   });
 }
 
 export function deleteContent(selection: EditorSelection) {
-  return produceEditorState(draft => {
-    draft.element = deleteContentElement(selection)(draft.element);
-    draft.selection = collapseEditorSelectionToStart(selection) as Draft<
-      EditorSelection
-    >;
+  return mapEditorState(state => {
+    return {
+      ...state,
+      element: deleteContentElement(selection)(state.element),
+      selection: collapseEditorSelectionToStart(selection),
+    };
   });
 }

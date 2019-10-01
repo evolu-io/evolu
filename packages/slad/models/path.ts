@@ -54,3 +54,10 @@ export function editorPathsAreForward(
 ): boolean {
   return !anchorPath.some((value, index) => value > focusPath[index]);
 }
+
+export function movePath(offset: number) {
+  return (path: EditorPath): EditorPath => {
+    const [parentPath, lastIndex] = parentPathAndLastIndex(path);
+    return [...parentPath, lastIndex + offset];
+  };
+}

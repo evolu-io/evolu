@@ -3,7 +3,7 @@ import {
   EditorElement,
   editorElementIsNormalized,
   deleteContentElement,
-  editorElementPath,
+  editorElementPoint,
 } from './element';
 import { EditorNodeID } from './node';
 
@@ -115,37 +115,37 @@ test('deleteContentElement', () => {
   ).toMatchSnapshot();
 });
 
-test('editorElementPath', () => {
+test('editorElementPoint', () => {
   // <div><b>a</b></div>
   const text = { id: id(), text: 'a' };
   const b = { id: id(), children: [text] };
   const div = { id: id(), children: [b] };
 
   // Points.
-  expect(editorElementPath([])(div)).toMatchObject({
+  expect(editorElementPoint([])(div)).toMatchObject({
     parents: [],
     to: div,
   });
-  expect(editorElementPath([0])(div)).toMatchObject({
+  expect(editorElementPoint([0])(div)).toMatchObject({
     parents: [div],
     to: b,
   });
-  expect(editorElementPath([0, 0])(div)).toMatchObject({
+  expect(editorElementPoint([0, 0])(div)).toMatchObject({
     parents: [div, b],
     to: text,
   });
-  expect(editorElementPath([0, 0, 0])(div)).toMatchObject({
+  expect(editorElementPoint([0, 0, 0])(div)).toMatchObject({
     parents: [div, b],
     to: { editorText: text, offset: 0 },
   });
-  expect(editorElementPath([0, 0, 1])(div)).toMatchObject({
+  expect(editorElementPoint([0, 0, 1])(div)).toMatchObject({
     parents: [div, b],
     to: { editorText: text, offset: 1 },
   });
 
   // Nulls.
-  expect(editorElementPath([0, 0, 0, 0])(div)).toBeNull();
-  expect(editorElementPath([1])(div)).toBeNull();
-  expect(editorElementPath([0, 1])(div)).toBeNull();
-  expect(editorElementPath([0, 0, 2])(div)).toBeNull();
+  expect(editorElementPoint([0, 0, 0, 0])(div)).toBeNull();
+  expect(editorElementPoint([1])(div)).toBeNull();
+  expect(editorElementPoint([0, 1])(div)).toBeNull();
+  expect(editorElementPoint([0, 0, 2])(div)).toBeNull();
 });

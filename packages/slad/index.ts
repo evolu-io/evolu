@@ -1,8 +1,4 @@
 import 'setimmediate';
-import { setAutoFreeze } from 'immer';
-
-// https://github.com/immerjs/immer/issues/430
-setAutoFreeze(false);
 
 // Export everything. Rethink before the release.
 export * from './components/Editor';
@@ -27,4 +23,3 @@ export * from './models/selection';
 export * from './models/state';
 export * from './models/text';
 export * from './reducers/editorReducer';
-export * from './utils/pipe';

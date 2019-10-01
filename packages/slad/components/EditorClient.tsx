@@ -115,20 +115,16 @@ export function EditorClient<T extends EditorElement>({
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
-      const selection = getSelection();
-      const editorSelection = selectionToEditorSelection(
-        selection,
+      const selection = selectionToEditorSelection(
+        getSelection(),
         nodesEditorPathsMap,
       );
       // Editor must remember the last selection when document selection
       // is moved elsewhere to restore it later on focus.
       // In Chrome, contentEditable does not do that.
       // That's why we ignore null values.
-      if (editorSelection == null) return;
-      dispatch({
-        type: 'selectionChange',
-        selection: editorSelection,
-      });
+      if (selection == null) return;
+      dispatch({ type: 'selectionChange', selection });
     };
     doc.addEventListener('selectionchange', handleDocumentSelectionChange);
     return () => {

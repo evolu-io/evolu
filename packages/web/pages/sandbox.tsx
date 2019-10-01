@@ -1,4 +1,3 @@
-import { produce } from 'immer';
 import Head from 'next/head';
 import React, { useCallback, useState } from 'react';
 import * as editor from 'slad';
@@ -9,7 +8,12 @@ import { Text } from '../components/Text';
 const initialEditorState = editor.createEditorState({
   element: editor.jsxToEditorReactElement(
     <div className="root">
-      <div style={{ fontSize: '24px' }}>
+      <div
+        style={{
+          fontSize: '24px',
+          // whiteSpace: 'pre'
+        }}
+      >
         {/* <br /> */}
         heading
         {/* <div
@@ -70,34 +74,35 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          const nextState = produce(editorState, draft => {
-            // @ts-ignore
-            draft.element.children[0].children[0].text += ' foo';
-            // draft.element.children[0].children[0].text = '';
-            // draft.element.children.splice(0, 1);
-            // jak zmenim path?
-            // switch
-            // const first = draft.element.children[0];
-            // const second = draft.element.children[1];
-            // draft.element.children[0] = second;
-            // draft.element.children[1] = first;
+          // TODO: Replace produce with sane mappers.
+          // const nextState = produce(editorState, draft => {
+          //   // @ts-ignore
+          //   draft.element.children[0].children[0].text += ' foo';
+          //   // draft.element.children[0].children[0].text = '';
+          //   // draft.element.children.splice(0, 1);
+          //   // jak zmenim path?
+          //   // switch
+          //   // const first = draft.element.children[0];
+          //   // const second = draft.element.children[1];
+          //   // draft.element.children[0] = second;
+          //   // draft.element.children[1] = first;
 
-            // const first = draft.element.children[0].children[0];
-            // // @ts-ignore
-            // const second = draft.element.children[0].children[2];
-            // // @ts-ignore
-            // draft.element.children[0].children[0] = second;
-            // // @ts-ignore
-            // draft.element.children[0].children[2] = first;
+          //   // const first = draft.element.children[0].children[0];
+          //   // // @ts-ignore
+          //   // const second = draft.element.children[0].children[2];
+          //   // // @ts-ignore
+          //   // draft.element.children[0].children[0] = second;
+          //   // // @ts-ignore
+          //   // draft.element.children[0].children[2] = first;
 
-            // console.log(original(first));
-            // console.log(original(second));
+          //   // console.log(original(first));
+          //   // console.log(original(second));
 
-            // draft.element.children[0] = second;
-            // draft.element.children[2] = first;
-            // console.log(original(draft.element.children));
-          });
-          handleEditorChange(nextState);
+          //   // draft.element.children[0] = second;
+          //   // draft.element.children[2] = first;
+          //   // console.log(original(draft.element.children));
+          // });
+          // handleEditorChange(nextState);
         }}
       >
         update model 1
@@ -106,12 +111,12 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          const nextState = produce(editorState, draft => {
-            // @ts-ignore
-            // console.log(original(draft.element.children));
-            draft.element.children.splice(0, 1);
-          });
-          handleEditorChange(nextState);
+          // const nextState = produce(editorState, draft => {
+          //   // @ts-ignore
+          //   // console.log(original(draft.element.children));
+          //   draft.element.children.splice(0, 1);
+          // });
+          // handleEditorChange(nextState);
         }}
       >
         update model 2

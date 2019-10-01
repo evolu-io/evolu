@@ -1,8 +1,6 @@
-import { ReactDOM, ReactNode } from 'react';
+import { ReactDOM, ReactNode, Children } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
-import flattenDeep from 'lodash.flattendeep';
-import produce, { Draft } from 'immer';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath } from './path';
 import { EditorNode, id, isEditorNode } from './node';
@@ -13,13 +11,30 @@ import {
   EditorTextWithOffset,
   isEditorTextWithOffset,
 } from './text';
-import { EditorSelection, editorSelectionAsRange } from './selection';
+import {
+  EditorSelection,
+  editorSelectionAsRange,
+  editorSelectionIsCollapsed,
+} from './selection';
 
 /**
  * EditorElement is the base model for all other editor elements.
  */
 export interface EditorElement extends EditorNode {
   readonly children: readonly (EditorElementChild)[];
+}
+
+export type RenderEditorElement = (
+  element: EditorElement,
+  children: ReactNode,
+  ref: SetNodeEditorPathRef,
+) => ReactNode;
+
+export function mapEditorElement<
+  E extends EditorElement,
+  M extends (element: E) => E
+>(mapper: M): M {
+  return mapper;
 }
 
 export function isEditorElement(value: unknown): value is EditorElement {
@@ -96,7 +111,7 @@ export function jsxToEditorReactElement(
     type: tag,
     props: { children = [], ...props },
   } = element;
-  const editorChildren = flattenDeep([children]).map(child => {
+  const editorChildren = Children.toArray(children).map(child => {
     if (typeof child === 'string') {
       const text: EditorText = { id: id(), text: child };
       return text;
@@ -115,12 +130,6 @@ export function jsxToEditorReactElement(
     children: editorChildren,
   };
 }
-
-export type RenderEditorElement = (
-  element: EditorElement,
-  children: ReactNode,
-  ref: SetNodeEditorPathRef,
-) => ReactNode;
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
@@ -179,7 +188,7 @@ export function editorElementIsNormalized({
 /**
  * Resolve EditorPath on EditorElement to EditorElementPoint or null.
  */
-export function editorElementPath(path: EditorPath) {
+export function editorElementPoint(path: EditorPath) {
   return (element: EditorElement): EditorElementPoint | null => {
     const parents: EditorElementPoint['parents'] = [];
     let to: EditorElementPoint['to'] = element;
@@ -200,13 +209,14 @@ export function editorElementPath(path: EditorPath) {
 }
 
 // TODO: Fix types.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function recursiveRemoveID(element: EditorElement): any {
+// @ts-ignore
+export const recursiveRemoveID = element => {
   if (element == null) return element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
   return {
     ...objectWithoutID,
+    // @ts-ignore
     children: element.children.map(child => {
       if (isEditorText(child)) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -216,19 +226,13 @@ export function recursiveRemoveID(element: EditorElement): any {
       return recursiveRemoveID(child);
     }),
   };
-}
-
-export function produceEditorElement<T extends EditorElement>(
-  recipe: (draft: Draft<T>) => Draft<T> | void,
-) {
-  return produce(recipe);
-}
+};
 
 export function deleteContentElement(selection: EditorSelection) {
-  return produceEditorElement(draft => {
+  return mapEditorElement(element => {
     const range = editorSelectionAsRange(selection);
-    const anchorPoint = editorElementPath(range.anchor)(draft);
-    const focusPoint = editorElementPath(range.focus)(draft);
+    const anchorPoint = editorElementPoint(range.anchor)(element);
+    const focusPoint = editorElementPoint(range.focus)(element);
     if (anchorPoint == null || focusPoint == null) {
       invariant(
         false,
@@ -236,23 +240,59 @@ export function deleteContentElement(selection: EditorSelection) {
       );
       // Just for types. We will have a better approach with asserts with predicates
       // in TypeScript 3.7.
-      return draft;
+      return element;
     }
+    // TODO: To pujde pres parents map, ok.
     // TODO: Handle other cases, with one logic, if possible.
-    if (
-      // Just deleting text on the same EditorTexts.
-      isEditorTextWithOffset(anchorPoint.to) &&
-      isEditorTextWithOffset(focusPoint.to) &&
-      anchorPoint.to.editorText === focusPoint.to.editorText
-    ) {
-      const { editorText, offset } = anchorPoint.to as Draft<
-        EditorTextWithOffset
-      >;
-      editorText.text =
-        editorText.text.slice(0, offset) +
-        editorText.text.slice(focusPoint.to.offset);
-      return;
+    // if (
+    //   // Just deleting text on the same EditorTexts.
+    //   isEditorTextWithOffset(anchorPoint.to) &&
+    //   isEditorTextWithOffset(focusPoint.to) &&
+    //   anchorPoint.to.editorText === focusPoint.to.editorText
+    // ) {
+    //   const { editorText, offset } = anchorPoint.to as Draft<
+    //     EditorTextWithOffset
+    //   >;
+    //   editorText.text =
+    //     editorText.text.slice(0, offset) +
+    //     editorText.text.slice(focusPoint.to.offset);
+    //   return;
+    // }
+    // return draft;
+    return element;
+  });
+}
+
+// const point = editorElementPoint(state.selection.anchor)(state.element);
+// // TODO: Still error?
+// if (!invariantIsEditorElementPoint(point)) return;
+// if (!invariantIsEditorTextWithOffset(point.to)) return;
+// point.parents
+// const { editorText } = point.to;
+// editorText.text = text;
+
+export function setTextElement(text: string, selection: EditorSelection) {
+  return mapEditorElement(element => {
+    if (editorSelectionIsCollapsed(selection)) {
+      // potrebuji api na get a set pro selection a path
+      // tohle je presne pripad, kdy chci neco nastavit
+      // vlastni lens? jo
+      // potreboval bych na selekci neco, co ma modify, a tam to but zmenim nebo odeberu
+      // const name = Lens.fromPath<EditorElement>()(['children', 'concat'])
+      // name.modify(capitalize)(employee)
+      // ale tak jak tak, musim vymyslet algoritmus
+      // ale nejdrive api
+      // nacist z el dotcene elementy, a iterovat je?
+      // umim najit jednoho
+      // a chci to vracet? ok, to uz mam ted
+      // proc modify? co tam jeste muze bejt? read?
+      // fakt to nejde postavit z fpts?
+      // return elementLens(selection).some(child => {
+      //
+      // })
+
+      return element;
     }
-    return draft;
+    return element;
   });
 }

@@ -1,12 +1,12 @@
 import invariant from 'tiny-invariant';
-import produce from 'immer';
+import { pipe } from 'fp-ts/es6/pipeable';
 import {
   editorPathsAreEqual,
   EditorPath,
   NodesEditorPathsMap,
   editorPathsAreForward,
+  movePath,
 } from './path';
-import { pipe } from '../utils/pipe';
 
 /**
  * Like browser Selection, but with EditorPath for the anchor and the focus.
@@ -124,17 +124,21 @@ export function invariantEditorSelectionIsCollapsed(
 }
 
 export function moveEditorSelectionAnchor(offset: number) {
-  return (selection: EditorSelection) =>
-    produce(selection, draft => {
-      draft.anchor[draft.anchor.length - 1] += offset;
-    });
+  return (selection: EditorSelection) => {
+    return {
+      ...selection,
+      anchor: movePath(offset)(selection.anchor),
+    };
+  };
 }
 
 export function moveEditorSelectionFocus(offset: number) {
-  return (selection: EditorSelection) =>
-    produce(selection, draft => {
-      draft.focus[draft.focus.length - 1] += offset;
-    });
+  return (selection: EditorSelection) => {
+    return {
+      ...selection,
+      focus: movePath(offset)(selection.focus),
+    };
+  };
 }
 
 export function moveEditorSelection(offset: number) {
@@ -160,4 +164,17 @@ export function collapseEditorSelectionToEnd(
   if (editorSelectionIsCollapsed(selection)) return selection;
   const range = editorSelectionAsRange(selection);
   return { anchor: range.focus, focus: range.focus };
+}
+
+export function editorSelectionFromInputEvent(
+  event: InputEvent,
+  nodesEditorPathsMap: NodesEditorPathsMap,
+): EditorSelection {
+  // We get the first range only, because only Firefox supports multiple ranges.
+  // @ts-ignore Outdated types.
+  const range = event.getTargetRanges()[0] as Range;
+  const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
+  // To make TS happy. Invariant throws anyway.
+  if (!invariantEditorSelectionIsDefined(selection)) return selection as any;
+  return selection;
 }

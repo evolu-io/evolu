@@ -1,11 +1,11 @@
-import { RefObject, useEffect, Dispatch } from 'react';
-import { EditorAction } from '../../reducers/editorReducer';
-import { NodesEditorPathsMap } from '../../models/path';
+import { Dispatch, RefObject, useEffect } from 'react';
+import { NodesEditorPathsMap, parentPathAndLastIndex } from '../../models/path';
 import {
-  rangeToEditorSelection,
-  invariantEditorSelectionIsDefined,
-  EditorSelection,
+  editorSelectionFromInputEvent,
+  invariantEditorSelectionIsCollapsed,
+  moveEditorSelection,
 } from '../../models/selection';
+import { EditorAction } from '../../reducers/editorReducer';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
@@ -19,58 +19,61 @@ export function useBeforeInput(
     function handleBeforeInput(event: InputEvent) {
       // In Chrome and Safari, that's how we prevent input events default behavior
       // to replace it with the custom. As for Firefox, we can polyfill it somehow but
-      // I believe Firefox will add support for beforeinput or it will die.
+      // I believe Firefox will add support for beforeinput soon.
 
       // Do not prevent default on writing because of IME which is not cancelable.
       // const isTextNodeOnlyChange = ...
       // event.preventDefault();
 
-      function editorSelectionFromInputEvent(): EditorSelection {
-        // We only get the first range, because only Firefox supports multiple ranges.
-        // @ts-ignore Outdated types.
-        const range = event.getTargetRanges()[0] as Range;
-        const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
-        if (!invariantEditorSelectionIsDefined(selection))
-          return selection as any; // To make TS happy. Invariant throws anyway.
-        return selection;
-      }
-
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
       switch (event.inputType) {
         case 'insertText': {
-          // The whitespaces problem:
-          // event.data can be a space even if rendered DOM will contain a non-breaking space.
-          // As rendered DOM, it means when default action is not prevented.
-          // And we can not prevent default action in insertText, because it would disable IME.
-          // So event.data could be a space (32) when DOM will contain a non-breaking space (160),
-          // so EditorTextRenderer will override it. It's no-go.
-          // Theoretically, we can normalize whitespaces like browsers do:
+          // Note we don't read from event.data, because it can return wrong whitespaces.
+          // Note we don't prevent insertText to happen because we can't because of IME.
+          // As result, the contentEditable element can contain non-breaking space while
+          // event.data contains normal space. Therefore, we have to read whole text node.
+          // Theoretically, we could normalize whitespaces like browsers do
           // https://files-o9umkgame.now.sh/Screenshot%202019-09-27%20at%2000.47.25.png
-          // but it would be very brittle. One mistake and EditorTextRenderer will override DOM,
-          // and it will lead to unexpected whitespaces collapse.
-          // We would have to compute manually when whitespace is going to be collapsed aka
-          // reverse engineering layout rendering (vomiting smiley).
-          // That's why all contentEditable browsers enforce whitespace: pre.
-
-          // TODO: Uz je to jasne, musim nacist co je.
-          // Je to mozne, pac znam delku a pozici v dom, ok.
-
-          // TODO: Read insertedText from event.target because of whitespaces. Or normalize them.
-          // const insertText = '\xa0';
+          // , but we would have to compute whitespace collapsing, which is hard.
+          // There is some blog post explaining all cases of running blocks etc., but
+          // fortunately, we don't need it. We can extract inserted text from DOM instead.
+          // Btw, that's why all contentEditable editors require whitespace pre.
+          // Of course it does not cover all cases, but I believe it's good enough.
           if (event.data == null) return;
-          const insertText = event.data;
-          const selection = editorSelectionFromInputEvent();
+
+          const moveOffset = event.data.length;
+          const selection = editorSelectionFromInputEvent(
+            event,
+            nodesEditorPathsMap,
+          );
+          invariantEditorSelectionIsCollapsed(selection);
+          const rootElement = (event.currentTarget as HTMLElement).firstChild;
 
           // We have to postpone dispatch until DOM is updated because EditorTextRenderer
           // reads from it. Draft.js uses setImmediate from fbjs which uses npm setImmediate.
           // I have tried several other approaches, but setTimeout and requestAnimationFrame
-          // are too slow, and Promise.then to early. Old YuzuJS/setImmediate is still the best.
+          // are too late while Promise.then is too early. YuzuJS/setImmediate is still the best.
           // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/editOnBeforeInput.js
           setImmediate(() => {
-            dispatch({ type: 'insertText', selection, text: insertText });
+            const [parentPath] = parentPathAndLastIndex(selection.anchor);
+            const textNode = parentPath.reduce(
+              (node, index) => node.childNodes[index],
+              rootElement as ChildNode,
+            ) as Text;
+            // proc to chcipne? pac to tam jeste neni?
+            // nebo move tam?
+            // console.log(selection);
+            // console.log(moveOffset);
+            const nextSelection = moveEditorSelection(moveOffset)(selection);
+            // console.log(nextSelection);
+            // jak poslu vice vec?
+            dispatch({
+              type: 'setText',
+              selection: nextSelection,
+              text: textNode.data,
+            });
           });
-
           break;
         }
 
@@ -81,7 +84,10 @@ export function useBeforeInput(
         // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          const selection = editorSelectionFromInputEvent();
+          const selection = editorSelectionFromInputEvent(
+            event,
+            nodesEditorPathsMap,
+          );
           dispatch({ type: 'deleteContent', selection });
           break;
         }
