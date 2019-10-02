@@ -20,14 +20,18 @@ export function editorPathsAreEqual(
   return true;
 }
 
+export function editorPathIsEmpty(path: EditorPath) {
+  return path.length === 0;
+}
+
 export function invariantPathIsNotEmpty(path: EditorPath) {
-  invariant(path.length > 0, 'Path can not be empty.');
+  invariant(!editorPathIsEmpty(path), 'Path can not be empty.');
 }
 
 /**
  * Example: `[0, 1, 2]` to `[0, 1]`.
  */
-export function parentPath(path: EditorPath): EditorPath {
+export function invariantParentPath(path: EditorPath): EditorPath {
   invariantPathIsNotEmpty(path);
   return path.slice(0, -1);
 }
@@ -36,7 +40,7 @@ export function parentPath(path: EditorPath): EditorPath {
  * Example: `[0, 1, 2]` to `2`.
  */
 
-export function lastIndex(path: EditorPath): number {
+export function invariantLastIndex(path: EditorPath): number {
   invariantPathIsNotEmpty(path);
   return path[path.length - 1];
 }
@@ -44,8 +48,10 @@ export function lastIndex(path: EditorPath): number {
 /**
  * Example: `[0, 1, 2]` to `[[0, 1], 2]`.
  */
-export function parentPathAndLastIndex(path: EditorPath): [EditorPath, number] {
-  return [parentPath(path), lastIndex(path)];
+export function invariantParentPathAndLastIndex(
+  path: EditorPath,
+): [EditorPath, number] {
+  return [invariantParentPath(path), invariantLastIndex(path)];
 }
 
 export function editorPathsAreForward(
@@ -57,7 +63,7 @@ export function editorPathsAreForward(
 
 export function movePath(offset: number) {
   return (path: EditorPath): EditorPath => {
-    const [parentPath, lastIndex] = parentPathAndLastIndex(path);
+    const [parentPath, lastIndex] = invariantParentPathAndLastIndex(path);
     return [...parentPath, lastIndex + offset];
   };
 }
