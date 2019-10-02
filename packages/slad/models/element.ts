@@ -1,21 +1,29 @@
-import { ReactDOM, ReactNode, Children } from 'react';
+import { unsafeUpdateAt } from 'fp-ts/es6/Array';
+import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
-import { EditorPath } from './path';
 import { EditorNode, id, isEditorNode } from './node';
 import {
-  EditorText,
-  editorTextIsBR,
-  isEditorText,
-  EditorTextWithOffset,
-  isEditorTextWithOffset,
-} from './text';
+  EditorPath,
+  editorPathIsEmpty,
+  invariantPathIsNotEmpty,
+  invariantParentPathAndLastIndex,
+  invariantParentPath,
+} from './path';
 import {
   EditorSelection,
   editorSelectionAsRange,
   editorSelectionIsCollapsed,
 } from './selection';
+import {
+  EditorText,
+  editorTextIsBR,
+  EditorTextWithOffset,
+  invariantIsEditorText,
+  isEditorText,
+  isEditorTextWithOffset,
+} from './text';
 
 /**
  * EditorElement is the base model for all other editor elements.
@@ -24,23 +32,30 @@ export interface EditorElement extends EditorNode {
   readonly children: readonly (EditorElementChild)[];
 }
 
+export type EditorElementChild = EditorElement | EditorText;
+
 export type RenderEditorElement = (
   element: EditorElement,
   children: ReactNode,
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
-export function mapEditorElement<
-  E extends EditorElement,
-  M extends (element: E) => E
->(mapper: M): M {
-  return mapper;
-}
+export type MapEditorElement = <T extends EditorElement>(element: T) => T;
 
 export function isEditorElement(value: unknown): value is EditorElement {
   return (
     isEditorNode(value) && Array.isArray((value as EditorElement).children)
   );
+}
+
+/**
+ * If point.to isEditorTextWithOffset, return editorText. This ensures
+ * we can always get EditorElementChild from EditorElementPoint.
+ */
+export function editorElementPointAsChild(
+  point: EditorElementPoint,
+): EditorElementChild {
+  return isEditorTextWithOffset(point.to) ? point.to.editorText : point.to;
 }
 
 export function invariantIsEditorElement(
@@ -49,10 +64,6 @@ export function invariantIsEditorElement(
   invariant(isEditorElement(value), 'Value is not EditorElement.');
   return true;
 }
-
-// Do we really need that? Isn't EditorNode good enough?
-// TODO: Explain or replace it with EditorNode.
-export type EditorElementChild = EditorElement | EditorText;
 
 // export type EditorFragment = readonly EditorElementChild[];
 
@@ -72,12 +83,29 @@ export type EditorReactElement = $Values<
 >;
 
 /**
- * EditorElementPoint is a position in EditorElement defined by EditorPath.
- * It's like materialized EditorPath. EditorPath points to EditorElement,
- * EditorText, or EditorTextWithOffset.
+ * EditorPath can be resolved to EditorElement, EditorText, or EditorTextWithOffset.
+ */
+export type EditorElementPointTo =
+  | EditorElement
+  | EditorText
+  | EditorTextWithOffset;
+
+export function isEditorElementPointTo(
+  value: unknown,
+): value is EditorElementPointTo {
+  if (value == null) return false;
+  return (
+    isEditorElement(value) ||
+    isEditorText(value) ||
+    isEditorTextWithOffset(value)
+  );
+}
+
+/**
+ * EditorElementPoint is materialized EditorPath in EditorElement.
  */
 export interface EditorElementPoint {
-  to: EditorElement | EditorText | EditorTextWithOffset;
+  to: EditorElementPointTo;
   parents: EditorElement[];
 }
 
@@ -87,11 +115,7 @@ export function isEditorElementPoint(
   if (value == null) return false;
   const point = value as EditorElementPoint;
   if (!Array.isArray(point.parents)) return false;
-  return (
-    isEditorElement(point.to) ||
-    isEditorText(point.to) ||
-    isEditorTextWithOffset(point.to)
-  );
+  return isEditorElementPointTo(point.to);
 }
 
 export function invariantIsEditorElementPoint(
@@ -212,14 +236,14 @@ export function editorElementPoint(path: EditorPath) {
 // @ts-ignore
 export const recursiveRemoveID = element => {
   if (element == null) return element;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
   return {
     ...objectWithoutID,
     // @ts-ignore
     children: element.children.map(child => {
       if (isEditorText(child)) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
         const { id, ...childWithoutID } = child;
         return childWithoutID;
       }
@@ -228,8 +252,10 @@ export const recursiveRemoveID = element => {
   };
 };
 
-export function deleteContentElement(selection: EditorSelection) {
-  return mapEditorElement(element => {
+export function deleteContentElement(
+  selection: EditorSelection,
+): MapEditorElement {
+  return element => {
     const range = editorSelectionAsRange(selection);
     const anchorPoint = editorElementPoint(range.anchor)(element);
     const focusPoint = editorElementPoint(range.focus)(element);
@@ -260,39 +286,75 @@ export function deleteContentElement(selection: EditorSelection) {
     // }
     // return draft;
     return element;
-  });
+  };
 }
 
-// const point = editorElementPoint(state.selection.anchor)(state.element);
-// // TODO: Still error?
-// if (!invariantIsEditorElementPoint(point)) return;
-// if (!invariantIsEditorTextWithOffset(point.to)) return;
-// point.parents
-// const { editorText } = point.to;
-// editorText.text = text;
+export function editorElementLens(path: EditorPath) {
+  invariantPathIsNotEmpty(path);
+  function get(): (element: EditorElement) => EditorElementPoint | null {
+    return element => {
+      return editorElementPoint(path)(element);
+    };
+  }
 
-export function setTextElement(text: string, selection: EditorSelection) {
-  return mapEditorElement(element => {
+  function set(child: EditorElementChild): MapEditorElement {
+    return element => {
+      const point = get()(element);
+      if (!invariantIsEditorElementPoint(point)) return element;
+      const [parentPath, lastIndex] = invariantParentPathAndLastIndex(
+        // When the path points to EditorTextWithOffset, get parent path.
+        isEditorTextWithOffset(point.to) ? invariantParentPath(path) : path,
+      );
+      function getUpdatedChildren() {
+        if (editorPathIsEmpty(parentPath)) return child;
+        const parentPathChild = element.children[lastIndex];
+        if (!invariantIsEditorElement(parentPathChild)) return;
+        return editorElementLens(parentPath).set(child)(parentPathChild);
+      }
+      const updatedChildren = getUpdatedChildren();
+      return {
+        ...element,
+        children: unsafeUpdateAt(
+          lastIndex,
+          updatedChildren,
+          element.children as EditorElement[],
+        ),
+      };
+    };
+  }
+
+  function modify(
+    modifier: (child: EditorElementChild) => EditorElementChild,
+  ): MapEditorElement {
+    return element => {
+      const point = get()(element);
+      if (!isEditorElementPoint(point))
+        throw new Error(
+          'Missing point in editorElementLens modify.' +
+            'Check whether editor selections matches element.',
+        );
+      const child = editorElementPointAsChild(point);
+      const nextChild = modifier(child);
+      return set(nextChild)(element);
+    };
+  }
+  return { get, set, modify };
+}
+
+// TODO:
+// export function editorElementLenses(selection)
+
+export function setTextElement(
+  text: string,
+  selection: EditorSelection,
+): MapEditorElement {
+  return element => {
     if (editorSelectionIsCollapsed(selection)) {
-      // potrebuji api na get a set pro selection a path
-      // tohle je presne pripad, kdy chci neco nastavit
-      // vlastni lens? jo
-      // potreboval bych na selekci neco, co ma modify, a tam to but zmenim nebo odeberu
-      // const name = Lens.fromPath<EditorElement>()(['children', 'concat'])
-      // name.modify(capitalize)(employee)
-      // ale tak jak tak, musim vymyslet algoritmus
-      // ale nejdrive api
-      // nacist z el dotcene elementy, a iterovat je?
-      // umim najit jednoho
-      // a chci to vracet? ok, to uz mam ted
-      // proc modify? co tam jeste muze bejt? read?
-      // fakt to nejde postavit z fpts?
-      // return elementLens(selection).some(child => {
-      //
-      // })
-
-      return element;
+      return editorElementLens(selection.anchor).modify(child => {
+        if (!invariantIsEditorText(child)) return child;
+        return { ...child, text };
+      })(element);
     }
     return element;
-  });
+  };
 }

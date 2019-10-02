@@ -198,8 +198,6 @@ export function EditorClient<T extends EditorElement>({
     editorPathsNodesMap,
   ]);
 
-  // useLayoutEffect is must to keep browser selection in sync with editor state.
-  // TODO: Do we still need it?
   useLayoutEffect(() => {
     if (!editorState.hasFocus) return;
     ensureSelectionMatchesEditorSelection();

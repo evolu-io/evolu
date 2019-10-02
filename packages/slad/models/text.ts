@@ -15,7 +15,7 @@ export function isEditorText(value: unknown): value is EditorText {
 }
 
 export function invariantIsEditorText(value: unknown): value is EditorText {
-  invariant(isEditorText(value), 'Value is not EditorText.');
+  invariant(isEditorText(value), 'The value is not EditorText.');
   return true;
 }
 
@@ -39,7 +39,7 @@ export function invariantIsEditorTextWithOffset(
 ): value is EditorTextWithOffset {
   invariant(
     isEditorTextWithOffset(value),
-    'Value is not EditorTextWithOffset.',
+    'The value is not EditorTextWithOffset.',
   );
   return true;
 }

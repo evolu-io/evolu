@@ -15,6 +15,7 @@ const initialEditorState = editor.createEditorState({
         }}
       >
         {/* <br /> */}
+        {/* <div style={{ fontWeight: 'bold', display: 'inline' }}>heading</div> */}
         heading
         {/* <div
           contentEditable={false}
@@ -48,9 +49,9 @@ function Index() {
   );
 
   const handleEditorChange = useCallback(
-    (editorState: editor.EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: editor.EditorState) => {
+      logEditorState(state);
+      setEditorState(state);
     },
     [logEditorState],
   );

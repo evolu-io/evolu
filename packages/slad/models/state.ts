@@ -6,6 +6,7 @@ import {
   EditorReactElement,
   jsxToEditorReactElement,
   setTextElement,
+  editorElementPoint,
 } from './element';
 import {
   collapseEditorSelectionToStart,
@@ -56,6 +57,18 @@ export function createEditorStateWithText({
   });
 }
 
+/**
+ * Validates whether state selection points to EditorElementPoints.
+ */
+export function isEditorStateSelectionValid<T extends EditorElement>(
+  state: EditorState<T>,
+): boolean {
+  if (!state.selection) return true;
+  const anchorPoint = editorElementPoint(state.selection.anchor)(state.element);
+  const focusPoint = editorElementPoint(state.selection.focus)(state.element);
+  return anchorPoint != null && focusPoint != null;
+}
+
 export function editorStatesAreEqual<T extends EditorElement>(
   editorState1: EditorState<T> | null,
   editorState2: EditorState<T> | null,
@@ -78,6 +91,7 @@ export function select(selection: EditorSelection): MapEditorState {
 export function setText(text: string): MapEditorState {
   return state => {
     if (!invariantEditorSelectionIsDefined(state.selection)) return state;
+    // nebo tady?
     return {
       ...state,
       element: setTextElement(text, state.selection)(state.element),
