@@ -1,11 +1,12 @@
 import { assertNever } from 'assert-never';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
 import { EditorElement } from '../models/element';
-import { EditorSelection, editorSelectionsAreEqual } from '../models/selection';
+import { EditorSelection } from '../models/selection';
 import {
-  deleteContent,
+  // deleteContent,
   EditorState,
-  isEditorStateSelectionValid,
+  select,
   setText,
 } from '../models/state';
 
@@ -15,15 +16,15 @@ import {
 export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
-  | { type: 'selectionChange'; selection: EditorSelection | null }
+  | { type: 'selectionChange'; selection: EditorSelection }
   | {
       type: 'setEditorStatePartial';
       change: Partial<EditorState<EditorElement>>;
     }
   // beforeinput actions
-  | { type: 'setText'; text: string }
-  // TODO: To same, imho nepotrebuju a nechci, pro collapsed ani jinak.
-  | { type: 'deleteContent'; selection: EditorSelection };
+  | { type: 'setTextOnInsert'; text: string; selection?: EditorSelection }
+  | { type: 'setTextOnDelete'; text: string; selection: EditorSelection };
+// | { type: 'deleteContent'; selection: EditorSelection };
 
 export type EditorReducer<T extends EditorElement = EditorElement> = Reducer<
   EditorState<T>,
@@ -39,26 +40,31 @@ export const editorReducer: EditorReducer = (state, action) => {
       return { ...state, hasFocus: false };
 
     case 'selectionChange': {
-      if (editorSelectionsAreEqual(action.selection, state.selection))
-        return state;
-      const nextState = { ...state, selection: action.selection };
-      // Editor is listening document selection changes even during typing.
-      // That's how we can leverage native selection behavior without hacks.
-      // But if the user types quickly, editor selection can be updated
-      // before Editor element itself which will be detected as missing point.
-      // It seems we can safely ignore such temporary invalid selection.
-      if (!isEditorStateSelectionValid(nextState)) return state;
-      return nextState;
+      return select(action.selection)(state);
     }
 
     case 'setEditorStatePartial':
       return { ...state, ...action.change };
 
-    case 'setText':
-      return setText(action.text)(state);
+    case 'setTextOnInsert':
+      return pipe(
+        state,
+        setText(action.text),
+        state => {
+          if (!action.selection) return state;
+          return select(action.selection)(state);
+        },
+      );
 
-    case 'deleteContent':
-      return deleteContent(action.selection)(state);
+    case 'setTextOnDelete':
+      return pipe(
+        state,
+        select(action.selection),
+        setText(action.text),
+      );
+
+    // case 'deleteContent':
+    //   return deleteContent(action.selection)(state);
 
     default:
       return assertNever(action);

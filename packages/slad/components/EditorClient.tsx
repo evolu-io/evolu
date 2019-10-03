@@ -1,36 +1,40 @@
 /* eslint-env browser */
-import React, {
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-  useState,
-  useReducer,
-  useLayoutEffect,
-} from 'react';
 import Debug from 'debug';
-import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
-import { EditorElementRenderer } from './EditorElementRenderer';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
-import {
-  selectionToEditorSelection,
-  editorSelectionsAreEqual,
-  editorSelectionIsForward,
-} from '../models/selection';
-import { RenderEditorElement, EditorElement } from '../models/element';
-import { usePrevious } from '../hooks/usePrevious';
-import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
-import { EditorPath } from '../models/path';
+import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
+import { useBeforeInput } from '../hooks/editor/useBeforeInput';
 import { useDebugNodesEditorPaths } from '../hooks/editor/useDebugNodesEditorPaths';
-import { EditorState, editorStatesAreEqual } from '../models/state';
+import { useNodesEditorPaths } from '../hooks/editor/useNodesEditorPaths';
+import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
+import { usePrevious } from '../hooks/usePrevious';
+import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
+import { EditorElement, RenderEditorElement } from '../models/element';
+import { EditorPath } from '../models/path';
+import {
+  editorSelectionIsForward,
+  editorSelectionsAreEqual,
+  selectionToEditorSelection,
+} from '../models/selection';
+import {
+  EditorState,
+  editorStatesAreEqual,
+  invariantIsEditorStateSelectionValid,
+} from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
-import { useNodesEditorPaths } from '../hooks/editor/useNodesEditorPaths';
+import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
-import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
-import { useBeforeInput } from '../hooks/editor/useBeforeInput';
 
 const debugEditorAction = Debug('editor:action');
 
@@ -64,6 +68,17 @@ export function EditorClient<T extends EditorElement>({
   role = 'textbox',
   ...rest
 }: EditorClientProps<T>) {
+  invariantIsEditorStateSelectionValid(parentEditorState);
+
+  // This looks like a nerd joke, but it isn't.
+  // We use setImmediate polyfill in useBeforeInput, because we need to let browser
+  // to update DOM for writing and deleting, but we have to dispatch action
+  // immediately after. setImmediate polyfill is fast, but not fast enough for
+  // doc.addEventListener('selectionchange'), probably because it's based on
+  // DOM events as well. That's why we need setImmediateIsPendingRef.
+  // Without it and with very fast writing, editor state selection will not be valid.
+  const setImmediateIsPendingRef = useRef(false);
+
   // Inner state is required because of IME etc. intermediate states.
   const [editorStateWithEditorElementType, dispatch] = useReducerWithLogger(
     useReducer(editorReducer, parentEditorState),
@@ -115,6 +130,7 @@ export function EditorClient<T extends EditorElement>({
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
+      if (setImmediateIsPendingRef.current) return;
       const selection = selectionToEditorSelection(
         getSelection(),
         nodesEditorPathsMap,
@@ -132,9 +148,11 @@ export function EditorClient<T extends EditorElement>({
     };
   }, [dispatch, getSelection, nodesEditorPathsMap]);
 
-  const ensureSelectionMatchesEditorSelection = useCallback(() => {
+  const ensureSelectionEqualsEditorSelection = useCallback(() => {
     const selection = getSelection();
     if (selection == null) return;
+
+    // Check whether selections are equal.
     const currentSelection = selectionToEditorSelection(
       selection,
       nodesEditorPathsMap,
@@ -178,6 +196,10 @@ export function EditorClient<T extends EditorElement>({
     if (startNode == null || endNode == null) return;
 
     const range = doc.createRange();
+    // Tady, protoze selekce neodpovida dom, kterej se mezitim smazal.
+    // Mam to proste ignorovat? Nemuzu tu selekci na psani blokovat?
+    // imho jde jen o psani, jakmile input, selekci vlastni?
+    // if (!isEditorStateSelectionValid(nextState)) return state;
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
 
@@ -192,18 +214,25 @@ export function EditorClient<T extends EditorElement>({
       selection.extend(range.startContainer, range.startOffset);
     }
   }, [
+    // Do not put editorState nor editorState.element here. It would override selection.
+    editorPathsNodesMap,
+    editorState.selection,
     getSelection,
     nodesEditorPathsMap,
-    editorState.selection,
-    editorPathsNodesMap,
   ]);
 
+  // useLayoutEffect is must to keep browser selection in sync with editor state.
   useLayoutEffect(() => {
     if (!editorState.hasFocus) return;
-    ensureSelectionMatchesEditorSelection();
-  }, [ensureSelectionMatchesEditorSelection, editorState.hasFocus]);
+    ensureSelectionEqualsEditorSelection();
+  }, [ensureSelectionEqualsEditorSelection, editorState.hasFocus]);
 
-  useBeforeInput(divRef, nodesEditorPathsMap, dispatch);
+  useBeforeInput(
+    divRef,
+    setImmediateIsPendingRef,
+    nodesEditorPathsMap,
+    dispatch,
+  );
 
   const rootPath = useMemo(() => [], []);
 
@@ -223,10 +252,10 @@ export function EditorClient<T extends EditorElement>({
   }, [editorState.element, renderElement, rootPath, setNodeEditorPath]);
 
   const handleDivFocus = useCallback(() => {
-    ensureSelectionMatchesEditorSelection();
+    ensureSelectionEqualsEditorSelection();
     setTabLostFocus(false);
     dispatch({ type: 'focus' });
-  }, [dispatch, ensureSelectionMatchesEditorSelection]);
+  }, [dispatch, ensureSelectionEqualsEditorSelection]);
 
   const handleDivBlur = useCallback(() => {
     const tabLostFocus =

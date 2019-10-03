@@ -1,11 +1,12 @@
 import invariant from 'tiny-invariant';
-import { pipe } from 'fp-ts/es6/pipeable';
+import { pipe } from 'fp-ts/lib/pipeable';
 import {
   editorPathsAreEqual,
   EditorPath,
   NodesEditorPathsMap,
   editorPathsAreForward,
   movePath,
+  invariantParentPath,
 } from './path';
 
 /**
@@ -181,4 +182,29 @@ export function editorSelectionFromInputEvent(
   // To make TS happy. Invariant throws anyway.
   if (!invariantEditorSelectionIsDefined(selection)) return selection as any;
   return selection;
+}
+
+/**
+ * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
+ */
+export const editorSelectionOfParent: MapEditorSelection = selection => {
+  return {
+    anchor: invariantParentPath(selection.anchor),
+    focus: invariantParentPath(selection.focus),
+  };
+};
+
+/**
+ * `{ anchor: [0], focus: [0] }` to `{ anchor: [0, 0], focus: [0, 0] }`
+ */
+export function editorSelectionForChild(
+  anchorLastIndex: number,
+  focusLastIndex: number,
+): MapEditorSelection {
+  return selection => {
+    return {
+      anchor: selection.anchor.concat(anchorLastIndex),
+      focus: selection.focus.concat(focusLastIndex),
+    };
+  };
 }

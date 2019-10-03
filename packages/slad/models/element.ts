@@ -1,4 +1,4 @@
-import { unsafeUpdateAt } from 'fp-ts/es6/Array';
+import { unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
@@ -252,43 +252,6 @@ export const recursiveRemoveID = element => {
   };
 };
 
-export function deleteContentElement(
-  selection: EditorSelection,
-): MapEditorElement {
-  return element => {
-    const range = editorSelectionAsRange(selection);
-    const anchorPoint = editorElementPoint(range.anchor)(element);
-    const focusPoint = editorElementPoint(range.focus)(element);
-    if (anchorPoint == null || focusPoint == null) {
-      invariant(
-        false,
-        'deleteContentElement: The selection does not match the element.',
-      );
-      // Just for types. We will have a better approach with asserts with predicates
-      // in TypeScript 3.7.
-      return element;
-    }
-    // TODO: To pujde pres parents map, ok.
-    // TODO: Handle other cases, with one logic, if possible.
-    // if (
-    //   // Just deleting text on the same EditorTexts.
-    //   isEditorTextWithOffset(anchorPoint.to) &&
-    //   isEditorTextWithOffset(focusPoint.to) &&
-    //   anchorPoint.to.editorText === focusPoint.to.editorText
-    // ) {
-    //   const { editorText, offset } = anchorPoint.to as Draft<
-    //     EditorTextWithOffset
-    //   >;
-    //   editorText.text =
-    //     editorText.text.slice(0, offset) +
-    //     editorText.text.slice(focusPoint.to.offset);
-    //   return;
-    // }
-    // return draft;
-    return element;
-  };
-}
-
 export function editorElementLens(path: EditorPath) {
   invariantPathIsNotEmpty(path);
   function get(): (element: EditorElement) => EditorElementPoint | null {
@@ -330,8 +293,8 @@ export function editorElementLens(path: EditorPath) {
       const point = get()(element);
       if (!isEditorElementPoint(point))
         throw new Error(
-          'Missing point in editorElementLens modify.' +
-            'Check whether editor selections matches element.',
+          'Not defined point in editorElementLens modify. ' +
+            'Check whether EditorState selections matches EditorState element.',
         );
       const child = editorElementPointAsChild(point);
       const nextChild = modifier(child);
@@ -343,6 +306,37 @@ export function editorElementLens(path: EditorPath) {
 
 // TODO:
 // export function editorElementLenses(selection)
+
+export function deleteContentElement(
+  selection: EditorSelection,
+): MapEditorElement {
+  return element => {
+    const range = editorSelectionAsRange(selection);
+    const anchorPoint = editorElementPoint(range.anchor)(element);
+    const focusPoint = editorElementPoint(range.focus)(element);
+    if (!invariantIsEditorElementPoint(anchorPoint)) return element;
+    if (!invariantIsEditorElementPoint(focusPoint)) return element;
+    // TODO: Handle other cases, with lenses.
+    if (
+      // Just deleting text on the same EditorTexts.
+      isEditorTextWithOffset(anchorPoint.to) &&
+      isEditorTextWithOffset(focusPoint.to) &&
+      anchorPoint.to.editorText === focusPoint.to.editorText
+    ) {
+      const parentPath = invariantParentPath(range.anchor);
+      const startOffset = anchorPoint.to.offset;
+      const endOffset = focusPoint.to.offset;
+      return editorElementLens(parentPath).modify(child => {
+        if (!invariantIsEditorText(child)) return child;
+        return {
+          ...child,
+          text: child.text.slice(0, startOffset) + child.text.slice(endOffset),
+        };
+      })(element);
+    }
+    return element;
+  };
+}
 
 export function setTextElement(
   text: string,

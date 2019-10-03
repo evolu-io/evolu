@@ -1,5 +1,7 @@
 import { createElement } from 'react';
 import { Optional } from 'utility-types';
+import invariant from 'tiny-invariant';
+import { pipe } from 'fp-ts/lib/pipeable';
 import {
   deleteContentElement,
   EditorElement,
@@ -64,9 +66,20 @@ export function isEditorStateSelectionValid<T extends EditorElement>(
   state: EditorState<T>,
 ): boolean {
   if (!state.selection) return true;
+  // TODO: Refactor out to isEditorElementSelectionValid.
   const anchorPoint = editorElementPoint(state.selection.anchor)(state.element);
   const focusPoint = editorElementPoint(state.selection.focus)(state.element);
   return anchorPoint != null && focusPoint != null;
+}
+
+export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
+  state: EditorState<T>,
+): boolean {
+  invariant(
+    isEditorStateSelectionValid(state),
+    'EditorState selection does not match EditorState element. Wrong selection or wrong element.',
+  );
+  return true;
 }
 
 export function editorStatesAreEqual<T extends EditorElement>(
@@ -84,14 +97,16 @@ export function editorStatesAreEqual<T extends EditorElement>(
 
 export function select(selection: EditorSelection): MapEditorState {
   return state => {
-    return { ...state, selection };
+    if (editorSelectionsAreEqual(selection, state.selection)) return state;
+    const nextState = { ...state, selection };
+    invariantIsEditorStateSelectionValid(nextState);
+    return nextState;
   };
 }
 
 export function setText(text: string): MapEditorState {
   return state => {
     if (!invariantEditorSelectionIsDefined(state.selection)) return state;
-    // nebo tady?
     return {
       ...state,
       element: setTextElement(text, state.selection)(state.element),
@@ -99,8 +114,9 @@ export function setText(text: string): MapEditorState {
   };
 }
 
-// export function insertText(text: string, optionalSelection?: EditorSelection) {
+// export function insertText(text: string, selection?: EditorSelection) {
 //   return produceEditorState(draft => {
+//     // TODO: const insertSelection = selection || state.selection
 //     const selection = optionalSelection || draft.selection;
 //     if (!invariantEditorSelectionIsDefined(selection)) return;
 //     if (editorSelectionIsCollapsed(selection)) {
@@ -122,19 +138,25 @@ export function setText(text: string): MapEditorState {
 export function move(offset: number): MapEditorState {
   return state => {
     if (!invariantEditorSelectionIsDefined(state.selection)) return state;
-    return {
-      ...state,
-      selection: moveEditorSelection(offset)(state.selection),
-    };
+    return select(moveEditorSelection(offset)(state.selection))(state);
   };
 }
 
-export function deleteContent(selection: EditorSelection): MapEditorState {
+export function deleteContent(selection?: EditorSelection): MapEditorState {
   return state => {
-    return {
-      ...state,
-      element: deleteContentElement(selection)(state.element),
-      selection: collapseEditorSelectionToStart(selection),
-    };
+    const deleteContentSelection = selection || state.selection;
+    // Can't wait for TS 3.7 asserts.
+    if (!invariantEditorSelectionIsDefined(deleteContentSelection))
+      return state;
+    return pipe(
+      state,
+      state => {
+        return {
+          ...state,
+          element: deleteContentElement(deleteContentSelection)(state.element),
+        };
+      },
+      select(collapseEditorSelectionToStart(deleteContentSelection)),
+    );
   };
 }
