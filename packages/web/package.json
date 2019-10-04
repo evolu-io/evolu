@@ -14,7 +14,6 @@
     "@emotion/core": "^10.0.17",
     "@next/bundle-analyzer": "^9.0.3",
     "assert-never": "^1.2.0",
-    "immer": "^4.0.0",
     "next": "^9.0.3",
     "next-transpile-modules": "^2.3.1",
     "puppeteer": "^1.19.0",

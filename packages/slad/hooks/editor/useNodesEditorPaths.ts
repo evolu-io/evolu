@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { assertNever } from 'assert-never';
-import { NodesEditorPathsMap, EditorPathsNodesMap } from '../models/path';
-import { SetNodeEditorPath } from '../contexts/SetNodeEditorPathContext';
+import { NodesEditorPathsMap, EditorPathsNodesMap } from '../../models/path';
+import { SetNodeEditorPath } from '../../contexts/SetNodeEditorPathContext';
 
 export function useNodesEditorPaths(): {
   nodesEditorPathsMap: NodesEditorPathsMap;

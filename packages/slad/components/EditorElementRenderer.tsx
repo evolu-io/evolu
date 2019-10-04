@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useContext, useCallback, useRef } from 'react';
+import React, { memo, useMemo, useContext, useCallback } from 'react';
 import invariant from 'tiny-invariant';
 import {
   useSetNodeEditorPathRef,
@@ -12,6 +12,9 @@ import { isEditorText } from '../models/text';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
 // Better to enforce the right data model. Check invariant message.
+// TODO: It seems we do not need it with beforeinput preventDefault, not even
+// for IME! Manually tested. But do not remove it yet since it does not harm.
+// http://jsfiddle.net/pdrmv48b/
 export function invariantHTMLElementHasToHaveAtLeastOneAttribute(
   element: HTMLElement,
 ) {
@@ -37,16 +40,14 @@ export interface EditorElementRendererProps {
 export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
     const renderElement = useContext(RenderEditorElementContext);
-    const setNodePathRef = useSetNodeEditorPathRef(path);
-    const elementRef = useRef<Node | null>(null);
+    const setNodeEditorPathRef = useSetNodeEditorPathRef(path);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
         if (node)
           invariantHTMLElementHasToHaveAtLeastOneAttribute(node as HTMLElement);
-        elementRef.current = node;
-        setNodePathRef(node);
+        setNodeEditorPathRef(node);
       },
-      [setNodePathRef],
+      [setNodeEditorPathRef],
     );
 
     const children = useMemo(() => {
@@ -58,7 +59,6 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
               key={child.id}
               text={child.text}
               path={childPath}
-              parentElementRef={elementRef}
             />
           );
         }

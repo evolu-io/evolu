@@ -1,11 +1,17 @@
 // Export everything. Rethink before the release.
 export * from './components/Editor';
+export * from './components/EditorClient';
 export * from './components/EditorElementRenderer';
 export * from './components/EditorServer';
 export * from './components/EditorTextRenderer';
 export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
+export * from './hooks/editor/useBeforeInput';
+export * from './hooks/editor/useDebugNodesEditorPaths';
+export * from './hooks/editor/useNodesEditorPaths';
+export * from './hooks/useInvariantEditorElementIsNormalized';
 export * from './hooks/useLogEditorState';
+export * from './hooks/usePrevious';
 export * from './hooks/useReducerWithLogger';
 export * from './hooks/useSetNodeEditorPathRef';
 export * from './models/element';

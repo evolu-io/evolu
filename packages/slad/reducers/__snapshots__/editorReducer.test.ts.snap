@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`onBlur 1`] = `
+exports[`blur 1`] = `
 Object {
   "element": Object {
     "children": Array [
@@ -18,7 +18,7 @@ Object {
 }
 `;
 
-exports[`onFocus 1`] = `
+exports[`focus 1`] = `
 Object {
   "element": Object {
     "children": Array [

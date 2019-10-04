@@ -1,11 +1,17 @@
 import {
   normalizeEditorElement,
   EditorElement,
-  isNormalizedEditorElement,
+  editorElementIsNormalized,
+  deleteContentElement,
+  editorElementPoint,
 } from './element';
 import { EditorNodeID } from './node';
 
-// TODO: Stable EditorNodeID per test. PR anyone?
+// TODO: Use JSX <element><text>a<text></element> syntax for tests and snapshots.
+// Need to investigate how to run React JSX in Jest tests.
+// We can add .tsx, but there is some transpilation error.
+// Then, we can have stable IDs and nice syntax.
+// PR anyone?
 let lastID = 0;
 // Stable EditorNodeID factory for test snapshots.
 function id(): EditorNodeID {
@@ -43,9 +49,9 @@ test('normalizeEditorElement merges adjacent strings', () => {
   expect(normalizeEditorElement(element)).toMatchSnapshot();
 });
 
-test('isNormalizedEditorElement', () => {
+test('editorElementIsNormalized', () => {
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: 'a' }],
     }),
@@ -53,7 +59,7 @@ test('isNormalizedEditorElement', () => {
 
   // Empty string is BR, that's ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: '' }],
     }),
@@ -61,7 +67,7 @@ test('isNormalizedEditorElement', () => {
 
   // Two not empty string, that's not ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
     }),
@@ -69,7 +75,7 @@ test('isNormalizedEditorElement', () => {
 
   // Recursion works.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [{ id: id(), children: [{ id: id(), text: '' }] }],
     }),
@@ -77,7 +83,7 @@ test('isNormalizedEditorElement', () => {
 
   // Empty string is BR, so it's ok.
   expect(
-    isNormalizedEditorElement({
+    editorElementIsNormalized({
       id: id(),
       children: [
         { id: id(), text: 'a' },
@@ -100,4 +106,46 @@ test('normalizeEditorElement do not remove children', () => {
   expect(
     normalizeEditorElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
+});
+
+test('deleteContentElement', () => {
+  const el = { id: id(), children: [{ id: id(), text: 'a' }] };
+  expect(
+    deleteContentElement({ anchor: [0, 0], focus: [0, 1] })(el),
+  ).toMatchSnapshot();
+});
+
+test('editorElementPoint', () => {
+  // <div><b>a</b></div>
+  const text = { id: id(), text: 'a' };
+  const b = { id: id(), children: [text] };
+  const div = { id: id(), children: [b] };
+
+  // Points.
+  expect(editorElementPoint([])(div)).toMatchObject({
+    parents: [],
+    to: div,
+  });
+  expect(editorElementPoint([0])(div)).toMatchObject({
+    parents: [div],
+    to: b,
+  });
+  expect(editorElementPoint([0, 0])(div)).toMatchObject({
+    parents: [div, b],
+    to: text,
+  });
+  expect(editorElementPoint([0, 0, 0])(div)).toMatchObject({
+    parents: [div, b],
+    to: { editorText: text, offset: 0 },
+  });
+  expect(editorElementPoint([0, 0, 1])(div)).toMatchObject({
+    parents: [div, b],
+    to: { editorText: text, offset: 1 },
+  });
+
+  // Nulls.
+  expect(editorElementPoint([0, 0, 0, 0])(div)).toBeNull();
+  expect(editorElementPoint([1])(div)).toBeNull();
+  expect(editorElementPoint([0, 1])(div)).toBeNull();
+  expect(editorElementPoint([0, 0, 2])(div)).toBeNull();
 });

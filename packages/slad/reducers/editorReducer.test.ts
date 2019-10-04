@@ -12,10 +12,10 @@ function testEditorReducer(action: EditorAction) {
   };
 }
 
-test('onFocus', () => {
-  expect(testEditorReducer({ type: 'onFocus' })).toMatchSnapshot();
+test('focus', () => {
+  expect(testEditorReducer({ type: 'focus' })).toMatchSnapshot();
 });
 
-test('onBlur', () => {
-  expect(testEditorReducer({ type: 'onBlur' })).toMatchSnapshot();
+test('blur', () => {
+  expect(testEditorReducer({ type: 'blur' })).toMatchSnapshot();
 });

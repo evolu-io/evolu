@@ -1,6 +1,7 @@
-import { insertText } from './text';
+import { isEditorText } from './text';
 
-test('insertText', () => {
-  expect(insertText('', 'a', 0)).toBe('a');
-  expect(insertText('ac', 'b', 1)).toBe('abc');
+test('isEditorText', () => {
+  expect(isEditorText({})).toBe(false);
+  expect(isEditorText({ text: 'a' })).toBe(false);
+  expect(isEditorText({ text: 'a', id: '1' })).toBe(true);
 });

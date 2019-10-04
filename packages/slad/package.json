@@ -6,14 +6,12 @@
   "license": "MIT",
   "browserslist": [
     "last 2 Chrome versions",
-    "last 2 Firefox versions",
     "last 2 Safari versions"
   ],
   "dependencies": {
     "assert-never": "^1.2.0",
     "debug": "^4.1.1",
-    "immer": "^4.0.0",
-    "lodash.flattendeep": "^4.4.0",
+    "fp-ts": "^2.0.5",
     "nanoid": "^2.1.0",
     "tiny-invariant": "^1.0.6",
     "utility-types": "^3.7.0"
@@ -24,7 +22,6 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",
-    "@types/lodash.flattendeep": "^4.4.6",
     "@types/nanoid": "^2.0.0",
     "@types/react": "^16.8.24",
     "@types/react-dom": "^16.8.5",
