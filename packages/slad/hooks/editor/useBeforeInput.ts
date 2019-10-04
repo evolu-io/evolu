@@ -21,7 +21,7 @@ export function useBeforeInput(
     const { current: div } = divRef;
     if (div == null) return;
 
-    // Draft is using polyfilled setImmediate, but it breaks selection here.
+    // Draft is using setImmediate polyfill, but it breaks selection here.
     // It works for Draft probably because Draft controls selection completely,
     // but we are listening it.
     function afterTyping(callback: () => void) {
@@ -36,7 +36,7 @@ export function useBeforeInput(
       // In Chrome and Safari, we can use event.preventDefault to replace browsers
       // default behavior with custom. As for Firefox, we can polyfill it somehow, but
       // Firefox is already working on beforeinput support, so let's wait.
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1572386
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=970802
 
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
