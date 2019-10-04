@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { Dispatch, RefObject, useEffect, MutableRefObject } from 'react';
 import { NodesEditorPathsMap } from '../../models/path';
 import {
@@ -6,18 +7,30 @@ import {
   editorSelectionFromInputEvent,
   editorSelectionIsCollapsed,
   editorSelectionForChild,
+  moveEditorSelection,
 } from '../../models/selection';
 import { EditorAction } from '../../reducers/editorReducer';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
-  setImmediateIsPendingRef: MutableRefObject<boolean>,
+  userIsTypingRef: MutableRefObject<boolean>,
   nodesEditorPathsMap: NodesEditorPathsMap,
   dispatch: Dispatch<EditorAction>,
 ) {
   useEffect(() => {
     const { current: div } = divRef;
     if (div == null) return;
+
+    // Draft is using polyfilled setImmediate, but it breaks selection here.
+    // It works for Draft probably because Draft controls selection completely,
+    // but we are listening it.
+    function afterTyping(callback: () => void) {
+      userIsTypingRef.current = true;
+      requestAnimationFrame(() => {
+        userIsTypingRef.current = false;
+        callback();
+      });
+    }
 
     function handleBeforeInput(event: InputEvent) {
       // In Chrome and Safari, we can use event.preventDefault to replace browsers
@@ -42,7 +55,6 @@ export function useBeforeInput(
           // I suppose we don't need it. We can extract text from DOM instead.
           // https://github.com/steida/slad/issues/47
           // Btw, that's why all contentEditable editors require whitespace pre.
-          // It probably does not cover all edge cases, but I believe it's good enough.
           if (event.data == null) return;
 
           const selection = editorSelectionFromInputEvent(
@@ -50,16 +62,16 @@ export function useBeforeInput(
             nodesEditorPathsMap,
           );
 
+          // @ts-ignore Missing getTargetRanges.
+          const range = event.getTargetRanges()[0] as Range;
+
           // Store reference to text node to read from it when selection is collapsed.
           // We can not just insert text, because whitespaces can be changed anywhere.
-          // @ts-ignore Missing getTargetRanges
-          const { startContainer } = event.getTargetRanges()[0] as Range;
+          const { startContainer } = range;
 
           // When user types on empty text, which is represented as BR, browsers will
           // replace BR with text node. Because React can not recognize outer change,
           // we have to put BR immediately back manually.
-          // @ts-ignore Missing getTargetRanges.
-          const range = event.getTargetRanges()[0] as Range;
           const maybeBR = range.startContainer.childNodes[range.startOffset];
           const brIsGoingToBeReplacedWithText =
             range.startContainer === range.endContainer &&
@@ -68,17 +80,9 @@ export function useBeforeInput(
 
           const selectionAfterInsert = brIsGoingToBeReplacedWithText
             ? editorSelectionForChild(1, 1)(selection)
-            : undefined;
+            : moveEditorSelection(event.data.length)(selection);
 
-          // We have to postpone dispatch until DOM is updated because EditorTextRenderer
-          // reads from it. Draft.js uses setImmediate from fbjs which uses npm setImmediate.
-          // I have tried several other approaches, but setTimeout and requestAnimationFrame
-          // are too late while Promise.then is too early. YuzuJS/setImmediate is the best.
-          // https://github.com/facebook/draft-js/blob/master/src/component/handlers/edit/editOnBeforeInput.js
-          // https://blog.bitsrc.io/microtask-and-macrotask-a-hands-on-approach-5d77050e2168
-          setImmediateIsPendingRef.current = true;
-          setImmediate(() => {
-            setImmediateIsPendingRef.current = false;
+          afterTyping(() => {
             const text = startContainer.textContent || '';
             // Put BR back to DOM for React. Otherwise:
             // Uncaught DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
@@ -89,7 +93,7 @@ export function useBeforeInput(
               );
             }
             dispatch({
-              type: 'setTextOnInsert',
+              type: 'insertText',
               text,
               selection: selectionAfterInsert,
             });
@@ -132,16 +136,13 @@ export function useBeforeInput(
             ? editorSelectionOfParent(selection)
             : collapseEditorSelectionToStart(selection);
 
-          // We can not use 'setImmediateIsPendingRef.current = true;',
-          // because deleting does not fire document selection change.
-          // But it still fails... aha, nevolat update?
-          setImmediate(() => {
+          afterTyping(() => {
             const { data } = startContainer as Text;
             // Because we prevented default action to allow React to do update,
             // we have to set empty text manually.
             const text = textIsGoingToBeReplacedWithBR ? '' : data;
             dispatch({
-              type: 'setTextOnDelete',
+              type: 'deleteText',
               text,
               selection: selectionAfterDelete,
             });
@@ -161,5 +162,5 @@ export function useBeforeInput(
       // @ts-ignore Outdated types.
       div.removeEventListener('beforeinput', handleBeforeInput);
     };
-  }, [dispatch, divRef, nodesEditorPathsMap, setImmediateIsPendingRef]);
+  }, [dispatch, divRef, nodesEditorPathsMap, userIsTypingRef]);
 }

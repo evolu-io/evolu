@@ -35,6 +35,7 @@ import {
 } from '../reducers/editorReducer';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
+// import { isTextNode } from '../models/node';
 
 const debugEditorAction = Debug('editor:action');
 
@@ -70,14 +71,7 @@ export function EditorClient<T extends EditorElement>({
 }: EditorClientProps<T>) {
   invariantIsEditorStateSelectionValid(parentEditorState);
 
-  // This looks like a nerd joke, but it isn't.
-  // We use setImmediate polyfill in useBeforeInput, because we need to let browser
-  // to update DOM for writing and deleting, but we have to dispatch action
-  // immediately after. setImmediate polyfill is fast, but not fast enough for
-  // doc.addEventListener('selectionchange'), probably because it's based on
-  // DOM events as well. That's why we need setImmediateIsPendingRef.
-  // Without it and with very fast writing, editor state selection will not be valid.
-  const setImmediateIsPendingRef = useRef(false);
+  const userIsTypingRef = useRef(false);
 
   // Inner state is required because of IME etc. intermediate states.
   const [editorStateWithEditorElementType, dispatch] = useReducerWithLogger(
@@ -130,7 +124,9 @@ export function EditorClient<T extends EditorElement>({
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
-      if (setImmediateIsPendingRef.current) return;
+      // Ignore Selection changes during typing because it's already set.
+      if (userIsTypingRef.current) return;
+
       const selection = selectionToEditorSelection(
         getSelection(),
         nodesEditorPathsMap,
@@ -195,11 +191,16 @@ export function EditorClient<T extends EditorElement>({
 
     if (startNode == null || endNode == null) return;
 
+    // // Shit!
+    // if (
+    //   (isTextNode(startNode) && startOffset >= startNode.length) ||
+    //   (isTextNode(endNode) && endOffset >= endNode.length)
+    // ) {
+    //   console.log('wtf');
+    //   return;
+    // }
+
     const range = doc.createRange();
-    // Tady, protoze selekce neodpovida dom, kterej se mezitim smazal.
-    // Mam to proste ignorovat? Nemuzu tu selekci na psani blokovat?
-    // imho jde jen o psani, jakmile input, selekci vlastni?
-    // if (!isEditorStateSelectionValid(nextState)) return state;
     range.setStart(startNode, startOffset);
     range.setEnd(endNode, endOffset);
 
@@ -227,12 +228,7 @@ export function EditorClient<T extends EditorElement>({
     ensureSelectionEqualsEditorSelection();
   }, [ensureSelectionEqualsEditorSelection, editorState.hasFocus]);
 
-  useBeforeInput(
-    divRef,
-    setImmediateIsPendingRef,
-    nodesEditorPathsMap,
-    dispatch,
-  );
+  useBeforeInput(divRef, userIsTypingRef, nodesEditorPathsMap, dispatch);
 
   const rootPath = useMemo(() => [], []);
 

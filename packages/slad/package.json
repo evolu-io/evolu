@@ -13,7 +13,6 @@
     "debug": "^4.1.1",
     "fp-ts": "^2.0.5",
     "nanoid": "^2.1.0",
-    "setimmediate": "^1.0.5",
     "tiny-invariant": "^1.0.6",
     "utility-types": "^3.7.0"
   },

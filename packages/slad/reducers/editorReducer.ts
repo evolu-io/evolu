@@ -22,8 +22,8 @@ export type EditorAction =
       change: Partial<EditorState<EditorElement>>;
     }
   // beforeinput actions
-  | { type: 'setTextOnInsert'; text: string; selection?: EditorSelection }
-  | { type: 'setTextOnDelete'; text: string; selection: EditorSelection };
+  | { type: 'insertText'; text: string; selection: EditorSelection }
+  | { type: 'deleteText'; text: string; selection: EditorSelection };
 // | { type: 'deleteContent'; selection: EditorSelection };
 
 export type EditorReducer<T extends EditorElement = EditorElement> = Reducer<
@@ -46,17 +46,16 @@ export const editorReducer: EditorReducer = (state, action) => {
     case 'setEditorStatePartial':
       return { ...state, ...action.change };
 
-    case 'setTextOnInsert':
+    case 'insertText':
+      // We have to set text first so it can be selected then.
       return pipe(
         state,
         setText(action.text),
-        state => {
-          if (!action.selection) return state;
-          return select(action.selection)(state);
-        },
+        select(action.selection),
       );
 
-    case 'setTextOnDelete':
+    case 'deleteText':
+      // We have to set selection first so it will not point to deleted text.
       return pipe(
         state,
         select(action.selection),

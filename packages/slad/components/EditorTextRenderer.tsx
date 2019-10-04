@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React, { Component, memo } from 'react';
 import { findDOMNode } from 'react-dom';
 import invariant from 'tiny-invariant';
@@ -43,7 +44,6 @@ class EditorTextNode extends Component<EditorTextNodeProps> {
   shouldComponentUpdate(nextProps: EditorTextNodeProps) {
     const { node } = this;
     invariant(
-      // eslint-disable-next-line no-undef
       node instanceof HTMLBRElement || node instanceof Text,
       'node is not an HTMLBRElement nor a Text',
     );

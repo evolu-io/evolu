@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { Brand } from 'utility-types';
 import nanoid from 'nanoid';
 
@@ -17,4 +18,8 @@ export function isEditorNode(value: unknown): value is EditorNode {
 
 export function id(): EditorNodeID {
   return nanoid() as EditorNodeID;
+}
+
+export function isTextNode(node: Node): node is Text {
+  return (node as Text).nodeType === Node.TEXT_NODE;
 }

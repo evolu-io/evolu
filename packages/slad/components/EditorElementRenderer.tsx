@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useContext, useCallback, useRef } from 'react';
+import React, { memo, useMemo, useContext, useCallback } from 'react';
 import invariant from 'tiny-invariant';
 import {
   useSetNodeEditorPathRef,

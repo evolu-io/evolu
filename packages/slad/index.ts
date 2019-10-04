@@ -1,5 +1,3 @@
-import 'setimmediate';
-
 // Export everything. Rethink before the release.
 export * from './components/Editor';
 export * from './components/EditorClient';
