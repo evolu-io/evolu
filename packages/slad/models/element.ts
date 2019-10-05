@@ -254,6 +254,7 @@ export const recursiveRemoveID = element => {
 
 export function editorElementLens(path: EditorPath) {
   invariantPathIsNotEmpty(path);
+
   function get(): (element: EditorElement) => EditorElementPoint | null {
     return element => {
       return editorElementPoint(path)(element);
