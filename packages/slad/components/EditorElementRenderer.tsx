@@ -12,9 +12,7 @@ import { isEditorText } from '../models/text';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
 // Better to enforce the right data model. Check invariant message.
-// TODO: It seems we do not need it with beforeinput preventDefault, not even
-// for IME! Manually tested. But do not remove it yet since it does not harm.
-// http://jsfiddle.net/pdrmv48b/
+// TODO: Rethink. Maybe we can fix it because we don't use MutationObserver anymore.
 export function invariantHTMLElementHasToHaveAtLeastOneAttribute(
   element: HTMLElement,
 ) {
