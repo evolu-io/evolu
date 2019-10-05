@@ -59,11 +59,9 @@ class EditorTextNode extends Component<EditorTextNodeProps> {
   }
 
   render() {
-    // console.log('r');
     const { setNodeEditorPathRef } = this.props;
     const forceFlagKey = this.forceFlag ? 'A' : 'B';
     if (textIsBR(this.props.children)) {
-      // data-text="true" is probably unnecessary because parent has to have a prop. Let's see.
       return (
         <br
           key={forceFlagKey}
