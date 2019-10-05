@@ -221,8 +221,7 @@ export function EditorClient<T extends EditorElement>({
 
   useBeforeInput(divRef, userIsTypingRef, nodesEditorPathsMap, dispatch);
 
-  // TODO: It should be ref imho.
-  const rootPath = useMemo(() => [], []);
+  const rootPathRef = useRef([]);
 
   const children = useMemo(() => {
     return (
@@ -232,12 +231,12 @@ export function EditorClient<T extends EditorElement>({
         >
           <EditorElementRenderer
             element={editorState.element}
-            path={rootPath}
+            path={rootPathRef.current}
           />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
-  }, [editorState.element, renderElement, rootPath, setNodeEditorPath]);
+  }, [editorState.element, renderElement, setNodeEditorPath]);
 
   const handleDivFocus = useCallback(() => {
     ensureSelectionEqualsEditorSelection();
