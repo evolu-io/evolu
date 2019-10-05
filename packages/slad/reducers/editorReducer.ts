@@ -47,7 +47,7 @@ export const editorReducer: EditorReducer = (state, action) => {
       return { ...state, ...action.change };
 
     case 'insertText':
-      // We have to set text first so it can be selected then.
+      // We have to set text first so it can be selected later.
       return pipe(
         state,
         setText(action.text),

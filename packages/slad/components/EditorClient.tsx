@@ -23,6 +23,7 @@ import {
   editorSelectionIsForward,
   editorSelectionsAreEqual,
   selectionToEditorSelection,
+  EditorSelection,
 } from '../models/selection';
 import {
   EditorState,
@@ -119,22 +120,68 @@ export function EditorClient<T extends EditorElement>({
     return doc && doc.getSelection();
   }, []);
 
-  // Map document selection to editor selection.
+  const editorPathToNodeAndOffset = useCallback(
+    (path: EditorPath): [Node, number] => {
+      const node = editorPathsNodesMap.get(path.join());
+      // Element
+      if (node) {
+        const parent = node.parentNode as Node;
+        return [parent, path[path.length - 1]];
+      }
+      // Text
+      const textNodePath = path.slice(0, -1);
+      const textNode = editorPathsNodesMap.get(textNodePath.join()) as Node;
+      return [textNode, path[path.length - 1]];
+    },
+    [editorPathsNodesMap],
+  );
+
+  const setSelection = useCallback(
+    (editorSelection: EditorSelection) => {
+      const doc = divRef.current && divRef.current.ownerDocument;
+      if (doc == null) return;
+      const isForward = editorSelectionIsForward(editorSelection);
+      const [startNode, startOffset] = editorPathToNodeAndOffset(
+        isForward ? editorSelection.anchor : editorSelection.focus,
+      );
+      const [endNode, endOffset] = editorPathToNodeAndOffset(
+        isForward ? editorSelection.focus : editorSelection.anchor,
+      );
+      if (startNode == null || endNode == null) return;
+
+      const range = doc.createRange();
+      range.setStart(startNode, startOffset);
+      range.setEnd(endNode, endOffset);
+
+      const selection = getSelection();
+      if (selection == null) return;
+      selection.removeAllRanges();
+      if (isForward) {
+        selection.addRange(range);
+      } else {
+        // https://stackoverflow.com/a/4802994/233902
+        const endRange = range.cloneRange();
+        endRange.collapse(false);
+        selection.addRange(endRange);
+        selection.extend(range.startContainer, range.startOffset);
+      }
+    },
+    [editorPathToNodeAndOffset, getSelection],
+  );
+
+  // Update editor selection by document selection.
   useEffect(() => {
     const doc = divRef.current && divRef.current.ownerDocument;
     if (doc == null) return;
     const handleDocumentSelectionChange = () => {
-      // Ignore Selection changes during typing because it's already set.
       if (userIsTypingRef.current) return;
-
       const selection = selectionToEditorSelection(
         getSelection(),
         nodesEditorPathsMap,
       );
-      // Editor must remember the last selection when document selection
-      // is moved elsewhere to restore it later on focus.
-      // In Chrome, contentEditable does not do that.
-      // That's why we ignore null values.
+      // Editor must remember the last selection when document selection is moved
+      // elsewhere to restore it later on focus. In Chrome, contentEditable does not
+      // do that. That's why we ignore null values.
       if (selection == null) return;
       dispatch({ type: 'selectionChange', selection });
     };
@@ -163,64 +210,8 @@ export function EditorClient<T extends EditorElement>({
       // Feel free to send PR.
       return;
     }
-
-    const doc = divRef.current && divRef.current.ownerDocument;
-    if (doc == null) return;
-
-    function editorPathToNodeOffset(path: EditorPath): [Node, number] {
-      const node = editorPathsNodesMap.get(path.join());
-      // Element
-      if (node) {
-        const parent = node.parentNode as Node;
-        return [parent, path[path.length - 1]];
-      }
-      // Text
-      const textNodePath = path.slice(0, -1);
-      const textNode = editorPathsNodesMap.get(textNodePath.join()) as Node;
-      return [textNode, path[path.length - 1]];
-    }
-
-    const isForward = editorSelectionIsForward(editorState.selection);
-
-    const [startNode, startOffset] = editorPathToNodeOffset(
-      isForward ? editorState.selection.anchor : editorState.selection.focus,
-    );
-    const [endNode, endOffset] = editorPathToNodeOffset(
-      isForward ? editorState.selection.focus : editorState.selection.anchor,
-    );
-
-    if (startNode == null || endNode == null) return;
-
-    // // Shit!
-    // if (
-    //   (isTextNode(startNode) && startOffset >= startNode.length) ||
-    //   (isTextNode(endNode) && endOffset >= endNode.length)
-    // ) {
-    //   console.log('wtf');
-    //   return;
-    // }
-
-    const range = doc.createRange();
-    range.setStart(startNode, startOffset);
-    range.setEnd(endNode, endOffset);
-
-    selection.removeAllRanges();
-    if (isForward) {
-      selection.addRange(range);
-    } else {
-      // https://stackoverflow.com/a/4802994/233902
-      const endRange = range.cloneRange();
-      endRange.collapse(false);
-      selection.addRange(endRange);
-      selection.extend(range.startContainer, range.startOffset);
-    }
-  }, [
-    // Do not put editorState nor editorState.element here. It would override selection.
-    editorPathsNodesMap,
-    editorState.selection,
-    getSelection,
-    nodesEditorPathsMap,
-  ]);
+    setSelection(editorState.selection);
+  }, [editorState.selection, getSelection, nodesEditorPathsMap, setSelection]);
 
   // useLayoutEffect is must to keep browser selection in sync with editor state.
   useLayoutEffect(() => {
@@ -230,6 +221,7 @@ export function EditorClient<T extends EditorElement>({
 
   useBeforeInput(divRef, userIsTypingRef, nodesEditorPathsMap, dispatch);
 
+  // TODO: It should be ref imho.
   const rootPath = useMemo(() => [], []);
 
   const children = useMemo(() => {
@@ -269,8 +261,9 @@ export function EditorClient<T extends EditorElement>({
     lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
   useLayoutEffect(() => {
-    if (!editorStatesAreEqual(editorState, lastParentEditorStateRef.current))
+    if (!editorStatesAreEqual(editorState, lastParentEditorStateRef.current)) {
       onChange(editorState);
+    }
   }, [editorState, onChange]);
 
   // Sync outer editor state with inner.

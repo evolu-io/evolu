@@ -21,14 +21,13 @@ export function useBeforeInput(
     const { current: div } = divRef;
     if (div == null) return;
 
-    // Draft is using setImmediate polyfill, but it breaks selection here.
-    // It works for Draft probably because Draft controls selection completely,
-    // but we are listening it.
+    let lastAfterTypingCallback: () => void = () => {};
     function afterTyping(callback: () => void) {
       userIsTypingRef.current = true;
+      lastAfterTypingCallback = callback;
       requestAnimationFrame(() => {
         userIsTypingRef.current = false;
-        callback();
+        lastAfterTypingCallback();
       });
     }
 
@@ -37,6 +36,16 @@ export function useBeforeInput(
       // default behavior with custom. As for Firefox, we can polyfill it somehow, but
       // Firefox is already working on beforeinput support, so let's wait.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=970802
+
+      // We don't prevent writing and deleting on collapsed selection, because we have
+      // to allow it to read real content from DOM. Real content is text automatically
+      // corrected by spellcheck, or by an extension, or by contentEditable itself
+      // when whitespaces are updated in whiteSpace != pre elements.
+
+      // But there is an issue with Chrome. Chrome sometimes dispatches subsequent
+      // events so quickly, that no async callback can catch them. I have tried every
+      // macrotask implementation without any success. Microtask is fast enough, but
+      // DOM is not yet updated in such case. Thats's lastAfterTypingCallback exists.
 
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
@@ -105,7 +114,7 @@ export function useBeforeInput(
         // "...or delete the selection with the selection collapsing to its start after the deletion"
         // "...or delete the selection with the selection collapsing to its end after the deletion"
         // I don't understand why the direction matters, because when a content is
-        // deleted, selection should always be collapsed to start I suppose.
+        // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
           const selection = editorSelectionFromInputEvent(
@@ -126,6 +135,7 @@ export function useBeforeInput(
           // prevent default, so text node can be properly replaced with BR by React.
           // @ts-ignore Missing getTargetRanges.
           const range = event.getTargetRanges()[0] as Range;
+
           const textIsGoingToBeReplacedWithBR =
             range.startContainer === range.endContainer &&
             range.startOffset === 0 &&
