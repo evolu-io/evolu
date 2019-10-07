@@ -2,9 +2,9 @@ import { unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
-import { Predicate } from 'fp-ts/lib/function';
+import { Predicate, Refinement } from 'fp-ts/lib/function';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
-import { EditorNode, id, isEditorNode } from './node';
+import { EditorNode, id } from './node';
 import {
   EditorPath,
   editorPathIsEmpty,
@@ -20,10 +20,8 @@ import {
 import {
   EditorText,
   editorTextIsBR,
-  EditorTextWithOffset,
   invariantIsEditorText,
   isEditorText,
-  isEditorTextWithOffset,
 } from './text';
 
 /**
@@ -44,11 +42,26 @@ export type RenderEditorElement = (
 // This can not be Endomorphism<EditorElement> because of generic T.
 export type MapEditorElement = <T extends EditorElement>(element: T) => T;
 
-export function isEditorElement(value: unknown): value is EditorElement {
+export const isEditorElement: Refinement<EditorNode, EditorElement> = (
+  value,
+): value is EditorElement => Array.isArray((value as EditorElement).children);
+
+export type EditorTextWithOffset = {
+  readonly editorText: EditorText;
+  readonly offset: number;
+};
+
+export const isEditorTextWithOffset: Refinement<
+  EditorElementPointTo,
+  EditorTextWithOffset
+> = (value): value is EditorTextWithOffset => {
+  const { editorText } = value as EditorTextWithOffset;
   return (
-    isEditorNode(value) && Array.isArray((value as EditorElement).children)
+    editorText != null &&
+    isEditorText(editorText) &&
+    typeof (value as EditorTextWithOffset).offset === 'number'
   );
-}
+};
 
 /**
  * If point.to isEditorTextWithOffset, return editorText. This ensures
@@ -61,7 +74,7 @@ export function editorElementPointAsChild(
 }
 
 export function invariantIsEditorElement(
-  value: unknown,
+  value: EditorNode,
 ): value is EditorElement {
   invariant(isEditorElement(value), 'Value is not EditorElement.');
   return true;
@@ -92,17 +105,6 @@ export type EditorElementPointTo =
   | EditorText
   | EditorTextWithOffset;
 
-export function isEditorElementPointTo(
-  value: unknown,
-): value is EditorElementPointTo {
-  if (value == null) return false;
-  return (
-    isEditorElement(value) ||
-    isEditorText(value) ||
-    isEditorTextWithOffset(value)
-  );
-}
-
 /**
  * EditorElementPoint is materialized EditorPath in EditorElement.
  */
@@ -111,19 +113,10 @@ export interface EditorElementPoint {
   parents: EditorElement[];
 }
 
-export function isEditorElementPoint(
-  value: unknown,
+export function invariantIsEditorElementPointDefined(
+  value: EditorElementPoint | null,
 ): value is EditorElementPoint {
-  if (value == null) return false;
-  const point = value as EditorElementPoint;
-  if (!Array.isArray(point.parents)) return false;
-  return isEditorElementPointTo(point.to);
-}
-
-export function invariantIsEditorElementPoint(
-  value: unknown,
-): value is EditorElementPoint {
-  invariant(isEditorElementPoint(value), 'Value is not EditorElementPoint.');
+  invariant(value != null, 'EditorElementPoint is not defined.');
   return true;
 }
 
@@ -266,7 +259,7 @@ export function editorElementLens(path: EditorPath) {
   function set(child: EditorElementChild): MapEditorElement {
     return element => {
       const point = get()(element);
-      if (!invariantIsEditorElementPoint(point)) return element;
+      if (!invariantIsEditorElementPointDefined(point)) return element;
       const [parentPath, lastIndex] = invariantParentPathAndLastIndex(
         // When the path points to EditorTextWithOffset, get parent path.
         isEditorTextWithOffset(point.to) ? invariantParentPath(path) : path,
@@ -294,7 +287,7 @@ export function editorElementLens(path: EditorPath) {
   ): MapEditorElement {
     return element => {
       const point = get()(element);
-      if (!isEditorElementPoint(point))
+      if (point == null)
         throw new Error(
           'Not defined point in editorElementLens modify. ' +
             'Check whether EditorState selections matches EditorState element.',
@@ -317,8 +310,8 @@ export function deleteContentElement(
     const range = editorSelectionAsRange(selection);
     const anchorPoint = editorElementPoint(range.anchor)(element);
     const focusPoint = editorElementPoint(range.focus)(element);
-    if (!invariantIsEditorElementPoint(anchorPoint)) return element;
-    if (!invariantIsEditorElementPoint(focusPoint)) return element;
+    if (!invariantIsEditorElementPointDefined(anchorPoint)) return element;
+    if (!invariantIsEditorElementPointDefined(focusPoint)) return element;
     // TODO: Handle other cases, with lenses.
     if (
       // Just deleting text on the same EditorTexts.

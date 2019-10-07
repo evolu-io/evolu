@@ -2,6 +2,7 @@
 import { Brand } from 'utility-types';
 import nanoid from 'nanoid';
 import { IO } from 'fp-ts/lib/IO';
+import { Refinement } from 'fp-ts/lib/function';
 
 /**
  * EditorNodeID is string created with nanoid.
@@ -13,12 +14,7 @@ export interface EditorNode {
   readonly id: EditorNodeID;
 }
 
-export function isEditorNode(value: unknown): value is EditorNode {
-  return value != null && typeof (value as EditorNode).id === 'string';
-}
-
 export const id: IO<EditorNodeID> = () => nanoid() as EditorNodeID;
 
-export function isTextNode(node: Node): node is Text {
-  return (node as Text).nodeType === Node.TEXT_NODE;
-}
+export const isTextNode: Refinement<Node, Text> = (node): node is Text =>
+  (node as Text).nodeType === Node.TEXT_NODE;

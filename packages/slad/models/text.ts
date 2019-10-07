@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
-import { Predicate } from 'fp-ts/lib/function';
-import { EditorNode, isEditorNode } from './node';
+import { Predicate, Refinement } from 'fp-ts/lib/function';
+import { EditorNode } from './node';
 
 /**
  * EditorText is object because even the two identical texts need own identity.
@@ -11,37 +11,12 @@ export interface EditorText extends EditorNode {
   readonly text: string;
 }
 
-export function isEditorText(value: unknown): value is EditorText {
-  return isEditorNode(value) && typeof (value as EditorText).text === 'string';
-}
+export const isEditorText: Refinement<EditorNode, EditorText> = (
+  u,
+): u is EditorText => typeof (u as EditorText).text === 'string';
 
-export function invariantIsEditorText(value: unknown): value is EditorText {
+export function invariantIsEditorText(value: EditorNode): value is EditorText {
   invariant(isEditorText(value), 'The value is not EditorText.');
-  return true;
-}
-
-export type EditorTextWithOffset = {
-  readonly editorText: EditorText;
-  readonly offset: number;
-};
-
-export function isEditorTextWithOffset(
-  value: unknown,
-): value is EditorTextWithOffset {
-  return (
-    value != null &&
-    isEditorText((value as EditorTextWithOffset).editorText) &&
-    typeof (value as EditorTextWithOffset).offset === 'number'
-  );
-}
-
-export function invariantIsEditorTextWithOffset(
-  value: unknown,
-): value is EditorTextWithOffset {
-  invariant(
-    isEditorTextWithOffset(value),
-    'The value is not EditorTextWithOffset.',
-  );
   return true;
 }
 
