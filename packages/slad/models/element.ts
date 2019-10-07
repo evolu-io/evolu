@@ -41,6 +41,7 @@ export type RenderEditorElement = (
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
+// This can not be Endomorphism<EditorElement> because of generic T.
 export type MapEditorElement = <T extends EditorElement>(element: T) => T;
 
 export function isEditorElement(value: unknown): value is EditorElement {

@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Predicate } from 'fp-ts/lib/function';
+import { Predicate, Endomorphism } from 'fp-ts/lib/function';
 import {
   editorPathsAreEqual,
   EditorPath,
@@ -19,10 +19,6 @@ export interface EditorSelection {
   readonly anchor: EditorPath;
   readonly focus: EditorPath;
 }
-
-export type MapEditorSelection = (
-  selection: EditorSelection,
-) => EditorSelection;
 
 // Why not Range type?
 // Range is technically forward Selection. Having a special type for that,
@@ -128,7 +124,9 @@ export function invariantEditorSelectionIsCollapsed(
   return true;
 }
 
-export function moveEditorSelectionAnchor(offset: number): MapEditorSelection {
+export function moveEditorSelectionAnchor(
+  offset: number,
+): Endomorphism<EditorSelection> {
   return selection => {
     return {
       ...selection,
@@ -137,7 +135,9 @@ export function moveEditorSelectionAnchor(offset: number): MapEditorSelection {
   };
 }
 
-export function moveEditorSelectionFocus(offset: number): MapEditorSelection {
+export function moveEditorSelectionFocus(
+  offset: number,
+): Endomorphism<EditorSelection> {
   return selection => {
     return {
       ...selection,
@@ -146,7 +146,9 @@ export function moveEditorSelectionFocus(offset: number): MapEditorSelection {
   };
 }
 
-export function moveEditorSelection(offset: number): MapEditorSelection {
+export function moveEditorSelection(
+  offset: number,
+): Endomorphism<EditorSelection> {
   return selection =>
     pipe(
       selection,
@@ -155,21 +157,21 @@ export function moveEditorSelection(offset: number): MapEditorSelection {
     );
 }
 
-export function collapseEditorSelectionToStart(
-  selection: EditorSelection,
-): EditorSelection {
+export const collapseEditorSelectionToStart: Endomorphism<
+  EditorSelection
+> = selection => {
   if (editorSelectionIsCollapsed(selection)) return selection;
   const range = editorSelectionAsRange(selection);
   return { anchor: range.anchor, focus: range.anchor };
-}
+};
 
-export function collapseEditorSelectionToEnd(
-  selection: EditorSelection,
-): EditorSelection {
+export const collapseEditorSelectionToEnd: Endomorphism<
+  EditorSelection
+> = selection => {
   if (editorSelectionIsCollapsed(selection)) return selection;
   const range = editorSelectionAsRange(selection);
   return { anchor: range.focus, focus: range.focus };
-}
+};
 
 export function editorSelectionFromInputEvent(
   event: InputEvent,
@@ -187,7 +189,9 @@ export function editorSelectionFromInputEvent(
 /**
  * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
  */
-export const editorSelectionOfParent: MapEditorSelection = selection => {
+export const editorSelectionOfParent: Endomorphism<
+  EditorSelection
+> = selection => {
   return {
     anchor: invariantParentPath(selection.anchor),
     focus: invariantParentPath(selection.focus),
@@ -200,7 +204,7 @@ export const editorSelectionOfParent: MapEditorSelection = selection => {
 export function editorSelectionForChild(
   anchorLastIndex: number,
   focusLastIndex: number,
-): MapEditorSelection {
+): Endomorphism<EditorSelection> {
   return selection => {
     return {
       anchor: selection.anchor.concat(anchorLastIndex),
