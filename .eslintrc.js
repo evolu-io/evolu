@@ -53,5 +53,7 @@ module.exports = {
     'no-lonely-if': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'max-classes-per-file': 'off',
+    'no-else-return': 'off',
+    'no-nested-ternary': 'off',
   },
 };
