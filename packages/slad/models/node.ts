@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import { Brand } from 'utility-types';
 import nanoid from 'nanoid';
+import { IO } from 'fp-ts/lib/IO';
 
 /**
  * EditorNodeID is string created with nanoid.
@@ -16,10 +17,7 @@ export function isEditorNode(value: unknown): value is EditorNode {
   return value != null && typeof (value as EditorNode).id === 'string';
 }
 
-export function id(value?: string): EditorNodeID {
-  if (value != null) return value as EditorNodeID;
-  return nanoid() as EditorNodeID;
-}
+export const id: IO<EditorNodeID> = () => nanoid() as EditorNodeID;
 
 export function isTextNode(node: Node): node is Text {
   return (node as Text).nodeType === Node.TEXT_NODE;
