@@ -2,6 +2,7 @@ import { unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
+import { Predicate } from 'fp-ts/lib/function';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorNode, id, isEditorNode } from './node';
 import {
@@ -196,9 +197,9 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-export function editorElementIsNormalized({
+export const editorElementIsNormalized: Predicate<EditorElement> = ({
   children,
-}: EditorElement): boolean {
+}) => {
   return !children.some((child, i) => {
     if (!isEditorText(child)) return !editorElementIsNormalized(child);
     if (editorTextIsBR(child)) return false;
@@ -207,7 +208,7 @@ export function editorElementIsNormalized({
       return true;
     return false;
   });
-}
+};
 
 /**
  * Resolve EditorPath on EditorElement to EditorElementPoint or null.
@@ -232,8 +233,7 @@ export function editorElementPoint(path: EditorPath) {
   };
 }
 
-// TODO: Fix types.
-// @ts-ignore
+// @ts-ignore TODO: Fix types.
 export const recursiveRemoveID = element => {
   if (element == null) return element;
   // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
@@ -252,6 +252,7 @@ export const recursiveRemoveID = element => {
   };
 };
 
+// TODO: Replace with monocle-ts.
 export function editorElementLens(path: EditorPath) {
   invariantPathIsNotEmpty(path);
 
