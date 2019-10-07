@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Predicate } from 'fp-ts/lib/function';
 import {
   editorPathsAreEqual,
   EditorPath,
@@ -36,9 +37,8 @@ export type MapEditorSelection = (
 /**
  * Forward selection is not flipped aka the focus in not before the anchor.
  */
-export function editorSelectionIsForward(selection: EditorSelection): boolean {
-  return editorPathsAreForward(selection.anchor, selection.focus);
-}
+export const editorSelectionIsForward: Predicate<EditorSelection> = selection =>
+  editorPathsAreForward(selection.anchor, selection.focus);
 
 /**
  * Range is forward Selection. It ensures the focus is not before the anchor.
@@ -51,12 +51,12 @@ export function editorSelectionAsRange(
   return { anchor, focus };
 }
 
-export function editorSelectionIsCollapsed(
-  selection: EditorSelection,
-): boolean {
-  return editorPathsAreEqual(selection.anchor, selection.focus);
-}
+export const editorSelectionIsCollapsed: Predicate<
+  EditorSelection
+> = selection => editorPathsAreEqual(selection.anchor, selection.focus);
 
+// TODO: Compare structures.
+// https://gcanti.github.io/fp-ts/recipes/equality.html
 export function editorSelectionsAreEqual(
   selection1: EditorSelection | null,
   selection2: EditorSelection | null,

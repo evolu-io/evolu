@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { Optional } from 'utility-types';
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Predicate } from 'fp-ts/lib/function';
 import {
   deleteContentElement,
   EditorElement,
@@ -62,15 +63,15 @@ export function createEditorStateWithText({
 /**
  * Validates whether state selection points to EditorElementPoints.
  */
-export function isEditorStateSelectionValid<T extends EditorElement>(
-  state: EditorState<T>,
-): boolean {
+export const isEditorStateSelectionValid: Predicate<
+  EditorState<EditorElement>
+> = state => {
   if (!state.selection) return true;
   // TODO: Refactor out to isEditorElementSelectionValid.
   const anchorPoint = editorElementPoint(state.selection.anchor)(state.element);
   const focusPoint = editorElementPoint(state.selection.focus)(state.element);
   return anchorPoint != null && focusPoint != null;
-}
+};
 
 export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
   state: EditorState<T>,

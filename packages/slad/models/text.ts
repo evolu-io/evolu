@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant';
+import { Predicate } from 'fp-ts/lib/function';
 import { EditorNode, isEditorNode } from './node';
 
 /**
@@ -44,9 +45,7 @@ export function invariantIsEditorTextWithOffset(
   return true;
 }
 
-export function textIsBR(text: string) {
-  return text.length === 0;
-}
+export const textIsBR: Predicate<string> = text => text.length === 0;
 
 export function editorTextIsBR(editorText: EditorText) {
   return textIsBR(editorText.text);

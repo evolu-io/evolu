@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant';
+import { Predicate } from 'fp-ts/lib/function';
 
 export type EditorPath = readonly number[];
 
@@ -20,9 +21,8 @@ export function editorPathsAreEqual(
   return true;
 }
 
-export function editorPathIsEmpty(path: EditorPath) {
-  return path.length === 0;
-}
+export const editorPathIsEmpty: Predicate<EditorPath> = path =>
+  path.length === 0;
 
 export function invariantPathIsNotEmpty(path: EditorPath) {
   invariant(!editorPathIsEmpty(path), 'Path can not be empty.');
