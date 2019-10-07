@@ -16,7 +16,8 @@ export function isEditorNode(value: unknown): value is EditorNode {
   return value != null && typeof (value as EditorNode).id === 'string';
 }
 
-export function id(): EditorNodeID {
+export function id(value?: string): EditorNodeID {
+  if (value != null) return value as EditorNodeID;
   return nanoid() as EditorNodeID;
 }
 
