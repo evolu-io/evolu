@@ -63,10 +63,6 @@ export const isEditorTextWithOffset: Refinement<
   );
 };
 
-/**
- * If point.to isEditorTextWithOffset, return editorText. This ensures
- * we can always get EditorElementChild from EditorElementPoint.
- */
 export function editorElementPointAsChild(
   point: EditorElementPoint,
 ): EditorElementChild {
@@ -99,6 +95,7 @@ export type EditorReactElement = $Values<
 
 /**
  * EditorPath can be resolved to EditorElement, EditorText, or EditorTextWithOffset.
+ * Place? Position? ResolvedPath? EditorElementPoint
  */
 export type EditorElementPointTo =
   | EditorElement

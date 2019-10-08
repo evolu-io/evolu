@@ -3,7 +3,6 @@ import { Optional } from 'utility-types';
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Predicate } from 'fp-ts/lib/function';
-import { getStructEq, Eq, strictEqual } from 'fp-ts/lib/Eq';
 import {
   deleteContentElement,
   EditorElement,
@@ -69,6 +68,7 @@ export const isEditorStateSelectionValid: Predicate<
 > = state => {
   if (!state.selection) return true;
   // TODO: Refactor out to isEditorElementSelectionValid.
+  // const anchorPlace = editorElementPlace(state.selection.anchor)(state.element);
   const anchorPoint = editorElementPoint(state.selection.anchor)(state.element);
   const focusPoint = editorElementPoint(state.selection.focus)(state.element);
   return anchorPoint != null && focusPoint != null;
@@ -83,15 +83,6 @@ export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
   );
   return true;
 }
-
-/**
- * Only flat comparison. No `selection: eqEditorSelection` etc.
- */
-export const eqEditorState: Eq<EditorState<EditorElement>> = getStructEq({
-  element: { equals: strictEqual },
-  hasFocus: { equals: strictEqual },
-  selection: { equals: strictEqual },
-});
 
 export function select(selection: EditorSelection): MapEditorState {
   return state => {

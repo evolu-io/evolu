@@ -27,7 +27,6 @@ import {
 } from '../models/selection';
 import {
   EditorState,
-  eqEditorState,
   invariantIsEditorStateSelectionValid,
 } from '../models/state';
 import {
@@ -258,16 +257,19 @@ export function EditorClient<T extends EditorElement>({
     dispatch({ type: 'blur' });
   }, [dispatch]);
 
+  // I am still not sure having inner and outer states is the right approach.
+
   // Sync inner editor state with outer.
-  const lastParentEditorStateRef = useRef<EditorState<T> | null>(null);
+  const lastParentEditorStateRef = useRef<EditorState<T>>(parentEditorState);
   useLayoutEffect(() => {
     lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
   useLayoutEffect(() => {
-    if (
-      lastParentEditorStateRef.current &&
-      !eqEditorState.equals(editorState, lastParentEditorStateRef.current)
-    ) {
+    const hasChange =
+      editorState.element !== lastParentEditorStateRef.current.element ||
+      editorState.hasFocus !== lastParentEditorStateRef.current.hasFocus ||
+      editorState.selection !== lastParentEditorStateRef.current.selection;
+    if (hasChange) {
       onChange(editorState);
     }
   }, [editorState, onChange]);
