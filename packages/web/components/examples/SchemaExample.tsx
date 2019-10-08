@@ -127,7 +127,7 @@ export const initialEditorState = editor.createEditorState<SchemaEditorState>({
 export function useSchemaRenderElement() {
   const renderElement = useCallback<editor.RenderEditorElement>(
     (editorElement, children, ref) => {
-      // https://github.com/steida/slad/issues/28
+      // This is how we can leverage assertNever.
       const element = editorElement as
         | SchemaDocumentElement
         | SchemaHeadingElement
