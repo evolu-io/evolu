@@ -4,6 +4,10 @@ import { eqNumber } from 'fp-ts/lib/Eq';
 import { getEq } from 'fp-ts/lib/Array';
 
 // EditorPathIndex as newtype-ts NonNegative?
+// I would like to have EditorPath as readonly number[], but it complicates usage:
+// `last(path)` will:
+// `Argument of type 'readonly number[]' is not assignable to parameter of type 'number[]'.`
+// Casting everywhere is boring.
 export type EditorPath = number[];
 
 export type NodesEditorPathsMap = Map<Node, EditorPath>;
