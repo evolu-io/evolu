@@ -1,8 +1,9 @@
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Predicate, Endomorphism } from 'fp-ts/lib/function';
+import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import {
-  editorPathsAreEqual,
+  eqEditorPath,
   EditorPath,
   NodesEditorPathsMap,
   editorPathsAreForward,
@@ -49,28 +50,19 @@ export function editorSelectionAsRange(
 
 export const editorSelectionIsCollapsed: Predicate<
   EditorSelection
-> = selection => editorPathsAreEqual(selection.anchor, selection.focus);
+> = selection => eqEditorPath.equals(selection.anchor, selection.focus);
 
-// TODO: Compare structures.
-// https://gcanti.github.io/fp-ts/recipes/equality.html
-export function editorSelectionsAreEqual(
-  selection1: EditorSelection | null,
-  selection2: EditorSelection | null,
-): boolean {
-  if (selection1 === selection2) return true;
-  if (selection1 == null || selection2 == null) return false;
-  return (
-    editorPathsAreEqual(selection1.anchor, selection2.anchor) &&
-    editorPathsAreEqual(selection1.focus, selection2.focus)
-  );
-}
+export const eqEditorSelection: Eq<EditorSelection> = getStructEq({
+  anchor: eqEditorPath,
+  focus: eqEditorPath,
+});
 
 export function invariantEditorSelectionsAreEqual(
-  selection1: EditorSelection | null,
-  selection2: EditorSelection | null,
+  selection1: EditorSelection,
+  selection2: EditorSelection,
 ): boolean {
   invariant(
-    editorSelectionsAreEqual(selection1, selection2),
+    eqEditorSelection.equals(selection1, selection2),
     'EditorSelections are not equal.',
   );
   return true;

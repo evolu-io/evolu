@@ -1,9 +1,9 @@
-import { editorPathsAreEqual, editorPathsAreForward } from './path';
+import { eqEditorPath, editorPathsAreForward } from './path';
 
-test('editorPathsAreEqual', () => {
-  expect(editorPathsAreEqual([], [])).toBe(true);
-  expect(editorPathsAreEqual([1], [1])).toBe(true);
-  expect(editorPathsAreEqual([], [1])).toBe(false);
+test('eqEditorPath', () => {
+  expect(eqEditorPath.equals([], [])).toBe(true);
+  expect(eqEditorPath.equals([1], [1])).toBe(true);
+  expect(eqEditorPath.equals([], [1])).toBe(false);
 });
 
 test('editorPathsAreForward', () => {

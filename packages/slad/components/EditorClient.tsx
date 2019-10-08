@@ -21,13 +21,13 @@ import { EditorElement, RenderEditorElement } from '../models/element';
 import { EditorPath } from '../models/path';
 import {
   editorSelectionIsForward,
-  editorSelectionsAreEqual,
+  eqEditorSelection,
   selectionToEditorSelection,
   EditorSelection,
 } from '../models/selection';
 import {
   EditorState,
-  editorStatesAreEqual,
+  eqEditorState,
   invariantIsEditorStateSelectionValid,
 } from '../models/state';
 import {
@@ -200,7 +200,11 @@ export function EditorClient<T extends EditorElement>({
       selection,
       nodesEditorPathsMap,
     );
-    if (editorSelectionsAreEqual(editorState.selection, currentSelection))
+    if (
+      editorState.selection &&
+      currentSelection &&
+      eqEditorSelection.equals(editorState.selection, currentSelection)
+    )
       return;
 
     if (!editorState.selection) {
@@ -260,7 +264,10 @@ export function EditorClient<T extends EditorElement>({
     lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
   useLayoutEffect(() => {
-    if (!editorStatesAreEqual(editorState, lastParentEditorStateRef.current)) {
+    if (
+      lastParentEditorStateRef.current &&
+      !eqEditorState.equals(editorState, lastParentEditorStateRef.current)
+    ) {
       onChange(editorState);
     }
   }, [editorState, onChange]);

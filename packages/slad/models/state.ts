@@ -3,6 +3,7 @@ import { Optional } from 'utility-types';
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Predicate } from 'fp-ts/lib/function';
+import { getStructEq, Eq, strictEqual } from 'fp-ts/lib/Eq';
 import {
   deleteContentElement,
   EditorElement,
@@ -14,7 +15,7 @@ import {
 import {
   collapseEditorSelectionToStart,
   EditorSelection,
-  editorSelectionsAreEqual,
+  eqEditorSelection,
   invariantEditorSelectionIsDefined,
   moveEditorSelection,
 } from './selection';
@@ -83,22 +84,19 @@ export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
   return true;
 }
 
-export function editorStatesAreEqual<T extends EditorElement>(
-  editorState1: EditorState<T> | null,
-  editorState2: EditorState<T> | null,
-): boolean {
-  if (editorState1 === editorState2) return true;
-  if (editorState1 == null || editorState2 == null) return false;
-  return (
-    editorState1.element === editorState2.element &&
-    editorState1.hasFocus === editorState2.hasFocus &&
-    editorSelectionsAreEqual(editorState1.selection, editorState2.selection)
-  );
-}
+/**
+ * Only flat comparison. No `selection: eqEditorSelection` etc.
+ */
+export const eqEditorState: Eq<EditorState<EditorElement>> = getStructEq({
+  element: { equals: strictEqual },
+  hasFocus: { equals: strictEqual },
+  selection: { equals: strictEqual },
+});
 
 export function select(selection: EditorSelection): MapEditorState {
   return state => {
-    if (editorSelectionsAreEqual(selection, state.selection)) return state;
+    if (state.selection && eqEditorSelection.equals(state.selection, selection))
+      return state;
     const nextState = { ...state, selection };
     invariantIsEditorStateSelectionValid(nextState);
     return nextState;

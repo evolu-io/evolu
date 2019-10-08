@@ -1,6 +1,6 @@
 import {
   editorSelectionIsCollapsed,
-  editorSelectionsAreEqual,
+  eqEditorSelection,
   editorSelectionIsForward,
   editorSelectionAsRange,
 } from './selection';
@@ -10,15 +10,13 @@ test('editorSelectionIsCollapsed', () => {
   expect(editorSelectionIsCollapsed({ anchor: [], focus: [1] })).toBe(false);
 });
 
-test('editorSelectionsAreEqual', () => {
+test('eqEditorSelection', () => {
   const s1 = { anchor: [], focus: [1] };
   const s2 = { anchor: [], focus: [1] };
   const s3 = { anchor: [], focus: [] };
-  expect(editorSelectionsAreEqual(s1, s1)).toBe(true);
-  expect(editorSelectionsAreEqual(s1, s2)).toBe(true);
-  expect(editorSelectionsAreEqual(null, null)).toBe(true);
-  expect(editorSelectionsAreEqual(s2, s3)).toBe(false);
-  expect(editorSelectionsAreEqual(null, s3)).toBe(false);
+  expect(eqEditorSelection.equals(s1, s1)).toBe(true);
+  expect(eqEditorSelection.equals(s1, s2)).toBe(true);
+  expect(eqEditorSelection.equals(s2, s3)).toBe(false);
 });
 
 test('editorSelectionIsForward', () => {

@@ -7,7 +7,7 @@ import {
 import { EditorTextRenderer } from './EditorTextRenderer';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { EditorElement } from '../models/element';
-import { EditorPath, editorPathsAreEqual } from '../models/path';
+import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
@@ -73,7 +73,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     return <>{renderElement(element, children, handleElementRef)}</>;
   },
   (prevProps, nextProps) => {
-    if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
+    if (!eqEditorPath.equals(prevProps.path, nextProps.path)) return false;
     if (prevProps.element !== nextProps.element) return false;
     return true;
   },

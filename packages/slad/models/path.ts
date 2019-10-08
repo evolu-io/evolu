@@ -1,7 +1,10 @@
 import invariant from 'tiny-invariant';
 import { Predicate } from 'fp-ts/lib/function';
+import { eqNumber } from 'fp-ts/lib/Eq';
+import { getEq } from 'fp-ts/lib/Array';
 
-export type EditorPath = readonly number[];
+// EditorPathIndex as newtype-ts NonNegative?
+export type EditorPath = number[];
 
 export type NodesEditorPathsMap = Map<Node, EditorPath>;
 
@@ -10,16 +13,7 @@ export type NodesEditorPathsMap = Map<Node, EditorPath>;
  */
 export type EditorPathsNodesMap = Map<string, Node>;
 
-export function editorPathsAreEqual(
-  path1: EditorPath,
-  path2: EditorPath,
-): boolean {
-  if (path1 === path2) return true;
-  const { length } = path1;
-  if (length !== path2.length) return false;
-  for (let i = 0; i < length; i++) if (path1[i] !== path2[i]) return false;
-  return true;
-}
+export const eqEditorPath = getEq(eqNumber);
 
 export const editorPathIsEmpty: Predicate<EditorPath> = path =>
   path.length === 0;

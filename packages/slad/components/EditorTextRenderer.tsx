@@ -6,7 +6,7 @@ import {
   useSetNodeEditorPathRef,
   SetNodeEditorPathRef,
 } from '../hooks/useSetNodeEditorPathRef';
-import { EditorPath, editorPathsAreEqual } from '../models/path';
+import { EditorPath, eqEditorPath } from '../models/path';
 import { textIsBR } from '../models/text';
 
 // Inspired by DraftEditorTextNode.
@@ -104,7 +104,7 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
     );
   },
   (prevProps, nextProps) => {
-    if (!editorPathsAreEqual(prevProps.path, nextProps.path)) return false;
+    if (!eqEditorPath.equals(prevProps.path, nextProps.path)) return false;
     if (prevProps.text !== nextProps.text) return false;
     return true;
   },
