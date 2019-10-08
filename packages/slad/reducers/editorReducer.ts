@@ -55,7 +55,7 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'deleteText':
-      // We have to set selection first so it will not point to deleted text.
+      // We have to set selection first to not select deleted text.
       return pipe(
         state,
         select(action.selection),

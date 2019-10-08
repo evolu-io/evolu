@@ -99,10 +99,10 @@ export function rangeToEditorSelection(
   };
 }
 
-export function invariantEditorSelectionIsDefined(
+export function invariantEditorSelectionIsNotNull(
   selection: EditorSelection | null,
 ): selection is EditorSelection {
-  invariant(selection != null, 'EditorSelection is not defined.');
+  invariant(selection != null, 'EditorSelection is null.');
   return true;
 }
 
@@ -174,7 +174,7 @@ export function editorSelectionFromInputEvent(
   const range = event.getTargetRanges()[0] as Range;
   const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
   // To make TS happy. Invariant throws anyway.
-  if (!invariantEditorSelectionIsDefined(selection)) return selection as any;
+  if (!invariantEditorSelectionIsNotNull(selection)) return selection as any;
   return selection;
 }
 
