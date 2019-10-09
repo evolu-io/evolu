@@ -28,9 +28,10 @@ import {
  * EditorElement is the base model for all other editor elements.
  */
 export interface EditorElement extends EditorNode {
-  readonly children: readonly (EditorElementChild)[];
+  readonly children: (EditorElementChild)[];
 }
 
+// EditorElementChild could be EditorNode, but I prefer more strict schema.
 export type EditorElementChild = EditorElement | EditorText;
 
 export type RenderEditorElement = (
@@ -39,7 +40,6 @@ export type RenderEditorElement = (
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
-// https://github.com/gcanti/fp-ts/issues/966
 export type MapEditorElement = <T extends EditorElement>(element: T) => T;
 
 export const isEditorElement: Refinement<EditorNode, EditorElement> = (
@@ -51,8 +51,13 @@ export type EditorTextWithOffset = {
   readonly offset: number;
 };
 
+export interface MaterializedEditorPath {
+  to: EditorElement | EditorText | EditorTextWithOffset;
+  parents: EditorElement[];
+}
+
 export const isEditorTextWithOffset: Refinement<
-  EditorElementMaterializedPath['to'],
+  MaterializedEditorPath['to'],
   EditorTextWithOffset
 > = (value): value is EditorTextWithOffset => {
   const { editorText } = value as EditorTextWithOffset;
@@ -70,12 +75,10 @@ export function invariantIsEditorElement(
   return true;
 }
 
-// export type EditorFragment = readonly EditorElementChild[];
-
 interface EditorReactElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
-  readonly children: readonly (EditorReactElement | EditorText)[];
+  readonly children: (EditorReactElement | EditorText)[];
 }
 
 export type EditorReactElement = $Values<
@@ -87,22 +90,17 @@ export type EditorReactElement = $Values<
   }
 >;
 
-export interface EditorElementMaterializedPath {
-  to: EditorElement | EditorText | EditorTextWithOffset;
-  parents: EditorElement[];
-}
-
-export function invariantEditorElementMaterializedPathIsNotNull(
-  value: EditorElementMaterializedPath | null,
-): value is EditorElementMaterializedPath {
-  invariant(value != null, 'EditorElementMaterializedPath is null.');
+export function invariantMaterializedPathIsNotNull(
+  value: MaterializedEditorPath | null,
+): value is MaterializedEditorPath {
+  invariant(value != null, 'MaterializedPath is null.');
   return true;
 }
 
-export function materializeEditorElementPath(path: EditorPath) {
-  return (element: EditorElement): EditorElementMaterializedPath | null => {
-    const parents: EditorElementMaterializedPath['parents'] = [];
-    let to: EditorElementMaterializedPath['to'] = element;
+export function materializeEditorPath(path: EditorPath) {
+  return (element: EditorElement): MaterializedEditorPath | null => {
+    const parents: MaterializedEditorPath['parents'] = [];
+    let to: MaterializedEditorPath['to'] = element;
     for (let i = 0; i < path.length; i++) {
       const pathIndex = path[i];
       if (isEditorElement(to)) {
@@ -227,26 +225,23 @@ export function editorElementLens(path: EditorPath) {
   invariantPathIsNotEmpty(path);
 
   function ensureTextParent(
-    materializedPath: EditorElementMaterializedPath,
+    materializedPath: MaterializedEditorPath,
   ): EditorElementChild {
     return isEditorTextWithOffset(materializedPath.to)
       ? materializedPath.to.editorText
       : materializedPath.to;
   }
 
-  function get(): (
-    element: EditorElement,
-  ) => EditorElementMaterializedPath | null {
+  function get(): (element: EditorElement) => MaterializedEditorPath | null {
     return element => {
-      return materializeEditorElementPath(path)(element);
+      return materializeEditorPath(path)(element);
     };
   }
 
   function set(child: EditorElementChild): MapEditorElement {
     return element => {
       const materializedPath = get()(element);
-      if (!invariantEditorElementMaterializedPathIsNotNull(materializedPath))
-        return element;
+      if (!invariantMaterializedPathIsNotNull(materializedPath)) return element;
       const [parentPath, lastIndex] = invariantParentPathAndLastIndex(
         isEditorTextWithOffset(materializedPath.to)
           ? invariantParentPath(path)
@@ -296,17 +291,11 @@ export function deleteContentElement(
 ): MapEditorElement {
   return element => {
     const range = editorSelectionAsRange(selection);
-    const anchorMaterializedPath = materializeEditorElementPath(range.anchor)(
-      element,
-    );
-    const focusMaterializedPath = materializeEditorElementPath(range.focus)(
-      element,
-    );
-    if (
-      !invariantEditorElementMaterializedPathIsNotNull(anchorMaterializedPath)
-    )
+    const anchorMaterializedPath = materializeEditorPath(range.anchor)(element);
+    const focusMaterializedPath = materializeEditorPath(range.focus)(element);
+    if (!invariantMaterializedPathIsNotNull(anchorMaterializedPath))
       return element;
-    if (!invariantEditorElementMaterializedPathIsNotNull(focusMaterializedPath))
+    if (!invariantMaterializedPathIsNotNull(focusMaterializedPath))
       return element;
     // TODO: Handle other cases, with lenses.
     if (

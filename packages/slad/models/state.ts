@@ -9,7 +9,7 @@ import {
   EditorReactElement,
   jsxToEditorReactElement,
   setTextElement,
-  materializeEditorElementPath,
+  materializeEditorPath,
 } from './element';
 import {
   collapseEditorSelectionToStart,
@@ -65,12 +65,12 @@ export const isEditorStateSelectionValid: Predicate<
   EditorState<EditorElement>
 > = state => {
   if (!state.selection) return true;
-  const anchorMaterializedPath = materializeEditorElementPath(
-    state.selection.anchor,
-  )(state.element);
-  const focusMaterializedPath = materializeEditorElementPath(
-    state.selection.focus,
-  )(state.element);
+  const anchorMaterializedPath = materializeEditorPath(state.selection.anchor)(
+    state.element,
+  );
+  const focusMaterializedPath = materializeEditorPath(state.selection.focus)(
+    state.element,
+  );
   return anchorMaterializedPath != null && focusMaterializedPath != null;
 };
 
