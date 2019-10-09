@@ -1,4 +1,4 @@
-// Export everything. Rethink before the release.
+// Export everything. No reason to hide anything.
 export * from './components/Editor';
 export * from './components/EditorClient';
 export * from './components/EditorElementRenderer';
