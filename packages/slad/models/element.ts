@@ -3,6 +3,8 @@ import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
 import { Predicate, Refinement } from 'fp-ts/lib/function';
+import { Lens, Prism } from 'monocle-ts/lib';
+import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorNode, id } from './node';
 import { EditorPath, parentPathAndLastIndex, getParentPath } from './path';
@@ -25,7 +27,6 @@ export interface EditorElement extends EditorNode {
   readonly children: (EditorElementChild)[];
 }
 
-// EditorElementChild could be EditorNode, but I prefer more strict schema.
 export type EditorElementChild = EditorElement | EditorText;
 
 export type RenderEditorElement = (
@@ -39,6 +40,16 @@ export type MapEditorElement = <T extends EditorElement>(element: T) => T;
 export const isEditorElement: Refinement<EditorNode, EditorElement> = (
   value,
 ): value is EditorElement => Array.isArray((value as EditorElement).children);
+
+export const editorElementChildIsEditorElement: Refinement<
+  EditorElementChild,
+  EditorElement
+> = (value): value is EditorElement => isEditorElement(value);
+
+export const editorElementChildIsEditorText: Refinement<
+  EditorElementChild,
+  EditorText
+> = (value): value is EditorText => isEditorText(value);
 
 export type EditorTextWithOffset = {
   readonly editorText: EditorText;
@@ -277,8 +288,59 @@ export function editorElementLens(path: EditorPath) {
   return { get, set, modify };
 }
 
-// TODO:
-// export function editorElementLenses(selection)
+// Functional optics.
+// https://github.com/gcanti/monocle-ts
+
+/**
+ * Focus on the children of EditorElement.
+ */
+export const childrenLens = Lens.fromProp<EditorElement>()('children');
+
+/**
+ * Focus on the child at index of EditorElementChild[].
+ */
+export function getChildAtOptional(index: number) {
+  return indexArray<EditorElementChild>().index(index);
+}
+
+/**
+ * Focus on EditorElement of EditorElementChild.
+ */
+export const elementPrism = Prism.fromPredicate(
+  editorElementChildIsEditorElement,
+);
+
+/**
+ * Focus on EditorText of EditorElementChild.
+ */
+export const textPrism = Prism.fromPredicate(editorElementChildIsEditorText);
+
+/**
+ * Focus on EditorElement by EditorPath.
+ */
+export function getElementTraversal(path: EditorPath) {
+  return path.reduce((acc, pathIndex) => {
+    return acc
+      .composeLens(childrenLens)
+      .composeOptional(getChildAtOptional(pathIndex))
+      .composePrism(elementPrism);
+  }, elementPrism.asOptional());
+}
+
+export function setTextElement(
+  text: string,
+  selection: EditorSelection,
+): MapEditorElement {
+  return element => {
+    if (editorSelectionIsCollapsed(selection)) {
+      return editorElementLens(selection.anchor).modify(child => {
+        if (!invariantIsEditorText(child)) return child;
+        return { ...child, text };
+      })(element);
+    }
+    return element;
+  };
+}
 
 export function deleteContentElement(
   selection: EditorSelection,
@@ -314,17 +376,49 @@ export function deleteContentElement(
   };
 }
 
-export function setTextElement(
-  text: string,
-  selection: EditorSelection,
-): MapEditorElement {
-  return element => {
-    if (editorSelectionIsCollapsed(selection)) {
-      return editorElementLens(selection.anchor).modify(child => {
-        if (!invariantIsEditorText(child)) return child;
-        return { ...child, text };
-      })(element);
-    }
-    return element;
-  };
-}
+// const el: EditorElement = {
+//   id: id(),
+//   children: [
+//     {
+//       id: id(),
+//       children: [
+//         {
+//           id: id(),
+//           children: [],
+//         },
+//       ],
+//     },
+//     {
+//       id: id(),
+//       children: [{ id: id(), text: 'foo' }],
+//     },
+//   ],
+// };
+
+// const foo = getElementTraversal([0]).modify(el => {
+//   return { ...el, id: '1' as EditorNodeID };
+// })(el);
+
+// console.log(foo);
+
+// // elementPrism
+// //   .composeLens(
+// const foo = childrenLens
+//   .composeOptional(getChildAt(1))
+//   .composePrism(elementPrism)
+
+//   // .composeLens(childrenLens)
+//   // .composeOptional(childAt(0))
+//   // .composePrism(elementPrism)
+
+//   .composeLens(childrenLens)
+//   .composeOptional(getChildAt(0))
+//   .composePrism(textPrism)
+//   // .getOption(el);
+//   .modify(child => {
+//     return { ...child, text: 'a' };
+//     // return { ...child, id: '1' as EditorNodeID };
+//   })(el);
+
+// // eslint-disable-next-line no-console
+// console.log(foo);
