@@ -25,6 +25,8 @@ export function useBeforeInput(
     function afterTyping(callback: () => void) {
       userIsTypingRef.current = true;
       lastAfterTypingCallback = callback;
+      // DraftJS uses setImmediate polyfil, but it breaks selection here.
+      // requestAnimationFrame does what we need. Everything else fails.
       requestAnimationFrame(() => {
         userIsTypingRef.current = false;
         lastAfterTypingCallback();
