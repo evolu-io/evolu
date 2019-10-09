@@ -5,13 +5,7 @@ import { $Values } from 'utility-types';
 import { Predicate, Refinement } from 'fp-ts/lib/function';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorNode, id } from './node';
-import {
-  EditorPath,
-  editorPathIsEmpty,
-  invariantPathIsNotEmpty,
-  invariantParentPathAndLastIndex,
-  invariantParentPath,
-} from './path';
+import { EditorPath, parentPathAndLastIndex, getParentPath } from './path';
 import {
   EditorSelection,
   editorSelectionAsRange,
@@ -222,7 +216,7 @@ export const recursiveRemoveID = element => {
 
 // TODO: Replace with monocle-ts.
 export function editorElementLens(path: EditorPath) {
-  invariantPathIsNotEmpty(path);
+  // invariantPathIsNotEmpty(path);
 
   function ensureTextParent(
     materializedPath: MaterializedEditorPath,
@@ -242,13 +236,13 @@ export function editorElementLens(path: EditorPath) {
     return element => {
       const materializedPath = get()(element);
       if (!invariantMaterializedPathIsNotNull(materializedPath)) return element;
-      const [parentPath, lastIndex] = invariantParentPathAndLastIndex(
+      const [parentPath, lastIndex] = parentPathAndLastIndex(
         isEditorTextWithOffset(materializedPath.to)
-          ? invariantParentPath(path)
+          ? getParentPath(path)
           : path,
       );
       function getUpdatedChildren() {
-        if (editorPathIsEmpty(parentPath)) return child;
+        // if (editorPathIsEmpty(parentPath)) return child;
         const parentPathChild = element.children[lastIndex];
         if (!invariantIsEditorElement(parentPathChild)) return;
         return editorElementLens(parentPath).set(child)(parentPathChild);
@@ -305,7 +299,7 @@ export function deleteContentElement(
       anchorMaterializedPath.to.editorText ===
         focusMaterializedPath.to.editorText
     ) {
-      const parentPath = invariantParentPath(range.anchor);
+      const parentPath = getParentPath(range.anchor);
       const startOffset = anchorMaterializedPath.to.offset;
       const endOffset = focusMaterializedPath.to.offset;
       return editorElementLens(parentPath).modify(child => {

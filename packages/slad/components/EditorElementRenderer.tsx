@@ -1,5 +1,6 @@
 import React, { memo, useMemo, useContext, useCallback } from 'react';
 import invariant from 'tiny-invariant';
+import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   useSetNodeEditorPathRef,
   SetNodeEditorPathRef,
@@ -50,7 +51,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
 
     const children = useMemo(() => {
       return element.children.map((child, index) => {
-        const childPath: EditorPath = [...path, index];
+        const childPath: EditorPath = snoc(path, index);
         if (isEditorText(child)) {
           return (
             <EditorTextRenderer

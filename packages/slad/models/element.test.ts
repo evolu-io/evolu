@@ -121,10 +121,6 @@ test('materializeEditorPath', () => {
   const b = { id: id(), children: [text] };
   const div = { id: id(), children: [b] };
 
-  expect(materializeEditorPath([])(div)).toMatchObject({
-    parents: [],
-    to: div,
-  });
   expect(materializeEditorPath([0])(div)).toMatchObject({
     parents: [div],
     to: b,

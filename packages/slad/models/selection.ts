@@ -2,13 +2,14 @@ import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Predicate, Endomorphism } from 'fp-ts/lib/function';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
+import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   eqEditorPath,
   EditorPath,
   NodesEditorPathsMap,
   editorPathsAreForward,
   movePath,
-  invariantParentPath,
+  getParentPath,
 } from './path';
 
 /**
@@ -79,8 +80,8 @@ export function selectionToEditorSelection(
   const focusPath = nodesEditorPathsMap.get(focusNode as Node);
   if (!anchorPath || !focusPath) return null;
   return {
-    anchor: [...anchorPath, anchorOffset],
-    focus: [...focusPath, focusOffset],
+    anchor: snoc(anchorPath, anchorOffset),
+    focus: snoc(focusPath, focusOffset),
   };
 }
 
@@ -94,8 +95,8 @@ export function rangeToEditorSelection(
   const focusPath = nodesEditorPathsMap.get(endContainer);
   if (!anchorPath || !focusPath) return null;
   return {
-    anchor: [...anchorPath, startOffset],
-    focus: [...focusPath, endOffset],
+    anchor: snoc(anchorPath, startOffset),
+    focus: snoc(focusPath, endOffset),
   };
 }
 
@@ -185,8 +186,8 @@ export const editorSelectionOfParent: Endomorphism<
   EditorSelection
 > = selection => {
   return {
-    anchor: invariantParentPath(selection.anchor),
-    focus: invariantParentPath(selection.focus),
+    anchor: getParentPath(selection.anchor),
+    focus: getParentPath(selection.focus),
   };
 };
 
@@ -199,8 +200,8 @@ export function editorSelectionForChild(
 ): Endomorphism<EditorSelection> {
   return selection => {
     return {
-      anchor: selection.anchor.concat(anchorLastIndex),
-      focus: selection.focus.concat(focusLastIndex),
+      anchor: snoc(selection.anchor, anchorLastIndex),
+      focus: snoc(selection.focus, focusLastIndex),
     };
   };
 }
