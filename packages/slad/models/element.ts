@@ -242,7 +242,7 @@ export function editorElementLens(path: EditorPath) {
           : path,
       );
       function getUpdatedChildren() {
-        // if (editorPathIsEmpty(parentPath)) return child;
+        if (parentPath.length === 0) return child;
         const parentPathChild = element.children[lastIndex];
         if (!invariantIsEditorElement(parentPathChild)) return;
         return editorElementLens(parentPath).set(child)(parentPathChild);
