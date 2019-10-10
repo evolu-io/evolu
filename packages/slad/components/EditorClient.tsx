@@ -234,8 +234,7 @@ export function EditorClient<T extends EditorElement>({
         >
           <EditorElementRenderer
             element={editorState.element}
-            // Root itself is not selectable so empty path makes sense here.
-            path={(rootPathRef.current as unknown) as EditorPath}
+            path={rootPathRef.current}
           />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>

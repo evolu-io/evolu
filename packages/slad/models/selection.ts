@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Predicate, Endomorphism } from 'fp-ts/lib/function';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
-import { snoc } from 'fp-ts/lib/NonEmptyArray';
+import { snoc } from 'fp-ts/lib/Array';
 import {
   eqEditorPath,
   EditorPath,

@@ -1,11 +1,8 @@
 import { Endomorphism } from 'fp-ts/lib/function';
 import { eqNumber } from 'fp-ts/lib/Eq';
-import { NonEmptyArray, getEq, last } from 'fp-ts/lib/NonEmptyArray';
+import { getEq } from 'fp-ts/lib/Array';
 
-// Consider newtype-ts NonNegativeInteger.
-type EditorPathIndex = number;
-
-export type EditorPath = NonEmptyArray<EditorPathIndex>;
+export type EditorPath = number[];
 
 export type NodesEditorPathsMap = Map<Node, EditorPath>;
 
@@ -25,9 +22,10 @@ export function getParentPath(path: EditorPath): EditorPath {
 
 /**
  * Example: `[0, 1, 2]` to `[[0, 1], 2]`.
+ * TODO: rename na get!
  */
 export function parentPathAndLastIndex(path: EditorPath): [EditorPath, number] {
-  return [getParentPath(path), last(path)];
+  return [getParentPath(path), path[path.length - 1]];
 }
 
 export function editorPathsAreForward(

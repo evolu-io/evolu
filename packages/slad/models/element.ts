@@ -327,6 +327,25 @@ export function getElementTraversal(path: EditorPath) {
   }, elementPrism.asOptional());
 }
 
+// /**
+//  * Focus on EditorText by EditorPath.
+//  */
+// export function getTextTraversal(path: EditorPath) {
+//   // [0] -
+//   // [0, 1] -
+//   // nejdrive nacitam parents, a pak jdu na text
+//   // getElementTraversal vyuziju, a sakra, zase path muze bejt empty
+//   // na co typ, kdy ho musim hackovat?
+//   // vratit zpet? asi jo
+//   // muze bejt selekce na?
+//   return path.reduce((acc, pathIndex) => {
+//     return acc
+//       .composeLens(childrenLens)
+//       .composeOptional(getChildAtOptional(pathIndex))
+//       .composePrism(elementPrism);
+//   }, elementPrism.asOptional());
+// }
+
 export function setTextElement(
   text: string,
   selection: EditorSelection,
@@ -395,8 +414,8 @@ export function deleteContentElement(
 //   ],
 // };
 
-// const foo = getElementTraversal([0]).modify(el => {
-//   return { ...el, id: '1' as EditorNodeID };
+// const foo = getTextTraversal([1, 0]).modify(text => {
+//   return { ...text, id: '1' as EditorNodeID };
 // })(el);
 
 // console.log(foo);
