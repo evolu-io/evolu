@@ -10,6 +10,8 @@ import {
   setText,
 } from '../models/state';
 
+export type PartialEditorState = Partial<EditorState<EditorElement>>;
+
 /**
  * Various browser actions for updating EditorState.
  */
@@ -17,13 +19,10 @@ export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: EditorSelection }
-  | {
-      type: 'setEditorStatePartial';
-      change: Partial<EditorState<EditorElement>>;
-    }
-  // beforeinput actions
+  | { type: 'setEditorStatePartial'; change: PartialEditorState }
   | { type: 'insertText'; text: string; selection: EditorSelection }
-  | { type: 'deleteText'; text: string; selection: EditorSelection };
+  | { type: 'deleteText'; text: string; selection: EditorSelection }
+  | { type: 'insertReplacementText'; text: string };
 // | { type: 'deleteContent'; selection: EditorSelection };
 
 export type EditorReducer<T extends EditorElement = EditorElement> = Reducer<
@@ -55,10 +54,16 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'deleteText':
-      // We have to set selection first to not select deleted text.
+      // We have to set selection text to be deleted.
       return pipe(
         state,
         select(action.selection),
+        setText(action.text),
+      );
+
+    case 'insertReplacementText':
+      return pipe(
+        state,
         setText(action.text),
       );
 

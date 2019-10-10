@@ -1,12 +1,13 @@
 /* eslint-env browser */
-import { Dispatch, RefObject, useEffect, MutableRefObject } from 'react';
+import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
+import invariant from 'tiny-invariant';
 import { NodesEditorPathsMap } from '../../models/path';
 import {
   collapseEditorSelectionToStart,
-  editorSelectionOfParent,
+  editorSelectionForChild,
   editorSelectionFromInputEvent,
   editorSelectionIsCollapsed,
-  editorSelectionForChild,
+  editorSelectionOfParent,
   moveEditorSelection,
 } from '../../models/selection';
 import { EditorAction } from '../../reducers/editorReducer';
@@ -162,9 +163,26 @@ export function useBeforeInput(
           break;
         }
 
+        case 'insertReplacementText': {
+          // event.data is always null, so we can't use it for text length change detection.
+          // getTargetRanges returns affected selection, but if new text is shorter or
+          // lenghter, we don't know. But we can let browser to make own selection.
+          // TODO: Add test (probably manual) for 'fixx foo' to 'fix foo' and
+          // 'productio foo' to 'production foo'.
+          // @ts-ignore Missing getTargetRanges
+          const { startContainer } = event.getTargetRanges()[0] as Range;
+          afterTyping(() => {
+            const { data: text } = startContainer as Text;
+            dispatch({ type: 'insertReplacementText', text });
+          });
+          break;
+        }
+
         default:
-          // eslint-disable-next-line no-console
-          console.log(event.inputType);
+          invariant(
+            false,
+            `Unhandled beforeinput inputType: ${event.inputType}`,
+          );
       }
     }
 

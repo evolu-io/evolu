@@ -291,7 +291,21 @@ export function setTextElement(
   selection: EditorSelection,
 ): Endomorphism<EditorElement> {
   return element => {
-    if (editorSelectionIsCollapsed(selection)) {
+    const onlyTextIsSelected: Predicate<EditorSelection> = selection => {
+      const anchorFold = ensureTextTraversal(
+        selection.anchor,
+        element,
+      ).asFold();
+      const focusFold = ensureTextTraversal(selection.focus, element).asFold();
+      if (!anchorFold.exist(isEditorText)(element)) return false;
+      if (!focusFold.exist(isEditorText)(element)) return false;
+      return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
+    };
+
+    if (
+      editorSelectionIsCollapsed(selection) ||
+      onlyTextIsSelected(selection)
+    ) {
       const path = selection.anchor;
       return ensureTextTraversal(path, element).modify(editorText => {
         return { ...editorText, text };
