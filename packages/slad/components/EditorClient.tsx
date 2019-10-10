@@ -9,6 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { empty } from 'fp-ts/lib/Array';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { useBeforeInput } from '../hooks/editor/useBeforeInput';
@@ -35,7 +36,6 @@ import {
 } from '../reducers/editorReducer';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
-// import { isTextNode } from '../models/node';
 
 const debugEditorAction = Debug('editor:action');
 
@@ -224,18 +224,13 @@ export function EditorClient<T extends EditorElement>({
 
   useBeforeInput(divRef, userIsTypingRef, nodesEditorPathsMap, dispatch);
 
-  const rootPathRef = useRef([]);
-
   const children = useMemo(() => {
     return (
       <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
         <RenderEditorElementContext.Provider
           value={renderElement || renderEditorReactElement}
         >
-          <EditorElementRenderer
-            element={editorState.element}
-            path={rootPathRef.current}
-          />
+          <EditorElementRenderer element={editorState.element} path={empty} />
         </RenderEditorElementContext.Provider>
       </SetNodeEditorPathContext.Provider>
     );
