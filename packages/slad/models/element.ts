@@ -1,24 +1,18 @@
-import { unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { Predicate, Refinement, Endomorphism } from 'fp-ts/lib/function';
+import { Lens, Prism, Optional } from 'monocle-ts/lib';
+import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
-import { Predicate, Refinement } from 'fp-ts/lib/function';
-import { Lens, Prism } from 'monocle-ts/lib';
-import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorNode, id } from './node';
-import { EditorPath, parentPathAndLastIndex, getParentPath } from './path';
+import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
 import {
   EditorSelection,
   editorSelectionAsRange,
   editorSelectionIsCollapsed,
 } from './selection';
-import {
-  EditorText,
-  editorTextIsBR,
-  invariantIsEditorText,
-  isEditorText,
-} from './text';
+import { EditorText, editorTextIsBR, isEditorText } from './text';
 
 /**
  * EditorElement is the base model for all other editor elements.
@@ -225,69 +219,6 @@ export const recursiveRemoveID = element => {
   };
 };
 
-// TODO: Replace with monocle-ts.
-export function editorElementLens(path: EditorPath) {
-  // invariantPathIsNotEmpty(path);
-
-  function ensureTextParent(
-    materializedPath: MaterializedEditorPath,
-  ): EditorElementChild {
-    return isEditorTextWithOffset(materializedPath.to)
-      ? materializedPath.to.editorText
-      : materializedPath.to;
-  }
-
-  function get(): (element: EditorElement) => MaterializedEditorPath | null {
-    return element => {
-      return materializeEditorPath(path)(element);
-    };
-  }
-
-  function set(child: EditorElementChild): MapEditorElement {
-    return element => {
-      const materializedPath = get()(element);
-      if (!invariantMaterializedPathIsNotNull(materializedPath)) return element;
-      const [parentPath, lastIndex] = parentPathAndLastIndex(
-        isEditorTextWithOffset(materializedPath.to)
-          ? getParentPath(path)
-          : path,
-      );
-      function getUpdatedChildren() {
-        if (parentPath.length === 0) return child;
-        const parentPathChild = element.children[lastIndex];
-        if (!invariantIsEditorElement(parentPathChild)) return;
-        return editorElementLens(parentPath).set(child)(parentPathChild);
-      }
-      const updatedChildren = getUpdatedChildren();
-      return {
-        ...element,
-        children: unsafeUpdateAt(
-          lastIndex,
-          updatedChildren,
-          element.children as EditorElement[],
-        ),
-      };
-    };
-  }
-
-  function modify(
-    modifier: (child: EditorElementChild) => EditorElementChild,
-  ): MapEditorElement {
-    return element => {
-      const materializedPath = get()(element);
-      if (materializedPath == null)
-        throw new Error(
-          'Not defined materialized path in editorElementLens modify. ' +
-            'Check whether EditorState selections matches EditorState element.',
-        );
-      const child = ensureTextParent(materializedPath);
-      const nextChild = modifier(child);
-      return set(nextChild)(element);
-    };
-  }
-  return { get, set, modify };
-}
-
 // Functional optics.
 // https://github.com/gcanti/monocle-ts
 
@@ -319,42 +250,51 @@ export const textPrism = Prism.fromPredicate(editorElementChildIsEditorText);
  * Focus on EditorElement by EditorPath.
  */
 export function getElementTraversal(path: EditorPath) {
-  return path.reduce((acc, pathIndex) => {
-    return acc
-      .composeLens(childrenLens)
-      .composeOptional(getChildAtOptional(pathIndex))
-      .composePrism(elementPrism);
-  }, elementPrism.asOptional());
+  return path.reduce(
+    (acc, pathIndex) => {
+      return acc
+        .composeLens(childrenLens)
+        .composeOptional(getChildAtOptional(pathIndex))
+        .composePrism(elementPrism);
+    },
+    elementPrism.asOptional() as Optional<EditorElement, EditorElement>,
+  );
 }
 
-// /**
-//  * Focus on EditorText by EditorPath.
-//  */
-// export function getTextTraversal(path: EditorPath) {
-//   // [0] -
-//   // [0, 1] -
-//   // nejdrive nacitam parents, a pak jdu na text
-//   // getElementTraversal vyuziju, a sakra, zase path muze bejt empty
-//   // na co typ, kdy ho musim hackovat?
-//   // vratit zpet? asi jo
-//   // muze bejt selekce na?
-//   return path.reduce((acc, pathIndex) => {
-//     return acc
-//       .composeLens(childrenLens)
-//       .composeOptional(getChildAtOptional(pathIndex))
-//       .composePrism(elementPrism);
-//   }, elementPrism.asOptional());
-// }
+/**
+ * Focus on EditorText by EditorPath.
+ */
+export function getTextTraversal(path: EditorPath) {
+  const [parentPath, lastIndex] = getParentPathAndLastIndex(path);
+  return getElementTraversal(parentPath)
+    .composeLens(childrenLens)
+    .composeOptional(getChildAtOptional(lastIndex))
+    .composePrism(textPrism);
+}
+
+/**
+ * Ensure text traversal. If EditorPath focuses to text offset, get parent path.
+ */
+export function ensureTextTraversal(path: EditorPath, element: EditorElement) {
+  let textTraversal = getTextTraversal(path);
+  if (textTraversal.asFold().getAll(element).length === 0)
+    textTraversal = getTextTraversal(getParentPath(path));
+  invariant(
+    textTraversal.asFold().getAll(element).length !== 0,
+    'Invalid path in ensureTextTraversal.',
+  );
+  return textTraversal;
+}
 
 export function setTextElement(
   text: string,
   selection: EditorSelection,
-): MapEditorElement {
+): Endomorphism<EditorElement> {
   return element => {
     if (editorSelectionIsCollapsed(selection)) {
-      return editorElementLens(selection.anchor).modify(child => {
-        if (!invariantIsEditorText(child)) return child;
-        return { ...child, text };
+      const path = selection.anchor;
+      return ensureTextTraversal(path, element).modify(editorText => {
+        return { ...editorText, text };
       })(element);
     }
     return element;
@@ -363,7 +303,7 @@ export function setTextElement(
 
 export function deleteContentElement(
   selection: EditorSelection,
-): MapEditorElement {
+): Endomorphism<EditorElement> {
   return element => {
     const range = editorSelectionAsRange(selection);
     const anchorMaterializedPath = materializeEditorPath(range.anchor)(element);
@@ -383,61 +323,13 @@ export function deleteContentElement(
       const parentPath = getParentPath(range.anchor);
       const startOffset = anchorMaterializedPath.to.offset;
       const endOffset = focusMaterializedPath.to.offset;
-      return editorElementLens(parentPath).modify(child => {
-        if (!invariantIsEditorText(child)) return child;
-        return {
-          ...child,
-          text: child.text.slice(0, startOffset) + child.text.slice(endOffset),
-        };
+      return getTextTraversal(parentPath).modify(editorText => {
+        const text =
+          editorText.text.slice(0, startOffset) +
+          editorText.text.slice(endOffset);
+        return { ...editorText, text };
       })(element);
     }
     return element;
   };
 }
-
-// const el: EditorElement = {
-//   id: id(),
-//   children: [
-//     {
-//       id: id(),
-//       children: [
-//         {
-//           id: id(),
-//           children: [],
-//         },
-//       ],
-//     },
-//     {
-//       id: id(),
-//       children: [{ id: id(), text: 'foo' }],
-//     },
-//   ],
-// };
-
-// const foo = getTextTraversal([1, 0]).modify(text => {
-//   return { ...text, id: '1' as EditorNodeID };
-// })(el);
-
-// console.log(foo);
-
-// // elementPrism
-// //   .composeLens(
-// const foo = childrenLens
-//   .composeOptional(getChildAt(1))
-//   .composePrism(elementPrism)
-
-//   // .composeLens(childrenLens)
-//   // .composeOptional(childAt(0))
-//   // .composePrism(elementPrism)
-
-//   .composeLens(childrenLens)
-//   .composeOptional(getChildAt(0))
-//   .composePrism(textPrism)
-//   // .getOption(el);
-//   .modify(child => {
-//     return { ...child, text: 'a' };
-//     // return { ...child, id: '1' as EditorNodeID };
-//   })(el);
-
-// // eslint-disable-next-line no-console
-// console.log(foo);
