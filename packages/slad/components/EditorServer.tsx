@@ -1,4 +1,4 @@
-import React, { createElement, Children } from 'react';
+import React, { createElement, Children, memo } from 'react';
 import {
   RenderEditorElement,
   EditorElement,
@@ -59,14 +59,14 @@ export type UsefulReactDivAtttributesServer = Pick<
 /**
  * Just render. No edit. Good for performance and tree shaking.
  */
-export function EditorServer({
-  element,
-  renderElement,
-  ...rest
-}: EditorServerProps & UsefulReactDivAtttributesServer) {
+export const EditorServer = memo<
+  EditorServerProps & UsefulReactDivAtttributesServer
+>(({ element, renderElement, ...rest }) => {
   return (
     <div {...rest}>
       <EditorServerElement element={element} renderElement={renderElement} />
     </div>
   );
-}
+});
+
+EditorServer.displayName = 'EditorServer';
