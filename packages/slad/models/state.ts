@@ -92,7 +92,6 @@ export function select(selection: EditorSelection): Endomorphism<EditorState> {
 export function setText(text: string): Endomorphism<EditorState> {
   return state => {
     if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
-    //
     return {
       ...state,
       element: setTextElement(text, state.selection)(state.element),
@@ -100,6 +99,7 @@ export function setText(text: string): Endomorphism<EditorState> {
   };
 }
 
+// TODO: It should traverse across nodes.
 export function move(offset: number): Endomorphism<EditorState> {
   return state => {
     if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
