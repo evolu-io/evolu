@@ -252,9 +252,8 @@ export function EditorClient<T extends EditorElement>({
     dispatch({ type: 'blur' });
   }, [dispatch]);
 
-  // I am still not sure having inner and outer states is the right approach.
-
   // Sync inner editor state with outer.
+  // Still not sure whether it's the right approach, but it works.
   const lastParentEditorStateRef = useRef<EditorState<T>>(parentEditorState);
   useLayoutEffect(() => {
     lastParentEditorStateRef.current = parentEditorState;
@@ -270,6 +269,7 @@ export function EditorClient<T extends EditorElement>({
   }, [editorState, onChange]);
 
   // Sync outer editor state with inner.
+  // Still not sure whether it's the right approach, but it works.
   const editorStateRef = useRef<EditorState<T>>(editorState);
   useLayoutEffect(() => {
     editorStateRef.current = editorState;
@@ -279,14 +279,14 @@ export function EditorClient<T extends EditorElement>({
   useLayoutEffect(() => {
     if (parentEditorState.element === editorStateRef.current.element) return;
     dispatch({
-      type: 'setEditorStatePartial',
+      type: 'setEditorState',
       change: { element: parentEditorState.element },
     });
   }, [dispatch, parentEditorState.element]);
   useLayoutEffect(() => {
     if (parentEditorState.hasFocus === editorStateRef.current.hasFocus) return;
     dispatch({
-      type: 'setEditorStatePartial',
+      type: 'setEditorState',
       change: { hasFocus: parentEditorState.hasFocus },
     });
   }, [dispatch, parentEditorState.hasFocus]);
@@ -294,7 +294,7 @@ export function EditorClient<T extends EditorElement>({
     if (parentEditorState.selection === editorStateRef.current.selection)
       return;
     dispatch({
-      type: 'setEditorStatePartial',
+      type: 'setEditorState',
       change: { selection: parentEditorState.selection },
     });
   }, [dispatch, parentEditorState.selection]);

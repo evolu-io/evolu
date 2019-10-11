@@ -8,9 +8,8 @@ import {
   EditorState,
   select,
   setText,
+  PartialEditorState,
 } from '../models/state';
-
-export type PartialEditorState = Partial<EditorState<EditorElement>>;
 
 /**
  * Various browser actions for updating EditorState.
@@ -19,7 +18,7 @@ export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: EditorSelection }
-  | { type: 'setEditorStatePartial'; change: PartialEditorState }
+  | { type: 'setEditorState'; change: PartialEditorState }
   | { type: 'insertText'; text: string; selection: EditorSelection }
   | { type: 'deleteText'; text: string; selection: EditorSelection }
   | { type: 'insertReplacementText'; text: string };
@@ -42,7 +41,7 @@ export const editorReducer: EditorReducer = (state, action) => {
       return select(action.selection)(state);
     }
 
-    case 'setEditorStatePartial':
+    case 'setEditorState':
       return { ...state, ...action.change };
 
     case 'insertText':

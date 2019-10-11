@@ -19,11 +19,16 @@ import {
   moveEditorSelection,
 } from './selection';
 
+// Maybe default should be EditorElement. Let's see.
 export interface EditorState<T extends EditorElement = EditorReactElement> {
   readonly element: T;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
 }
+
+export type PartialEditorState<
+  T extends EditorElement = EditorElement
+> = Partial<EditorState<T>>;
 
 export type MapEditorState<T extends EditorElement = EditorElement> = (
   state: EditorState<T>,
@@ -97,6 +102,7 @@ export function select(selection: EditorSelection): MapEditorState {
 export function setText(text: string): MapEditorState {
   return state => {
     if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
+    //
     return {
       ...state,
       element: setTextElement(text, state.selection)(state.element),
