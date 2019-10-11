@@ -1,15 +1,15 @@
 import { createElement } from 'react';
-import { Optional } from 'utility-types';
+import { Optional, Assign } from 'utility-types';
 import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Predicate } from 'fp-ts/lib/function';
+import { Predicate, Endomorphism } from 'fp-ts/lib/function';
 import {
   deleteContentElement,
   EditorElement,
-  EditorReactElement,
   jsx,
   setTextElement,
   materializeEditorPath,
+  EditorReactElement,
 } from './element';
 import {
   collapseEditorSelectionToStart,
@@ -19,32 +19,26 @@ import {
   moveEditorSelection,
 } from './selection';
 
-// Maybe default should be EditorElement. Let's see.
-export interface EditorState<T extends EditorElement = EditorReactElement> {
-  readonly element: T;
+export interface EditorState {
+  readonly element: EditorElement;
   readonly selection: EditorSelection | null;
   readonly hasFocus: boolean;
 }
-
-export type PartialEditorState<
-  T extends EditorElement = EditorElement
-> = Partial<EditorState<T>>;
-
-export type MapEditorState<T extends EditorElement = EditorElement> = (
-  state: EditorState<T>,
-) => EditorState<T>;
 
 /**
  * Create editor state. By default, the root element is EditorReactElement.
  */
 export function createEditorState<
-  T extends EditorState<EditorElement> = EditorState
+  T extends EditorElement = EditorReactElement
 >({
   element,
   selection = null,
   hasFocus = false,
-}: Optional<T, 'hasFocus' | 'selection'>): T {
-  return { element, selection, hasFocus } as T;
+}: Assign<
+  Optional<EditorState, 'hasFocus' | 'selection'>,
+  { element: T }
+>): EditorState {
+  return { element, selection, hasFocus };
 }
 
 export function createEditorStateWithText({
@@ -64,9 +58,7 @@ export function createEditorStateWithText({
 }
 
 // TODO: Refactor out to isEditorElementSelectionValid.
-export const isEditorStateSelectionValid: Predicate<
-  EditorState<EditorElement>
-> = state => {
+export const isEditorStateSelectionValid: Predicate<EditorState> = state => {
   if (!state.selection) return true;
   const anchorMaterializedPath = materializeEditorPath(state.selection.anchor)(
     state.element,
@@ -77,8 +69,8 @@ export const isEditorStateSelectionValid: Predicate<
   return anchorMaterializedPath != null && focusMaterializedPath != null;
 };
 
-export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
-  state: EditorState<T>,
+export function invariantIsEditorStateSelectionValid(
+  state: EditorState,
 ): boolean {
   invariant(
     isEditorStateSelectionValid(state),
@@ -87,7 +79,7 @@ export function invariantIsEditorStateSelectionValid<T extends EditorElement>(
   return true;
 }
 
-export function select(selection: EditorSelection): MapEditorState {
+export function select(selection: EditorSelection): Endomorphism<EditorState> {
   return state => {
     if (state.selection && eqEditorSelection.equals(state.selection, selection))
       return state;
@@ -97,7 +89,7 @@ export function select(selection: EditorSelection): MapEditorState {
   };
 }
 
-export function setText(text: string): MapEditorState {
+export function setText(text: string): Endomorphism<EditorState> {
   return state => {
     if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
     //
@@ -108,14 +100,16 @@ export function setText(text: string): MapEditorState {
   };
 }
 
-export function move(offset: number): MapEditorState {
+export function move(offset: number): Endomorphism<EditorState> {
   return state => {
     if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
     return select(moveEditorSelection(offset)(state.selection))(state);
   };
 }
 
-export function deleteContent(selection?: EditorSelection): MapEditorState {
+export function deleteContent(
+  selection?: EditorSelection,
+): Endomorphism<EditorState> {
   return state => {
     const deleteContentSelection = selection || state.selection;
     // Can't wait for TS 3.7 asserts.

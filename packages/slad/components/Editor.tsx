@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { EditorElement } from '../models/element';
 import { EditorClientProps, EditorClient } from './EditorClient';
 import { EditorServer } from './EditorServer';
 
-export function Editor<T extends EditorElement>({
+export function Editor({
   editorState,
   onChange,
   renderElement,
@@ -12,7 +11,7 @@ export function Editor<T extends EditorElement>({
   id,
   style,
   ...rest
-}: EditorClientProps<T>) {
+}: EditorClientProps) {
   const [renderClient, setRenderClient] = useState(false);
 
   // Note we render EditorServer both on the server and the client,

@@ -29,8 +29,6 @@ export type RenderEditorElement = (
   ref: SetNodeEditorPathRef,
 ) => ReactNode;
 
-export type MapEditorElement = <T extends EditorElement>(element: T) => T;
-
 export const isEditorElement: Refinement<EditorNode, EditorElement> = (
   value,
 ): value is EditorElement => Array.isArray((value as EditorElement).children);
@@ -148,7 +146,8 @@ export function jsx(element: JSX.Element): EditorReactElement {
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-export function normalizeEditorElement<T extends EditorElement>(element: T): T {
+
+export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
   return {
     ...element,
     ...(element.children
@@ -179,7 +178,7 @@ export function normalizeEditorElement<T extends EditorElement>(element: T): T {
         }
       : null),
   };
-}
+};
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,

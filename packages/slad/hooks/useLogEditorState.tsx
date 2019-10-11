@@ -3,13 +3,7 @@ import { EditorElement, recursiveRemoveID } from '../models/element';
 import { EditorState } from '../models/state';
 
 const Item = memo(
-  <T extends EditorElement>({
-    editorState,
-    index,
-  }: {
-    editorState: EditorState<T>;
-    index: number;
-  }) => {
+  ({ editorState, index }: { editorState: EditorState; index: number }) => {
     // hasFocus render first
     const { element, hasFocus, ...rest } = editorState;
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
@@ -32,13 +26,13 @@ const Item = memo(
   },
 );
 
-export function useLogEditorState<T extends EditorElement>(
-  editorState: EditorState<T>,
-): [(editorState: EditorState<T>) => void, ReactNode] {
-  const [editorStates, setEditorStates] = useState<EditorState<T>[]>([
+export function useLogEditorState(
+  editorState: EditorState,
+): [(editorState: EditorState) => void, ReactNode] {
+  const [editorStates, setEditorStates] = useState<EditorState[]>([
     editorState,
   ]);
-  const logEditorState = useCallback((editorState: EditorState<T>) => {
+  const logEditorState = useCallback((editorState: EditorState) => {
     setEditorStates(prevEditorStates => [...prevEditorStates, editorState]);
   }, []);
 

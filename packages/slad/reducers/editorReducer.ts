@@ -1,14 +1,12 @@
 import { assertNever } from 'assert-never';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
-import { EditorElement } from '../models/element';
 import { EditorSelection } from '../models/selection';
 import {
   // deleteContent,
   EditorState,
   select,
   setText,
-  PartialEditorState,
 } from '../models/state';
 
 /**
@@ -18,16 +16,13 @@ export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: EditorSelection }
-  | { type: 'setEditorState'; change: PartialEditorState }
+  | { type: 'setEditorState'; change: Partial<EditorState> }
   | { type: 'insertText'; text: string; selection: EditorSelection }
   | { type: 'deleteText'; text: string; selection: EditorSelection }
   | { type: 'insertReplacementText'; text: string };
 // | { type: 'deleteContent'; selection: EditorSelection };
 
-export type EditorReducer<T extends EditorElement = EditorElement> = Reducer<
-  EditorState<T>,
-  EditorAction
->;
+export type EditorReducer = Reducer<EditorState, EditorAction>;
 
 export const editorReducer: EditorReducer = (state, action) => {
   switch (action.type) {

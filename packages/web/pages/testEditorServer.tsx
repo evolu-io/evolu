@@ -18,12 +18,14 @@ function TestEditorServer() {
         element={initialSchemaEditorState.element as SchemaDocumentElement}
         renderElement={renderSchemaElement}
       />
-      <editor.EditorServer<editor.EditorReactElement>
-        element={{
-          id: editor.id(),
-          tag: 'div',
-          children: [{ id: editor.id(), text: '' }],
-        }}
+      <editor.EditorServer
+        element={
+          {
+            id: editor.id(),
+            tag: 'div',
+            children: [{ id: editor.id(), text: '' }],
+          } as editor.EditorReactElement
+        }
       />
     </div>
   );

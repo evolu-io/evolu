@@ -24,15 +24,15 @@ export function refNoop() {
   // do nothing
 }
 
-export interface EditorServerProps<T extends EditorElement> {
-  element: T;
+export interface EditorServerProps {
+  element: EditorElement;
   renderElement?: RenderEditorElement;
 }
 
-export function EditorServerElement<T extends EditorElement>({
+export function EditorServerElement({
   element,
   renderElement,
-}: EditorServerProps<T>) {
+}: EditorServerProps) {
   const children = element.children.map(child => {
     if (isEditorText(child)) {
       return child.text.length === 0 ? <br key={child.id} /> : child.text;
@@ -59,11 +59,11 @@ export type UsefulReactDivAtttributesServer = Pick<
 /**
  * Just render. No edit. Good for performance and tree shaking.
  */
-export function EditorServer<T extends EditorElement>({
+export function EditorServer({
   element,
   renderElement,
   ...rest
-}: EditorServerProps<T> & UsefulReactDivAtttributesServer) {
+}: EditorServerProps & UsefulReactDivAtttributesServer) {
   return (
     <div {...rest}>
       <EditorServerElement element={element} renderElement={renderElement} />

@@ -67,10 +67,10 @@ export interface SchemaDocumentElement extends SchemaElement {
     | SchemaImageElement)[];
 }
 
-type SchemaEditorState = editor.EditorState<SchemaDocumentElement>;
-
 // Exported for testEditorServer.
-export const initialEditorState = editor.createEditorState<SchemaEditorState>({
+export const initialEditorState = editor.createEditorState<
+  SchemaDocumentElement
+>({
   element: {
     id: editor.id(),
     type: 'document',
@@ -198,7 +198,7 @@ export function SchemaExample({
   );
 
   const handleEditorChange = useCallback(
-    (editorState: SchemaEditorState) => {
+    (editorState: editor.EditorState) => {
       // logEditorState is here and not in an useEffect, because we
       // want to log all onChange calls, even with identical values.
       logEditorState(editorState);

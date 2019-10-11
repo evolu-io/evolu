@@ -18,7 +18,7 @@ import { useNodesEditorPaths } from '../hooks/editor/useNodesEditorPaths';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { usePrevious } from '../hooks/usePrevious';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
-import { EditorElement, RenderEditorElement } from '../models/element';
+import { RenderEditorElement } from '../models/element';
 import { EditorPath } from '../models/path';
 import {
   editorSelectionIsForward,
@@ -51,15 +51,14 @@ type UsefulReactDivAtttributes = Pick<
   | 'tabIndex'
 >;
 
-export interface EditorClientProps<T extends EditorElement = EditorElement>
-  extends UsefulReactDivAtttributes {
-  editorState: EditorState<T>;
-  onChange: (editorState: EditorState<T>) => void;
+export interface EditorClientProps extends UsefulReactDivAtttributes {
+  editorState: EditorState;
+  onChange: (editorState: EditorState) => void;
   renderElement?: RenderEditorElement;
-  editorReducer?: EditorReducer<EditorElement>;
+  editorReducer?: EditorReducer;
 }
 
-export function EditorClient<T extends EditorElement>({
+export function EditorClient({
   editorState: parentEditorState,
   onChange,
   renderElement,
@@ -68,19 +67,16 @@ export function EditorClient<T extends EditorElement>({
   spellCheck = false,
   role = 'textbox',
   ...rest
-}: EditorClientProps<T>) {
+}: EditorClientProps) {
   invariantIsEditorStateSelectionValid(parentEditorState);
 
   const userIsTypingRef = useRef(false);
 
   // Inner state is required because of IME etc. intermediate states.
-  const [editorStateWithEditorElementType, dispatch] = useReducerWithLogger(
+  const [editorState, dispatch] = useReducerWithLogger(
     useReducer(editorReducer, parentEditorState),
     debugEditorAction,
   );
-  // I don't know how to pass T to useReducer and editorReducer properly.
-  // That's why we cast editorState once for all here.
-  const editorState = editorStateWithEditorElementType as EditorState<T>;
 
   const {
     nodesEditorPathsMap,
@@ -254,7 +250,7 @@ export function EditorClient<T extends EditorElement>({
 
   // Sync inner editor state with outer.
   // Still not sure whether it's the right approach, but it works.
-  const lastParentEditorStateRef = useRef<EditorState<T>>(parentEditorState);
+  const lastParentEditorStateRef = useRef<EditorState>(parentEditorState);
   useLayoutEffect(() => {
     lastParentEditorStateRef.current = parentEditorState;
   }, [parentEditorState]);
@@ -270,7 +266,7 @@ export function EditorClient<T extends EditorElement>({
 
   // Sync outer editor state with inner.
   // Still not sure whether it's the right approach, but it works.
-  const editorStateRef = useRef<EditorState<T>>(editorState);
+  const editorStateRef = useRef<EditorState>(editorState);
   useLayoutEffect(() => {
     editorStateRef.current = editorState;
   }, [editorState]);

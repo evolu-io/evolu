@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as editor from 'slad';
 
 const initialEditorState = editor.createEditorState({
-  element: editor.normalizeEditorElement<editor.EditorReactElement>({
+  element: editor.normalizeEditorElement({
     id: editor.id(),
     tag: 'div',
     props: {
@@ -23,7 +23,7 @@ const initialEditorState = editor.createEditorState({
         ],
       },
     ],
-  }),
+  } as editor.EditorReactElement),
 });
 
 function TestNormalizeEditorElement() {
