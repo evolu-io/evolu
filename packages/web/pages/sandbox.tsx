@@ -6,7 +6,7 @@ import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
 const initialEditorState = editor.createEditorState({
-  element: editor.jsxToEditorReactElement(
+  element: editor.jsx(
     <div className="root">
       <div
         style={{
@@ -75,6 +75,10 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
+          const nextState = editor.setText('foo')(editorState);
+          // @ts-ignore
+          handleEditorChange(nextState);
+
           // TODO: Replace produce with sane mappers.
           // const nextState = produce(editorState, draft => {
           //   // @ts-ignore

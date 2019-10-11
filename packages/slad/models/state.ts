@@ -7,7 +7,7 @@ import {
   deleteContentElement,
   EditorElement,
   EditorReactElement,
-  jsxToEditorReactElement,
+  jsx,
   setTextElement,
   materializeEditorPath,
 } from './element';
@@ -57,9 +57,7 @@ export function createEditorStateWithText({
   hasFocus?: boolean;
 }) {
   return createEditorState({
-    element: jsxToEditorReactElement(
-      createElement('div', { className: 'root' }, text),
-    ),
+    element: jsx(createElement('div', { className: 'root' }, text)),
     selection,
     hasFocus,
   });

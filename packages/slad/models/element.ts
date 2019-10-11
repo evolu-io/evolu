@@ -119,9 +119,7 @@ export function materializeEditorPath(path: EditorPath) {
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
  */
-export function jsxToEditorReactElement(
-  element: JSX.Element,
-): EditorReactElement {
+export function jsx(element: JSX.Element): EditorReactElement {
   const {
     type: tag,
     props: { children = [], ...props },
@@ -135,7 +133,7 @@ export function jsxToEditorReactElement(
       const text: EditorText = { id: id(), text: '' };
       return text;
     }
-    return jsxToEditorReactElement(child);
+    return jsx(child);
   });
   const editorProps = Object.keys(props).length > 0 ? props : undefined;
   return {

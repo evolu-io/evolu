@@ -35,7 +35,7 @@ export const initialEditorState = editor.createEditorState({
 });
 
 export const initialEditorStateWithTextOnly = editor.createEditorState({
-  element: editor.jsxToEditorReactElement(<div className="root">a</div>),
+  element: editor.jsx(<div className="root">a</div>),
 });
 
 export function BasicExample({
