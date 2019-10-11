@@ -50,6 +50,7 @@ function Index() {
         <LinkToTest name="testSelectionHasFocusNoSelection" />
         <LinkToTest name="testSelectionNoFocusNoSelection" />
         <LinkToTest name="testSelectionNoFocusSomeSelection" />
+        <LinkToTest name="testSetState" />
         <LinkToTest name="testSSR" />
         <LinkToTest name="testTabKeyAndFocusBlurClick" />
         <LinkToTest name="testWriting" />

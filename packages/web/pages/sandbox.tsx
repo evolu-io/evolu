@@ -75,11 +75,12 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          const nextState = editor.setText('foo')(editorState);
-          // @ts-ignore
+          // const nextState = editor.setText('foo')(editorState);
+          const nextState = editor.move(1)(editorState);
           handleEditorChange(nextState);
 
-          // TODO: Replace produce with sane mappers.
+          // insertText na misto kurzoru?
+
           // const nextState = produce(editorState, draft => {
           //   // @ts-ignore
           //   draft.element.children[0].children[0].text += ' foo';

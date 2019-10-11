@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`select 1`] = `
+<div
+  id="__next"
+>
+  <div
+    autocorrect="off"
+    contenteditable="true"
+    data-gramm="true"
+    role="textbox"
+    spellcheck="false"
+    tabindex="0"
+  >
+    <div
+      class="root"
+    >
+      <div
+        class="paragraph"
+      >
+        ·foo·
+      </div>
+    </div>
+  </div>
+  <pre
+    class="jsx-2255726786"
+  >
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'foo'}]}]}"
+    >
+      ·2·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·1·
+      · ·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+    </span>
+    <span
+      class="jsx-1782790912"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
+    >
+      ·0·
+      · ·
+      ·{"hasFocus":true,"selection":null}·
+    </span>
+  </pre>
+</div>
+`;
