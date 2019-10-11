@@ -199,8 +199,6 @@ export function SchemaExample({
 
   const handleEditorChange = useCallback(
     (editorState: editor.EditorState) => {
-      // logEditorState is here and not in an useEffect, because we
-      // want to log all onChange calls, even with identical values.
       logEditorState(editorState);
       setEditorState(editorState);
     },
