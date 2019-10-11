@@ -21,3 +21,8 @@ export * from './models/selection';
 export * from './models/state';
 export * from './models/text';
 export * from './reducers/editorReducer';
+
+// fp-ts etc. will not be peer dependencies because we will tree shake it via ES6.
+// We should provide helpers so fp-ts should be an implementation detail I suppose.
+
+export { pipe } from 'fp-ts/lib/pipeable';
