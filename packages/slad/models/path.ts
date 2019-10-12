@@ -2,8 +2,13 @@ import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { getEq } from 'fp-ts/lib/Array';
 import invariant from 'tiny-invariant';
+import { Option } from 'fp-ts/lib/Option';
 
 export type EditorPath = number[];
+
+export type NodesEditorPathsMap = Map<Node, EditorPath>;
+export type GetNodeByEditorPath = (editorPath: EditorPath) => Option<Node>;
+export type GetEditorPathByNode = (node: Node) => EditorPath | undefined;
 
 export const editorPathIsEmpty: Predicate<EditorPath> = path =>
   path.length === 0;
@@ -11,8 +16,6 @@ export const editorPathIsEmpty: Predicate<EditorPath> = path =>
 export function invariantEditorPathIsEmpty(path: EditorPath) {
   invariant(!editorPathIsEmpty(path), 'EditorPath is empty.');
 }
-
-export type NodesEditorPathsMap = Map<Node, EditorPath>;
 
 /**
  * Key is editorPath.join().
