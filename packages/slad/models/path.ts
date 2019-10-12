@@ -7,8 +7,14 @@ import { Option } from 'fp-ts/lib/Option';
 export type EditorPath = number[];
 
 export type NodesEditorPathsMap = Map<Node, EditorPath>;
+
+export type SetNodeEditorPath = (
+  operation: 'add' | 'remove',
+  node: Node,
+  path: EditorPath,
+) => void;
 export type GetNodeByEditorPath = (editorPath: EditorPath) => Option<Node>;
-export type GetEditorPathByNode = (node: Node) => EditorPath | undefined;
+export type GetEditorPathByNode = (node: Node) => Option<EditorPath>;
 
 export const editorPathIsEmpty: Predicate<EditorPath> = path =>
   path.length === 0;

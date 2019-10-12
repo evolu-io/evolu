@@ -4,20 +4,15 @@ import { useCallback, useEffect, useRef } from 'react';
 import invariant from 'tiny-invariant';
 import { EditorElement, EditorElementChild } from '../models/element';
 import {
-  EditorPath,
   EditorPathsNodesMap,
   GetNodeByEditorPath,
   NodesEditorPathsMap,
+  // GetEditorPathByNode,
+  SetNodeEditorPath,
 } from '../models/path';
 import { isEditorText } from '../models/text';
 
-export type SetNodeEditorPath = (
-  operation: 'add' | 'remove',
-  node: Node,
-  path: EditorPath,
-) => void;
-
-export function useDebugNodesEditorPaths(
+function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
   element: EditorElement,
 ) {
@@ -59,6 +54,7 @@ export function useNodesEditorPathsMapping(
   nodesEditorPathsMap: NodesEditorPathsMap;
   setNodeEditorPath: SetNodeEditorPath;
   getNodeByEditorPath: GetNodeByEditorPath;
+  // getEditorPathByNode: GetEditorPathByNode;
 } {
   const nodesEditorPathsMapRef = useRef<NodesEditorPathsMap>(new Map());
   const editorPathsNodesMapRef = useRef<EditorPathsNodesMap>(new Map());
@@ -69,6 +65,11 @@ export function useNodesEditorPathsMapping(
     const node = editorPathsNodesMapRef.current.get(editorPath.join());
     return fromNullable(node);
   }, []);
+
+  // const getEditorPathByNode = useCallback<GetEditorPathByNode>(node => {
+  //   const path = nodesEditorPathsMapRef.current.get(node);
+  //   return fromNullable(path);
+  // }, []);
 
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (operation, node, path) => {
@@ -93,5 +94,6 @@ export function useNodesEditorPathsMapping(
     nodesEditorPathsMap: nodesEditorPathsMapRef.current,
     setNodeEditorPath,
     getNodeByEditorPath,
+    // getEditorPathByNode,
   };
 }

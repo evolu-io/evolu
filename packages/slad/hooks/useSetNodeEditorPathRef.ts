@@ -1,7 +1,6 @@
 import { useContext, useCallback, useRef, createContext } from 'react';
-import { EditorPath } from '../models/path';
+import { EditorPath, SetNodeEditorPath } from '../models/path';
 import { SetNodeEditorPathRef } from '../models/node';
-import { SetNodeEditorPath } from './useNodesEditorPathsMapping';
 
 export const SetNodeEditorPathContext = createContext<SetNodeEditorPath>(
   () => {},
