@@ -2,14 +2,14 @@ import { assertNever } from 'assert-never';
 import { fromNullable } from 'fp-ts/lib/Option';
 import { useCallback, useEffect, useRef } from 'react';
 import invariant from 'tiny-invariant';
-import { EditorElement, EditorElementChild } from '../../models/element';
+import { EditorElement, EditorElementChild } from '../models/element';
 import {
   EditorPath,
   EditorPathsNodesMap,
   GetNodeByEditorPath,
   NodesEditorPathsMap,
-} from '../../models/path';
-import { isEditorText } from '../../models/text';
+} from '../models/path';
+import { isEditorText } from '../models/text';
 
 export type SetNodeEditorPath = (
   operation: 'add' | 'remove',

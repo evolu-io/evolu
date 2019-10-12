@@ -1,7 +1,7 @@
 /* eslint-env browser */
 import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
 import invariant from 'tiny-invariant';
-import { NodesEditorPathsMap } from '../../models/path';
+import { NodesEditorPathsMap } from '../models/path';
 import {
   collapseEditorSelectionToStart,
   editorSelectionForChild,
@@ -9,8 +9,8 @@ import {
   editorSelectionIsCollapsed,
   editorSelectionOfParent,
   moveEditorSelection,
-} from '../../models/selection';
-import { EditorAction } from '../../reducers/editorReducer';
+} from '../models/selection';
+import { EditorAction } from '../reducers/editorReducer';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,

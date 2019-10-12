@@ -15,8 +15,8 @@ import React, {
 } from 'react';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
-import { useBeforeInput } from '../hooks/editor/useBeforeInput';
-import { useNodesEditorPathsMapping } from '../hooks/editor/useNodesEditorPathsMapping';
+import { useBeforeInput } from '../hooks/useBeforeInput';
+import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { usePrevious } from '../hooks/usePrevious';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
