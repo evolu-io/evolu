@@ -17,6 +17,8 @@ export interface EditorNode {
   readonly id: EditorNodeID;
 }
 
+export type SetNodeEditorPathRef = (node: Node | null) => void;
+
 export const id: IO<EditorNodeID> = () => nanoid() as EditorNodeID;
 
 export const isTextNode: Refinement<Node, Text> = (node): node is Text =>

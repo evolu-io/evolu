@@ -4,8 +4,7 @@ import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
-import { SetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
-import { EditorNode, id } from './node';
+import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
 import {
   EditorSelection,

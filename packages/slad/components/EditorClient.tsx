@@ -16,7 +16,6 @@ import React, {
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { useBeforeInput } from '../hooks/editor/useBeforeInput';
-import { useDebugNodesEditorPaths } from '../hooks/editor/useDebugNodesEditorPaths';
 import { useNodesEditorPathsMapping } from '../hooks/editor/useNodesEditorPathsMapping';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { usePrevious } from '../hooks/usePrevious';
@@ -78,7 +77,7 @@ export const EditorClient = memo<EditorClientProps>(
     const userIsTypingRef = useRef(false);
 
     // I am not sure whether we really need inner state.
-    // Maybe we can use editorReducer without useReducer.
+    // Maybe we can use editorReducer without useReducer via callOnChange.
     // TODO: Try to remove it when we will have enough tests.
     const [editorState, dispatch] = useReducerWithLogger(
       useReducer(editorReducer, parentEditorState),
@@ -89,11 +88,9 @@ export const EditorClient = memo<EditorClientProps>(
       nodesEditorPathsMap,
       getNodeByEditorPath,
       setNodeEditorPath,
-    } = useNodesEditorPathsMapping();
+    } = useNodesEditorPathsMapping(editorState.element);
 
     useInvariantEditorElementIsNormalized(editorState.element);
-    // TODO: Move to useNodesEditorPaths Map Cache Whatever
-    useDebugNodesEditorPaths(nodesEditorPathsMap, editorState.element);
 
     const divRef = useRef<HTMLDivElement>(null);
 

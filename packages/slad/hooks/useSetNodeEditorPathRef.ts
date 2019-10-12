@@ -1,8 +1,7 @@
 import { useContext, useCallback, useRef } from 'react';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { EditorPath } from '../models/path';
-
-export type SetNodeEditorPathRef = (node: Node | null) => void;
+import { SetNodeEditorPathRef } from '../models/node';
 
 export function useSetNodeEditorPathRef(path: EditorPath) {
   const previousRef = useRef<{ node: Node; path: EditorPath } | null>(null);

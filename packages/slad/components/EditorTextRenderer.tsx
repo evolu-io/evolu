@@ -2,12 +2,10 @@
 import React, { Component, memo } from 'react';
 import { findDOMNode } from 'react-dom';
 import invariant from 'tiny-invariant';
-import {
-  useSetNodeEditorPathRef,
-  SetNodeEditorPathRef,
-} from '../hooks/useSetNodeEditorPathRef';
+import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { textIsBR } from '../models/text';
+import { SetNodeEditorPathRef } from '../models/node';
 
 // Inspired by DraftEditorTextNode.
 // As for findDOMNode in strict mode:

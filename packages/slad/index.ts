@@ -7,7 +7,6 @@ export * from './components/EditorTextRenderer';
 export * from './contexts/RenderEditorElementContext';
 export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/editor/useBeforeInput';
-export * from './hooks/editor/useDebugNodesEditorPaths';
 export * from './hooks/editor/useNodesEditorPathsMapping';
 export * from './hooks/useInvariantEditorElementIsNormalized';
 export * from './hooks/useLogEditorState';
