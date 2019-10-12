@@ -5,7 +5,6 @@ export * from './components/EditorElementRenderer';
 export * from './components/EditorServer';
 export * from './components/EditorTextRenderer';
 export * from './contexts/RenderEditorElementContext';
-export * from './contexts/SetNodeEditorPathContext';
 export * from './hooks/useBeforeInput';
 export * from './hooks/useInvariantEditorElementIsNormalized';
 export * from './hooks/useLogEditorState';
