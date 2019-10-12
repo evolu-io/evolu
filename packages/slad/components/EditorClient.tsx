@@ -13,7 +13,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
@@ -39,6 +38,7 @@ import {
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
 import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
+import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
 
 const debugEditorAction = Debug('editor:action');
 

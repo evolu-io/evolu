@@ -1,12 +1,12 @@
-import React, { memo, useMemo, useContext, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import invariant from 'tiny-invariant';
+import { useRenderEditorElement } from '../hooks/useRenderEditorElement';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
-import { EditorTextRenderer } from './EditorTextRenderer';
-import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { EditorElement } from '../models/element';
+import { SetNodeEditorPathRef } from '../models/node';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
-import { SetNodeEditorPathRef } from '../models/node';
+import { EditorTextRenderer } from './EditorTextRenderer';
 
 // We can not magically add data-foo prop, because it would mutate DOM.
 // Better to enforce the right data model. Check invariant message.
@@ -35,7 +35,7 @@ export interface EditorElementRendererProps {
 
 export const EditorElementRenderer = memo<EditorElementRendererProps>(
   ({ element, path }) => {
-    const renderElement = useContext(RenderEditorElementContext);
+    const renderElement = useRenderEditorElement();
     const setNodeEditorPathRef = useSetNodeEditorPathRef(path);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
