@@ -1,8 +1,5 @@
 import { useContext, useCallback, useRef } from 'react';
-import {
-  SetNodeEditorPathContext,
-  Node,
-} from '../contexts/SetNodeEditorPathContext';
+import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { EditorPath } from '../models/path';
 
 export type SetNodeEditorPathRef = (node: Node | null) => void;
@@ -12,6 +9,7 @@ export function useSetNodeEditorPathRef(path: EditorPath) {
   const setNodeEditorPath = useContext(SetNodeEditorPathContext);
   const setNodeEditorPathRef = useCallback<SetNodeEditorPathRef>(
     node => {
+      // TODO: Simplify? Do we really need previousRef?
       if (previousRef.current != null) {
         const { node, path } = previousRef.current;
         setNodeEditorPath('remove', node, path);

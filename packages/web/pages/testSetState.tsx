@@ -4,6 +4,7 @@ import * as editor from 'slad';
 const initialEditorState = editor.createEditorState({
   element: editor.jsx(
     <div className="root">
+      {/* <div className="heading">heading</div> */}
       <div className="paragraph">paragraph</div>
     </div>,
   ),

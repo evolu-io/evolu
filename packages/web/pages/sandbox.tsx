@@ -76,56 +76,33 @@ function Index() {
         onMouseDown={event => {
           event.preventDefault();
           // const nextState = editor.setText('foo')(editorState);
-          const nextState = editor.move(1)(editorState);
+          // const nextState = editor.move(1)(editorState);
+          // odebrat prvni, druhej, jejich switch, jo!
+          // switch
+          // const nextState = {
+          //   ...editorState,
+          //   element: {
+          //     ...editorState.element,
+          //     children: [...editorState.element.children].reverse(),
+          //   },
+          // };
+          // remove second
+          const nextState = {
+            ...editorState,
+            element: {
+              ...editorState.element,
+              children: editorState.element.children.slice(1),
+            },
+          };
           handleEditorChange(nextState);
-
-          // insertText na misto kurzoru?
-
-          // const nextState = produce(editorState, draft => {
-          //   // @ts-ignore
-          //   draft.element.children[0].children[0].text += ' foo';
-          //   // draft.element.children[0].children[0].text = '';
-          //   // draft.element.children.splice(0, 1);
-          //   // jak zmenim path?
           //   // switch
           //   // const first = draft.element.children[0];
           //   // const second = draft.element.children[1];
           //   // draft.element.children[0] = second;
           //   // draft.element.children[1] = first;
-
-          //   // const first = draft.element.children[0].children[0];
-          //   // // @ts-ignore
-          //   // const second = draft.element.children[0].children[2];
-          //   // // @ts-ignore
-          //   // draft.element.children[0].children[0] = second;
-          //   // // @ts-ignore
-          //   // draft.element.children[0].children[2] = first;
-
-          //   // console.log(original(first));
-          //   // console.log(original(second));
-
-          //   // draft.element.children[0] = second;
-          //   // draft.element.children[2] = first;
-          //   // console.log(original(draft.element.children));
-          // });
-          // handleEditorChange(nextState);
         }}
       >
-        update model 1
-      </button>
-      <button
-        type="button"
-        onMouseDown={event => {
-          event.preventDefault();
-          // const nextState = produce(editorState, draft => {
-          //   // @ts-ignore
-          //   // console.log(original(draft.element.children));
-          //   draft.element.children.splice(0, 1);
-          // });
-          // handleEditorChange(nextState);
-        }}
-      >
-        update model 2
+        update model
       </button>
     </Container>
   );

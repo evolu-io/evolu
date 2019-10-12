@@ -1,6 +1,10 @@
 /* eslint-env browser */
 import Debug from 'debug';
+import { empty } from 'fp-ts/lib/Array';
+import { fold, fromNullable, getOrElse, Option } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -8,24 +12,23 @@ import React, {
   useReducer,
   useRef,
   useState,
-  memo,
 } from 'react';
-import { empty } from 'fp-ts/lib/Array';
 import { RenderEditorElementContext } from '../contexts/RenderEditorElementContext';
 import { SetNodeEditorPathContext } from '../contexts/SetNodeEditorPathContext';
 import { useBeforeInput } from '../hooks/editor/useBeforeInput';
 import { useDebugNodesEditorPaths } from '../hooks/editor/useDebugNodesEditorPaths';
-import { useNodesEditorPaths } from '../hooks/editor/useNodesEditorPaths';
+import { useNodesEditorPathsMapping } from '../hooks/editor/useNodesEditorPathsMapping';
 import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { usePrevious } from '../hooks/usePrevious';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
 import { RenderEditorElement } from '../models/element';
-import { EditorPath } from '../models/path';
+import { createNodeOffset, NodeOffset } from '../models/node';
+import { EditorPath, getParentPath } from '../models/path';
 import {
+  EditorSelection,
   editorSelectionIsForward,
   eqEditorSelection,
   selectionToEditorSelection,
-  EditorSelection,
 } from '../models/selection';
 import {
   EditorState,
@@ -84,11 +87,12 @@ export const EditorClient = memo<EditorClientProps>(
 
     const {
       nodesEditorPathsMap,
-      editorPathsNodesMap,
+      getNodeByEditorPath,
       setNodeEditorPath,
-    } = useNodesEditorPaths();
+    } = useNodesEditorPathsMapping();
 
     useInvariantEditorElementIsNormalized(editorState.element);
+    // TODO: Move to useNodesEditorPaths Map Cache Whatever
     useDebugNodesEditorPaths(nodesEditorPathsMap, editorState.element);
 
     const divRef = useRef<HTMLDivElement>(null);
@@ -119,20 +123,33 @@ export const EditorClient = memo<EditorClientProps>(
       return doc && doc.getSelection();
     }, []);
 
-    const editorPathToNodeAndOffset = useCallback(
-      (path: EditorPath): [Node, number] => {
-        const node = editorPathsNodesMap.get(path.join());
-        // Element
-        if (node) {
-          const parent = node.parentNode as Node;
-          return [parent, path[path.length - 1]];
-        }
-        // Text
-        const textNodePath = path.slice(0, -1);
-        const textNode = editorPathsNodesMap.get(textNodePath.join()) as Node;
-        return [textNode, path[path.length - 1]];
+    const editorPathToNodeOffset = useCallback(
+      (path: EditorPath): Option<NodeOffset> => {
+        return pipe(
+          getNodeByEditorPath(path),
+          // That's how we can console.log within a pipe.
+          // foo => {
+          //   console.log(foo);
+          //   return foo;
+          // },
+          fold(
+            () =>
+              // Text.
+              pipe(
+                path,
+                getParentPath,
+                getNodeByEditorPath,
+                createNodeOffset(path),
+              ),
+            element =>
+              pipe(
+                fromNullable(element.parentNode),
+                createNodeOffset(path),
+              ),
+          ),
+        );
       },
-      [editorPathsNodesMap],
+      [getNodeByEditorPath],
     );
 
     const setSelection = useCallback(
@@ -140,13 +157,24 @@ export const EditorClient = memo<EditorClientProps>(
         const doc = divRef.current && divRef.current.ownerDocument;
         if (doc == null) return;
         const isForward = editorSelectionIsForward(editorSelection);
-        const [startNode, startOffset] = editorPathToNodeAndOffset(
-          isForward ? editorSelection.anchor : editorSelection.focus,
+
+        const [startNode, startOffset] = pipe(
+          editorPathToNodeOffset(
+            isForward ? editorSelection.anchor : editorSelection.focus,
+          ),
+          getOrElse<NodeOffset>(() => {
+            throw new Error('Start NodeOffset is none.');
+          }),
         );
-        const [endNode, endOffset] = editorPathToNodeAndOffset(
-          isForward ? editorSelection.focus : editorSelection.anchor,
+
+        const [endNode, endOffset] = pipe(
+          editorPathToNodeOffset(
+            isForward ? editorSelection.focus : editorSelection.anchor,
+          ),
+          getOrElse<NodeOffset>(() => {
+            throw new Error('End NodeOffset is none.');
+          }),
         );
-        if (startNode == null || endNode == null) return;
 
         const range = doc.createRange();
         range.setStart(startNode, startOffset);
@@ -165,7 +193,7 @@ export const EditorClient = memo<EditorClientProps>(
           selection.extend(range.startContainer, range.startOffset);
         }
       },
-      [editorPathToNodeAndOffset, getSelection],
+      [editorPathToNodeOffset, getSelection],
     );
 
     // Update editor selection by document selection.

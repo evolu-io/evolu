@@ -32,13 +32,20 @@ export function getParentPath(path: EditorPath): EditorPath {
 }
 
 /**
+ * Example: `[0, 1, 2]` to `2`.
+ */
+export function getLastIndex(path: EditorPath): number {
+  return path[path.length - 1];
+}
+
+/**
  * Example: `[0, 1, 2]` to `[[0, 1], 2]`.
  */
 export function getParentPathAndLastIndex(
   path: EditorPath,
 ): [EditorPath, number] {
   invariantEditorPathIsEmpty(path);
-  return [getParentPath(path), path[path.length - 1]];
+  return [getParentPath(path), getLastIndex(path)];
 }
 
 export function editorPathsAreForward(
