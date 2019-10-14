@@ -1,3 +1,3 @@
-# Slad
+# Evolu
 
 React contentEditable editor

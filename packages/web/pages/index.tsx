@@ -31,9 +31,9 @@ function Index() {
   return (
     <Container>
       <Head>
-        <title>Slad</title>
+        <title>Evolu</title>
       </Head>
-      <Text size={2}>Slad</Text>
+      <Text size={2}>Evolu</Text>
       <BasicExample
         autoFocus
         initialSelection={{ anchor: [0, 0, 0], focus: [0, 0, 2] }}
