@@ -16,6 +16,5 @@ export const isEditorText: Refinement<EditorNode, EditorText> = (
 
 export const textIsBR: Predicate<string> = text => text.length === 0;
 
-export function editorTextIsBR(editorText: EditorText) {
-  return textIsBR(editorText.text);
-}
+export const editorTextIsBR: Predicate<EditorText> = editorText =>
+  textIsBR(editorText.text);
