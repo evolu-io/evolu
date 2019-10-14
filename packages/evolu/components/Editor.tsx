@@ -1,7 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { EditorClientProps, EditorClient } from './EditorClient';
 import { EditorServer } from './EditorServer';
-import { editorElementIsNormalized } from '../models/element';
 
 export const Editor = memo<EditorClientProps>(
   ({
@@ -14,15 +13,6 @@ export const Editor = memo<EditorClientProps>(
     style,
     ...rest
   }) => {
-    if (process.env.NODE_ENV !== 'production') {
-      if (!editorElementIsNormalized(editorState.element)) {
-        throw new Error(
-          'EditorElement is not normalized, it contains adjacent strings. ' +
-            'You can use normalizeEditorElement.',
-        );
-      }
-    }
-
     const [renderClient, setRenderClient] = useState(false);
 
     // Note we render EditorServer both on the server and the client,
