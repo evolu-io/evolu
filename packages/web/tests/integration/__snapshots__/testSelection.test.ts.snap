@@ -64,12 +64,6 @@ exports[`select 1`] = `
     >
       ·select all backward·
     </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
-    </button>
   </div>
 </div>
 `;
@@ -145,12 +139,6 @@ exports[`select 2`] = `
       type="button"
     >
       ·select all backward·
-    </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
     </button>
   </div>
 </div>
@@ -235,12 +223,6 @@ exports[`select 3`] = `
       type="button"
     >
       ·select all backward·
-    </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
     </button>
   </div>
 </div>
@@ -333,12 +315,6 @@ exports[`select 4`] = `
       type="button"
     >
       ·select all backward·
-    </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
     </button>
   </div>
 </div>
@@ -439,12 +415,6 @@ exports[`select 5`] = `
       type="button"
     >
       ·select all backward·
-    </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
     </button>
   </div>
 </div>
@@ -553,12 +523,6 @@ exports[`select 6`] = `
       type="button"
     >
       ·select all backward·
-    </button>
-    <button
-      class="unselect"
-      type="button"
-    >
-      ·unselect·
     </button>
   </div>
 </div>

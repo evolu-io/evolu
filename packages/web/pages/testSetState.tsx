@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import * as editor from 'slad';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { isNone } from 'fp-ts/lib/Option';
 
 const initialEditorState = editor.createEditorState({
   element: editor.jsx(
@@ -29,10 +31,10 @@ function TestSetState() {
   const onceRef = useRef(false);
 
   useEffect(() => {
-    if (!editorState.selection || onceRef.current) return;
+    if (isNone(editorState.selection) || onceRef.current) return;
     onceRef.current = true;
 
-    const nextState = editor.pipe(
+    const nextState = pipe(
       editorState,
       editor.setText('foo'),
       editor.select({ anchor: [0, 0, 0], focus: [0, 0, 2] }),

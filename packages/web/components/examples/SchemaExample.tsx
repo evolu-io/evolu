@@ -1,7 +1,8 @@
 import React, { useState, useCallback, ReactNode } from 'react';
 import * as editor from 'slad';
-import { assertNever } from 'assert-never';
 import { css, SerializedStyles } from '@emotion/core';
+import { absurd } from 'fp-ts/lib/function';
+import { some } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -168,7 +169,7 @@ export function useSchemaRenderElement() {
               />
             );
           default:
-            assertNever(element);
+            absurd(element);
         }
       };
 
@@ -190,7 +191,7 @@ export function SchemaExample({
   const [editorState, setEditorState] = useState({
     ...initialEditorState,
     ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: initialSelection }),
+    ...(initialSelection != null && { selection: some(initialSelection) }),
   });
 
   const [logEditorState, logEditorStateElement] = editor.useLogEditorState(

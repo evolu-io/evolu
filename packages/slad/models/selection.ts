@@ -1,15 +1,23 @@
-import invariant from 'tiny-invariant';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { Predicate, Endomorphism } from 'fp-ts/lib/function';
-import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { snoc } from 'fp-ts/lib/Array';
+import { Eq, getStructEq } from 'fp-ts/lib/Eq';
+import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import {
-  eqEditorPath,
+  none,
+  Option,
+  some,
+  getOrElse,
+  chain,
+  toNullable,
+  fromNullable,
+} from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import {
   EditorPath,
-  NodesEditorPathsMap,
   editorPathsAreForward,
-  movePath,
+  eqEditorPath,
   getParentPath,
+  movePath,
+  GetEditorPathByNode,
 } from './path';
 
 /**
@@ -58,63 +66,45 @@ export const eqEditorSelection: Eq<EditorSelection> = getStructEq({
   focus: eqEditorPath,
 });
 
-export function invariantEditorSelectionsAreEqual(
-  selection1: EditorSelection,
-  selection2: EditorSelection,
-): boolean {
-  invariant(
-    eqEditorSelection.equals(selection1, selection2),
-    'EditorSelections are not equal.',
-  );
-  return true;
-}
-
 export function selectionToEditorSelection(
-  selection: Selection | null,
-  nodesEditorPathsMap: NodesEditorPathsMap,
-): EditorSelection | null {
-  if (selection == null) return null;
-  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-  if (!anchorNode || !focusNode) return null;
-  const anchorPath = nodesEditorPathsMap.get(anchorNode as Node);
-  const focusPath = nodesEditorPathsMap.get(focusNode as Node);
-  if (!anchorPath || !focusPath) return null;
-  return {
-    anchor: snoc(anchorPath, anchorOffset),
-    focus: snoc(focusPath, focusOffset),
-  };
+  getEditorPathByNode: GetEditorPathByNode,
+): (selection: Option<Selection>) => Option<EditorSelection> {
+  return selection =>
+    pipe(
+      selection,
+      chain(selection => {
+        const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+        if (!anchorNode || !focusNode) return none;
+        // TODO: Replace toNullable with something.
+        const anchorPath = toNullable(getEditorPathByNode(anchorNode));
+        const focusPath = toNullable(getEditorPathByNode(focusNode));
+        if (!anchorPath || !focusPath) return none;
+        return some({
+          anchor: snoc(anchorPath, anchorOffset),
+          focus: snoc(focusPath, focusOffset),
+        });
+      }),
+    );
 }
 
 export function rangeToEditorSelection(
-  range: Range | null,
-  nodesEditorPathsMap: NodesEditorPathsMap,
-): EditorSelection | null {
-  if (range == null) return null;
-  const { startContainer, startOffset, endContainer, endOffset } = range;
-  const anchorPath = nodesEditorPathsMap.get(startContainer);
-  const focusPath = nodesEditorPathsMap.get(endContainer);
-  if (!anchorPath || !focusPath) return null;
-  return {
-    anchor: snoc(anchorPath, startOffset),
-    focus: snoc(focusPath, endOffset),
-  };
-}
-
-export function invariantEditorSelectionIsNotNull(
-  selection: EditorSelection | null,
-): selection is EditorSelection {
-  invariant(selection != null, 'EditorSelection is null.');
-  return true;
-}
-
-export function invariantEditorSelectionIsCollapsed(
-  selection: EditorSelection,
-): selection is EditorSelection {
-  invariant(
-    editorSelectionIsCollapsed(selection),
-    'EditorSelection is not collapsed.',
-  );
-  return true;
+  getEditorPathByNode: GetEditorPathByNode,
+): (range: Option<Range>) => Option<EditorSelection> {
+  return range =>
+    pipe(
+      range,
+      chain(range => {
+        const { startContainer, startOffset, endContainer, endOffset } = range;
+        // How to do it without toNullable?
+        const anchorPath = toNullable(getEditorPathByNode(startContainer));
+        const focusPath = toNullable(getEditorPathByNode(endContainer));
+        if (!anchorPath || !focusPath) return none;
+        return some({
+          anchor: snoc(anchorPath, startOffset),
+          focus: snoc(focusPath, endOffset),
+        });
+      }),
+    );
 }
 
 export function moveEditorSelectionAnchor(
@@ -166,17 +156,26 @@ export const collapseEditorSelectionToEnd: Endomorphism<
   return { anchor: range.focus, focus: range.focus };
 };
 
-export function editorSelectionFromInputEvent(
-  event: InputEvent,
-  nodesEditorPathsMap: NodesEditorPathsMap,
-): EditorSelection {
-  // We get the first range only, because only Firefox supports multiple ranges.
+export function rangeFromInputEvent(event: InputEvent): Option<Range> {
+  // The first range only because only Firefox supports multiple ranges.
   // @ts-ignore Outdated types.
-  const range = event.getTargetRanges()[0] as Range;
-  const selection = rangeToEditorSelection(range, nodesEditorPathsMap);
-  // To make TS happy. Invariant throws anyway.
-  if (!invariantEditorSelectionIsNotNull(selection)) return selection as any;
-  return selection;
+  return fromNullable(event.getTargetRanges()[0]);
+}
+
+export function editorSelectionFromInputEvent(
+  getEditorPathByNode: GetEditorPathByNode,
+): (event: InputEvent) => EditorSelection {
+  return event => {
+    return pipe(
+      rangeFromInputEvent(event),
+      rangeToEditorSelection(getEditorPathByNode),
+      getOrElse<EditorSelection>(() => {
+        throw new Error(
+          'Function editorSelectionFromInputEvent should always return selection.',
+        );
+      }),
+    );
+  };
 }
 
 /**

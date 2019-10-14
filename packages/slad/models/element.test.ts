@@ -7,13 +7,8 @@ import {
 } from './element';
 import { EditorNodeID } from './node';
 
-// TODO: Use JSX <element><text>a<text></element> syntax for tests and snapshots.
-// Need to investigate how to run React JSX in Jest tests.
-// We can add .tsx, but there is some transpilation error.
-// Then, we can have stable IDs and nice syntax.
-// PR anyone?
-let lastID = 0;
 // Stable EditorNodeID factory for test snapshots.
+let lastID = 0;
 function id(): EditorNodeID {
   return (lastID++).toString() as EditorNodeID;
 }
@@ -117,34 +112,19 @@ test('deleteContentElement', () => {
 
 test('materializeEditorPath', () => {
   // <div><b>a</b></div>
-  const text = { id: id(), text: 'a' };
-  const b = { id: id(), children: [text] };
-  const div = { id: id(), children: [b] };
+  const text = { id: '1' as EditorNodeID, text: 'a' };
+  const b = { id: '2' as EditorNodeID, children: [text] };
+  const div = { id: '3' as EditorNodeID, children: [b] };
 
-  expect(materializeEditorPath([])(div)).toMatchObject({
-    parents: [],
-    to: div,
-  });
-  expect(materializeEditorPath([0])(div)).toMatchObject({
-    parents: [div],
-    to: b,
-  });
-  expect(materializeEditorPath([0, 0])(div)).toMatchObject({
-    parents: [div, b],
-    to: text,
-  });
-  expect(materializeEditorPath([0, 0, 0])(div)).toMatchObject({
-    parents: [div, b],
-    to: { editorText: text, offset: 0 },
-  });
-  expect(materializeEditorPath([0, 0, 1])(div)).toMatchObject({
-    parents: [div, b],
-    to: { editorText: text, offset: 1 },
-  });
+  expect(materializeEditorPath([])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0, 0])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0, 0, 0])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0, 0, 1])(div)).toMatchSnapshot();
 
   // Nulls.
-  expect(materializeEditorPath([0, 0, 0, 0])(div)).toBeNull();
-  expect(materializeEditorPath([1])(div)).toBeNull();
-  expect(materializeEditorPath([0, 1])(div)).toBeNull();
-  expect(materializeEditorPath([0, 0, 2])(div)).toBeNull();
+  expect(materializeEditorPath([0, 0, 0, 0])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([1])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0, 1])(div)).toMatchSnapshot();
+  expect(materializeEditorPath([0, 0, 2])(div)).toMatchSnapshot();
 });

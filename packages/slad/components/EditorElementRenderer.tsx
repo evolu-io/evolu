@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import invariant from 'tiny-invariant';
 import { useRenderEditorElement } from '../hooks/useRenderEditorElement';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorElement } from '../models/element';
@@ -7,26 +6,6 @@ import { SetNodeEditorPathRef } from '../models/node';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
 import { EditorTextRenderer } from './EditorTextRenderer';
-
-// We can not magically add data-foo prop, because it would mutate DOM.
-// Better to enforce the right data model. Check invariant message.
-// TODO: Rethink. Maybe we can fix it because we don't use MutationObserver anymore.
-export function invariantHTMLElementHasToHaveAtLeastOneAttribute(
-  element: HTMLElement,
-) {
-  if (process.env.NODE_ENV !== 'production') {
-    invariant(
-      element.hasAttributes(),
-      "Editor element has to have at least one attribute. That's because contentEditable " +
-        'does not like naked elements. For inline elements, it can split or wrap nodes. ' +
-        'Check https://git.io/Jemyy. ' +
-        'For block elements, it can remove then add parents on text mutation. ' +
-        'The fix is simple. Use classes instead of tags. For example, instead of ' +
-        '<b>, use <div class="strong">. Affected element: ' +
-        `${element.outerHTML}`,
-    );
-  }
-}
 
 export interface EditorElementRendererProps {
   element: EditorElement;
@@ -39,8 +18,22 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const setNodeEditorPathRef = useSetNodeEditorPathRef(path);
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
-        if (node)
-          invariantHTMLElementHasToHaveAtLeastOneAttribute(node as HTMLElement);
+        if (process.env.NODE_ENV !== 'production') {
+          const isHTMLElement = (node: Node | null): node is HTMLElement =>
+            // eslint-disable-next-line no-undef
+            node != null && node.nodeType === Node.ELEMENT_NODE;
+          if (isHTMLElement(node) && !node.hasAttributes())
+            throw new Error(
+              'Element rendered by editor has to have at least one attribute. ' +
+                "That's because contentEditable does not like naked elements. " +
+                'For inline elements, it can split or wrap nodes. ' +
+                'Check https://git.io/Jemyy. ' +
+                'For block elements, it can remove then add parents on text mutation. ' +
+                'The fix is simple. Use classes instead of tags. For example, instead of ' +
+                '<b>, use <div class="strong">. Affected element: ' +
+                `${node.outerHTML}`,
+            );
+        }
         setNodeEditorPathRef(node);
       },
       [setNodeEditorPathRef],

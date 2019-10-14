@@ -1,11 +1,13 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
+import { toNullable } from 'fp-ts/lib/Option';
 import { EditorElement, recursiveRemoveID } from '../models/element';
 import { EditorState } from '../models/state';
 
 const Item = memo(
   ({ editorState, index }: { editorState: EditorState; index: number }) => {
-    // hasFocus render first
-    const { element, hasFocus, ...rest } = editorState;
+    const { element, hasFocus, selection } = editorState;
+    // Replace optional EditorSelection with nullable for better readability.
+    const indexItem = { hasFocus, selection: toNullable(selection) };
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
     const title = JSON.stringify(recursiveRemoveID(element as EditorElement))
@@ -13,7 +15,7 @@ const Item = memo(
       .join("'");
     return (
       <span title={title}>
-        {index} {JSON.stringify({ hasFocus, ...rest })}
+        {index} {JSON.stringify(indexItem)}
         <style jsx>{`
           span {
             color: #888;

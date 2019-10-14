@@ -7,11 +7,7 @@ module.exports = withBundleAnalyzer(
   withTranspileModules({
     // To force Next.js to transpile code from other workspace packages.
     // https://github.com/martpie/next-transpile-modules
-    transpileModules: [
-      'slad',
-      // Enable later https://github.com/steida/slad/issues/46
-      // 'fp-ts'
-    ],
+    transpileModules: ['slad'],
     // We need server for local next export for integration tests.
     // We can detects ZEIT Now runtime via AWS_REGION.
     target: process.env.AWS_REGION ? 'serverless' : 'server',

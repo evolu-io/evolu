@@ -1,7 +1,5 @@
 /* eslint-env browser */
 import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
-import invariant from 'tiny-invariant';
-import { NodesEditorPathsMap } from '../models/path';
 import {
   collapseEditorSelectionToStart,
   editorSelectionForChild,
@@ -11,11 +9,12 @@ import {
   moveEditorSelection,
 } from '../models/selection';
 import { EditorAction } from '../reducers/editorReducer';
+import { GetEditorPathByNode } from '../models/path';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
   userIsTypingRef: MutableRefObject<boolean>,
-  nodesEditorPathsMap: NodesEditorPathsMap,
+  getEditorPathByNode: GetEditorPathByNode,
   dispatch: Dispatch<EditorAction>,
 ) {
   useEffect(() => {
@@ -69,9 +68,8 @@ export function useBeforeInput(
           // Btw, that's why all contentEditable editors require whitespace pre.
           if (event.data == null) return;
 
-          const selection = editorSelectionFromInputEvent(
+          const selection = editorSelectionFromInputEvent(getEditorPathByNode)(
             event,
-            nodesEditorPathsMap,
           );
 
           // @ts-ignore Missing getTargetRanges.
@@ -120,9 +118,8 @@ export function useBeforeInput(
         // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          const selection = editorSelectionFromInputEvent(
+          const selection = editorSelectionFromInputEvent(getEditorPathByNode)(
             event,
-            nodesEditorPathsMap,
           );
 
           // When nothing is going to be deleted, do nothing.
@@ -179,10 +176,11 @@ export function useBeforeInput(
         }
 
         default:
-          invariant(
-            false,
-            `Unhandled beforeinput inputType: ${event.inputType}`,
-          );
+          if (process.env.NODE_ENV !== 'production') {
+            throw new Error(
+              `Unhandled beforeinput inputType: ${event.inputType}`,
+            );
+          }
       }
     }
 
@@ -192,5 +190,5 @@ export function useBeforeInput(
       // @ts-ignore Outdated types.
       div.removeEventListener('beforeinput', handleBeforeInput);
     };
-  }, [dispatch, divRef, nodesEditorPathsMap, userIsTypingRef]);
+  }, [dispatch, divRef, getEditorPathByNode, userIsTypingRef]);
 }

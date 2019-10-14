@@ -1,14 +1,13 @@
-import { assertNever } from 'assert-never';
 import { fromNullable } from 'fp-ts/lib/Option';
 import { useCallback, useEffect, useRef } from 'react';
-import invariant from 'tiny-invariant';
+import { absurd } from 'fp-ts/lib/function';
 import { EditorElement, EditorElementChild } from '../models/element';
 import {
   EditorPathsNodesMap,
   GetNodeByEditorPath,
   NodesEditorPathsMap,
-  // GetEditorPathByNode,
   SetNodeEditorPath,
+  GetEditorPathByNode,
 } from '../models/path';
 import { isEditorText } from '../models/text';
 
@@ -35,10 +34,11 @@ function useDebugNodesEditorPaths(
       };
       const nodesLength = countNodes(element);
       // console.log(nodesLength, nodesEditorPathsMap.size);
-      invariant(
-        nodesLength === nodesEditorPathsMap.size,
-        'It looks like the ref arg in the custom renderElement of Editor is not used.',
-      );
+      // throw nebo warning? tady asi throw
+      if (nodesLength !== nodesEditorPathsMap.size)
+        throw new Error(
+          'It looks like the ref arg in the custom renderElement is not used.',
+        );
     }, [nodesEditorPathsMap, element]);
   }
 }
@@ -51,10 +51,9 @@ export function useNodesEditorPathsMapping(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   element: EditorElement,
 ): {
-  nodesEditorPathsMap: NodesEditorPathsMap;
   setNodeEditorPath: SetNodeEditorPath;
   getNodeByEditorPath: GetNodeByEditorPath;
-  // getEditorPathByNode: GetEditorPathByNode;
+  getEditorPathByNode: GetEditorPathByNode;
 } {
   const nodesEditorPathsMapRef = useRef<NodesEditorPathsMap>(new Map());
   const editorPathsNodesMapRef = useRef<EditorPathsNodesMap>(new Map());
@@ -66,10 +65,10 @@ export function useNodesEditorPathsMapping(
     return fromNullable(node);
   }, []);
 
-  // const getEditorPathByNode = useCallback<GetEditorPathByNode>(node => {
-  //   const path = nodesEditorPathsMapRef.current.get(node);
-  //   return fromNullable(path);
-  // }, []);
+  const getEditorPathByNode = useCallback<GetEditorPathByNode>(node => {
+    const path = nodesEditorPathsMapRef.current.get(node);
+    return fromNullable(path);
+  }, []);
 
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
     (operation, node, path) => {
@@ -85,15 +84,14 @@ export function useNodesEditorPathsMapping(
           editorPathsNodesMapRef.current.delete(path.join());
           break;
         default:
-          assertNever(operation);
+          absurd(operation);
       }
     },
     [editorPathsNodesMapRef, nodesEditorPathsMapRef],
   );
   return {
-    nodesEditorPathsMap: nodesEditorPathsMapRef.current,
     setNodeEditorPath,
     getNodeByEditorPath,
-    // getEditorPathByNode,
+    getEditorPathByNode,
   };
 }

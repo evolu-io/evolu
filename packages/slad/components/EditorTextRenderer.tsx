@@ -1,7 +1,6 @@
 /* eslint-env browser */
 import React, { Component, memo } from 'react';
 import { findDOMNode } from 'react-dom';
-import invariant from 'tiny-invariant';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { textIsBR } from '../models/text';
@@ -41,10 +40,6 @@ class EditorTextNode extends Component<EditorTextNodeProps> {
 
   shouldComponentUpdate(nextProps: EditorTextNodeProps) {
     const { node } = this;
-    invariant(
-      node instanceof HTMLBRElement || node instanceof Text,
-      'node is not an HTMLBRElement nor a Text',
-    );
     const shouldBeBR = textIsBR(nextProps.children);
     if (shouldBeBR) {
       return (node as HTMLBRElement).tagName !== 'BR';

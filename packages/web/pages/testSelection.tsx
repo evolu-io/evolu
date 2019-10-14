@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'slad';
+import { some } from 'fp-ts/lib/Option';
 
 export const testSelectionElement: editor.EditorReactElement = {
   id: editor.id(),
@@ -46,8 +47,12 @@ function TestSelection() {
     [logEditorState],
   );
 
-  function select(selection: editor.EditorSelection | null) {
-    handleEditorChange({ ...editorState, hasFocus: true, selection });
+  function select(selection: editor.EditorSelection) {
+    handleEditorChange({
+      ...editorState,
+      hasFocus: true,
+      selection: some(selection),
+    });
   }
 
   return (
@@ -107,7 +112,8 @@ function TestSelection() {
         >
           select all backward
         </button>
-        <button
+        {/* TODO: Once we decide what we want. */}
+        {/* <button
           className="unselect"
           type="button"
           onMouseDown={event => {
@@ -116,7 +122,7 @@ function TestSelection() {
           }}
         >
           unselect
-        </button>
+        </button> */}
       </div>
     </>
   );

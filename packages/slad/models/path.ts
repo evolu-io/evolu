@@ -1,7 +1,6 @@
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { getEq } from 'fp-ts/lib/Array';
-import invariant from 'tiny-invariant';
 import { Option } from 'fp-ts/lib/Option';
 
 export type EditorPath = number[];
@@ -19,10 +18,6 @@ export type GetEditorPathByNode = (node: Node) => Option<EditorPath>;
 export const editorPathIsEmpty: Predicate<EditorPath> = path =>
   path.length === 0;
 
-export function invariantEditorPathIsEmpty(path: EditorPath) {
-  invariant(!editorPathIsEmpty(path), 'EditorPath is empty.');
-}
-
 /**
  * Key is editorPath.join().
  */
@@ -36,7 +31,6 @@ export const eqEditorPath = getEq(eqNumber);
  * Example: `[0, 1, 2]` to `[0, 1]`.
  */
 export function getParentPath(path: EditorPath): EditorPath {
-  invariantEditorPathIsEmpty(path);
   return path.slice(0, -1) as EditorPath;
 }
 
@@ -53,7 +47,6 @@ export function getLastIndex(path: EditorPath): number {
 export function getParentPathAndLastIndex(
   path: EditorPath,
 ): [EditorPath, number] {
-  invariantEditorPathIsEmpty(path);
   return [getParentPath(path), getLastIndex(path)];
 }
 

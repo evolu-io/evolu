@@ -5,15 +5,16 @@ import {
   useLogEditorState,
   createEditorState,
 } from 'slad';
+import { some } from 'fp-ts/lib/Option';
 import { testSelectionElement } from './testSelection';
 
 const initialEditorState = createEditorState({
   element: testSelectionElement,
   hasFocus: false,
-  selection: {
+  selection: some({
     anchor: [0, 0, 0],
     focus: [0, 0, 2],
-  },
+  }),
 });
 
 function TestSelectionNoFocusSomeSelection() {

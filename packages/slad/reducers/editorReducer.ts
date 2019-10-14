@@ -1,4 +1,3 @@
-import { assertNever } from 'assert-never';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
 import { EditorSelection } from '../models/selection';
@@ -8,6 +7,7 @@ import {
   select,
   setText,
 } from '../models/state';
+import { absurd } from 'fp-ts/lib/function';
 
 /**
  * Various browser actions for updating EditorState.
@@ -65,6 +65,6 @@ export const editorReducer: EditorReducer = (state, action) => {
     //   return deleteContent(action.selection)(state);
 
     default:
-      return assertNever(action);
+      return absurd(action);
   }
 };

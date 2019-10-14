@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant';
 import { Predicate, Refinement } from 'fp-ts/lib/function';
 import { EditorNode } from './node';
 
@@ -14,11 +13,6 @@ export interface EditorText extends EditorNode {
 export const isEditorText: Refinement<EditorNode, EditorText> = (
   u,
 ): u is EditorText => typeof (u as EditorText).text === 'string';
-
-export function invariantIsEditorText(value: EditorNode): value is EditorText {
-  invariant(isEditorText(value), 'The value is not EditorText.');
-  return true;
-}
 
 export const textIsBR: Predicate<string> = text => text.length === 0;
 

@@ -2,8 +2,8 @@ import { Predicate, Refinement, Endomorphism } from 'fp-ts/lib/function';
 import { Lens, Prism, Optional } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
-import invariant from 'tiny-invariant';
 import { $Values } from 'utility-types';
+import { Option, some, none, toNullable } from 'fp-ts/lib/Option';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
 import {
@@ -64,13 +64,6 @@ export const isEditorTextWithOffset: Refinement<
   );
 };
 
-export function invariantIsEditorElement(
-  value: EditorNode,
-): value is EditorElement {
-  invariant(isEditorElement(value), 'Value is not EditorElement.');
-  return true;
-}
-
 interface EditorReactElementFactory<T, P> extends EditorElement {
   readonly tag: T;
   readonly props?: P;
@@ -86,15 +79,10 @@ export type EditorReactElement = $Values<
   }
 >;
 
-export function invariantMaterializedPathIsNotNull(
-  value: MaterializedEditorPath | null,
-): value is MaterializedEditorPath {
-  invariant(value != null, 'MaterializedPath is null.');
-  return true;
-}
-
-export function materializeEditorPath(path: EditorPath) {
-  return (element: EditorElement): MaterializedEditorPath | null => {
+export function materializeEditorPath(
+  path: EditorPath,
+): (element: EditorElement) => Option<MaterializedEditorPath> {
+  return element => {
     const parents: MaterializedEditorPath['parents'] = [];
     let to: MaterializedEditorPath['to'] = element;
     for (let i = 0; i < path.length; i++) {
@@ -102,14 +90,14 @@ export function materializeEditorPath(path: EditorPath) {
       if (isEditorElement(to)) {
         parents.push(to);
         to = to.children[pathIndex];
-        if (to == null) return null;
+        if (to == null) return none;
       } else if (isEditorText(to)) {
         const pathContinues = i < path.length - 1;
-        if (pathContinues || pathIndex > to.text.length) return null;
-        return { parents, to: { editorText: to, offset: pathIndex } };
+        if (pathContinues || pathIndex > to.text.length) return none;
+        return some({ parents, to: { editorText: to, offset: pathIndex } });
       }
     }
-    return { parents, to };
+    return some({ parents, to });
   };
 }
 
@@ -275,10 +263,6 @@ export function ensureTextTraversal(path: EditorPath, element: EditorElement) {
   let textTraversal = getTextTraversal(path);
   if (textTraversal.asFold().getAll(element).length === 0)
     textTraversal = getTextTraversal(getParentPath(path));
-  invariant(
-    textTraversal.asFold().getAll(element).length !== 0,
-    'Invalid path in ensureTextTraversal.',
-  );
   return textTraversal;
 }
 
@@ -293,6 +277,7 @@ export function setTextElement(
         element,
       ).asFold();
       const focusFold = ensureTextTraversal(selection.focus, element).asFold();
+      // TODO: Consider toNullable, eq, or something else. This code is probably not ideal.
       if (!anchorFold.exist(isEditorText)(element)) return false;
       if (!focusFold.exist(isEditorText)(element)) return false;
       return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
@@ -316,11 +301,14 @@ export function deleteContentElement(
 ): Endomorphism<EditorElement> {
   return element => {
     const range = editorSelectionAsRange(selection);
-    const anchorMaterializedPath = materializeEditorPath(range.anchor)(element);
-    const focusMaterializedPath = materializeEditorPath(range.focus)(element);
-    if (!invariantMaterializedPathIsNotNull(anchorMaterializedPath))
-      return element;
-    if (!invariantMaterializedPathIsNotNull(focusMaterializedPath))
+    // TODO: Replace toNullable with something.
+    const anchorMaterializedPath = toNullable(
+      materializeEditorPath(range.anchor)(element),
+    );
+    const focusMaterializedPath = toNullable(
+      materializeEditorPath(range.focus)(element),
+    );
+    if (anchorMaterializedPath == null || focusMaterializedPath == null)
       return element;
     // TODO: Handle other cases, with lenses.
     if (

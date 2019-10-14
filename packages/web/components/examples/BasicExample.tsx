@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'slad';
+import { some } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -50,7 +51,7 @@ export function BasicExample({
   const [editorState, setEditorState] = useState({
     ...(onlyText ? initialEditorStateWithTextOnly : initialEditorState),
     ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: initialSelection }),
+    ...(initialSelection != null && { selection: some(initialSelection) }),
   });
 
   const [logEditorState, logEditorStateElement] = editor.useLogEditorState(

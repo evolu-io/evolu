@@ -12,6 +12,203 @@ Object {
 }
 `;
 
+exports[`materializeEditorPath 1`] = `
+Object {
+  "_tag": "Some",
+  "value": Object {
+    "parents": Array [],
+    "to": Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "id": "1",
+              "text": "a",
+            },
+          ],
+          "id": "2",
+        },
+      ],
+      "id": "3",
+    },
+  },
+}
+`;
+
+exports[`materializeEditorPath 2`] = `
+Object {
+  "_tag": "Some",
+  "value": Object {
+    "parents": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "id": "1",
+                "text": "a",
+              },
+            ],
+            "id": "2",
+          },
+        ],
+        "id": "3",
+      },
+    ],
+    "to": Object {
+      "children": Array [
+        Object {
+          "id": "1",
+          "text": "a",
+        },
+      ],
+      "id": "2",
+    },
+  },
+}
+`;
+
+exports[`materializeEditorPath 3`] = `
+Object {
+  "_tag": "Some",
+  "value": Object {
+    "parents": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "id": "1",
+                "text": "a",
+              },
+            ],
+            "id": "2",
+          },
+        ],
+        "id": "3",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "id": "1",
+            "text": "a",
+          },
+        ],
+        "id": "2",
+      },
+    ],
+    "to": Object {
+      "id": "1",
+      "text": "a",
+    },
+  },
+}
+`;
+
+exports[`materializeEditorPath 4`] = `
+Object {
+  "_tag": "Some",
+  "value": Object {
+    "parents": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "id": "1",
+                "text": "a",
+              },
+            ],
+            "id": "2",
+          },
+        ],
+        "id": "3",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "id": "1",
+            "text": "a",
+          },
+        ],
+        "id": "2",
+      },
+    ],
+    "to": Object {
+      "editorText": Object {
+        "id": "1",
+        "text": "a",
+      },
+      "offset": 0,
+    },
+  },
+}
+`;
+
+exports[`materializeEditorPath 5`] = `
+Object {
+  "_tag": "Some",
+  "value": Object {
+    "parents": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "id": "1",
+                "text": "a",
+              },
+            ],
+            "id": "2",
+          },
+        ],
+        "id": "3",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "id": "1",
+            "text": "a",
+          },
+        ],
+        "id": "2",
+      },
+    ],
+    "to": Object {
+      "editorText": Object {
+        "id": "1",
+        "text": "a",
+      },
+      "offset": 1,
+    },
+  },
+}
+`;
+
+exports[`materializeEditorPath 6`] = `
+Object {
+  "_tag": "None",
+}
+`;
+
+exports[`materializeEditorPath 7`] = `
+Object {
+  "_tag": "None",
+}
+`;
+
+exports[`materializeEditorPath 8`] = `
+Object {
+  "_tag": "None",
+}
+`;
+
+exports[`materializeEditorPath 9`] = `
+Object {
+  "_tag": "None",
+}
+`;
+
 exports[`normalizeEditorElement do not add children 1`] = `
 Object {
   "children": Array [],

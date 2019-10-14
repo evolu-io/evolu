@@ -9,17 +9,15 @@
     "last 2 Safari versions"
   ],
   "dependencies": {
-    "assert-never": "^1.2.0",
     "debug": "^4.1.1",
-    "fp-ts": "^2.0.5",
-    "monocle-ts": "^2.0.0",
     "nanoid": "^2.1.0",
-    "tiny-invariant": "^1.0.6",
     "utility-types": "^3.7.0"
   },
   "peerDependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "fp-ts": "^2.0.5",
+    "monocle-ts": "^2.0.0",
+    "react-dom": "^16.9.0",
+    "react": "^16.9.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",

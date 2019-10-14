@@ -1,7 +1,16 @@
 /* eslint-env browser */
 import Debug from 'debug';
 import { empty } from 'fp-ts/lib/Array';
-import { fold, fromNullable, getOrElse, Option } from 'fp-ts/lib/Option';
+import {
+  fold,
+  fromNullable,
+  getOrElse,
+  Option,
+  toNullable,
+  none,
+  chain,
+  some,
+} from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   memo,
@@ -15,7 +24,6 @@ import React, {
 } from 'react';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
-import { useInvariantEditorElementIsNormalized } from '../hooks/useInvariantEditorElementIsNormalized';
 import { usePrevious } from '../hooks/usePrevious';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
 import { RenderEditorElement } from '../models/element';
@@ -27,10 +35,7 @@ import {
   eqEditorSelection,
   selectionToEditorSelection,
 } from '../models/selection';
-import {
-  EditorState,
-  invariantIsEditorStateSelectionValid,
-} from '../models/state';
+import { EditorState } from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
@@ -72,8 +77,6 @@ export const EditorClient = memo<EditorClientProps>(
     role = 'textbox',
     ...rest
   }) => {
-    invariantIsEditorStateSelectionValid(parentEditorState);
-
     const userIsTypingRef = useRef(false);
 
     // I am not sure whether we really need inner state.
@@ -85,16 +88,13 @@ export const EditorClient = memo<EditorClientProps>(
     );
 
     const {
-      nodesEditorPathsMap,
-      getNodeByEditorPath,
       setNodeEditorPath,
+      getNodeByEditorPath,
+      getEditorPathByNode,
     } = useNodesEditorPathsMapping(editorState.element);
-
-    useInvariantEditorElementIsNormalized(editorState.element);
 
     const divRef = useRef<HTMLDivElement>(null);
 
-    // Internal states.
     const [tabLostFocus, setTabLostFocus] = useState(false);
 
     const editorStateHadFocus = usePrevious(editorState.hasFocus);
@@ -115,9 +115,13 @@ export const EditorClient = memo<EditorClientProps>(
       }
     }, [tabLostFocus, divRef, editorStateHadFocus, editorState.hasFocus]);
 
-    const getSelection = useCallback((): Selection | null => {
-      const doc = divRef.current && divRef.current.ownerDocument;
-      return doc && doc.getSelection();
+    const getSelection = useCallback((): Option<Selection> => {
+      return fromNullable(
+        // TODO: Use TypeScript 3.7 optional chaining.
+        divRef.current &&
+          divRef.current.ownerDocument &&
+          divRef.current.ownerDocument.getSelection(),
+      );
     }, []);
 
     const editorPathToNodeOffset = useCallback(
@@ -153,42 +157,50 @@ export const EditorClient = memo<EditorClientProps>(
       (editorSelection: EditorSelection) => {
         const doc = divRef.current && divRef.current.ownerDocument;
         if (doc == null) return;
-        const isForward = editorSelectionIsForward(editorSelection);
+        pipe(
+          getSelection(),
+          fold(
+            () => {
+              throw new Error('Selection should exists.');
+            },
+            selection => {
+              const isForward = editorSelectionIsForward(editorSelection);
 
-        const [startNode, startOffset] = pipe(
-          editorPathToNodeOffset(
-            isForward ? editorSelection.anchor : editorSelection.focus,
+              const [startNode, startOffset] = pipe(
+                editorPathToNodeOffset(
+                  isForward ? editorSelection.anchor : editorSelection.focus,
+                ),
+                getOrElse<NodeOffset>(() => {
+                  throw new Error('Start NodeOffset should exists.');
+                }),
+              );
+
+              const [endNode, endOffset] = pipe(
+                editorPathToNodeOffset(
+                  isForward ? editorSelection.focus : editorSelection.anchor,
+                ),
+                getOrElse<NodeOffset>(() => {
+                  throw new Error('End NodeOffset should exists.');
+                }),
+              );
+
+              const range = doc.createRange();
+              range.setStart(startNode, startOffset);
+              range.setEnd(endNode, endOffset);
+
+              selection.removeAllRanges();
+              if (isForward) {
+                selection.addRange(range);
+              } else {
+                // https://stackoverflow.com/a/4802994/233902
+                const endRange = range.cloneRange();
+                endRange.collapse(false);
+                selection.addRange(endRange);
+                selection.extend(range.startContainer, range.startOffset);
+              }
+            },
           ),
-          getOrElse<NodeOffset>(() => {
-            throw new Error('Start NodeOffset is none.');
-          }),
         );
-
-        const [endNode, endOffset] = pipe(
-          editorPathToNodeOffset(
-            isForward ? editorSelection.focus : editorSelection.anchor,
-          ),
-          getOrElse<NodeOffset>(() => {
-            throw new Error('End NodeOffset is none.');
-          }),
-        );
-
-        const range = doc.createRange();
-        range.setStart(startNode, startOffset);
-        range.setEnd(endNode, endOffset);
-
-        const selection = getSelection();
-        if (selection == null) return;
-        selection.removeAllRanges();
-        if (isForward) {
-          selection.addRange(range);
-        } else {
-          // https://stackoverflow.com/a/4802994/233902
-          const endRange = range.cloneRange();
-          endRange.collapse(false);
-          selection.addRange(endRange);
-          selection.extend(range.startContainer, range.startOffset);
-        }
       },
       [editorPathToNodeOffset, getSelection],
     );
@@ -197,18 +209,25 @@ export const EditorClient = memo<EditorClientProps>(
     useEffect(() => {
       const doc = divRef.current && divRef.current.ownerDocument;
       if (doc == null) return;
+
       const handleDocumentSelectionChange = () => {
         if (userIsTypingRef.current) return;
-        const selection = selectionToEditorSelection(
+        pipe(
           getSelection(),
-          nodesEditorPathsMap,
+          selectionToEditorSelection(getEditorPathByNode),
+          fold(
+            () => {
+              // Editor must remember the last selection when document selection
+              // is moved elsewhere to restore it later on focus. In Chrome,
+              // contentEditable does not do that. That's why we ignore none values.
+            },
+            selection => {
+              dispatch({ type: 'selectionChange', selection });
+            },
+          ),
         );
-        // Editor must remember the last selection when document selection is moved
-        // elsewhere to restore it later on focus. In Chrome, contentEditable does not
-        // do that. That's why we ignore null values.
-        if (selection == null) return;
-        dispatch({ type: 'selectionChange', selection });
       };
+
       doc.addEventListener('selectionchange', handleDocumentSelectionChange);
       return () => {
         doc.removeEventListener(
@@ -216,36 +235,33 @@ export const EditorClient = memo<EditorClientProps>(
           handleDocumentSelectionChange,
         );
       };
-    }, [dispatch, getSelection, nodesEditorPathsMap]);
+    }, [dispatch, getEditorPathByNode, getSelection]);
 
     const ensureSelectionEqualsEditorSelection = useCallback(() => {
-      const selection = getSelection();
-      if (selection == null) return;
-
-      // Check whether selections are equal.
-      const currentSelection = selectionToEditorSelection(
-        selection,
-        nodesEditorPathsMap,
+      pipe(
+        getSelection(),
+        selectionToEditorSelection(getEditorPathByNode),
+        chain(editorSelection => {
+          // TODO: Replace toNullable with something.
+          const currentEditorSelection = toNullable(editorState.selection);
+          if (currentEditorSelection == null) return none;
+          if (eqEditorSelection.equals(editorSelection, currentEditorSelection))
+            return none;
+          return some(currentEditorSelection);
+        }),
+        fold(
+          () => {
+            // No selection, nothing to update.
+          },
+          currentEditorSelection => {
+            setSelection(currentEditorSelection);
+          },
+        ),
       );
-      if (
-        editorState.selection &&
-        currentSelection &&
-        eqEditorSelection.equals(editorState.selection, currentSelection)
-      )
-        return;
-
-      if (!editorState.selection) {
-        // TODO: What to do when selection is falsy? Blur? Collapse?
-        // 'selection.removeAllRanges()' breaks tests.
-        // The same for 'if (divRef.current) divRef.current.blur()'.
-        // Feel free to send PR.
-        return;
-      }
-      setSelection(editorState.selection);
     }, [
       editorState.selection,
+      getEditorPathByNode,
       getSelection,
-      nodesEditorPathsMap,
       setSelection,
     ]);
 
@@ -255,7 +271,7 @@ export const EditorClient = memo<EditorClientProps>(
       ensureSelectionEqualsEditorSelection();
     }, [ensureSelectionEqualsEditorSelection, editorState.hasFocus]);
 
-    useBeforeInput(divRef, userIsTypingRef, nodesEditorPathsMap, dispatch);
+    useBeforeInput(divRef, userIsTypingRef, getEditorPathByNode, dispatch);
 
     const children = useMemo(() => {
       return (

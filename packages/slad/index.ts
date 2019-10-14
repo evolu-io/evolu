@@ -5,7 +5,6 @@ export * from './components/EditorElementRenderer';
 export * from './components/EditorServer';
 export * from './components/EditorTextRenderer';
 export * from './hooks/useBeforeInput';
-export * from './hooks/useInvariantEditorElementIsNormalized';
 export * from './hooks/useLogEditorState';
 export * from './hooks/useNodesEditorPathsMapping';
 export * from './hooks/usePrevious';
@@ -18,8 +17,3 @@ export * from './models/selection';
 export * from './models/state';
 export * from './models/text';
 export * from './reducers/editorReducer';
-
-// fp-ts etc. will not be peer dependencies because we will tree shake it via ES6.
-// We should provide helpers so fp-ts should be an implementation detail I suppose.
-
-export { pipe } from 'fp-ts/lib/pipeable';

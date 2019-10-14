@@ -1,27 +1,25 @@
 import { createElement } from 'react';
 import { Optional, Assign } from 'utility-types';
-import invariant from 'tiny-invariant';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Predicate, Endomorphism } from 'fp-ts/lib/function';
+import { Endomorphism } from 'fp-ts/lib/function';
+import { Option, none, toNullable, some } from 'fp-ts/lib/Option';
 import {
   deleteContentElement,
   EditorElement,
   jsx,
   setTextElement,
-  materializeEditorPath,
   EditorReactElement,
 } from './element';
 import {
   collapseEditorSelectionToStart,
   EditorSelection,
   eqEditorSelection,
-  invariantEditorSelectionIsNotNull,
   moveEditorSelection,
 } from './selection';
 
 export interface EditorState {
   readonly element: EditorElement;
-  readonly selection: EditorSelection | null;
+  readonly selection: Option<EditorSelection>;
   readonly hasFocus: boolean;
 }
 
@@ -32,7 +30,7 @@ export function createEditorState<
   T extends EditorElement = EditorReactElement
 >({
   element,
-  selection = null,
+  selection = none,
   hasFocus = false,
 }: Assign<
   Optional<EditorState, 'hasFocus' | 'selection'>,
@@ -43,11 +41,11 @@ export function createEditorState<
 
 export function createEditorStateWithText({
   text = '',
-  selection = null,
+  selection = none,
   hasFocus = false,
 }: {
   text?: string;
-  selection?: EditorSelection | null;
+  selection?: Option<EditorSelection>;
   hasFocus?: boolean;
 }) {
   return createEditorState({
@@ -57,44 +55,26 @@ export function createEditorStateWithText({
   });
 }
 
-// TODO: Refactor out to isEditorElementSelectionValid.
-export const isEditorStateSelectionValid: Predicate<EditorState> = state => {
-  if (!state.selection) return true;
-  const anchorMaterializedPath = materializeEditorPath(state.selection.anchor)(
-    state.element,
-  );
-  const focusMaterializedPath = materializeEditorPath(state.selection.focus)(
-    state.element,
-  );
-  return anchorMaterializedPath != null && focusMaterializedPath != null;
-};
-
-export function invariantIsEditorStateSelectionValid(
-  state: EditorState,
-): boolean {
-  invariant(
-    isEditorStateSelectionValid(state),
-    'EditorState selection does not match EditorState element. Wrong selection or wrong element.',
-  );
-  return true;
-}
-
 export function select(selection: EditorSelection): Endomorphism<EditorState> {
   return state => {
-    if (state.selection && eqEditorSelection.equals(state.selection, selection))
+    // TODO: Replace toNullable with something.
+    const stateSelection = toNullable(state.selection);
+    if (stateSelection && eqEditorSelection.equals(stateSelection, selection))
       return state;
-    const nextState = { ...state, selection };
-    invariantIsEditorStateSelectionValid(nextState);
-    return nextState;
+    return { ...state, selection: some(selection) };
   };
 }
 
 export function setText(text: string): Endomorphism<EditorState> {
   return state => {
-    if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
+    // TODO: Replace toNullable with something.
+    const selection = toNullable(state.selection);
+    // https://github.com/gcanti/fp-ts/issues/973
+    if (selection == null)
+      throw new Error('Text can not be set without a selection.');
     return {
       ...state,
-      element: setTextElement(text, state.selection)(state.element),
+      element: setTextElement(text, selection)(state.element),
     };
   };
 }
@@ -102,8 +82,19 @@ export function setText(text: string): Endomorphism<EditorState> {
 // TODO: It should traverse across nodes.
 export function move(offset: number): Endomorphism<EditorState> {
   return state => {
-    if (!invariantEditorSelectionIsNotNull(state.selection)) return state;
-    return select(moveEditorSelection(offset)(state.selection))(state);
+    // How to do it without toNullable?
+    const selection = toNullable(state.selection);
+    if (selection == null)
+      throw new Error('Selection must exists to be moved.');
+    return pipe(
+      state,
+      select(
+        pipe(
+          selection,
+          moveEditorSelection(offset),
+        ),
+      ),
+    );
   };
 }
 
@@ -111,18 +102,15 @@ export function deleteContent(
   selection?: EditorSelection,
 ): Endomorphism<EditorState> {
   return state => {
-    const deleteContentSelection = selection || state.selection;
-    // Can't wait for TS 3.7 asserts.
-    if (!invariantEditorSelectionIsNotNull(deleteContentSelection))
-      return state;
+    const deleteContentSelection = selection || toNullable(state.selection);
+    if (deleteContentSelection == null)
+      throw new Error('Selection must exists for deletion.');
     return pipe(
       state,
-      state => {
-        return {
-          ...state,
-          element: deleteContentElement(deleteContentSelection)(state.element),
-        };
-      },
+      state => ({
+        ...state,
+        element: deleteContentElement(deleteContentSelection)(state.element),
+      }),
       select(collapseEditorSelectionToStart(deleteContentSelection)),
     );
   };
