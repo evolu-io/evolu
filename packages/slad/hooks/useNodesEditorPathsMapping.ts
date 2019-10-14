@@ -34,7 +34,6 @@ function useDebugNodesEditorPaths(
       };
       const nodesLength = countNodes(element);
       // console.log(nodesLength, nodesEditorPathsMap.size);
-      // throw nebo warning? tady asi throw
       if (nodesLength !== nodesEditorPathsMap.size)
         throw new Error(
           'It looks like the ref arg in the custom renderElement is not used.',
