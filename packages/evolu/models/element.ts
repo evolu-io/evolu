@@ -3,7 +3,9 @@ import { Lens, Prism, Optional } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
-import { Option, some, none, toNullable } from 'fp-ts/lib/Option';
+import { Option, some, none, toNullable, fold } from 'fp-ts/lib/Option';
+import { lookup } from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
 import {
@@ -177,10 +179,13 @@ export const editorElementIsNormalized: Predicate<EditorElement> = ({
   return !children.some((child, i) => {
     if (!isEditorText(child)) return !editorElementIsNormalized(child);
     if (editorTextIsBR(child)) return false;
-    const previous = children[i - 1];
-    if (previous && isEditorText(previous) && !editorTextIsBR(previous))
-      return true;
-    return false;
+    return pipe(
+      lookup(i - 1, children),
+      fold(
+        () => false,
+        previous => isEditorText(previous) && !editorTextIsBR(previous),
+      ),
+    );
   });
 };
 
