@@ -184,8 +184,8 @@ export const editorElementIsNormalized: Predicate<EditorElement> = ({
   });
 };
 
-// @ts-ignore TODO: Fix types.
-export const recursiveRemoveID = element => {
+// TODO: Can we recursively remove ID from EditorElement?
+export const recursiveRemoveID = (element: EditorElement): any => {
   if (element == null) return element;
   // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
