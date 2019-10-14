@@ -4,7 +4,7 @@ import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 import { Option, some, none, toNullable, fold } from 'fp-ts/lib/Option';
-import { lookup } from 'fp-ts/lib/Array';
+import { lookup, last } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
@@ -135,7 +135,6 @@ export function jsx(element: JSX.Element): EditorReactElement {
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-
 export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
   return {
     ...element,
@@ -146,9 +145,7 @@ export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
               if (isEditorElement(child))
                 return [...array, normalizeEditorElement(child)];
               if (editorTextIsBR(child)) return [...array, child];
-              // Always check existence in an array manually.
-              // https://stackoverflow.com/a/49450994/233902
-              const previousChild = array.length > 0 && array[array.length - 1];
+              const previousChild = toNullable(last(array));
               if (
                 previousChild &&
                 isEditorText(previousChild) &&
