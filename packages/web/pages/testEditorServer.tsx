@@ -1,5 +1,5 @@
 import React from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
 import {
   initialEditorState as initialSchemaEditorState,

@@ -1,7 +1,7 @@
 {
-  "name": "slad",
+  "name": "evolu",
   "version": "0.1.0",
-  "repository": "https://github.com/steida/slad.git",
+  "repository": "https://github.com/steida/evolu.git",
   "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
   "license": "MIT",
   "browserslist": [

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { isNone } from 'fp-ts/lib/Option';
 

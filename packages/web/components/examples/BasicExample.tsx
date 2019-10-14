@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 import { some } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';

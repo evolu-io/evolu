@@ -4,7 +4,7 @@ import {
   EditorState,
   useLogEditorState,
   createEditorState,
-} from 'slad';
+} from 'evolu';
 import { some } from 'fp-ts/lib/Option';
 import { testSelectionElement } from './testSelection';
 

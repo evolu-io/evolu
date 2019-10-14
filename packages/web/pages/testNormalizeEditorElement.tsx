@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 
 const initialEditorState = editor.createEditorState({
   element: editor.normalizeEditorElement({

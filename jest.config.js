@@ -3,10 +3,10 @@ const ts_preset = require('ts-jest/jest-preset');
 module.exports = {
   projects: [
     {
-      displayName: 'slad',
+      displayName: 'evolu',
       preset: 'ts-jest',
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/packages/slad/**/*.test.ts'],
+      testMatch: ['<rootDir>/packages/evolu/**/*.test.ts'],
     },
     {
       displayName: 'web',

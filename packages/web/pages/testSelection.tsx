@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 import { some } from 'fp-ts/lib/Option';
 
 export const testSelectionElement: editor.EditorReactElement = {

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, ReactNode } from 'react';
-import * as editor from 'slad';
+import * as editor from 'evolu';
 import { css, SerializedStyles } from '@emotion/core';
 import { absurd } from 'fp-ts/lib/function';
 import { some } from 'fp-ts/lib/Option';
