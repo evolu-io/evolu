@@ -1,7 +1,7 @@
 {
   "name": "evolu",
   "version": "0.1.0",
-  "repository": "https://github.com/steida/evolu.git",
+  "repository": "https://github.com/evolu-io/evolu.git",
   "author": "Daniel Steigerwald <daniel@steigerwald.cz>",
   "license": "MIT",
   "browserslist": [

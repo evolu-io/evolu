@@ -64,7 +64,7 @@ export function useBeforeInput(
           // , but we would have to compute whitespace collapsing, which is hard.
           // There is some blog post explaining all cases of running blocks etc., but
           // I suppose we don't need it. We can extract text from DOM instead.
-          // https://github.com/steida/evolu/issues/47
+          // https://github.com/evolu-io/evolu/issues/47
           // Btw, that's why all contentEditable editors require whitespace pre.
           if (event.data == null) return;
 
