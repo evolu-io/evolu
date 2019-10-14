@@ -1,4 +1,5 @@
 import React, { createElement, Children, memo } from 'react';
+import { constVoid } from 'fp-ts/lib/function';
 import {
   RenderEditorElement,
   EditorElement,
@@ -19,10 +20,6 @@ export const renderEditorReactElement: RenderEditorElement = (
   }
   return createElement(tag, { ...props, ref }, children);
 };
-
-export function refNoop() {
-  // do nothing
-}
 
 export interface EditorServerProps {
   element: EditorElement;
@@ -46,9 +43,9 @@ export function EditorServerElement({
     );
   });
   if (renderElement) {
-    return <>{renderElement(element, children, refNoop)}</>;
+    return <>{renderElement(element, children, constVoid)}</>;
   }
-  return <>{renderEditorReactElement(element, children, refNoop)}</>;
+  return <>{renderEditorReactElement(element, children, constVoid)}</>;
 }
 
 export type UsefulReactDivAtttributesServer = Pick<
