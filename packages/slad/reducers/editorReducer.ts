@@ -1,5 +1,6 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
+import { absurd } from 'fp-ts/lib/function';
 import { EditorSelection } from '../models/selection';
 import {
   // deleteContent,
@@ -7,7 +8,6 @@ import {
   select,
   setText,
 } from '../models/state';
-import { absurd } from 'fp-ts/lib/function';
 
 /**
  * Various browser actions for updating EditorState.
