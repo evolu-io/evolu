@@ -4,11 +4,11 @@ exports[`deleteContentElement 1`] = `
 Object {
   "children": Array [
     Object {
-      "id": "36",
+      "id": "1",
       "text": "",
     },
   ],
-  "id": "35",
+  "id": "0",
 }
 `;
 
@@ -212,14 +212,14 @@ Object {
 exports[`normalizeEditorElement do not add children 1`] = `
 Object {
   "children": Array [],
-  "id": "29",
+  "id": "0",
 }
 `;
 
 exports[`normalizeEditorElement do not remove children 1`] = `
 Object {
   "children": Array [],
-  "id": "30",
+  "id": "0",
 }
 `;
 
@@ -227,11 +227,11 @@ exports[`normalizeEditorElement do not remove children 2`] = `
 Object {
   "children": Array [
     Object {
-      "id": "32",
+      "id": "2",
       "text": "",
     },
   ],
-  "id": "31",
+  "id": "1",
 }
 `;
 
@@ -239,15 +239,15 @@ exports[`normalizeEditorElement do not remove children 3`] = `
 Object {
   "children": Array [
     Object {
-      "id": "34",
+      "id": "4",
       "text": ".",
     },
   ],
-  "id": "33",
+  "id": "3",
 }
 `;
 
-exports[`normalizeEditorElement merges adjacent strings 1`] = `
+exports[`normalizeEditorElement merges adjacent texts 1`] = `
 Object {
   "children": Array [
     Object {
