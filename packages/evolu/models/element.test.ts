@@ -6,14 +6,11 @@ import {
   materializeEditorPath,
 } from './element';
 import { EditorNodeID } from './node';
+import { createStableIDFactory } from '../../web/tests/integration/helpers';
 
-// Stable EditorNodeID factory for test snapshots.
-let lastID = 0;
-function id(): EditorNodeID {
-  return (lastID++).toString() as EditorNodeID;
-}
+const id = createStableIDFactory();
 
-test('normalizeEditorElement merges adjacent strings', () => {
+test('normalizeEditorElement merges adjacent texts', () => {
   const element: EditorElement = {
     id: id(),
     children: [
@@ -42,6 +39,33 @@ test('normalizeEditorElement merges adjacent strings', () => {
     ],
   };
   expect(normalizeEditorElement(element)).toMatchSnapshot();
+});
+
+test('normalizeEditorElement preserves identity', () => {
+  const element1: EditorElement = {
+    id: id(),
+    children: [],
+  };
+  expect(normalizeEditorElement(element1)).toBe(element1);
+
+  const element2: EditorElement = {
+    id: id(),
+    children: [{ id: id(), children: [] }, { id: id(), text: 'a' }],
+  };
+  expect(normalizeEditorElement(element2)).toBe(element2);
+
+  const preservedChild = { id: id(), children: [] };
+  const element3: EditorElement = {
+    id: id(),
+    children: [
+      preservedChild,
+      { id: id(), text: 'a' },
+      { id: id(), text: 'b' },
+    ],
+  };
+  const normalizedElement3 = normalizeEditorElement(element3);
+  expect(normalizedElement3).not.toBe(element3);
+  expect(normalizedElement3.children[0]).toBe(preservedChild);
 });
 
 test('editorElementIsNormalized', () => {

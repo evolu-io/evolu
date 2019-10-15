@@ -1,10 +1,18 @@
-import { Predicate, Refinement, Endomorphism } from 'fp-ts/lib/function';
-import { Lens, Prism, Optional } from 'monocle-ts/lib';
+import { last, unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
+import {
+  none,
+  Option,
+  some,
+  toNullable,
+  chain,
+  fold,
+  fromPredicate,
+} from 'fp-ts/lib/Option';
+import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
-import { Option, some, none, toNullable, fold } from 'fp-ts/lib/Option';
-import { lookup, last } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
@@ -131,62 +139,63 @@ export function jsx(element: JSX.Element): EditorReactElement {
   };
 }
 
+export const editorElementChildIsEditorTextNotBR: Refinement<
+  EditorElementChild,
+  EditorText
+> = (child): child is EditorText => {
+  return isEditorText(child) && !editorTextIsBR(child);
+};
+
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
- * except strings can be empty. Empty string is considered to be BR.
+ * except strings can be empty. Empty strings are rendered as BR.
+ * If nothing has been normalized, the same element is returned.
  */
 export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
-  return {
-    ...element,
-    ...(element.children
-      ? {
-          children: element.children.reduce<(EditorElementChild)[]>(
-            (array, child) => {
-              if (isEditorElement(child))
-                return [...array, normalizeEditorElement(child)];
-              if (editorTextIsBR(child)) return [...array, child];
-              const previousChild = toNullable(last(array));
-              if (
-                previousChild &&
-                isEditorText(previousChild) &&
-                !editorTextIsBR(previousChild)
-              ) {
-                array[array.length - 1] = {
-                  ...previousChild,
-                  text: previousChild.text + child.text,
-                };
-                return array;
-              }
-              return [...array, child];
-            },
-            [],
-          ),
-        }
-      : null),
-  };
+  // This flag is good enough for now. We can use fp-ts These later.
+  let somethingHasBeenNormalized = false;
+  const children = element.children.reduce<(EditorElementChild)[]>(
+    (array, child) => {
+      if (isEditorElement(child)) {
+        const normalizedChild = normalizeEditorElement(child);
+        if (normalizedChild !== child) somethingHasBeenNormalized = true;
+        return [...array, normalizedChild];
+      }
+      if (editorTextIsBR(child)) return [...array, child];
+      return pipe(
+        last(array),
+        chain(fromPredicate(editorElementChildIsEditorTextNotBR)),
+        fold(
+          () => [...array, child],
+          previousText => {
+            somethingHasBeenNormalized = true;
+            return unsafeUpdateAt(
+              array.length - 1,
+              { ...previousText, text: previousText.text + child.text },
+              array,
+            );
+          },
+        ),
+      );
+    },
+    [],
+  );
+  // Preserve identity, otherwise it would always create new objects.
+  if (!somethingHasBeenNormalized) return element;
+  return { ...element, children };
 };
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-export const editorElementIsNormalized: Predicate<EditorElement> = ({
-  children,
-}) => {
-  return !children.some((child, i) => {
-    if (!isEditorText(child)) return !editorElementIsNormalized(child);
-    if (editorTextIsBR(child)) return false;
-    return pipe(
-      lookup(i - 1, children),
-      fold(
-        () => false,
-        previous => isEditorText(previous) && !editorTextIsBR(previous),
-      ),
-    );
-  });
+export const editorElementIsNormalized: Predicate<EditorElement> = element => {
+  const normalizedElement = normalizeEditorElement(element);
+  // We don't need short circuit. We can leverage identity check.
+  return element === normalizedElement;
 };
 
-// TODO: Can we recursively remove ID from EditorElement?
+// TODO: Can we recursively remove ID from EditorElement type?
 export const recursiveRemoveID = (element: EditorElement): any => {
   if (element == null) return element;
   // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
