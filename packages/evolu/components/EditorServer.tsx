@@ -4,6 +4,7 @@ import {
   RenderEditorElement,
   EditorElement,
   EditorReactElement,
+  normalizeEditorElement,
 } from '../models/element';
 import { isEditorText } from '../models/text';
 
@@ -59,9 +60,13 @@ export type UsefulReactDivAtttributesServer = Pick<
 export const EditorServer = memo<
   EditorServerProps & UsefulReactDivAtttributesServer
 >(({ element, renderElement, ...rest }) => {
+  const normalizedElement = normalizeEditorElement(element);
   return (
     <div {...rest}>
-      <EditorServerElement element={element} renderElement={renderElement} />
+      <EditorServerElement
+        element={normalizedElement}
+        renderElement={renderElement}
+      />
     </div>
   );
 });

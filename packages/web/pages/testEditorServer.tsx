@@ -23,7 +23,12 @@ function TestEditorServer() {
           {
             id: editor.id(),
             tag: 'div',
-            children: [{ id: editor.id(), text: '' }],
+            children: [
+              { id: editor.id(), text: 'a' },
+              { id: editor.id(), text: 'b' },
+              { id: editor.id(), text: '' },
+              { id: editor.id(), text: 'c' },
+            ],
           } as editor.EditorReactElement
         }
       />

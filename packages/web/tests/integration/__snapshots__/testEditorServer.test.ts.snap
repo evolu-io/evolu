@@ -54,7 +54,9 @@ exports[`render 1`] = `
     </div>
     <div>
       <div>
+        ·ab·
         <br />
+        ·c·
       </div>
     </div>
   </div>
