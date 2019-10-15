@@ -43,6 +43,7 @@
     "typescript": "^3.5.3"
   },
   "comments": {
-    "has unmet peer dependency warning": "https://github.com/yarnpkg/yarn/issues/5810"
+    "has unmet peer dependency warning": "https://github.com/yarnpkg/yarn/issues/5810",
+    "test by regex": "yarn jest testEditor"
   }
 }
