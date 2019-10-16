@@ -44,7 +44,7 @@ exports[`render then key arrow right 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>
@@ -102,7 +102,7 @@ exports[`render then key arrow right 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>

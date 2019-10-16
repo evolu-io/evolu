@@ -44,7 +44,7 @@ exports[`tab then key arrow right 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -52,7 +52,7 @@ exports[`tab then key arrow right 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
 </div>
@@ -110,7 +110,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -118,7 +118,7 @@ exports[`tab then key arrow right 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
 </div>

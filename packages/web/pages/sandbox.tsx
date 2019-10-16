@@ -17,6 +17,9 @@ const initialEditorState = editor.createEditorState({
         {/* <br /> */}
         {/* <div style={{ fontWeight: 'bold', display: 'inline' }}>heading</div> */}
         heading
+        {/* To test normalize */}
+        {/* {'heading'}
+        {'foo'} */}
         {/* <div
           contentEditable={false}
           style={{

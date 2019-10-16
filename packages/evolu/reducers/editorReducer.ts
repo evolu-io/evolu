@@ -7,6 +7,7 @@ import {
   EditorState,
   select,
   setText,
+  isEditorStateWithSelection,
 } from '../models/state';
 
 /**
@@ -40,6 +41,10 @@ export const editorReducer: EditorReducer = (state, action) => {
       return { ...state, ...action.change };
 
     case 'insertText':
+      // This should not happen, but throw to be sure, because it could be a bug.
+      if (!isEditorStateWithSelection(state)) {
+        throw new Error('State in insertText has no selection.');
+      }
       // We have to set text first so it can be selected later.
       return pipe(
         state,
@@ -56,6 +61,10 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'insertReplacementText':
+      // This should not happen, but throw to be sure, because it could be a bug.
+      if (!isEditorStateWithSelection(state)) {
+        throw new Error('State in insertText has no selection.');
+      }
       return pipe(
         state,
         setText(action.text),

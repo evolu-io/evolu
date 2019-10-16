@@ -42,7 +42,7 @@ exports[`click to focus button, click to blur button 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -106,7 +106,7 @@ exports[`click to focus button, click to blur button 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -114,7 +114,7 @@ exports[`click to focus button, click to blur button 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -181,7 +181,7 @@ exports[`click to focus button, click to blur button 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -253,7 +253,7 @@ exports[`click to focus button, click to blur button 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -261,7 +261,7 @@ exports[`click to focus button, click to blur button 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -336,7 +336,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -344,7 +344,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -400,7 +400,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -483,7 +483,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -491,7 +491,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -555,7 +555,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -563,7 +563,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -646,7 +646,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -654,7 +654,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -726,7 +726,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
     <span
       class="jsx-1782790912"
@@ -734,7 +734,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -801,7 +801,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -857,7 +857,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div

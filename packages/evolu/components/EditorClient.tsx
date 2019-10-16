@@ -2,13 +2,12 @@
 import Debug from 'debug';
 import { empty } from 'fp-ts/lib/Array';
 import {
+  chain,
   fold,
   fromNullable,
   getOrElse,
-  Option,
-  toNullable,
   none,
-  chain,
+  Option,
   some,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -26,6 +25,8 @@ import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
 import { usePrevious } from '../hooks/usePrevious';
 import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
+import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
+import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
 import { RenderEditorElement } from '../models/element';
 import { createNodeOffset, NodeOffset } from '../models/node';
 import { EditorPath, getParentPath } from '../models/path';
@@ -42,8 +43,6 @@ import {
 } from '../reducers/editorReducer';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
-import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
-import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
 
 const debugEditorAction = Debug('editor:action');
 
@@ -109,7 +108,7 @@ export const EditorClient = memo<EditorClientProps>(
         if (!divHasFocus) div.focus();
       } else if (editorStateHadFocus && !editorState.hasFocus) {
         // Do not call blur when tab lost focus so editor can be focused back.
-        // For visual test, click to editor then press cmd-tab twice.
+        // For manual test, click to editor then press cmd-tab twice.
         // Editor selection must be preserved.
         if (divHasFocus && !tabLostFocus) div.blur();
       }
@@ -218,8 +217,7 @@ export const EditorClient = memo<EditorClientProps>(
           fold(
             () => {
               // Editor must remember the last selection when document selection
-              // is moved elsewhere to restore it later on focus. In Chrome,
-              // contentEditable does not do that. That's why we ignore none values.
+              // is moved elsewhere to restore it later on focus.
             },
             selection => {
               dispatch({ type: 'selectionChange', selection });
@@ -237,39 +235,38 @@ export const EditorClient = memo<EditorClientProps>(
       };
     }, [dispatch, getEditorPathByNode, getSelection]);
 
-    const ensureSelectionEqualsEditorSelection = useCallback(() => {
-      pipe(
-        getSelection(),
-        selectionToEditorSelection(getEditorPathByNode),
-        chain(editorSelection => {
-          // TODO: Replace toNullable with something.
-          const currentEditorSelection = toNullable(editorState.selection);
-          if (currentEditorSelection == null) return none;
-          if (eqEditorSelection.equals(editorSelection, currentEditorSelection))
-            return none;
-          return some(currentEditorSelection);
-        }),
-        fold(
-          () => {
-            // No selection, nothing to update.
-          },
-          currentEditorSelection => {
-            setSelection(currentEditorSelection);
-          },
-        ),
-      );
-    }, [
-      editorState.selection,
-      getEditorPathByNode,
-      getSelection,
-      setSelection,
-    ]);
+    const maybeUpdateSelection = useCallback(
+      (selection: EditorSelection) => {
+        pipe(
+          getSelection(),
+          selectionToEditorSelection(getEditorPathByNode),
+          chain(currentSelection => {
+            return selection &&
+              eqEditorSelection.equals(currentSelection, selection)
+              ? none
+              : some(selection);
+          }),
+          fold(
+            () => {
+              // No selection, nothing to update.
+            },
+            selection => {
+              setSelection(selection);
+            },
+          ),
+        );
+      },
+      [getEditorPathByNode, getSelection, setSelection],
+    );
 
     // useLayoutEffect is must to keep browser selection in sync with editor state.
     useLayoutEffect(() => {
       if (!editorState.hasFocus) return;
-      ensureSelectionEqualsEditorSelection();
-    }, [ensureSelectionEqualsEditorSelection, editorState.hasFocus]);
+      // if (!isEditorStateWithSelection(editorState)) return;
+      // @ts-ignore
+      if (editorState.selection) maybeUpdateSelection(editorState.selection);
+      // @ts-ignore
+    }, [maybeUpdateSelection, editorState.hasFocus, editorState.selection]);
 
     useBeforeInput(divRef, userIsTypingRef, getEditorPathByNode, dispatch);
 
@@ -286,10 +283,13 @@ export const EditorClient = memo<EditorClientProps>(
     }, [editorState.element, renderElement, setNodeEditorPath]);
 
     const handleDivFocus = useCallback(() => {
-      ensureSelectionEqualsEditorSelection();
+      // if (isEditorStateWithSelection(editorState))
+      // @ts-ignore
+      if (editorState.selection) maybeUpdateSelection(editorState.selection);
       setTabLostFocus(false);
       dispatch({ type: 'focus' });
-    }, [dispatch, ensureSelectionEqualsEditorSelection]);
+      // @ts-ignore
+    }, [dispatch, editorState.selection, maybeUpdateSelection]);
 
     const handleDivBlur = useCallback(() => {
       const tabLostFocus =
@@ -311,6 +311,7 @@ export const EditorClient = memo<EditorClientProps>(
       const hasChange =
         editorState.element !== lastParentEditorStateRef.current.element ||
         editorState.hasFocus !== lastParentEditorStateRef.current.hasFocus ||
+        // @ts-ignore TODO: Probably remove inner state.
         editorState.selection !== lastParentEditorStateRef.current.selection;
       if (hasChange) {
         onChange(editorState);
@@ -341,12 +342,15 @@ export const EditorClient = memo<EditorClientProps>(
       });
     }, [dispatch, parentEditorState.hasFocus]);
     useLayoutEffect(() => {
+      // @ts-ignore
       if (parentEditorState.selection === editorStateRef.current.selection)
         return;
       dispatch({
         type: 'setEditorState',
+        // @ts-ignore
         change: { selection: parentEditorState.selection },
       });
+      // @ts-ignore
     }, [dispatch, parentEditorState.selection]);
 
     return useMemo(() => {

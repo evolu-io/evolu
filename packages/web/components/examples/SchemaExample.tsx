@@ -1,8 +1,7 @@
-import React, { useState, useCallback, ReactNode } from 'react';
-import * as editor from 'evolu';
 import { css, SerializedStyles } from '@emotion/core';
+import * as editor from 'evolu';
 import { absurd } from 'fp-ts/lib/function';
-import { some } from 'fp-ts/lib/Option';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -191,7 +190,7 @@ export function SchemaExample({
   const [editorState, setEditorState] = useState({
     ...initialEditorState,
     ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: some(initialSelection) }),
+    ...(initialSelection != null && { selection: initialSelection }),
   });
 
   const [logEditorState, logEditorStateElement] = editor.useLogEditorState(

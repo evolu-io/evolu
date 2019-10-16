@@ -2,7 +2,7 @@ import { editorReducer, EditorAction } from './editorReducer';
 import { createEditorStateWithText } from '../models/state';
 import { recursiveRemoveID } from '../models/element';
 
-const editorState = createEditorStateWithText({ text: '' });
+const editorState = createEditorStateWithText();
 
 function testEditorReducer(action: EditorAction) {
   const { element, ...nextState } = editorReducer(editorState, action);

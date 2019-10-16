@@ -14,9 +14,7 @@ Object {
     "tag": "div",
   },
   "hasFocus": false,
-  "selection": Object {
-    "_tag": "None",
-  },
+  "selection": undefined,
 }
 `;
 
@@ -34,8 +32,6 @@ Object {
     "tag": "div",
   },
   "hasFocus": true,
-  "selection": Object {
-    "_tag": "None",
-  },
+  "selection": undefined,
 }
 `;

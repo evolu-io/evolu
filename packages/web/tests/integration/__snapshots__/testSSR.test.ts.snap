@@ -42,7 +42,7 @@ exports[`dom after JS is executed 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -98,7 +98,7 @@ exports[`dom after JS is executed 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -159,7 +159,7 @@ exports[`dom before JS is executed 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div
@@ -224,7 +224,7 @@ exports[`dom before JS is executed 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
   </pre>
   <div

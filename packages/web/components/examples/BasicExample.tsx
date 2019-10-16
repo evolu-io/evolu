@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'evolu';
-import { some } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testEditorServer.
-export const initialEditorState = editor.createEditorState({
+export const initialEditorState = editor.createEditorState<
+  editor.EditorReactElement
+>({
   element: {
     id: editor.id(),
     tag: 'div',
@@ -51,7 +52,7 @@ export function BasicExample({
   const [editorState, setEditorState] = useState({
     ...(onlyText ? initialEditorStateWithTextOnly : initialEditorState),
     ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: some(initialSelection) }),
+    ...(initialSelection != null && { selection: initialSelection }),
   });
 
   const [logEditorState, logEditorStateElement] = editor.useLogEditorState(

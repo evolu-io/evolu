@@ -42,7 +42,7 @@ exports[`render 1`] = `
     >
       ·1·
       · ·
-      ·{"hasFocus":false,"selection":null}·
+      ·{"hasFocus":false}·
     </span>
     <span
       class="jsx-1782790912"
@@ -50,7 +50,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
   <div
@@ -114,7 +114,7 @@ exports[`render 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
   <div

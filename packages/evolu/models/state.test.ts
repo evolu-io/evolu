@@ -1,4 +1,3 @@
-import { none } from 'fp-ts/lib/Option';
 import { normalize, EditorState } from './state';
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
 
@@ -8,7 +7,6 @@ test('normalize', () => {
   const element1 = { id: id(), children: [{ id: id(), text: 'a' }] };
   const state1: EditorState = {
     element: element1,
-    selection: none,
     hasFocus: false,
   };
   expect(normalize(state1)).toBe(state1);
@@ -19,7 +17,6 @@ test('normalize', () => {
   };
   const state2: EditorState = {
     element: element2,
-    selection: none,
     hasFocus: false,
   };
   expect(normalize(state2)).not.toBe(state2);

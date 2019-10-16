@@ -1,13 +1,15 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
-import { toNullable } from 'fp-ts/lib/Option';
 import { EditorElement, recursiveRemoveID } from '../models/element';
-import { EditorState } from '../models/state';
+import { EditorState, EditorStateWithSelection } from '../models/state';
 
 const Item = memo(
   ({ editorState, index }: { editorState: EditorState; index: number }) => {
-    const { element, hasFocus, selection } = editorState;
-    // Replace optional EditorSelection with nullable for better readability.
-    const indexItem = { hasFocus, selection: toNullable(selection) };
+    const {
+      element,
+      hasFocus,
+      selection,
+    } = editorState as EditorStateWithSelection;
+    const indexItem = { hasFocus, selection };
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
     const title = JSON.stringify(recursiveRemoveID(element as EditorElement))

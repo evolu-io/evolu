@@ -73,7 +73,7 @@ exports[`insert text at end 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>
@@ -136,7 +136,7 @@ exports[`insert text at start then middle 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>
@@ -231,7 +231,7 @@ exports[`remove text 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>

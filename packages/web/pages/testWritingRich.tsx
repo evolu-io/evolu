@@ -1,7 +1,7 @@
 import React from 'react';
 import { BasicExample } from '../components/examples/BasicExample';
 
-function TestWriting() {
+function TestWritingRich() {
   return (
     <>
       <BasicExample autoFocus />
@@ -9,4 +9,4 @@ function TestWriting() {
   );
 }
 
-export default TestWriting;
+export default TestWritingRich;

@@ -1,16 +1,14 @@
-import { createElement } from 'react';
-import { Optional, Assign } from 'utility-types';
+import { Endomorphism, Refinement } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Endomorphism } from 'fp-ts/lib/function';
-import { Option, none, toNullable, some } from 'fp-ts/lib/Option';
 import { Lens } from 'monocle-ts';
+import { createElement } from 'react';
 import {
   deleteContentElement,
   EditorElement,
-  jsx,
-  setTextElement,
   EditorReactElement,
+  jsx,
   normalizeEditorElement,
+  setTextElement,
 } from './element';
 import {
   collapseEditorSelectionToStart,
@@ -19,41 +17,48 @@ import {
   moveEditorSelection,
 } from './selection';
 
-export interface EditorState {
+export interface EditorStateWithoutSelection {
   readonly element: EditorElement;
-  readonly selection: Option<EditorSelection>;
   readonly hasFocus: boolean;
 }
 
-/**
- * Create editor state. By default, the root element is EditorReactElement.
- */
-export function createEditorState<
-  T extends EditorElement = EditorReactElement
->({
+export interface EditorStateWithSelection {
+  readonly element: EditorElement;
+  readonly hasFocus: boolean;
+  readonly selection: EditorSelection;
+}
+
+// EditorState is sum type.
+// https://github.com/gcanti/fp-ts/issues/973#issuecomment-542185502
+// https://dev.to/gcanti/functional-design-algebraic-data-types-36kf
+// https://www.youtube.com/watch?v=PLFl95c-IiU
+export type EditorState =
+  | EditorStateWithoutSelection
+  | EditorStateWithSelection;
+
+export const isEditorStateWithSelection: Refinement<
+  EditorState,
+  EditorStateWithSelection
+> = (value): value is EditorStateWithSelection => {
+  return (value as EditorStateWithSelection).selection != null;
+};
+
+export function createEditorState<T extends EditorElement>({
   element,
-  selection = none,
+  selection,
   hasFocus = false,
-}: Assign<
-  Optional<EditorState, 'hasFocus' | 'selection'>,
-  { element: T }
->): EditorState {
+}: {
+  element: T;
+  selection?: EditorSelection;
+  hasFocus?: boolean;
+}): EditorState {
   return { element, selection, hasFocus };
 }
 
-export function createEditorStateWithText({
-  text = '',
-  selection = none,
-  hasFocus = false,
-}: {
-  text?: string;
-  selection?: Option<EditorSelection>;
-  hasFocus?: boolean;
-}) {
-  return createEditorState({
+export function createEditorStateWithText(text = '') {
+  return createEditorState<EditorReactElement>({
     element: jsx(createElement('div', { className: 'root' }, text)),
-    selection,
-    hasFocus,
+    hasFocus: false,
   });
 }
 
@@ -65,43 +70,36 @@ export function createEditorStateWithText({
  */
 export const elementLens = Lens.fromProp<EditorState>()('element');
 
-export function select(selection: EditorSelection): Endomorphism<EditorState> {
+export function select(
+  selection: EditorSelection,
+): (state: EditorState) => EditorStateWithSelection {
   return state => {
-    // TODO: Replace toNullable with something.
-    const stateSelection = toNullable(state.selection);
-    if (stateSelection && eqEditorSelection.equals(stateSelection, selection))
+    if (
+      isEditorStateWithSelection(state) &&
+      eqEditorSelection.equals(state.selection, selection)
+    )
       return state;
-    return { ...state, selection: some(selection) };
+    return { ...state, selection };
   };
 }
 
-// TODO: Use EditorStateWithSelect, then we can remove throw!
-export function setText(text: string): Endomorphism<EditorState> {
+export function setText(text: string): Endomorphism<EditorStateWithSelection> {
   return state => {
-    // TODO: Replace toNullable with something.
-    const selection = toNullable(state.selection);
-    // https://github.com/gcanti/fp-ts/issues/973
-    if (selection == null)
-      throw new Error('Text can not be set without a selection.');
     return {
       ...state,
-      element: setTextElement(text, selection)(state.element),
+      element: setTextElement(text, state.selection)(state.element),
     };
   };
 }
 
 // TODO: It should traverse across nodes.
-export function move(offset: number): Endomorphism<EditorState> {
+export function move(offset: number): Endomorphism<EditorStateWithSelection> {
   return state => {
-    // How to do it without toNullable?
-    const selection = toNullable(state.selection);
-    if (selection == null)
-      throw new Error('Selection must exists to be moved.');
     return pipe(
       state,
       select(
         pipe(
-          selection,
+          state.selection,
           moveEditorSelection(offset),
         ),
       ),
@@ -109,23 +107,16 @@ export function move(offset: number): Endomorphism<EditorState> {
   };
 }
 
-export function deleteContent(
-  selection?: EditorSelection,
-): Endomorphism<EditorState> {
-  return state => {
-    const deleteContentSelection = selection || toNullable(state.selection);
-    if (deleteContentSelection == null)
-      throw new Error('Selection must exists for deletion.');
-    return pipe(
-      state,
-      state => ({
-        ...state,
-        element: deleteContentElement(deleteContentSelection)(state.element),
-      }),
-      select(collapseEditorSelectionToStart(deleteContentSelection)),
-    );
-  };
-}
+export const deleteContent: Endomorphism<EditorStateWithSelection> = state => {
+  return pipe(
+    state,
+    state => ({
+      ...state,
+      element: deleteContentElement(state.selection)(state.element),
+    }),
+    select(collapseEditorSelectionToStart(state.selection)),
+  );
+};
 
 export const normalize: Endomorphism<EditorState> = state => {
   // https://github.com/gcanti/fp-ts/issues/976

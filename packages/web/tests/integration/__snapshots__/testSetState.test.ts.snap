@@ -47,7 +47,7 @@ exports[`select 1`] = `
     >
       ·0·
       · ·
-      ·{"hasFocus":true,"selection":null}·
+      ·{"hasFocus":true}·
     </span>
   </pre>
 </div>
