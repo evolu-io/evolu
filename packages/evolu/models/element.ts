@@ -1,19 +1,19 @@
 import { last, unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import {
+  chain,
+  fold,
+  fromPredicate,
   none,
   Option,
   some,
   toNullable,
-  chain,
-  fold,
-  fromPredicate,
 } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
 import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
 import {
@@ -181,6 +181,7 @@ export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
     [],
   );
   // Preserve identity, otherwise it would always create new objects.
+  // https://github.com/gcanti/fp-ts/issues/976
   if (!somethingHasBeenNormalized) return element;
   return { ...element, children };
 };
