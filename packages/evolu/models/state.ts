@@ -3,12 +3,14 @@ import { Optional, Assign } from 'utility-types';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Endomorphism } from 'fp-ts/lib/function';
 import { Option, none, toNullable, some } from 'fp-ts/lib/Option';
+import { Lens } from 'monocle-ts';
 import {
   deleteContentElement,
   EditorElement,
   jsx,
   setTextElement,
   EditorReactElement,
+  normalizeEditorElement,
 } from './element';
 import {
   collapseEditorSelectionToStart,
@@ -55,6 +57,14 @@ export function createEditorStateWithText({
   });
 }
 
+// Functional optics.
+// https://github.com/gcanti/monocle-ts
+
+/**
+ * Focus on the element of EditorState.
+ */
+export const elementLens = Lens.fromProp<EditorState>()('element');
+
 export function select(selection: EditorSelection): Endomorphism<EditorState> {
   return state => {
     // TODO: Replace toNullable with something.
@@ -65,6 +75,7 @@ export function select(selection: EditorSelection): Endomorphism<EditorState> {
   };
 }
 
+// TODO: Use EditorStateWithSelect, then we can remove throw!
 export function setText(text: string): Endomorphism<EditorState> {
   return state => {
     // TODO: Replace toNullable with something.
@@ -115,3 +126,10 @@ export function deleteContent(
     );
   };
 }
+
+export const normalize: Endomorphism<EditorState> = state => {
+  // https://github.com/gcanti/fp-ts/issues/976
+  const element = normalizeEditorElement(state.element);
+  if (element === state.element) return state;
+  return { ...state, element };
+};
