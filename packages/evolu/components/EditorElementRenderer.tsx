@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useRenderEditorElement } from '../hooks/useRenderEditorElement';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorElement } from '../models/element';
-import { SetNodeEditorPathRef } from '../models/node';
+import { SetNodeEditorPathRef, isHTMLElement } from '../models/node';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
 import { EditorTextRenderer } from './EditorTextRenderer';
@@ -19,10 +19,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
     const handleElementRef = useCallback<SetNodeEditorPathRef>(
       node => {
         if (process.env.NODE_ENV !== 'production') {
-          const isHTMLElement = (node: Node | null): node is HTMLElement =>
-            // eslint-disable-next-line no-undef
-            node != null && node.nodeType === Node.ELEMENT_NODE;
-          if (isHTMLElement(node) && !node.hasAttributes())
+          if (node && isHTMLElement(node) && !node.hasAttributes())
             throw new Error(
               'Element rendered by editor has to have at least one attribute. ' +
                 "That's because contentEditable does not like naked elements. " +

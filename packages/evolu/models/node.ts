@@ -21,8 +21,15 @@ export type SetNodeEditorPathRef = (node: Node | null) => void;
 
 export const id: IO<EditorNodeID> = () => nanoid() as EditorNodeID;
 
-export const isTextNode: Refinement<Node, Text> = (node): node is Text =>
-  (node as Text).nodeType === Node.TEXT_NODE;
+export const isTextNode: Refinement<Node, Text> = (node): node is Text => {
+  return node.nodeType === Node.TEXT_NODE;
+};
+
+export const isHTMLElement: Refinement<Node, HTMLElement> = (
+  node,
+): node is HTMLElement => {
+  return node.nodeType === Node.ELEMENT_NODE;
+};
 
 /**
  * Node and offset tuple for selection anchor and focus props.
