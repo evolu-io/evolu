@@ -8,7 +8,6 @@ export * from './hooks/useBeforeInput';
 export * from './hooks/useLogEditorState';
 export * from './hooks/useNodesEditorPathsMapping';
 export * from './hooks/usePrevious';
-export * from './hooks/useReducerWithLogger';
 export * from './hooks/useSetNodeEditorPathRef';
 export * from './models/element';
 export * from './models/node';

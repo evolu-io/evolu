@@ -17,14 +17,12 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useReducer,
   useRef,
   useState,
 } from 'react';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
 import { usePrevious } from '../hooks/usePrevious';
-import { useReducerWithLogger } from '../hooks/useReducerWithLogger';
 import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
 import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
 import { RenderEditorElement } from '../models/element';
@@ -40,11 +38,10 @@ import { EditorState } from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
+  EditorAction,
 } from '../reducers/editorReducer';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
-
-const debugEditorAction = Debug('editor:action');
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -65,9 +62,11 @@ export interface EditorClientProps extends UsefulReactDivAtttributes {
   editorReducer?: EditorReducer;
 }
 
+const debugEditorAction = Debug('editor:action');
+
 export const EditorClient = memo<EditorClientProps>(
   ({
-    editorState: parentEditorState,
+    editorState,
     onChange,
     renderElement,
     editorReducer = defaultEditorReducer,
@@ -78,13 +77,34 @@ export const EditorClient = memo<EditorClientProps>(
   }) => {
     const userIsTypingRef = useRef(false);
 
-    // I am not sure whether we really need inner state.
-    // Maybe we can use editorReducer without useReducer via callOnChange.
-    // TODO: Try to remove it when we will have enough tests.
-    const [editorState, dispatch] = useReducerWithLogger(
-      useReducer(editorReducer, parentEditorState),
-      debugEditorAction,
-    );
+    // TODO: useReducerWithLogger, debugEditorAction
+    // We don't want to use useReducer because we don't want derived state.
+    // Naive dispatch implementation re-subscribes document listeners to often.
+    // React will provide better API because this could be tricky in concurrent mode.
+    // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
+    const dispatchDepsRef = useRef<{
+      editorState: EditorState;
+      editorReducer: EditorReducer;
+      onChange: EditorClientProps['onChange'];
+    }>();
+    useLayoutEffect(() => {
+      dispatchDepsRef.current = { editorState, editorReducer, onChange };
+    });
+    const dispatch = useCallback((action: EditorAction) => {
+      const { current } = dispatchDepsRef;
+      if (current == null)
+        throw new Error('Cannot call the dispatch while rendering.');
+      const { editorState, editorReducer, onChange } = current;
+      const nextState = editorReducer(editorState, action);
+      debugEditorAction(action.type, [editorState, action, nextState]);
+      // Poor man shallow compare. We need shallow compare to allow a reducer to use a spread.
+      const hasChange =
+        editorState.element !== nextState.element ||
+        editorState.hasFocus !== nextState.hasFocus ||
+        // @ts-ignore This is fine.
+        editorState.selection !== nextState.selection;
+      if (hasChange) onChange(nextState);
+    }, []);
 
     const {
       setNodeEditorPath,
@@ -300,58 +320,6 @@ export const EditorClient = memo<EditorClientProps>(
       setTabLostFocus(tabLostFocus);
       dispatch({ type: 'blur' });
     }, [dispatch]);
-
-    // Sync inner editor state with outer.
-    // Still not sure whether it's the right approach, but it works.
-    const lastParentEditorStateRef = useRef<EditorState>(parentEditorState);
-    useLayoutEffect(() => {
-      lastParentEditorStateRef.current = parentEditorState;
-    }, [parentEditorState]);
-    useLayoutEffect(() => {
-      const hasChange =
-        editorState.element !== lastParentEditorStateRef.current.element ||
-        editorState.hasFocus !== lastParentEditorStateRef.current.hasFocus ||
-        // @ts-ignore TODO: Probably remove inner state.
-        editorState.selection !== lastParentEditorStateRef.current.selection;
-      if (hasChange) {
-        onChange(editorState);
-      }
-    }, [editorState, onChange]);
-
-    // Sync outer editor state with inner.
-    // Still not sure whether it's the right approach, but it works.
-    const editorStateRef = useRef<EditorState>(editorState);
-    useLayoutEffect(() => {
-      editorStateRef.current = editorState;
-    }, [editorState]);
-    // We can not just override editorState, because that could override meanwhile
-    // updated state props. That's why we use one effect per one prop.
-    useLayoutEffect(() => {
-      if (parentEditorState.element === editorStateRef.current.element) return;
-      dispatch({
-        type: 'setEditorState',
-        change: { element: parentEditorState.element },
-      });
-    }, [dispatch, parentEditorState.element]);
-    useLayoutEffect(() => {
-      if (parentEditorState.hasFocus === editorStateRef.current.hasFocus)
-        return;
-      dispatch({
-        type: 'setEditorState',
-        change: { hasFocus: parentEditorState.hasFocus },
-      });
-    }, [dispatch, parentEditorState.hasFocus]);
-    useLayoutEffect(() => {
-      // @ts-ignore
-      if (parentEditorState.selection === editorStateRef.current.selection)
-        return;
-      dispatch({
-        type: 'setEditorState',
-        // @ts-ignore
-        change: { selection: parentEditorState.selection },
-      });
-      // @ts-ignore
-    }, [dispatch, parentEditorState.selection]);
 
     return useMemo(() => {
       return (
