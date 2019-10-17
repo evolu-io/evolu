@@ -72,7 +72,7 @@ export function useBeforeInput(
             event,
           );
 
-          // @ts-ignore Missing getTargetRanges.
+          // @ts-ignore Outdated types.
           const range = event.getTargetRanges()[0] as Range;
 
           // Store reference to text node to read from it when selection is collapsed.
@@ -127,13 +127,13 @@ export function useBeforeInput(
 
           // Store reference to text node to read from it when selection is collapsed.
           // We can't just delete text, because whitespaces can be changed anywhere.
-          // @ts-ignore Missing getTargetRanges
+          // @ts-ignore Outdated types.
           const { startContainer } = event.getTargetRanges()[0] as Range;
 
           // When text node content is going to be emptied, browsers replace
           // text node with BR. Because React can not recognize outer change, we have to
           // prevent default, so text node can be properly replaced with BR by React.
-          // @ts-ignore Missing getTargetRanges.
+          // @ts-ignore Outdated types.
           const range = event.getTargetRanges()[0] as Range;
 
           const textIsGoingToBeReplacedWithBR =
@@ -166,7 +166,7 @@ export function useBeforeInput(
           // lenghter, we don't know. But we can let browser to make own selection.
           // TODO: Add test (probably manual) for 'fixx foo' to 'fix foo' and
           // 'productio foo' to 'production foo'.
-          // @ts-ignore Missing getTargetRanges
+          // @ts-ignore Outdated types.
           const { startContainer } = event.getTargetRanges()[0] as Range;
           afterTyping(() => {
             const { data: text } = startContainer as Text;

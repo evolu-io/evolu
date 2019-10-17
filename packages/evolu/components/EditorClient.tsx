@@ -34,7 +34,7 @@ import {
   eqEditorSelection,
   selectionToEditorSelection,
 } from '../models/selection';
-import { EditorState } from '../models/state';
+import { EditorState, isEditorStateWithSelection } from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
@@ -255,38 +255,34 @@ export const EditorClient = memo<EditorClientProps>(
       };
     }, [dispatch, getEditorPathByNode, getSelection]);
 
-    const maybeUpdateSelection = useCallback(
-      (selection: EditorSelection) => {
-        pipe(
-          getSelection(),
-          selectionToEditorSelection(getEditorPathByNode),
-          chain(currentSelection => {
-            return selection &&
-              eqEditorSelection.equals(currentSelection, selection)
-              ? none
-              : some(selection);
-          }),
-          fold(
-            () => {
-              // No selection, nothing to update.
-            },
-            selection => {
-              setSelection(selection);
-            },
-          ),
-        );
-      },
-      [getEditorPathByNode, getSelection, setSelection],
-    );
+    const maybeUpdateSelection = useCallback(() => {
+      if (!isEditorStateWithSelection(editorState)) return;
+      pipe(
+        getSelection(),
+        selectionToEditorSelection(getEditorPathByNode),
+        chain(currentSelection => {
+          return editorState.selection &&
+            eqEditorSelection.equals(currentSelection, editorState.selection)
+            ? none
+            : some(editorState.selection);
+        }),
+        fold(
+          () => {
+            // No selection, nothing to update.
+          },
+          selection => {
+            setSelection(selection);
+          },
+        ),
+      );
+    }, [editorState, getEditorPathByNode, getSelection, setSelection]);
 
-    // useLayoutEffect is must to keep browser selection in sync with editor state.
+    // useLayoutEffect is a must to keep browser selection in sync with editor selection.
+    // With useEffect, fast typing would lose caret position.
     useLayoutEffect(() => {
       if (!editorState.hasFocus) return;
-      // if (!isEditorStateWithSelection(editorState)) return;
-      // @ts-ignore
-      if (editorState.selection) maybeUpdateSelection(editorState.selection);
-      // @ts-ignore
-    }, [maybeUpdateSelection, editorState.hasFocus, editorState.selection]);
+      maybeUpdateSelection();
+    }, [editorState.hasFocus, maybeUpdateSelection]);
 
     useBeforeInput(divRef, userIsTypingRef, getEditorPathByNode, dispatch);
 
@@ -303,13 +299,10 @@ export const EditorClient = memo<EditorClientProps>(
     }, [editorState.element, renderElement, setNodeEditorPath]);
 
     const handleDivFocus = useCallback(() => {
-      // if (isEditorStateWithSelection(editorState))
-      // @ts-ignore
-      if (editorState.selection) maybeUpdateSelection(editorState.selection);
+      maybeUpdateSelection();
       setTabLostFocus(false);
       dispatch({ type: 'focus' });
-      // @ts-ignore
-    }, [dispatch, editorState.selection, maybeUpdateSelection]);
+    }, [dispatch, maybeUpdateSelection]);
 
     const handleDivBlur = useCallback(() => {
       const tabLostFocus =

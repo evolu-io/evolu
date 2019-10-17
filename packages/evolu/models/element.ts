@@ -203,7 +203,6 @@ export const recursiveRemoveID = (element: EditorElement): any => {
   const { id, ...objectWithoutID } = element;
   return {
     ...objectWithoutID,
-    // @ts-ignore
     children: element.children.map(child => {
       if (isEditorText(child)) {
         // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
