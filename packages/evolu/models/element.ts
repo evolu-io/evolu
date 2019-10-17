@@ -288,7 +288,6 @@ export function setTextElement(
         element,
       ).asFold();
       const focusFold = ensureTextTraversal(selection.focus, element).asFold();
-      // TODO: Consider toNullable, eq, or something else. This code is probably not ideal.
       if (!anchorFold.exist(isEditorText)(element)) return false;
       if (!focusFold.exist(isEditorText)(element)) return false;
       return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];

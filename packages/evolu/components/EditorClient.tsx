@@ -77,7 +77,6 @@ export const EditorClient = memo<EditorClientProps>(
   }) => {
     const userIsTypingRef = useRef(false);
 
-    // TODO: useReducerWithLogger, debugEditorAction
     // We don't want to use useReducer because we don't want derived state.
     // Naive dispatch implementation re-subscribes document listeners to often.
     // React will provide better API because this could be tricky in concurrent mode.
@@ -136,7 +135,7 @@ export const EditorClient = memo<EditorClientProps>(
 
     const getSelection = useCallback((): Option<Selection> => {
       return fromNullable(
-        // TODO: Use TypeScript 3.7 optional chaining.
+        // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
         divRef.current &&
           divRef.current.ownerDocument &&
           divRef.current.ownerDocument.getSelection(),
