@@ -34,7 +34,11 @@ import {
   eqEditorSelection,
   selectionToEditorSelection,
 } from '../models/selection';
-import { EditorState, isEditorStateWithSelection } from '../models/state';
+import {
+  EditorState,
+  isEditorStateWithSelection,
+  normalize,
+} from '../models/state';
 import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
@@ -66,7 +70,7 @@ const debugEditorAction = Debug('editor:action');
 
 export const EditorClient = memo<EditorClientProps>(
   ({
-    editorState,
+    editorState: editorStateMaybeNotNormalized,
     onChange,
     renderElement,
     editorReducer = defaultEditorReducer,
@@ -75,6 +79,9 @@ export const EditorClient = memo<EditorClientProps>(
     role = 'textbox',
     ...rest
   }) => {
+    // Always normalize outer state. It's fast enough. And we can optimize it later.
+    const editorState = normalize(editorStateMaybeNotNormalized);
+
     const userIsTypingRef = useRef(false);
 
     // We don't want to use useReducer because we don't want derived state.
@@ -102,7 +109,9 @@ export const EditorClient = memo<EditorClientProps>(
         editorState.hasFocus !== nextState.hasFocus ||
         // @ts-ignore This is fine.
         editorState.selection !== nextState.selection;
-      if (hasChange) onChange(nextState);
+      if (!hasChange) return;
+      // Always normalize after any update.
+      onChange(normalize(nextState));
     }, []);
 
     const {
