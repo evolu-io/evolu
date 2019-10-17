@@ -40,9 +40,9 @@ import {
   normalize,
 } from '../models/state';
 import {
+  EditorAction,
   editorReducer as defaultEditorReducer,
   EditorReducer,
-  EditorAction,
 } from '../reducers/editorReducer';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
@@ -103,15 +103,8 @@ export const EditorClient = memo<EditorClientProps>(
       const { editorState, editorReducer, onChange } = current;
       const nextState = editorReducer(editorState, action);
       debugEditorAction(action.type, [editorState, action, nextState]);
-      // Poor man shallow compare. We need shallow compare to allow a reducer to use a spread.
-      const hasChange =
-        editorState.element !== nextState.element ||
-        editorState.hasFocus !== nextState.hasFocus ||
-        // @ts-ignore This is fine.
-        editorState.selection !== nextState.selection;
-      if (!hasChange) return;
-      // Always normalize after any update.
-      onChange(normalize(nextState));
+      if (nextState === editorState) return;
+      onChange(nextState);
     }, []);
 
     const {

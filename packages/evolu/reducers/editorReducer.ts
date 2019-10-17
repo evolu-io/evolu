@@ -17,10 +17,10 @@ export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: EditorSelection }
-  | { type: 'setEditorState'; change: Partial<EditorState> }
   | { type: 'insertText'; text: string; selection: EditorSelection }
   | { type: 'deleteText'; text: string; selection: EditorSelection }
   | { type: 'insertReplacementText'; text: string };
+// | { type: 'set'; state: EditorState }
 // | { type: 'deleteContent'; selection: EditorSelection };
 
 export type EditorReducer = Reducer<EditorState, EditorAction>;
@@ -28,17 +28,16 @@ export type EditorReducer = Reducer<EditorState, EditorAction>;
 export const editorReducer: EditorReducer = (state, action) => {
   switch (action.type) {
     case 'focus':
+      if (state.hasFocus) return state;
       return { ...state, hasFocus: true };
 
     case 'blur':
+      if (!state.hasFocus) return state;
       return { ...state, hasFocus: false };
 
     case 'selectionChange': {
       return select(action.selection)(state);
     }
-
-    case 'setEditorState':
-      return { ...state, ...action.change };
 
     case 'insertText':
       // This should not happen, but throw to be sure, because it could be a bug.
@@ -53,7 +52,7 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'deleteText':
-      // We have to set selection text to be deleted.
+      // We have to set selection of text to be deleted.
       return pipe(
         state,
         select(action.selection),
