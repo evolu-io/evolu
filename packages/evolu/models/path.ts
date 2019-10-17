@@ -25,11 +25,10 @@ export type EditorPathsNodesMap = Map<string, Node>;
 
 export const eqEditorPath = getEq(eqNumber);
 
-// TODO: Consider Option for getParentPath and getParentPathAndLastIndex.
-
 /**
  * Example: `[0, 1, 2]` to `[0, 1]`.
  */
+// TODO: Return Option.
 export function getParentPath(path: EditorPath): EditorPath {
   return path.slice(0, -1) as EditorPath;
 }
@@ -37,6 +36,7 @@ export function getParentPath(path: EditorPath): EditorPath {
 /**
  * Example: `[0, 1, 2]` to `2`.
  */
+// TODO: Return Option.
 export function getLastIndex(path: EditorPath): number {
   return path[path.length - 1];
 }
@@ -44,6 +44,7 @@ export function getLastIndex(path: EditorPath): number {
 /**
  * Example: `[0, 1, 2]` to `[[0, 1], 2]`.
  */
+// TODO: Return Option.
 export function getParentPathAndLastIndex(
   path: EditorPath,
 ): [EditorPath, number] {
