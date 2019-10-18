@@ -1,18 +1,20 @@
 import { fromNullable } from 'fp-ts/lib/Option';
 import { useCallback, useEffect, useRef } from 'react';
 import { absurd } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { EditorElement, EditorElementChild } from '../models/element';
 import {
   GetNodeByEditorPath,
   SetNodeEditorPath,
   GetEditorPathByNode,
   EditorPath,
+  EditorPathString,
+  editorPathToString,
 } from '../models/path';
 import { isEditorText } from '../models/text';
 
 type NodesEditorPathsMap = Map<Node, EditorPath>;
-// TODO: Use newtype for EditorPathAsString
-type EditorPathsNodesMap = Map<string, Node>;
+type EditorPathsNodesMap = Map<EditorPathString, Node>;
 
 function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,
@@ -63,13 +65,17 @@ export function useNodesEditorPathsMapping(
   useDebugNodesEditorPaths(nodesEditorPathsMapRef.current, element);
 
   const getNodeByEditorPath = useCallback<GetNodeByEditorPath>(editorPath => {
-    const node = editorPathsNodesMapRef.current.get(editorPath.join());
-    return fromNullable(node);
+    return pipe(
+      editorPathsNodesMapRef.current.get(editorPathToString(editorPath)),
+      fromNullable,
+    );
   }, []);
 
   const getEditorPathByNode = useCallback<GetEditorPathByNode>(node => {
-    const path = nodesEditorPathsMapRef.current.get(node);
-    return fromNullable(path);
+    return pipe(
+      nodesEditorPathsMapRef.current.get(node),
+      fromNullable,
+    );
   }, []);
 
   const setNodeEditorPath = useCallback<SetNodeEditorPath>(
@@ -78,12 +84,12 @@ export function useNodesEditorPathsMapping(
         case 'add':
           // console.log('add', path, node);
           nodesEditorPathsMapRef.current.set(node, path);
-          editorPathsNodesMapRef.current.set(path.join(), node);
+          editorPathsNodesMapRef.current.set(editorPathToString(path), node);
           break;
         case 'remove':
           // console.log('remove', path, node);
           nodesEditorPathsMapRef.current.delete(node);
-          editorPathsNodesMapRef.current.delete(path.join());
+          editorPathsNodesMapRef.current.delete(editorPathToString(path));
           break;
         default:
           absurd(operation);
