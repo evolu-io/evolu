@@ -1,6 +1,6 @@
 /* eslint-env browser */
 import Debug from 'debug';
-import { empty } from 'fp-ts/lib/Array';
+import { empty, init } from 'fp-ts/lib/Array';
 import {
   chain,
   fold,
@@ -27,7 +27,7 @@ import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
 import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
 import { RenderEditorElement } from '../models/element';
 import { createNodeOffset, NodeOffset } from '../models/node';
-import { EditorPath, getParentPath } from '../models/path';
+import { EditorPath } from '../models/path';
 import {
   EditorSelection,
   editorSelectionIsForward,
@@ -158,8 +158,8 @@ export const EditorClient = memo<EditorClientProps>(
               // Text.
               pipe(
                 path,
-                getParentPath,
-                getNodeByEditorPath,
+                init,
+                chain(getNodeByEditorPath),
                 createNodeOffset(path),
               ),
             element =>
@@ -293,6 +293,7 @@ export const EditorClient = memo<EditorClientProps>(
           <RenderEditorElementContext.Provider
             value={renderElement || renderEditorReactElement}
           >
+            {/* TODO: Consider state.root el or child  */}
             <EditorElementRenderer element={editorState.element} path={empty} />
           </RenderEditorElementContext.Provider>
         </SetNodeEditorPathContext.Provider>

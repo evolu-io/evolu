@@ -11,21 +11,23 @@
   "dependencies": {
     "debug": "^4.1.1",
     "nanoid": "^2.1.0",
-    "utility-types": "^3.7.0"
+    "utility-types": "^3.7.0",
+    "fp-ts": "^2.0.5",
+    "monocle-ts": "^2.0.0",
+    "newtype-ts": "^0.3.2"
   },
   "peerDependencies": {
     "fp-ts": "^2.0.5",
     "monocle-ts": "^2.0.0",
-    "react-dom": "^16.9.0",
-    "react": "^16.9.0"
+    "newtype-ts": "^0.3.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",
     "@types/nanoid": "^2.0.0",
     "@types/react": "^16.8.24",
-    "@types/react-dom": "^16.8.5",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "@types/react-dom": "^16.8.5"
   },
   "comments": {
     "has unmet peer dependency warning": "https://github.com/yarnpkg/yarn/issues/5810"

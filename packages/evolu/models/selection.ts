@@ -1,4 +1,4 @@
-import { snoc } from 'fp-ts/lib/Array';
+import { snoc, init } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import {
@@ -12,12 +12,11 @@ import {
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  EditorPath,
   editorPathsAreForward,
   eqEditorPath,
-  getParentPath,
   movePath,
   GetEditorPathByNode,
+  EditorPath,
 } from './path';
 
 /**
@@ -181,14 +180,14 @@ export function editorSelectionFromInputEvent(
 /**
  * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
  */
-export const editorSelectionOfParent: Endomorphism<
-  EditorSelection
-> = selection => {
-  return {
-    anchor: getParentPath(selection.anchor),
-    focus: getParentPath(selection.focus),
-  };
-};
+export function editorSelectionOfParent(
+  selection: EditorSelection,
+): Option<EditorSelection> {
+  const anchor = toNullable(init(selection.anchor));
+  const focus = toNullable(init(selection.focus));
+  if (!anchor || !focus) return none;
+  return some({ anchor, focus });
+}
 
 /**
  * `{ anchor: [0], focus: [0] }` to `{ anchor: [0, 0], focus: [0, 0] }`

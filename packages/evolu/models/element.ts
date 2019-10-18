@@ -1,4 +1,4 @@
-import { last, unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { foldRight, last, unsafeUpdateAt, init } from 'fp-ts/lib/Array';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import {
   chain,
@@ -15,7 +15,7 @@ import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 import { EditorNode, id, SetNodeEditorPathRef } from './node';
-import { EditorPath, getParentPath, getParentPathAndLastIndex } from './path';
+import { EditorPath } from './path';
 import {
   EditorSelection,
   editorSelectionAsRange,
@@ -259,22 +259,37 @@ export function getElementTraversal(path: EditorPath) {
 /**
  * Focus on EditorText by EditorPath.
  */
-export function getTextTraversal(path: EditorPath) {
-  const [parentPath, lastIndex] = getParentPathAndLastIndex(path);
-  return getElementTraversal(parentPath)
+export function getTextTraversal(
+  parentElementPath: EditorPath,
+  index: number,
+): Optional<EditorElement, EditorText> {
+  return getElementTraversal(parentElementPath)
     .composeLens(childrenLens)
-    .composeOptional(getChildAtOptional(lastIndex))
+    .composeOptional(getChildAtOptional(index))
     .composePrism(textPrism);
 }
 
 /**
  * Ensure text traversal. If EditorPath focuses to text offset, get parent path.
  */
-export function ensureTextTraversal(path: EditorPath, element: EditorElement) {
-  let textTraversal = getTextTraversal(path);
-  if (textTraversal.asFold().getAll(element).length === 0)
-    textTraversal = getTextTraversal(getParentPath(path));
-  return textTraversal;
+export function ensureTextTraversal(
+  path: EditorPath,
+  element: EditorElement,
+): Optional<EditorElement, EditorText> {
+  return pipe(
+    path,
+    foldRight(
+      () => {
+        throw new Error('TODO: Refactor.');
+      },
+      (path, index) => {
+        const textTraversal = getTextTraversal(path, index);
+        if (textTraversal.asFold().getAll(element).length > 0)
+          return textTraversal;
+        return ensureTextTraversal(path, element);
+      },
+    ),
+  );
 }
 
 export function setTextElement(
@@ -328,15 +343,27 @@ export function deleteContentElement(
       anchorMaterializedPath.to.editorText ===
         focusMaterializedPath.to.editorText
     ) {
-      const parentPath = getParentPath(range.anchor);
-      const startOffset = anchorMaterializedPath.to.offset;
-      const endOffset = focusMaterializedPath.to.offset;
-      return getTextTraversal(parentPath).modify(editorText => {
-        const text =
-          editorText.text.slice(0, startOffset) +
-          editorText.text.slice(endOffset);
-        return { ...editorText, text };
-      })(element);
+      return pipe(
+        init(range.anchor),
+        fold(
+          () => element,
+          foldRight(
+            () => element,
+            (init, index) => {
+              // @ts-ignore Refactor later.
+              const startOffset = anchorMaterializedPath.to.offset;
+              // @ts-ignore Refactor later.
+              const endOffset = focusMaterializedPath.to.offset;
+              return getTextTraversal(init, index).modify(editorText => {
+                const text =
+                  editorText.text.slice(0, startOffset) +
+                  editorText.text.slice(endOffset);
+                return { ...editorText, text };
+              })(element);
+            },
+          ),
+        ),
+      );
     }
     return element;
   };

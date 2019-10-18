@@ -3,13 +3,16 @@ import { useCallback, useEffect, useRef } from 'react';
 import { absurd } from 'fp-ts/lib/function';
 import { EditorElement, EditorElementChild } from '../models/element';
 import {
-  EditorPathsNodesMap,
   GetNodeByEditorPath,
-  NodesEditorPathsMap,
   SetNodeEditorPath,
   GetEditorPathByNode,
+  EditorPath,
 } from '../models/path';
 import { isEditorText } from '../models/text';
+
+type NodesEditorPathsMap = Map<Node, EditorPath>;
+// TODO: Use newtype for EditorPathAsString
+type EditorPathsNodesMap = Map<string, Node>;
 
 function useDebugNodesEditorPaths(
   nodesEditorPathsMap: NodesEditorPathsMap,

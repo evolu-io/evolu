@@ -82,21 +82,21 @@ function Index() {
           // const nextState = editor.move(1)(editorState);
           // odebrat prvni, druhej, jejich switch, jo!
           // switch
-          // const nextState = {
-          //   ...editorState,
-          //   element: {
-          //     ...editorState.element,
-          //     children: [...editorState.element.children].reverse(),
-          //   },
-          // };
-          // remove second
           const nextState = {
             ...editorState,
             element: {
               ...editorState.element,
-              children: editorState.element.children.slice(1),
+              children: [...editorState.element.children].reverse(),
             },
           };
+          // // remove second
+          // const nextState = {
+          //   ...editorState,
+          //   element: {
+          //     ...editorState.element,
+          //     children: editorState.element.children.slice(1),
+          //   },
+          // };
           handleEditorChange(nextState);
           //   // switch
           //   // const first = draft.element.children[0];

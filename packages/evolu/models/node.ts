@@ -5,7 +5,7 @@ import { IO } from 'fp-ts/lib/IO';
 import { Refinement } from 'fp-ts/lib/function';
 import { Option, none, fold, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { EditorPath, getLastIndex } from './path';
+import { EditorPath } from './path';
 
 /**
  * EditorNodeID is string created with nanoid.
@@ -39,10 +39,11 @@ export type NodeOffset = [Node, number];
 
 export function createNodeOffset(
   path: EditorPath,
-): (nodeOption: Option<Node>) => Option<NodeOffset> {
-  return nodeOption =>
+): (node: Option<Node>) => Option<NodeOffset> {
+  return node =>
     pipe(
-      nodeOption,
-      fold(() => none, node => some([node, getLastIndex(path)])),
+      node,
+      // TODO: Use last.
+      fold(() => none, node => some([node, path[path.length - 1]])),
     );
 }

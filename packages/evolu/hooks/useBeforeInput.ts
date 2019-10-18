@@ -1,5 +1,6 @@
 /* eslint-env browser */
 import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
+import { some, toNullable } from 'fp-ts/lib/Option';
 import {
   collapseEditorSelectionToStart,
   editorSelectionForChild,
@@ -142,9 +143,14 @@ export function useBeforeInput(
             (range.startContainer as Text).data.length === range.endOffset;
           if (textIsGoingToBeReplacedWithBR) event.preventDefault();
 
-          const selectionAfterDelete = textIsGoingToBeReplacedWithBR
-            ? editorSelectionOfParent(selection)
-            : collapseEditorSelectionToStart(selection);
+          const getSelectionAfterDelete = () => {
+            if (!textIsGoingToBeReplacedWithBR)
+              return some(collapseEditorSelectionToStart(selection));
+            return editorSelectionOfParent(selection);
+          };
+
+          const selectionAfterDelete = toNullable(getSelectionAfterDelete());
+          if (selectionAfterDelete == null) return;
 
           afterTyping(() => {
             const { data } = startContainer as Text;
