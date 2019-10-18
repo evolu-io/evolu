@@ -78,31 +78,7 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          // const nextState = editor.setText('foo')(editorState);
-          // const nextState = editor.move(1)(editorState);
-          // odebrat prvni, druhej, jejich switch, jo!
-          // switch
-          const nextState = {
-            ...editorState,
-            element: {
-              ...editorState.element,
-              children: [...editorState.element.children].reverse(),
-            },
-          };
-          // // remove second
-          // const nextState = {
-          //   ...editorState,
-          //   element: {
-          //     ...editorState.element,
-          //     children: editorState.element.children.slice(1),
-          //   },
-          // };
-          handleEditorChange(nextState);
-          //   // switch
-          //   // const first = draft.element.children[0];
-          //   // const second = draft.element.children[1];
-          //   // draft.element.children[0] = second;
-          //   // draft.element.children[1] = first;
+          // handleEditorChange(nextState);
         }}
       >
         update model
