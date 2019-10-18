@@ -121,5 +121,5 @@ export function createStableIDFactory(): IO<EditorNodeID> {
   beforeEach(async () => {
     lastID = 0;
   });
-  return () => (lastID++).toString() as EditorNodeID;
+  return () => ((lastID++).toString() as unknown) as EditorNodeID;
 }

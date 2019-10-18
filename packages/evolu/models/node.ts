@@ -1,17 +1,23 @@
 /* eslint-env browser */
-import { Brand } from 'utility-types';
 import nanoid from 'nanoid';
 import { IO } from 'fp-ts/lib/IO';
 import { Refinement } from 'fp-ts/lib/function';
 import { Option, none, fold, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Newtype, iso } from 'newtype-ts';
 import { EditorPath } from './path';
 
 /**
  * EditorNodeID is string created with nanoid.
- * Editor nodes need UUID for CRDT, React keys, and the other identity operations.
  */
-export type EditorNodeID = Brand<string, 'EditorNodeID'>;
+export interface EditorNodeID
+  extends Newtype<{ readonly EditorNodeID: unique symbol }, string> {}
+
+const isoEditorNodeID = iso<EditorNodeID>();
+
+export function editorNodeIDToString(editorNodeID: EditorNodeID): string {
+  return isoEditorNodeID.unwrap(editorNodeID);
+}
 
 export interface EditorNode {
   readonly id: EditorNodeID;
@@ -19,7 +25,7 @@ export interface EditorNode {
 
 export type SetNodeEditorPathRef = (node: Node | null) => void;
 
-export const id: IO<EditorNodeID> = () => nanoid() as EditorNodeID;
+export const id: IO<EditorNodeID> = () => isoEditorNodeID.wrap(nanoid());
 
 export const isTextNode: Refinement<Node, Text> = (node): node is Text => {
   return node.nodeType === Node.TEXT_NODE;

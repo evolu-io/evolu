@@ -2,7 +2,11 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useRenderEditorElement } from '../hooks/useRenderEditorElement';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
 import { EditorElement } from '../models/element';
-import { SetNodeEditorPathRef, isHTMLElement } from '../models/node';
+import {
+  SetNodeEditorPathRef,
+  isHTMLElement,
+  editorNodeIDToString,
+} from '../models/node';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
 import { EditorTextRenderer } from './EditorTextRenderer';
@@ -42,7 +46,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
         if (isEditorText(child)) {
           return (
             <EditorTextRenderer
-              key={child.id}
+              key={editorNodeIDToString(child.id)}
               text={child.text}
               path={childPath}
             />
@@ -50,7 +54,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
         }
         return (
           <EditorElementRenderer
-            key={child.id}
+            key={editorNodeIDToString(child.id)}
             element={child}
             path={childPath}
           />

@@ -1,12 +1,11 @@
+import { createStableIDFactory } from '../../web/tests/integration/helpers';
 import {
-  normalizeEditorElement,
+  deleteContentElement,
   EditorElement,
   editorElementIsNormalized,
-  deleteContentElement,
   materializeEditorPath,
+  normalizeEditorElement,
 } from './element';
-import { EditorNodeID } from './node';
-import { createStableIDFactory } from '../../web/tests/integration/helpers';
 
 const id = createStableIDFactory();
 
@@ -136,9 +135,9 @@ test('deleteContentElement', () => {
 
 test('materializeEditorPath', () => {
   // <div><b>a</b></div>
-  const text = { id: '1' as EditorNodeID, text: 'a' };
-  const b = { id: '2' as EditorNodeID, children: [text] };
-  const div = { id: '3' as EditorNodeID, children: [b] };
+  const text = { id: id(), text: 'a' };
+  const b = { id: id(), children: [text] };
+  const div = { id: id(), children: [b] };
 
   expect(materializeEditorPath([])(div)).toMatchSnapshot();
   expect(materializeEditorPath([0])(div)).toMatchSnapshot();

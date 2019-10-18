@@ -7,6 +7,7 @@ import {
   normalizeEditorElement,
 } from '../models/element';
 import { isEditorText } from '../models/text';
+import { editorNodeIDToString } from '../models/node';
 
 export const renderEditorReactElement: RenderEditorElement = (
   element,
@@ -33,13 +34,17 @@ export function EditorServerElement({
 }: EditorServerProps) {
   const children = element.children.map(child => {
     if (isEditorText(child)) {
-      return child.text.length === 0 ? <br key={child.id} /> : child.text;
+      return child.text.length === 0 ? (
+        <br key={editorNodeIDToString(child.id)} />
+      ) : (
+        child.text
+      );
     }
     return (
       <EditorServerElement
         element={child}
         renderElement={renderElement}
-        key={child.id}
+        key={editorNodeIDToString(child.id)}
       />
     );
   });

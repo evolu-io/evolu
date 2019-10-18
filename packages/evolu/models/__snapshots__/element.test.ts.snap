@@ -22,14 +22,14 @@ Object {
         Object {
           "children": Array [
             Object {
-              "id": "1",
+              "id": "0",
               "text": "a",
             },
           ],
-          "id": "2",
+          "id": "1",
         },
       ],
-      "id": "3",
+      "id": "2",
     },
   },
 }
@@ -45,24 +45,24 @@ Object {
           Object {
             "children": Array [
               Object {
-                "id": "1",
+                "id": "0",
                 "text": "a",
               },
             ],
-            "id": "2",
+            "id": "1",
           },
         ],
-        "id": "3",
+        "id": "2",
       },
     ],
     "to": Object {
       "children": Array [
         Object {
-          "id": "1",
+          "id": "0",
           "text": "a",
         },
       ],
-      "id": "2",
+      "id": "1",
     },
   },
 }
@@ -78,27 +78,27 @@ Object {
           Object {
             "children": Array [
               Object {
-                "id": "1",
+                "id": "0",
                 "text": "a",
               },
             ],
-            "id": "2",
-          },
-        ],
-        "id": "3",
-      },
-      Object {
-        "children": Array [
-          Object {
             "id": "1",
-            "text": "a",
           },
         ],
         "id": "2",
       },
+      Object {
+        "children": Array [
+          Object {
+            "id": "0",
+            "text": "a",
+          },
+        ],
+        "id": "1",
+      },
     ],
     "to": Object {
-      "id": "1",
+      "id": "0",
       "text": "a",
     },
   },
@@ -115,28 +115,28 @@ Object {
           Object {
             "children": Array [
               Object {
-                "id": "1",
+                "id": "0",
                 "text": "a",
               },
             ],
-            "id": "2",
-          },
-        ],
-        "id": "3",
-      },
-      Object {
-        "children": Array [
-          Object {
             "id": "1",
-            "text": "a",
           },
         ],
         "id": "2",
       },
+      Object {
+        "children": Array [
+          Object {
+            "id": "0",
+            "text": "a",
+          },
+        ],
+        "id": "1",
+      },
     ],
     "to": Object {
       "editorText": Object {
-        "id": "1",
+        "id": "0",
         "text": "a",
       },
       "offset": 0,
@@ -155,28 +155,28 @@ Object {
           Object {
             "children": Array [
               Object {
-                "id": "1",
+                "id": "0",
                 "text": "a",
               },
             ],
-            "id": "2",
-          },
-        ],
-        "id": "3",
-      },
-      Object {
-        "children": Array [
-          Object {
             "id": "1",
-            "text": "a",
           },
         ],
         "id": "2",
       },
+      Object {
+        "children": Array [
+          Object {
+            "id": "0",
+            "text": "a",
+          },
+        ],
+        "id": "1",
+      },
     ],
     "to": Object {
       "editorText": Object {
-        "id": "1",
+        "id": "0",
         "text": "a",
       },
       "offset": 1,
