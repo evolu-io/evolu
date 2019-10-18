@@ -5,8 +5,8 @@ import { Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Newtype, iso } from 'newtype-ts';
 
-// TODO: Add newtype NonNegativeInteger EditorPathIndex.
-// Consider RootEditorPath | ChildEditorPath.
+// Consider RootEditorPath | ChildEditorPath sum type
+// and newtype NonNegativeInteger for EditorPathIndex.
 export type EditorPath = number[];
 
 export interface EditorPathString

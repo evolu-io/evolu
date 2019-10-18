@@ -1,21 +1,25 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  useLogEditorState,
+  childrenLens,
   createEditorState,
-  jsx,
-  EditorState,
-  isEditorStateWithSelection,
-  setText,
-  select,
-  move,
   Editor,
+  EditorState,
+  elementLens,
+  isEditorStateWithSelection,
+  jsx,
+  move,
+  select,
+  setText,
+  useLogEditorState,
 } from 'evolu';
+import { foldLeft, reverse } from 'fp-ts/lib/Array';
+import { fold, none, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const initialEditorState = createEditorState({
   element: jsx(
     <div className="root">
-      {/* <div className="heading">heading</div> */}
+      <div className="heading">heading</div>
       <div className="paragraph">paragraph</div>
     </div>,
   ),
@@ -37,21 +41,40 @@ function TestSetState() {
     [logEditorState],
   );
 
-  const onceRef = useRef(false);
+  // const currentIndexRef = useRef(0);
+
+  const operationsRef = useRef([
+    setText('foo'),
+    select({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
+    move(1),
+    elementLens.composeLens(childrenLens).modify(reverse),
+    elementLens
+      .composeLens(childrenLens)
+      .modify(childred => childred.slice(0, 1)),
+  ]);
 
   useEffect(() => {
-    if (!isEditorStateWithSelection(editorState) || onceRef.current) return;
-    onceRef.current = true;
-
-    const nextState = pipe(
-      editorState,
-      setText('foo'),
-      select({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
-      move(1),
+    if (!isEditorStateWithSelection(editorState)) return;
+    pipe(
+      operationsRef.current,
+      foldLeft(
+        () => none,
+        (operation, remaining) => {
+          operationsRef.current = remaining;
+          return some(operation);
+        },
+      ),
+      fold(
+        () => {
+          // TODO: Here, we should call Puppeter somehow.
+        },
+        operation => {
+          const nextState = operation(editorState);
+          handleEditorChange(nextState);
+        },
+      ),
     );
-
-    handleEditorChange(nextState);
-  }, [editorState, handleEditorChange]);
+  });
 
   return (
     <>

@@ -2,9 +2,9 @@
 import React, { Component, memo } from 'react';
 import { findDOMNode } from 'react-dom';
 import { useSetNodeEditorPathRef } from '../hooks/useSetNodeEditorPathRef';
+import { SetNodeEditorPathRef } from '../models/node';
 import { EditorPath, eqEditorPath } from '../models/path';
 import { textIsBR } from '../models/text';
-import { SetNodeEditorPathRef } from '../models/node';
 
 // Inspired by DraftEditorTextNode.
 // As for findDOMNode in strict mode:
@@ -91,7 +91,11 @@ export const EditorTextRenderer = memo<EditorTextRendererProps>(
   ({ text, path }) => {
     const setNodeEditorPathRef = useSetNodeEditorPathRef(path);
     return (
-      <EditorTextNode setNodeEditorPathRef={setNodeEditorPathRef}>
+      <EditorTextNode
+        // Reset when a path has been changed to enforce setNodeEditorPathRef update.
+        key={path.join()}
+        setNodeEditorPathRef={setNodeEditorPathRef}
+      >
         {text}
       </EditorTextNode>
     );

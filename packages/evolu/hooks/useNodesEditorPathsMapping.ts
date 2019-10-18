@@ -82,12 +82,10 @@ export function useNodesEditorPathsMapping(
     (operation, node, path) => {
       switch (operation) {
         case 'add':
-          // console.log('add', path, node);
           nodesEditorPathsMapRef.current.set(node, path);
           editorPathsNodesMapRef.current.set(editorPathToString(path), node);
           break;
         case 'remove':
-          // console.log('remove', path, node);
           nodesEditorPathsMapRef.current.delete(node);
           editorPathsNodesMapRef.current.delete(editorPathToString(path));
           break;
