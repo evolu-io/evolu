@@ -41,8 +41,6 @@ function TestSetState() {
     [logEditorState],
   );
 
-  // const currentIndexRef = useRef(0);
-
   const operationsRef = useRef([
     setText('foo'),
     select({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
