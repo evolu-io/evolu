@@ -6,8 +6,8 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Newtype, iso } from 'newtype-ts';
 import { Ord, fromCompare } from 'fp-ts/lib/Ord';
 
-// Consider RootEditorPath | ChildEditorPath sum type
-// and newtype NonNegativeInteger for EditorPathIndex.
+// neprejmenovat na Path?
+//
 export type EditorPath = number[];
 
 export interface EditorPathString
