@@ -1,28 +1,28 @@
-import { snoc, init } from 'fp-ts/lib/Array';
+import { sequenceT } from 'fp-ts/lib/Apply';
+import { init, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import {
+  chain,
+  fromNullable,
   none,
   Option,
+  option,
   some,
-  chain,
-  toNullable,
-  fromNullable,
 } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { geq } from 'fp-ts/lib/Ord';
+import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  eqEditorPath,
-  movePath,
-  GetEditorPathByNode,
-  EditorPath,
   byDirection,
+  EditorPath,
+  eqEditorPath,
+  GetEditorPathByNode,
+  movePath,
 } from './path';
 
 /**
  * Like browser Selection, but with EditorPath for the anchor and the focus.
- * The anchor is where the selection starts and the focus is where the selection ends.
- * Therefore, EditorSelection can be forward or backward.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Selection
  */
 export interface EditorSelection {
   readonly anchor: EditorPath;
@@ -68,33 +68,37 @@ export const eqEditorSelection: Eq<EditorSelection> = getStructEq({
 export function selectionToEditorSelection(
   getEditorPathByNode: GetEditorPathByNode,
 ): (selection: Selection) => Option<EditorSelection> {
-  return selection => {
-    const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-    if (!anchorNode || !focusNode) return none;
-    const anchorPath = toNullable(getEditorPathByNode(anchorNode));
-    const focusPath = toNullable(getEditorPathByNode(focusNode));
-    if (!anchorPath || !focusPath) return none;
-    return some({
-      anchor: snoc(anchorPath, anchorOffset),
-      focus: snoc(focusPath, focusOffset),
-    });
-  };
+  return ({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
+    pipe(
+      sequenceT(option)(
+        anchorNode ? getEditorPathByNode(anchorNode) : none,
+        focusNode ? getEditorPathByNode(focusNode) : none,
+      ),
+      chain(([anchorPath, focusPath]) =>
+        some({
+          anchor: snoc(anchorPath, anchorOffset),
+          focus: snoc(focusPath, focusOffset),
+        }),
+      ),
+    );
 }
 
 export function rangeToEditorSelection(
   getEditorPathByNode: GetEditorPathByNode,
 ): (range: Range) => Option<EditorSelection> {
-  return range => {
-    const { startContainer, startOffset, endContainer, endOffset } = range;
-    // How to do it without toNullable?
-    const anchorPath = toNullable(getEditorPathByNode(startContainer));
-    const focusPath = toNullable(getEditorPathByNode(endContainer));
-    if (!anchorPath || !focusPath) return none;
-    return some({
-      anchor: snoc(anchorPath, startOffset),
-      focus: snoc(focusPath, endOffset),
-    });
-  };
+  return ({ startContainer, startOffset, endContainer, endOffset }) =>
+    pipe(
+      sequenceT(option)(
+        getEditorPathByNode(startContainer),
+        getEditorPathByNode(endContainer),
+      ),
+      chain(([anchorPath, focusPath]) =>
+        some({
+          anchor: snoc(anchorPath, startOffset),
+          focus: snoc(focusPath, endOffset),
+        }),
+      ),
+    );
 }
 
 export function moveEditorSelectionAnchor(
@@ -169,10 +173,10 @@ export function editorSelectionFromInputEvent(
 export function editorSelectionOfParent(
   selection: EditorSelection,
 ): Option<EditorSelection> {
-  const anchor = toNullable(init(selection.anchor));
-  const focus = toNullable(init(selection.focus));
-  if (!anchor || !focus) return none;
-  return some({ anchor, focus });
+  return pipe(
+    sequenceT(option)(init(selection.anchor), init(selection.focus)),
+    chain(([anchor, focus]) => some({ anchor, focus })),
+  );
 }
 
 /**

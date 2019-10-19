@@ -1,6 +1,9 @@
 /* eslint-env browser */
+import { identity } from 'fp-ts/lib/function';
+import { fold, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
-import { some, toNullable } from 'fp-ts/lib/Option';
+import { GetEditorPathByNode } from '../models/path';
 import {
   collapseEditorSelectionToStart,
   editorSelectionForChild,
@@ -10,7 +13,6 @@ import {
   moveEditorSelection,
 } from '../models/selection';
 import { EditorAction } from '../reducers/editorReducer';
-import { GetEditorPathByNode } from '../models/path';
 import { warn } from '../warn';
 
 export function useBeforeInput(
@@ -54,15 +56,15 @@ export function useBeforeInput(
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
 
-      function getSelectionWithWarning(event: InputEvent) {
-        const selection = toNullable(
-          editorSelectionFromInputEvent(getEditorPathByNode)(event),
+      const getSelectionWithWarning = (event: InputEvent) =>
+        pipe(
+          event,
+          editorSelectionFromInputEvent(getEditorPathByNode),
+          fold(() => {
+            warn('editorSelectionFromInputEvent should return a selection');
+            return null;
+          }, identity),
         );
-        if (selection == null) {
-          warn('editorSelectionFromInputEvent should return a selection');
-        }
-        return selection;
-      }
 
       switch (event.inputType) {
         case 'insertText': {
@@ -159,20 +161,24 @@ export function useBeforeInput(
             return editorSelectionOfParent(selection);
           };
 
-          const selectionAfterDelete = toNullable(getSelectionAfterDelete());
-          if (selectionAfterDelete == null) return;
+          pipe(
+            getSelectionAfterDelete(),
+            fold(
+              () => {
+                warn('Selection should exists.');
+              },
+              selection => {
+                afterTyping(() => {
+                  const { data } = startContainer as Text;
+                  // Because we prevented default action to allow React to do update,
+                  // we have to set empty text manually.
+                  const text = textIsGoingToBeReplacedWithBR ? '' : data;
+                  dispatch({ type: 'deleteText', text, selection });
+                });
+              },
+            ),
+          );
 
-          afterTyping(() => {
-            const { data } = startContainer as Text;
-            // Because we prevented default action to allow React to do update,
-            // we have to set empty text manually.
-            const text = textIsGoingToBeReplacedWithBR ? '' : data;
-            dispatch({
-              type: 'deleteText',
-              text,
-              selection: selectionAfterDelete,
-            });
-          });
           break;
         }
 

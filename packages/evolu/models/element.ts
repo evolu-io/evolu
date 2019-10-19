@@ -326,7 +326,7 @@ export function deleteContentElement(
 ): Endomorphism<EditorElement> {
   return element => {
     const range = editorSelectionAsRange(selection);
-    // TODO: Replace toNullable with something.
+    // TODO: Refactor all.
     const anchorMaterializedPath = toNullable(
       materializeEditorPath(range.anchor)(element),
     );

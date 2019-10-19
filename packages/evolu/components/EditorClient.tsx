@@ -9,7 +9,7 @@ import {
   none,
   Option,
   some,
-  toNullable,
+  option,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
@@ -21,6 +21,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { sequenceT } from 'fp-ts/lib/Apply';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
 import { usePrevious } from '../hooks/usePrevious';
@@ -145,6 +146,12 @@ export const EditorClient = memo<EditorClientProps>(
       );
     }, []);
 
+    const getRange = useCallback((): Option<Range> => {
+      const doc = divRef.current && divRef.current.ownerDocument;
+      if (doc == null) return none;
+      return some(doc.createRange());
+    }, []);
+
     const editorPathToNodeOffset = useCallback(
       (path: EditorPath): Option<NodeOffset> => {
         return pipe(
@@ -175,38 +182,26 @@ export const EditorClient = memo<EditorClientProps>(
     );
 
     const setSelection = useCallback(
-      (editorSelection: EditorSelection) => {
-        const doc = divRef.current && divRef.current.ownerDocument;
-        if (doc == null) return;
+      (selection: EditorSelection) => {
+        const isForward = editorSelectionIsForward(selection);
         pipe(
-          getSelection(),
+          sequenceT(option)(
+            getSelection(),
+            getRange(),
+            editorPathToNodeOffset(
+              isForward ? selection.anchor : selection.focus,
+            ),
+            editorPathToNodeOffset(
+              isForward ? selection.focus : selection.anchor,
+            ),
+          ),
           fold(
             () => {
-              warn('Selection should exists.');
+              warn('Selection, Range, and NodeOffsets should exists.');
             },
-            selection => {
-              const isForward = editorSelectionIsForward(editorSelection);
-
-              // TODO: Remote toNullable.
-              const startNodeOffset = toNullable(
-                editorPathToNodeOffset(
-                  isForward ? editorSelection.anchor : editorSelection.focus,
-                ),
-              );
-              const endNodeOffset = toNullable(
-                editorPathToNodeOffset(
-                  isForward ? editorSelection.focus : editorSelection.anchor,
-                ),
-              );
-              if (startNodeOffset == null || endNodeOffset == null) {
-                warn('NodeOffsets should exists.');
-                return;
-              }
-
-              const range = doc.createRange();
+            ([selection, range, startNodeOffset, endNodeOffset]) => {
               range.setStart(...startNodeOffset);
               range.setEnd(...endNodeOffset);
-
               selection.removeAllRanges();
               if (isForward) {
                 selection.addRange(range);
@@ -221,7 +216,7 @@ export const EditorClient = memo<EditorClientProps>(
           ),
         );
       },
-      [editorPathToNodeOffset, getSelection],
+      [editorPathToNodeOffset, getRange, getSelection],
     );
 
     // Update editor selection by document selection.
