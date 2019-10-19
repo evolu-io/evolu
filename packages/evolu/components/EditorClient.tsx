@@ -1,14 +1,15 @@
 /* eslint-env browser */
 import Debug from 'debug';
 import { empty, init } from 'fp-ts/lib/Array';
+import { constVoid } from 'fp-ts/lib/function';
 import {
   chain,
   fold,
   fromNullable,
-  getOrElse,
   none,
   Option,
   some,
+  toNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
@@ -44,6 +45,7 @@ import {
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
+import { warn } from '../warn';
 import { EditorElementRenderer } from './EditorElementRenderer';
 import { renderEditorReactElement } from './EditorServer';
 
@@ -98,8 +100,7 @@ export const EditorClient = memo<EditorClientProps>(
     });
     const dispatch = useCallback((action: EditorAction) => {
       const { current } = dispatchDepsRef;
-      if (current == null)
-        throw new Error('Cannot call the dispatch while rendering.');
+      if (current == null) return;
       const { editorState, editorReducer, onChange } = current;
       const nextState = editorReducer(editorState, action);
       debugEditorAction(action.type, [editorState, action, nextState]);
@@ -181,32 +182,30 @@ export const EditorClient = memo<EditorClientProps>(
           getSelection(),
           fold(
             () => {
-              throw new Error('Selection should exists.');
+              warn('Selection should exists.');
             },
             selection => {
               const isForward = editorSelectionIsForward(editorSelection);
 
-              const [startNode, startOffset] = pipe(
+              // TODO: Remote toNullable.
+              const startNodeOffset = toNullable(
                 editorPathToNodeOffset(
                   isForward ? editorSelection.anchor : editorSelection.focus,
                 ),
-                getOrElse<NodeOffset>(() => {
-                  throw new Error('Start NodeOffset should exists.');
-                }),
               );
-
-              const [endNode, endOffset] = pipe(
+              const endNodeOffset = toNullable(
                 editorPathToNodeOffset(
                   isForward ? editorSelection.focus : editorSelection.anchor,
                 ),
-                getOrElse<NodeOffset>(() => {
-                  throw new Error('End NodeOffset should exists.');
-                }),
               );
+              if (startNodeOffset == null || endNodeOffset == null) {
+                warn('NodeOffsets should exists.');
+                return;
+              }
 
               const range = doc.createRange();
-              range.setStart(startNode, startOffset);
-              range.setEnd(endNode, endOffset);
+              range.setStart(...startNodeOffset);
+              range.setEnd(...endNodeOffset);
 
               selection.removeAllRanges();
               if (isForward) {
@@ -234,16 +233,12 @@ export const EditorClient = memo<EditorClientProps>(
         if (userIsTypingRef.current) return;
         pipe(
           getSelection(),
-          selectionToEditorSelection(getEditorPathByNode),
-          fold(
-            () => {
-              // Editor must remember the last selection when document selection
-              // is moved elsewhere to restore it later on focus.
-            },
-            selection => {
-              dispatch({ type: 'selectionChange', selection });
-            },
-          ),
+          chain(selectionToEditorSelection(getEditorPathByNode)),
+          // We ignore none because editor has to remember the last selection to
+          // restore it later on the focus.
+          fold(constVoid, selection => {
+            dispatch({ type: 'selectionChange', selection });
+          }),
         );
       };
 
@@ -260,7 +255,7 @@ export const EditorClient = memo<EditorClientProps>(
       if (!isEditorStateWithSelection(editorState)) return;
       pipe(
         getSelection(),
-        selectionToEditorSelection(getEditorPathByNode),
+        chain(selectionToEditorSelection(getEditorPathByNode)),
         chain(currentSelection => {
           return editorState.selection &&
             eqEditorSelection.equals(currentSelection, editorState.selection)

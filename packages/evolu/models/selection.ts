@@ -5,7 +5,6 @@ import {
   none,
   Option,
   some,
-  getOrElse,
   chain,
   toNullable,
   fromNullable,
@@ -67,43 +66,34 @@ export const eqEditorSelection: Eq<EditorSelection> = getStructEq({
 
 export function selectionToEditorSelection(
   getEditorPathByNode: GetEditorPathByNode,
-): (selection: Option<Selection>) => Option<EditorSelection> {
-  return selection =>
-    pipe(
-      selection,
-      chain(selection => {
-        const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-        if (!anchorNode || !focusNode) return none;
-        // TODO: Replace toNullable with something.
-        const anchorPath = toNullable(getEditorPathByNode(anchorNode));
-        const focusPath = toNullable(getEditorPathByNode(focusNode));
-        if (!anchorPath || !focusPath) return none;
-        return some({
-          anchor: snoc(anchorPath, anchorOffset),
-          focus: snoc(focusPath, focusOffset),
-        });
-      }),
-    );
+): (selection: Selection) => Option<EditorSelection> {
+  return selection => {
+    const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+    if (!anchorNode || !focusNode) return none;
+    const anchorPath = toNullable(getEditorPathByNode(anchorNode));
+    const focusPath = toNullable(getEditorPathByNode(focusNode));
+    if (!anchorPath || !focusPath) return none;
+    return some({
+      anchor: snoc(anchorPath, anchorOffset),
+      focus: snoc(focusPath, focusOffset),
+    });
+  };
 }
 
 export function rangeToEditorSelection(
   getEditorPathByNode: GetEditorPathByNode,
-): (range: Option<Range>) => Option<EditorSelection> {
-  return range =>
-    pipe(
-      range,
-      chain(range => {
-        const { startContainer, startOffset, endContainer, endOffset } = range;
-        // How to do it without toNullable?
-        const anchorPath = toNullable(getEditorPathByNode(startContainer));
-        const focusPath = toNullable(getEditorPathByNode(endContainer));
-        if (!anchorPath || !focusPath) return none;
-        return some({
-          anchor: snoc(anchorPath, startOffset),
-          focus: snoc(focusPath, endOffset),
-        });
-      }),
-    );
+): (range: Range) => Option<EditorSelection> {
+  return range => {
+    const { startContainer, startOffset, endContainer, endOffset } = range;
+    // How to do it without toNullable?
+    const anchorPath = toNullable(getEditorPathByNode(startContainer));
+    const focusPath = toNullable(getEditorPathByNode(endContainer));
+    if (!anchorPath || !focusPath) return none;
+    return some({
+      anchor: snoc(anchorPath, startOffset),
+      focus: snoc(focusPath, endOffset),
+    });
+  };
 }
 
 export function moveEditorSelectionAnchor(
@@ -163,16 +153,11 @@ export function rangeFromInputEvent(event: InputEvent): Option<Range> {
 
 export function editorSelectionFromInputEvent(
   getEditorPathByNode: GetEditorPathByNode,
-): (event: InputEvent) => EditorSelection {
+): (event: InputEvent) => Option<EditorSelection> {
   return event => {
     return pipe(
       rangeFromInputEvent(event),
-      rangeToEditorSelection(getEditorPathByNode),
-      getOrElse<EditorSelection>(() => {
-        throw new Error(
-          'Function editorSelectionFromInputEvent should always return selection.',
-        );
-      }),
+      chain(rangeToEditorSelection(getEditorPathByNode)),
     );
   };
 }

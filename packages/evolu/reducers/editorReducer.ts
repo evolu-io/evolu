@@ -9,6 +9,7 @@ import {
   setText,
   isEditorStateWithSelection,
 } from '../models/state';
+import { warn } from '../warn';
 
 /**
  * Various browser actions for updating EditorState.
@@ -40,9 +41,9 @@ export const editorReducer: EditorReducer = (state, action) => {
     }
 
     case 'insertText':
-      // This should not happen, but throw to be sure, because it could be a bug.
       if (!isEditorStateWithSelection(state)) {
-        throw new Error('State in insertText has no selection.');
+        warn('State in insertText should have a selection.');
+        return state;
       }
       // We have to set text first so it can be selected later.
       return pipe(
@@ -60,9 +61,9 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'insertReplacementText':
-      // This should not happen, but throw to be sure, because it could be a bug.
       if (!isEditorStateWithSelection(state)) {
-        throw new Error('State in insertText has no selection.');
+        warn('State in insertReplacementText should have a selection.');
+        return state;
       }
       return pipe(
         state,

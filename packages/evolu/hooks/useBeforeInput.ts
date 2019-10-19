@@ -11,6 +11,7 @@ import {
 } from '../models/selection';
 import { EditorAction } from '../reducers/editorReducer';
 import { GetEditorPathByNode } from '../models/path';
+import { warn } from '../warn';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
@@ -52,6 +53,17 @@ export function useBeforeInput(
 
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
+
+      function getSelectionWithWarning(event: InputEvent) {
+        const selection = toNullable(
+          editorSelectionFromInputEvent(getEditorPathByNode)(event),
+        );
+        if (selection == null) {
+          warn('editorSelectionFromInputEvent should return a selection');
+        }
+        return selection;
+      }
+
       switch (event.inputType) {
         case 'insertText': {
           // Note we don't read from event.data, because it can return wrong whitespaces.
@@ -69,9 +81,8 @@ export function useBeforeInput(
           // Btw, that's why all contentEditable editors require whitespace pre.
           if (event.data == null) return;
 
-          const selection = editorSelectionFromInputEvent(getEditorPathByNode)(
-            event,
-          );
+          const selection = getSelectionWithWarning(event);
+          if (selection == null) return;
 
           // @ts-ignore Outdated types.
           const range = event.getTargetRanges()[0] as Range;
@@ -119,9 +130,8 @@ export function useBeforeInput(
         // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          const selection = editorSelectionFromInputEvent(getEditorPathByNode)(
-            event,
-          );
+          const selection = getSelectionWithWarning(event);
+          if (selection == null) return;
 
           // When nothing is going to be deleted, do nothing.
           if (editorSelectionIsCollapsed(selection)) return;
@@ -182,11 +192,7 @@ export function useBeforeInput(
         }
 
         default:
-          if (process.env.NODE_ENV !== 'production') {
-            throw new Error(
-              `Unhandled beforeinput inputType: ${event.inputType}`,
-            );
-          }
+          warn(`Unhandled beforeinput inputType: ${event.inputType}`);
       }
     }
 

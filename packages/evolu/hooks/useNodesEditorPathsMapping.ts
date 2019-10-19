@@ -12,6 +12,7 @@ import {
   editorPathToString,
 } from '../models/path';
 import { isEditorText } from '../models/text';
+import { warn } from '../warn';
 
 type NodesEditorPathsMap = Map<Node, EditorPath>;
 type EditorPathsNodesMap = Map<EditorPathString, Node>;
@@ -40,7 +41,7 @@ function useDebugNodesEditorPaths(
       const nodesLength = countNodes(element);
       // console.log(nodesLength, nodesEditorPathsMap.size);
       if (nodesLength !== nodesEditorPathsMap.size)
-        throw new Error(
+        warn(
           'It looks like the ref arg in the custom renderElement is not used.',
         );
     }, [nodesEditorPathsMap, element]);

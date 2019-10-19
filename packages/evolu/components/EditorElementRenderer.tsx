@@ -10,6 +10,7 @@ import {
 import { EditorPath, eqEditorPath } from '../models/path';
 import { isEditorText } from '../models/text';
 import { EditorTextRenderer } from './EditorTextRenderer';
+import { warn } from '../warn';
 
 export interface EditorElementRendererProps {
   element: EditorElement;
@@ -24,7 +25,7 @@ export const EditorElementRenderer = memo<EditorElementRendererProps>(
       node => {
         if (process.env.NODE_ENV !== 'production') {
           if (node && isHTMLElement(node) && !node.hasAttributes())
-            throw new Error(
+            warn(
               'Element rendered by editor has to have at least one attribute. ' +
                 "That's because contentEditable does not like naked elements. " +
                 'For inline elements, it can split or wrap nodes. ' +

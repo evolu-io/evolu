@@ -16,3 +16,4 @@ export * from './models/selection';
 export * from './models/state';
 export * from './models/text';
 export * from './reducers/editorReducer';
+export * from './warn';
