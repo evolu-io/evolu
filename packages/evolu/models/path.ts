@@ -4,6 +4,7 @@ import { Endomorphism } from 'fp-ts/lib/function';
 import { Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Newtype, iso } from 'newtype-ts';
+import { Ord, fromCompare } from 'fp-ts/lib/Ord';
 
 // Consider RootEditorPath | ChildEditorPath sum type
 // and newtype NonNegativeInteger for EditorPathIndex.
@@ -35,12 +36,13 @@ export type GetEditorPathByNode = (node: Node) => Option<EditorPath>;
 
 export const eqEditorPath = getEq(eqNumber);
 
-export function editorPathsAreForward(
-  anchorPath: EditorPath,
-  focusPath: EditorPath,
-): boolean {
-  return !anchorPath.some((value, index) => value > focusPath[index]);
-}
+export const byDirection: Ord<EditorPath> = fromCompare((x, y) =>
+  eqEditorPath.equals(x, y)
+    ? 0
+    : !x.some((value, index) => value > y[index])
+    ? 1
+    : -1,
+);
 
 export function movePath(offset: number): Endomorphism<EditorPath> {
   return path =>

@@ -10,12 +10,13 @@ import {
   fromNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { geq } from 'fp-ts/lib/Ord';
 import {
-  editorPathsAreForward,
   eqEditorPath,
   movePath,
   GetEditorPathByNode,
   EditorPath,
+  byDirection,
 } from './path';
 
 /**
@@ -42,7 +43,7 @@ export interface EditorSelection {
  * Forward selection is not flipped aka the focus in not before the anchor.
  */
 export const editorSelectionIsForward: Predicate<EditorSelection> = selection =>
-  editorPathsAreForward(selection.anchor, selection.focus);
+  geq(byDirection)(selection.anchor, selection.focus);
 
 /**
  * Range is forward Selection. It ensures the focus is not before the anchor.
