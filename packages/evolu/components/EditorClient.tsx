@@ -283,7 +283,6 @@ export const EditorClient = memo<EditorClientProps>(
           <RenderEditorElementContext.Provider
             value={renderElement || renderEditorReactElement}
           >
-            {/* TODO: Consider state.root el or child  */}
             <EditorElementRenderer element={editorState.element} path={empty} />
           </RenderEditorElementContext.Provider>
         </SetNodeEditorPathContext.Provider>
