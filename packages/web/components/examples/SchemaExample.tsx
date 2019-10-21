@@ -68,7 +68,7 @@ export interface SchemaDocumentElement extends SchemaElement {
 }
 
 // Exported for testEditorServer.
-export const initialState = editor.createState<SchemaDocumentElement>({
+export const initialValue = editor.createValue<SchemaDocumentElement>({
   element: {
     id: editor.id(),
     type: 'document',
@@ -185,32 +185,32 @@ export function SchemaExample({
   autoFocus?: boolean;
   initialSelection?: editor.Selection | null;
 }) {
-  const [state, setState] = useState({
-    ...initialState,
+  const [value, setValue] = useState({
+    ...initialValue,
     ...(autoFocus != null && { hasFocus: autoFocus }),
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logState, logStateElement] = editor.useLogState(state);
+  const [logValue, logValueElement] = editor.useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (state: editor.State) => {
-      logState(state);
-      setState(state);
+    (value: editor.Value) => {
+      logValue(value);
+      setValue(value);
     },
-    [logState],
+    [logValue],
   );
 
   const handleFocusClick = useCallback(() => {
-    handleEditorChange({ ...state, hasFocus: true });
-  }, [state, handleEditorChange]);
+    handleEditorChange({ ...value, hasFocus: true });
+  }, [value, handleEditorChange]);
 
   const handleBlurMouseDown = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
-      handleEditorChange({ ...state, hasFocus: false });
+      handleEditorChange({ ...value, hasFocus: false });
     },
-    [state, handleEditorChange],
+    [value, handleEditorChange],
   );
 
   const renderElement = useSchemaRenderElement();
@@ -220,18 +220,18 @@ export function SchemaExample({
       <Text size={1}>Schema Example</Text>
       <editor.Editor
         {...defaultEditorProps}
-        state={state}
+        value={value}
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
-      {logStateElement}
+      {logValueElement}
       <div style={{ marginBottom: 24 }}>
         <button
           type="button"
           className="focus"
           onClick={handleFocusClick}
-          tabIndex={state.hasFocus ? 0 : -1}
-          disabled={state.hasFocus}
+          tabIndex={value.hasFocus ? 0 : -1}
+          disabled={value.hasFocus}
         >
           focus
         </button>
@@ -240,8 +240,8 @@ export function SchemaExample({
           className="blur"
           // Do not steal focus. Force blur.
           onMouseDown={handleBlurMouseDown}
-          tabIndex={!state.hasFocus ? 0 : -1}
-          disabled={!state.hasFocus}
+          tabIndex={!value.hasFocus ? 0 : -1}
+          disabled={!value.hasFocus}
         >
           blur
         </button>

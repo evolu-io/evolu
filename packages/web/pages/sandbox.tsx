@@ -5,7 +5,7 @@ import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
-const initialState = editor.createState({
+const initialValue = editor.createValue({
   element: editor.jsx(
     <div className="root">
       <div
@@ -45,16 +45,16 @@ const initialState = editor.createState({
 });
 
 function Index() {
-  const [state, setState] = useState(initialState);
+  const [value, setValue] = useState(initialValue);
 
-  const [logState, logStateElement] = editor.useLogState(state);
+  const [logValue, logValueElement] = editor.useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (state: editor.State) => {
-      logState(state);
-      setState(state);
+    (value: editor.Value) => {
+      logValue(value);
+      setValue(value);
     },
-    [logState],
+    [logValue],
   );
 
   return (
@@ -64,22 +64,22 @@ function Index() {
       </Head>
       <Text size={2}>Sandbox</Text>
       <editor.Editor
-        state={state}
+        value={value}
         // TODO:
         // reducer={customReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         spellCheck
       />
-      {logStateElement}
+      {logValueElement}
       <button
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          // handleEditorChange(nextState);
+          // handleEditorChange(nextValue);
         }}
       >
-        update model
+        update value
       </button>
     </Container>
   );

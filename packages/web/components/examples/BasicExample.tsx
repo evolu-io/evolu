@@ -4,7 +4,7 @@ import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testEditorServer.
-export const initialState = editor.createState<editor.ReactElement>({
+export const initialValue = editor.createValue<editor.ReactElement>({
   element: {
     id: editor.id(),
     tag: 'div',
@@ -34,7 +34,7 @@ export const initialState = editor.createState<editor.ReactElement>({
   },
 });
 
-export const initialStateWithTextOnly = editor.createState({
+export const initialValueWithTextOnly = editor.createValue({
   element: editor.jsx(<div className="root">a</div>),
 });
 
@@ -47,20 +47,20 @@ export function BasicExample({
   initialSelection?: editor.Selection | null;
   onlyText?: boolean;
 }) {
-  const [state, setState] = useState({
-    ...(onlyText ? initialStateWithTextOnly : initialState),
+  const [value, setValue] = useState({
+    ...(onlyText ? initialValueWithTextOnly : initialValue),
     ...(autoFocus != null && { hasFocus: autoFocus }),
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logState, logStateElement] = editor.useLogState(state);
+  const [logValue, logValueElement] = editor.useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (state: editor.State) => {
-      logState(state);
-      setState(state);
+    (value: editor.Value) => {
+      logValue(value);
+      setValue(value);
     },
-    [logState],
+    [logValue],
   );
 
   return (
@@ -68,10 +68,10 @@ export function BasicExample({
       <Text size={1}>Basic Example</Text>
       <editor.Editor
         {...defaultEditorProps}
-        state={state}
+        value={value}
         onChange={handleEditorChange}
       />
-      {logStateElement}
+      {logValueElement}
     </>
   );
 }

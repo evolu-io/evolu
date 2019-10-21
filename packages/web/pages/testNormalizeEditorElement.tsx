@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as editor from 'evolu';
 
-const initialState = editor.createState({
+const initialValue = editor.createValue({
   element: editor.normalizeElement({
     id: editor.id(),
     tag: 'div',
@@ -27,9 +27,9 @@ const initialState = editor.createState({
 });
 
 function TestNormalizeEditorElement() {
-  const [state, setState] = useState(initialState);
+  const [value, setValue] = useState(initialValue);
 
-  return <editor.Editor state={state} onChange={setState} />;
+  return <editor.Editor value={value} onChange={setValue} />;
 }
 
 export default TestNormalizeEditorElement;

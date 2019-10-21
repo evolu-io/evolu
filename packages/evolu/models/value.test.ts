@@ -1,23 +1,23 @@
-import { normalize, State } from './state';
+import { normalize, Value } from './value';
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
 
 const id = createStableIDFactory();
 
 test('normalize', () => {
   const element1 = { id: id(), children: [{ id: id(), text: 'a' }] };
-  const state1: State = {
+  const value1: Value = {
     element: element1,
     hasFocus: false,
   };
-  expect(normalize(state1)).toBe(state1);
+  expect(normalize(value1)).toBe(value1);
 
   const element2 = {
     id: id(),
     children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
   };
-  const state2: State = {
+  const value2: Value = {
     element: element2,
     hasFocus: false,
   };
-  expect(normalize(state2)).not.toBe(state2);
+  expect(normalize(value2)).not.toBe(value2);
 });

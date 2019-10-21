@@ -34,7 +34,7 @@ import {
   eqSelection,
   mapDOMSelectionToSelection,
 } from '../models/selection';
-import { State, isStateWithSelection, normalize } from '../models/state';
+import { Value, isValueWithSelection, normalize } from '../models/value';
 import {
   EditorAction,
   editorReducer as defaultEditorReducer,
@@ -62,8 +62,8 @@ type UsefulReactDivAtttributes = Pick<
 >;
 
 export interface EditorClientProps extends UsefulReactDivAtttributes {
-  state: State;
-  onChange: (state: State) => void;
+  value: Value;
+  onChange: (value: Value) => void;
   renderElement?: RenderElement;
   reducer?: EditorReducer;
 }
@@ -72,7 +72,7 @@ const debugEditorAction = Debug('editor:action');
 
 export const EditorClient = memo<EditorClientProps>(
   ({
-    state: stateMaybeNotNormalized,
+    value: valueMaybeNotNormalized,
     onChange,
     renderElement,
     reducer = defaultEditorReducer,
@@ -81,8 +81,8 @@ export const EditorClient = memo<EditorClientProps>(
     role = 'textbox',
     ...rest
   }) => {
-    // Always normalize outer state. It's fast enough. And we can optimize it later.
-    const state = normalize(stateMaybeNotNormalized);
+    // Always normalize outer value. It's fast enough. And we can optimize it later.
+    const value = normalize(valueMaybeNotNormalized);
 
     const userIsTypingRef = useRef(false);
 
@@ -91,34 +91,34 @@ export const EditorClient = memo<EditorClientProps>(
     // React will provide better API because this could be tricky in concurrent mode.
     // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
     const dispatchDepsRef = useRef<{
-      state: State;
+      value: Value;
       reducer: EditorReducer;
       onChange: EditorClientProps['onChange'];
     }>();
     useLayoutEffect(() => {
-      dispatchDepsRef.current = { state, reducer, onChange };
+      dispatchDepsRef.current = { value, reducer, onChange };
     });
     const dispatch = useCallback((action: EditorAction) => {
       const { current } = dispatchDepsRef;
       if (current == null) return;
-      const { state, reducer, onChange } = current;
-      const nextState = reducer(state, action);
-      debugEditorAction(action.type, [state, action, nextState]);
-      if (nextState === state) return;
-      onChange(nextState);
+      const { value, reducer, onChange } = current;
+      const nextValue = reducer(value, action);
+      debugEditorAction(action.type, [value, action, nextValue]);
+      if (nextValue === value) return;
+      onChange(nextValue);
     }, []);
 
     const {
       setDOMNodePath,
       getDOMNodeByPath,
       getPathByDOMNode,
-    } = useNodesPathsMapping(state.element);
+    } = useNodesPathsMapping(value.element);
 
     const divRef = useRef<HTMLDivElement>(null);
 
     const [tabLostFocus, setTabLostFocus] = useState(false);
 
-    const stateHadFocus = usePrevious(state.hasFocus);
+    const valueHadFocus = usePrevious(value.hasFocus);
 
     // Map editor declarative focus to imperative DOM focus and blur methods.
     useEffect(() => {
@@ -126,15 +126,15 @@ export const EditorClient = memo<EditorClientProps>(
       if (div == null) return;
       const divHasFocus =
         div === (div.ownerDocument && div.ownerDocument.activeElement);
-      if (!stateHadFocus && state.hasFocus) {
+      if (!valueHadFocus && value.hasFocus) {
         if (!divHasFocus) div.focus();
-      } else if (stateHadFocus && !state.hasFocus) {
+      } else if (valueHadFocus && !value.hasFocus) {
         // Do not call blur when tab lost focus so editor can be focused back.
         // For manual test, click to editor then press cmd-tab twice.
         // Editor selection must be preserved.
         if (divHasFocus && !tabLostFocus) div.blur();
       }
-    }, [tabLostFocus, divRef, stateHadFocus, state.hasFocus]);
+    }, [tabLostFocus, divRef, valueHadFocus, value.hasFocus]);
 
     // Using divRef is must for iframes.
     const getDOMSelection = useCallback((): Option<DOMSelection> => {
@@ -246,15 +246,15 @@ export const EditorClient = memo<EditorClientProps>(
     }, [dispatch, getPathByDOMNode, getDOMSelection]);
 
     const maybeUpdateSelection = useCallback(() => {
-      if (!isStateWithSelection(state)) return;
+      if (!isValueWithSelection(value)) return;
       pipe(
         getDOMSelection(),
         chain(mapDOMSelectionToSelection(getPathByDOMNode)),
         chain(currentSelection => {
-          return state.selection &&
-            eqSelection.equals(currentSelection, state.selection)
+          return value.selection &&
+            eqSelection.equals(currentSelection, value.selection)
             ? none
-            : some(state.selection);
+            : some(value.selection);
         }),
         fold(
           () => {
@@ -265,14 +265,14 @@ export const EditorClient = memo<EditorClientProps>(
           },
         ),
       );
-    }, [state, getPathByDOMNode, getDOMSelection, setSelection]);
+    }, [value, getPathByDOMNode, getDOMSelection, setSelection]);
 
     // useLayoutEffect is a must to keep browser selection in sync with editor selection.
     // With useEffect, fast typing would lose caret position.
     useLayoutEffect(() => {
-      if (!state.hasFocus) return;
+      if (!value.hasFocus) return;
       maybeUpdateSelection();
-    }, [state.hasFocus, maybeUpdateSelection]);
+    }, [value.hasFocus, maybeUpdateSelection]);
 
     useBeforeInput(divRef, userIsTypingRef, getPathByDOMNode, dispatch);
 
@@ -282,11 +282,11 @@ export const EditorClient = memo<EditorClientProps>(
           <RenderElementContext.Provider
             value={renderElement || renderReactElement}
           >
-            <ElementRenderer element={state.element} path={empty} />
+            <ElementRenderer element={value.element} path={empty} />
           </RenderElementContext.Provider>
         </SetNodePathContext.Provider>
       );
-    }, [state.element, renderElement, setDOMNodePath]);
+    }, [value.element, renderElement, setDOMNodePath]);
 
     const handleDivFocus = useCallback(() => {
       maybeUpdateSelection();

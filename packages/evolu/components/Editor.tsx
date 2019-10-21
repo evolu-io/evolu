@@ -22,7 +22,7 @@ export const Editor = memo<EditorClientProps>(props => {
   if (!renderClient)
     return (
       <EditorServer
-        element={props.state.element}
+        element={props.value.element}
         renderElement={props.renderElement}
         className={props.className}
         id={props.id}

@@ -1,9 +1,9 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
 import { Element, recursiveRemoveID } from '../models/element';
-import { State, StateWithSelection } from '../models/state';
+import { Value, ValueWithSelection } from '../models/value';
 
-const Item = memo(({ state, index }: { state: State; index: number }) => {
-  const { element, hasFocus, selection } = state as StateWithSelection;
+const Item = memo(({ value, index }: { value: Value; index: number }) => {
+  const { element, hasFocus, selection } = value as ValueWithSelection;
   const indexItem = { hasFocus, selection };
   // Deliberately do not prettify. Smaller output is more readable in snapshots.
   // No IDs because that would break integration tests.
@@ -24,20 +24,20 @@ const Item = memo(({ state, index }: { state: State; index: number }) => {
   );
 });
 
-export function useLogState(state: State): [(state: State) => void, ReactNode] {
-  const [states, setStates] = useState<State[]>([state]);
-  const logState = useCallback((state: State) => {
-    setStates(prevStates => [...prevStates, state]);
+export function useLogValue(value: Value): [(value: Value) => void, ReactNode] {
+  const [values, setValues] = useState<Value[]>([value]);
+  const logValue = useCallback((value: Value) => {
+    setValues(prevValues => [...prevValues, value]);
   }, []);
 
-  const logStateElement = useMemo(() => {
+  const logValueElement = useMemo(() => {
     return (
       <pre>
-        {states
-          .map((state, index) => {
+        {values
+          .map((value, index) => {
             // Key index is ok, because the order is stable.
             // eslint-disable-next-line react/no-array-index-key
-            return <Item state={state} index={index} key={index} />;
+            return <Item value={value} index={index} key={index} />;
           })
           .reverse()}
         <style jsx>{`
@@ -51,7 +51,7 @@ export function useLogState(state: State): [(state: State) => void, ReactNode] {
         `}</style>
       </pre>
     );
-  }, [states]);
+  }, [values]);
 
-  return [logState, logStateElement];
+  return [logValue, logValueElement];
 }

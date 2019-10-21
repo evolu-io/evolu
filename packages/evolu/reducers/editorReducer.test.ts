@@ -1,13 +1,13 @@
 import { editorReducer, EditorAction } from './editorReducer';
-import { createStateWithText } from '../models/state';
+import { createValueWithText } from '../models/value';
 import { recursiveRemoveID } from '../models/element';
 
-const state = createStateWithText();
+const value = createValueWithText();
 
 function testEditorReducer(action: EditorAction) {
-  const { element, ...nextState } = editorReducer(state, action);
+  const { element, ...nextValue } = editorReducer(value, action);
   return {
-    ...nextState,
+    ...nextValue,
     element: recursiveRemoveID(element),
   };
 }

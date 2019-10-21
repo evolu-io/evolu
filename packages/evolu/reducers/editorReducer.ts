@@ -4,11 +4,11 @@ import { absurd } from 'fp-ts/lib/function';
 import { Selection } from '../models/selection';
 import {
   // deleteContent,
-  State,
+  Value,
   select,
   setText,
-  isStateWithSelection,
-} from '../models/state';
+  isValueWithSelection,
+} from '../models/value';
 import { warn } from '../warn';
 
 export type EditorAction =
@@ -18,33 +18,34 @@ export type EditorAction =
   | { type: 'insertText'; text: string; selection: Selection }
   | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string };
-// | { type: 'set'; state: State }
+// | { type: 'set'; value: Value }
 // | { type: 'deleteContent'; selection: Selection };
 
-export type EditorReducer = Reducer<State, EditorAction>;
+export type EditorReducer = Reducer<Value, EditorAction>;
 
-export const editorReducer: EditorReducer = (state, action) => {
+export const editorReducer: EditorReducer = (value, action) => {
   switch (action.type) {
     case 'focus':
-      if (state.hasFocus) return state;
-      return { ...state, hasFocus: true };
+      if (value.hasFocus) return value;
+      return { ...value, hasFocus: true };
 
     case 'blur':
-      if (!state.hasFocus) return state;
-      return { ...state, hasFocus: false };
+      if (!value.hasFocus) return value;
+      return { ...value, hasFocus: false };
 
     case 'selectionChange': {
-      return select(action.selection)(state);
+      return select(action.selection)(value);
     }
 
     case 'insertText':
-      if (!isStateWithSelection(state)) {
-        warn('State in insertText should have a selection.');
-        return state;
+      // TODO: Move burden to beforeInput.
+      if (!isValueWithSelection(value)) {
+        warn('Value in insertText should have a selection.');
+        return value;
       }
       // We have to set text first so it can be selected later.
       return pipe(
-        state,
+        value,
         setText(action.text),
         select(action.selection),
       );
@@ -52,23 +53,24 @@ export const editorReducer: EditorReducer = (state, action) => {
     case 'deleteText':
       // We have to set selection of text to be deleted.
       return pipe(
-        state,
+        value,
         select(action.selection),
         setText(action.text),
       );
 
     case 'insertReplacementText':
-      if (!isStateWithSelection(state)) {
-        warn('State in insertReplacementText should have a selection.');
-        return state;
+      // TODO: Move burden to beforeInput.
+      if (!isValueWithSelection(value)) {
+        warn('Value in insertReplacementText should have a selection.');
+        return value;
       }
       return pipe(
-        state,
+        value,
         setText(action.text),
       );
 
     // case 'deleteContent':
-    //   return deleteContent(action.selection)(state);
+    //   return deleteContent(action.selection)(value);
 
     default:
       return absurd(action);

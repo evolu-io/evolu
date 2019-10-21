@@ -27,26 +27,26 @@ export const testSelectionElement: editor.ReactElement = {
   ],
 };
 
-const initialState = editor.createState({
+const initialValue = editor.createValue({
   element: testSelectionElement,
 });
 
 function TestSelection() {
-  const [state, setState] = useState(initialState);
+  const [value, setValue] = useState(initialValue);
 
-  const [logState, logStateElement] = editor.useLogState(state);
+  const [logValue, logValueElement] = editor.useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (state: editor.State) => {
-      logState(state);
-      setState(state);
+    (value: editor.Value) => {
+      logValue(value);
+      setValue(value);
     },
-    [logState],
+    [logValue],
   );
 
   function select(selection: editor.Selection) {
     handleEditorChange({
-      ...state,
+      ...value,
       hasFocus: true,
       selection,
     });
@@ -54,8 +54,8 @@ function TestSelection() {
 
   return (
     <>
-      <editor.Editor state={state} onChange={handleEditorChange} />
-      {logStateElement}
+      <editor.Editor value={value} onChange={handleEditorChange} />
+      {logValueElement}
       <div>
         <button
           className="select-first-two-letters"

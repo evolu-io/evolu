@@ -1,22 +1,22 @@
 import {
   childrenLens,
-  createState,
+  createValue,
   Editor,
-  State,
+  Value,
   elementLens,
-  isStateWithSelection,
+  isValueWithSelection,
   jsx,
   move,
   select,
   setText,
-  useLogState,
+  useLogValue,
 } from 'evolu';
 import { foldLeft, reverse } from 'fp-ts/lib/Array';
 import { fold, none, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-const initialState = createState({
+const initialValue = createValue({
   element: jsx(
     <div className="root">
       <div className="heading">heading</div>
@@ -26,17 +26,17 @@ const initialState = createState({
   hasFocus: true,
 });
 
-function TestSetState() {
-  const [state, setState] = useState(initialState);
+function TestSetValue() {
+  const [value, setValue] = useState(initialValue);
 
-  const [logState, logStateElement] = useLogState(state);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (state: State) => {
-      logState(state);
-      setState(state);
+    (value: Value) => {
+      logValue(value);
+      setValue(value);
     },
-    [logState],
+    [logValue],
   );
 
   const operationsRef = useRef([
@@ -50,7 +50,7 @@ function TestSetState() {
   ]);
 
   useEffect(() => {
-    if (!isStateWithSelection(state)) return;
+    if (!isValueWithSelection(value)) return;
     pipe(
       operationsRef.current,
       foldLeft(
@@ -65,8 +65,8 @@ function TestSetState() {
           // TODO: Here, we should call Puppeter somehow.
         },
         operation => {
-          const nextState = operation(state);
-          handleEditorChange(nextState);
+          const nextValue = operation(value);
+          handleEditorChange(nextValue);
         },
       ),
     );
@@ -74,10 +74,10 @@ function TestSetState() {
 
   return (
     <>
-      <Editor state={state} onChange={handleEditorChange} />
-      {logStateElement}
+      <Editor value={value} onChange={handleEditorChange} />
+      {logValueElement}
     </>
   );
 }
 
-export default TestSetState;
+export default TestSetValue;
