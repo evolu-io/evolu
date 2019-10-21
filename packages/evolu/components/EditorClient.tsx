@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import Debug from 'debug';
 import { empty, init } from 'fp-ts/lib/Array';
 import { constVoid } from 'fp-ts/lib/function';
@@ -23,32 +22,32 @@ import React, {
 } from 'react';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { useBeforeInput } from '../hooks/useBeforeInput';
-import { useNodesEditorPathsMapping } from '../hooks/useNodesEditorPathsMapping';
+import { useNodesPathsMapping } from '../hooks/useNodesPathsMapping';
 import { usePrevious } from '../hooks/usePrevious';
-import { RenderEditorElementContext } from '../hooks/useRenderEditorElement';
-import { SetNodeEditorPathContext } from '../hooks/useSetNodeEditorPathRef';
-import { RenderEditorElement } from '../models/element';
-import { createNodeOffset, NodeOffset } from '../models/node';
-import { EditorPath } from '../models/path';
+import { RenderElementContext } from '../hooks/useRenderElement';
+import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
+import { RenderElement } from '../models/element';
+import { Path } from '../models/path';
 import {
-  EditorSelection,
-  editorSelectionIsForward,
-  eqEditorSelection,
-  selectionToEditorSelection,
+  Selection,
+  isForwardSelection,
+  eqSelection,
+  mapDOMSelectionToSelection,
 } from '../models/selection';
-import {
-  EditorState,
-  isEditorStateWithSelection,
-  normalize,
-} from '../models/state';
+import { State, isStateWithSelection, normalize } from '../models/state';
 import {
   EditorAction,
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
 import { warn } from '../warn';
-import { EditorElementRenderer } from './EditorElementRenderer';
-import { renderEditorReactElement } from './EditorServer';
+import { ElementRenderer } from './ElementRenderer';
+import { renderReactElement } from './EditorServer';
+import {
+  DOMNodeOffset,
+  createDOMNodeOffset,
+  DOMSelection,
+} from '../models/dom';
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -63,27 +62,27 @@ type UsefulReactDivAtttributes = Pick<
 >;
 
 export interface EditorClientProps extends UsefulReactDivAtttributes {
-  editorState: EditorState;
-  onChange: (editorState: EditorState) => void;
-  renderElement?: RenderEditorElement;
-  editorReducer?: EditorReducer;
+  state: State;
+  onChange: (state: State) => void;
+  renderElement?: RenderElement;
+  reducer?: EditorReducer;
 }
 
 const debugEditorAction = Debug('editor:action');
 
 export const EditorClient = memo<EditorClientProps>(
   ({
-    editorState: editorStateMaybeNotNormalized,
+    state: stateMaybeNotNormalized,
     onChange,
     renderElement,
-    editorReducer = defaultEditorReducer,
+    reducer = defaultEditorReducer,
     autoCorrect = 'off',
     spellCheck = false,
     role = 'textbox',
     ...rest
   }) => {
     // Always normalize outer state. It's fast enough. And we can optimize it later.
-    const editorState = normalize(editorStateMaybeNotNormalized);
+    const state = normalize(stateMaybeNotNormalized);
 
     const userIsTypingRef = useRef(false);
 
@@ -92,34 +91,34 @@ export const EditorClient = memo<EditorClientProps>(
     // React will provide better API because this could be tricky in concurrent mode.
     // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
     const dispatchDepsRef = useRef<{
-      editorState: EditorState;
-      editorReducer: EditorReducer;
+      state: State;
+      reducer: EditorReducer;
       onChange: EditorClientProps['onChange'];
     }>();
     useLayoutEffect(() => {
-      dispatchDepsRef.current = { editorState, editorReducer, onChange };
+      dispatchDepsRef.current = { state, reducer, onChange };
     });
     const dispatch = useCallback((action: EditorAction) => {
       const { current } = dispatchDepsRef;
       if (current == null) return;
-      const { editorState, editorReducer, onChange } = current;
-      const nextState = editorReducer(editorState, action);
-      debugEditorAction(action.type, [editorState, action, nextState]);
-      if (nextState === editorState) return;
+      const { state, reducer, onChange } = current;
+      const nextState = reducer(state, action);
+      debugEditorAction(action.type, [state, action, nextState]);
+      if (nextState === state) return;
       onChange(nextState);
     }, []);
 
     const {
-      setNodeEditorPath,
-      getNodeByEditorPath,
-      getEditorPathByNode,
-    } = useNodesEditorPathsMapping(editorState.element);
+      setDOMNodePath,
+      getDOMNodeByPath,
+      getPathByDOMNode,
+    } = useNodesPathsMapping(state.element);
 
     const divRef = useRef<HTMLDivElement>(null);
 
     const [tabLostFocus, setTabLostFocus] = useState(false);
 
-    const editorStateHadFocus = usePrevious(editorState.hasFocus);
+    const stateHadFocus = usePrevious(state.hasFocus);
 
     // Map editor declarative focus to imperative DOM focus and blur methods.
     useEffect(() => {
@@ -127,35 +126,40 @@ export const EditorClient = memo<EditorClientProps>(
       if (div == null) return;
       const divHasFocus =
         div === (div.ownerDocument && div.ownerDocument.activeElement);
-      if (!editorStateHadFocus && editorState.hasFocus) {
+      if (!stateHadFocus && state.hasFocus) {
         if (!divHasFocus) div.focus();
-      } else if (editorStateHadFocus && !editorState.hasFocus) {
+      } else if (stateHadFocus && !state.hasFocus) {
         // Do not call blur when tab lost focus so editor can be focused back.
         // For manual test, click to editor then press cmd-tab twice.
         // Editor selection must be preserved.
         if (divHasFocus && !tabLostFocus) div.blur();
       }
-    }, [tabLostFocus, divRef, editorStateHadFocus, editorState.hasFocus]);
+    }, [tabLostFocus, divRef, stateHadFocus, state.hasFocus]);
 
-    const getSelection = useCallback((): Option<Selection> => {
+    // Using divRef is must for iframes.
+    const getDOMSelection = useCallback((): Option<DOMSelection> => {
+      // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
       return fromNullable(
-        // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
         divRef.current &&
           divRef.current.ownerDocument &&
           divRef.current.ownerDocument.getSelection(),
       );
     }, []);
 
+    // Using divRef is must for iframes.
     const getRange = useCallback((): Option<Range> => {
-      const doc = divRef.current && divRef.current.ownerDocument;
-      if (doc == null) return none;
-      return some(doc.createRange());
+      // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
+      return fromNullable(
+        divRef.current &&
+          divRef.current.ownerDocument &&
+          divRef.current.ownerDocument.createRange(),
+      );
     }, []);
 
-    const editorPathToNodeOffset = useCallback(
-      (path: EditorPath): Option<NodeOffset> => {
+    const pathToNodeOffset = useCallback(
+      (path: Path): Option<DOMNodeOffset> => {
         return pipe(
-          getNodeByEditorPath(path),
+          getDOMNodeByPath(path),
           // That's how we can console.log within a pipe.
           // foo => {
           //   console.log(foo);
@@ -163,47 +167,42 @@ export const EditorClient = memo<EditorClientProps>(
           // },
           fold(
             () =>
-              // Text.
               pipe(
                 path,
                 init,
-                chain(getNodeByEditorPath),
-                createNodeOffset(path),
+                chain(getDOMNodeByPath),
+                createDOMNodeOffset(path),
               ),
             element =>
               pipe(
                 fromNullable(element.parentNode),
-                createNodeOffset(path),
+                createDOMNodeOffset(path),
               ),
           ),
         );
       },
-      [getNodeByEditorPath],
+      [getDOMNodeByPath],
     );
 
     const setSelection = useCallback(
-      (selection: EditorSelection) => {
-        const isForward = editorSelectionIsForward(selection);
+      (selection: Selection) => {
+        const bla = isForwardSelection(selection);
         pipe(
           sequenceT(option)(
-            getSelection(),
+            getDOMSelection(),
             getRange(),
-            editorPathToNodeOffset(
-              isForward ? selection.anchor : selection.focus,
-            ),
-            editorPathToNodeOffset(
-              isForward ? selection.focus : selection.anchor,
-            ),
+            pathToNodeOffset(bla ? selection.anchor : selection.focus),
+            pathToNodeOffset(bla ? selection.focus : selection.anchor),
           ),
           fold(
             () => {
-              warn('Selection, Range, and NodeOffsets should exists.');
+              warn('DOMSelection, DOMRange, and DOMNodeOffsets should exists.');
             },
             ([selection, range, startNodeOffset, endNodeOffset]) => {
               range.setStart(...startNodeOffset);
               range.setEnd(...endNodeOffset);
               selection.removeAllRanges();
-              if (isForward) {
+              if (bla) {
                 selection.addRange(range);
               } else {
                 // https://stackoverflow.com/a/4802994/233902
@@ -216,10 +215,10 @@ export const EditorClient = memo<EditorClientProps>(
           ),
         );
       },
-      [editorPathToNodeOffset, getRange, getSelection],
+      [pathToNodeOffset, getRange, getDOMSelection],
     );
 
-    // Update editor selection by document selection.
+    // Update editor selection by DOM selection.
     useEffect(() => {
       const doc = divRef.current && divRef.current.ownerDocument;
       if (doc == null) return;
@@ -227,8 +226,8 @@ export const EditorClient = memo<EditorClientProps>(
       const handleDocumentSelectionChange = () => {
         if (userIsTypingRef.current) return;
         pipe(
-          getSelection(),
-          chain(selectionToEditorSelection(getEditorPathByNode)),
+          getDOMSelection(),
+          chain(mapDOMSelectionToSelection(getPathByDOMNode)),
           // We ignore none because editor has to remember the last selection to
           // restore it later on the focus.
           fold(constVoid, selection => {
@@ -244,18 +243,18 @@ export const EditorClient = memo<EditorClientProps>(
           handleDocumentSelectionChange,
         );
       };
-    }, [dispatch, getEditorPathByNode, getSelection]);
+    }, [dispatch, getPathByDOMNode, getDOMSelection]);
 
     const maybeUpdateSelection = useCallback(() => {
-      if (!isEditorStateWithSelection(editorState)) return;
+      if (!isStateWithSelection(state)) return;
       pipe(
-        getSelection(),
-        chain(selectionToEditorSelection(getEditorPathByNode)),
+        getDOMSelection(),
+        chain(mapDOMSelectionToSelection(getPathByDOMNode)),
         chain(currentSelection => {
-          return editorState.selection &&
-            eqEditorSelection.equals(currentSelection, editorState.selection)
+          return state.selection &&
+            eqSelection.equals(currentSelection, state.selection)
             ? none
-            : some(editorState.selection);
+            : some(state.selection);
         }),
         fold(
           () => {
@@ -266,28 +265,28 @@ export const EditorClient = memo<EditorClientProps>(
           },
         ),
       );
-    }, [editorState, getEditorPathByNode, getSelection, setSelection]);
+    }, [state, getPathByDOMNode, getDOMSelection, setSelection]);
 
     // useLayoutEffect is a must to keep browser selection in sync with editor selection.
     // With useEffect, fast typing would lose caret position.
     useLayoutEffect(() => {
-      if (!editorState.hasFocus) return;
+      if (!state.hasFocus) return;
       maybeUpdateSelection();
-    }, [editorState.hasFocus, maybeUpdateSelection]);
+    }, [state.hasFocus, maybeUpdateSelection]);
 
-    useBeforeInput(divRef, userIsTypingRef, getEditorPathByNode, dispatch);
+    useBeforeInput(divRef, userIsTypingRef, getPathByDOMNode, dispatch);
 
     const children = useMemo(() => {
       return (
-        <SetNodeEditorPathContext.Provider value={setNodeEditorPath}>
-          <RenderEditorElementContext.Provider
-            value={renderElement || renderEditorReactElement}
+        <SetNodePathContext.Provider value={setDOMNodePath}>
+          <RenderElementContext.Provider
+            value={renderElement || renderReactElement}
           >
-            <EditorElementRenderer element={editorState.element} path={empty} />
-          </RenderEditorElementContext.Provider>
-        </SetNodeEditorPathContext.Provider>
+            <ElementRenderer element={state.element} path={empty} />
+          </RenderElementContext.Provider>
+        </SetNodePathContext.Provider>
       );
-    }, [editorState.element, renderElement, setNodeEditorPath]);
+    }, [state.element, renderElement, setDOMNodePath]);
 
     const handleDivFocus = useCallback(() => {
       maybeUpdateSelection();

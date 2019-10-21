@@ -4,9 +4,7 @@ import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testEditorServer.
-export const initialEditorState = editor.createEditorState<
-  editor.EditorReactElement
->({
+export const initialState = editor.createState<editor.ReactElement>({
   element: {
     id: editor.id(),
     tag: 'div',
@@ -36,7 +34,7 @@ export const initialEditorState = editor.createEditorState<
   },
 });
 
-export const initialEditorStateWithTextOnly = editor.createEditorState({
+export const initialStateWithTextOnly = editor.createState({
   element: editor.jsx(<div className="root">a</div>),
 });
 
@@ -46,25 +44,23 @@ export function BasicExample({
   onlyText = false,
 }: {
   autoFocus?: boolean;
-  initialSelection?: editor.EditorSelection | null;
+  initialSelection?: editor.Selection | null;
   onlyText?: boolean;
 }) {
-  const [editorState, setEditorState] = useState({
-    ...(onlyText ? initialEditorStateWithTextOnly : initialEditorState),
+  const [state, setState] = useState({
+    ...(onlyText ? initialStateWithTextOnly : initialState),
     ...(autoFocus != null && { hasFocus: autoFocus }),
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = editor.useLogState(state);
 
   const handleEditorChange = useCallback(
-    (editorState: editor.EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: editor.State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
   return (
@@ -72,10 +68,10 @@ export function BasicExample({
       <Text size={1}>Basic Example</Text>
       <editor.Editor
         {...defaultEditorProps}
-        editorState={editorState}
+        state={state}
         onChange={handleEditorChange}
       />
-      {logEditorStateElement}
+      {logStateElement}
     </>
   );
 }

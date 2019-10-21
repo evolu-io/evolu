@@ -1,24 +1,25 @@
 /* eslint-env browser */
 import { identity } from 'fp-ts/lib/function';
-import { fold, some } from 'fp-ts/lib/Option';
+import { fold, some, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
-import { GetEditorPathByNode } from '../models/path';
 import {
-  collapseEditorSelectionToStart,
-  editorSelectionForChild,
-  editorSelectionFromInputEvent,
-  editorSelectionIsCollapsed,
-  editorSelectionOfParent,
-  moveEditorSelection,
+  collapseSelectionToStart,
+  snocSelection,
+  getSelectionFromInputEvent,
+  isCollapsedSelection,
+  initSelection,
+  moveSelection,
 } from '../models/selection';
 import { EditorAction } from '../reducers/editorReducer';
 import { warn } from '../warn';
+import { DOMNode, DOMText, getDOMRangeFromInputEvent } from '../models/dom';
+import { Path } from '../models/path';
 
 export function useBeforeInput(
   divRef: RefObject<HTMLDivElement>,
   userIsTypingRef: MutableRefObject<boolean>,
-  getEditorPathByNode: GetEditorPathByNode,
+  getPathByNode: (node: DOMNode) => Option<Path>,
   dispatch: Dispatch<EditorAction>,
 ) {
   useEffect(() => {
@@ -56,12 +57,12 @@ export function useBeforeInput(
       // I suppose we don't have to handle all input types. Let's see.
       // https://www.w3.org/TR/input-events/#interface-InputEvent-Attributes
 
-      const getSelectionWithWarning = (event: InputEvent) =>
+      const getSelectionFromInputEventWithWarning = (event: InputEvent) =>
         pipe(
           event,
-          editorSelectionFromInputEvent(getEditorPathByNode),
+          getSelectionFromInputEvent(getPathByNode),
           fold(() => {
-            warn('editorSelectionFromInputEvent should return a selection');
+            warn('getSelectionFromInputEvent should return a selection');
             return null;
           }, identity),
         );
@@ -83,11 +84,10 @@ export function useBeforeInput(
           // Btw, that's why all contentEditable editors require whitespace pre.
           if (event.data == null) return;
 
-          const selection = getSelectionWithWarning(event);
+          const selection = getSelectionFromInputEventWithWarning(event);
           if (selection == null) return;
 
-          // @ts-ignore Outdated types.
-          const range = event.getTargetRanges()[0] as Range;
+          const range = getDOMRangeFromInputEvent(event);
 
           // Store reference to text node to read from it when selection is collapsed.
           // We can not just insert text, because whitespaces can be changed anywhere.
@@ -103,8 +103,8 @@ export function useBeforeInput(
             maybeBR.nodeName === 'BR';
 
           const selectionAfterInsert = brIsGoingToBeReplacedWithText
-            ? editorSelectionForChild(1, 1)(selection)
-            : moveEditorSelection(event.data.length)(selection);
+            ? snocSelection(selection, 1, 1)
+            : moveSelection(event.data.length)(selection);
 
           afterTyping(() => {
             const text = startContainer.textContent || '';
@@ -132,33 +132,35 @@ export function useBeforeInput(
         // deleted, selection should always be collapsed to start.
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          const selection = getSelectionWithWarning(event);
+          const selection = getSelectionFromInputEventWithWarning(event);
           if (selection == null) return;
 
           // When nothing is going to be deleted, do nothing.
-          if (editorSelectionIsCollapsed(selection)) return;
+          if (isCollapsedSelection(selection)) return;
 
-          // Store reference to text node to read from it when selection is collapsed.
-          // We can't just delete text, because whitespaces can be changed anywhere.
-          // @ts-ignore Outdated types.
-          const { startContainer } = event.getTargetRanges()[0] as Range;
+          const {
+            // Store reference to startContainer to read from it when selection is collapsed.
+            // We can't just delete text, because whitespaces can be changed anywhere.
+            startContainer,
+            startOffset,
+            endContainer,
+            endOffset,
+          } = getDOMRangeFromInputEvent(event);
 
           // When text node content is going to be emptied, browsers replace
           // text node with BR. Because React can not recognize outer change, we have to
           // prevent default, so text node can be properly replaced with BR by React.
-          // @ts-ignore Outdated types.
-          const range = event.getTargetRanges()[0] as Range;
 
           const textIsGoingToBeReplacedWithBR =
-            range.startContainer === range.endContainer &&
-            range.startOffset === 0 &&
-            (range.startContainer as Text).data.length === range.endOffset;
+            startContainer === endContainer &&
+            startOffset === 0 &&
+            (startContainer as DOMText).data.length === endOffset;
           if (textIsGoingToBeReplacedWithBR) event.preventDefault();
 
           const getSelectionAfterDelete = () => {
             if (!textIsGoingToBeReplacedWithBR)
-              return some(collapseEditorSelectionToStart(selection));
-            return editorSelectionOfParent(selection);
+              return some(collapseSelectionToStart(selection));
+            return initSelection(selection);
           };
 
           pipe(
@@ -169,7 +171,7 @@ export function useBeforeInput(
               },
               selection => {
                 afterTyping(() => {
-                  const { data } = startContainer as Text;
+                  const { data } = startContainer as DOMText;
                   // Because we prevented default action to allow React to do update,
                   // we have to set empty text manually.
                   const text = textIsGoingToBeReplacedWithBR ? '' : data;
@@ -188,10 +190,9 @@ export function useBeforeInput(
           // lenghter, we don't know. But we can let browser to make own selection.
           // TODO: Add test (probably manual) for 'fixx foo' to 'fix foo' and
           // 'productio foo' to 'production foo'.
-          // @ts-ignore Outdated types.
-          const { startContainer } = event.getTargetRanges()[0] as Range;
+          const { startContainer } = getDOMRangeFromInputEvent(event);
           afterTyping(() => {
-            const { data: text } = startContainer as Text;
+            const { data: text } = startContainer as DOMText;
             dispatch({ type: 'insertReplacementText', text });
           });
           break;
@@ -208,5 +209,5 @@ export function useBeforeInput(
       // @ts-ignore Outdated types.
       div.removeEventListener('beforeinput', handleBeforeInput);
     };
-  }, [dispatch, divRef, getEditorPathByNode, userIsTypingRef]);
+  }, [dispatch, divRef, getPathByNode, userIsTypingRef]);
 }

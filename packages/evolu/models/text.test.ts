@@ -1,14 +1,14 @@
-import { isEditorText, EditorText } from './text';
-import { id, EditorNode } from './node';
-import { EditorElement } from './element';
+import { isText, Text } from './text';
+import { id, Node } from './node';
+import { Element } from './element';
 
-test('isEditorText', () => {
-  const editorNode: EditorNode = { id: id() };
-  expect(isEditorText(editorNode)).toBe(false);
+test('isText', () => {
+  const node: Node = { id: id() };
+  expect(isText(node)).toBe(false);
 
-  const editorElement: EditorElement = { id: id(), children: [] };
-  expect(isEditorText(editorElement)).toBe(false);
+  const element: Element = { id: id(), children: [] };
+  expect(isText(element)).toBe(false);
 
-  const editorText: EditorText = { id: id(), text: 'f' };
-  expect(isEditorText(editorText)).toBe(true);
+  const text: Text = { id: id(), text: 'f' };
+  expect(isText(text)).toBe(true);
 });

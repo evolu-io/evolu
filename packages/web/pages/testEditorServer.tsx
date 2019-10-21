@@ -1,8 +1,8 @@
 import React from 'react';
 import * as editor from 'evolu';
-import { initialEditorState as initialBasicEditorState } from '../components/examples/BasicExample';
+import { initialState as initialBasicState } from '../components/examples/BasicExample';
 import {
-  initialEditorState as initialSchemaEditorState,
+  initialState as initialSchemaState,
   useSchemaRenderElement,
   SchemaDocumentElement,
 } from '../components/examples/SchemaExample';
@@ -12,10 +12,10 @@ function TestEditorServer() {
   return (
     <div>
       <editor.EditorServer
-        element={initialBasicEditorState.element as editor.EditorReactElement}
+        element={initialBasicState.element as editor.ReactElement}
       />
       <editor.EditorServer
-        element={initialSchemaEditorState.element as SchemaDocumentElement}
+        element={initialSchemaState.element as SchemaDocumentElement}
         renderElement={renderSchemaElement}
       />
       <editor.EditorServer
@@ -29,7 +29,7 @@ function TestEditorServer() {
               { id: editor.id(), text: '' },
               { id: editor.id(), text: 'c' },
             ],
-          } as editor.EditorReactElement
+          } as editor.ReactElement
         }
       />
     </div>

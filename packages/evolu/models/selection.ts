@@ -2,77 +2,58 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { init, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import {
-  chain,
-  fromNullable,
-  none,
-  Option,
-  option,
-  some,
-} from 'fp-ts/lib/Option';
+import { chain, none, Option, option, some } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  byDirection,
-  EditorPath,
-  eqEditorPath,
-  GetEditorPathByNode,
-  movePath,
-} from './path';
+  DOMNode,
+  DOMRange,
+  DOMSelection,
+  getDOMRangeFromInputEvent,
+} from './dom';
+import { byDirection, eqPath, movePath, Path } from './path';
 
 /**
- * Like browser Selection, but with EditorPath for the anchor and the focus.
+ * Like DOM Selection, but with Path for the anchor and the focus.
  * https://developer.mozilla.org/en-US/docs/Web/API/Selection
  */
-export interface EditorSelection {
-  readonly anchor: EditorPath;
-  readonly focus: EditorPath;
+export interface Selection {
+  readonly anchor: Path;
+  readonly focus: Path;
 }
 
-// Why not Range type?
-// Range is technically forward Selection. Having a special type for that,
-// like DOM Range with start and end props, would complicate API I suppose.
-// For example, isCollapsed, should it accept selection, range, or both?
-// I suppose forward and backward direction should be an implementation detail.
-// I don't think we have to optimize functions via explicit Range argument,
-// because comparing paths is super fast compared to rendering itself.
-// Also, we don't support multiple ranges, because the only browser supporting
-// them is Firefox.
-
 /**
- * Forward selection is not flipped aka the focus in not before the anchor.
+ * The focus in not before the anchor.
  */
-export const editorSelectionIsForward: Predicate<EditorSelection> = selection =>
+export const isForwardSelection: Predicate<Selection> = selection =>
   geq(byDirection)(selection.anchor, selection.focus);
 
 /**
  * Range is forward Selection. It ensures the focus is not before the anchor.
+ * TODO: Replace it with selectionToRange.
  */
-export function editorSelectionAsRange(
-  selection: EditorSelection,
-): EditorSelection {
-  if (editorSelectionIsForward(selection)) return selection;
+export function selectionAsRange(selection: Selection): Selection {
+  if (isForwardSelection(selection)) return selection;
   const { anchor: focus, focus: anchor } = selection;
   return { anchor, focus };
 }
 
-export const editorSelectionIsCollapsed: Predicate<
-  EditorSelection
-> = selection => eqEditorPath.equals(selection.anchor, selection.focus);
+export const isCollapsedSelection: Predicate<Selection> = selection =>
+  eqPath.equals(selection.anchor, selection.focus);
 
-export const eqEditorSelection: Eq<EditorSelection> = getStructEq({
-  anchor: eqEditorPath,
-  focus: eqEditorPath,
+export const eqSelection: Eq<Selection> = getStructEq({
+  anchor: eqPath,
+  focus: eqPath,
 });
 
-export function selectionToEditorSelection(
-  getEditorPathByNode: GetEditorPathByNode,
-): (selection: Selection) => Option<EditorSelection> {
+export function mapDOMSelectionToSelection(
+  getPathByNode: (node: DOMNode) => Option<Path>,
+): (selection: DOMSelection) => Option<Selection> {
   return ({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
     pipe(
       sequenceT(option)(
-        anchorNode ? getEditorPathByNode(anchorNode) : none,
-        focusNode ? getEditorPathByNode(focusNode) : none,
+        anchorNode ? getPathByNode(anchorNode) : none,
+        focusNode ? getPathByNode(focusNode) : none,
       ),
       chain(([anchorPath, focusPath]) =>
         some({
@@ -83,14 +64,14 @@ export function selectionToEditorSelection(
     );
 }
 
-export function rangeToEditorSelection(
-  getEditorPathByNode: GetEditorPathByNode,
-): (range: Range) => Option<EditorSelection> {
+export function mapDOMRangeToSelection(
+  getPathByNode: (node: DOMNode) => Option<Path>,
+): (range: DOMRange) => Option<Selection> {
   return ({ startContainer, startOffset, endContainer, endOffset }) =>
     pipe(
       sequenceT(option)(
-        getEditorPathByNode(startContainer),
-        getEditorPathByNode(endContainer),
+        getPathByNode(startContainer),
+        getPathByNode(endContainer),
       ),
       chain(([anchorPath, focusPath]) =>
         some({
@@ -101,9 +82,7 @@ export function rangeToEditorSelection(
     );
 }
 
-export function moveEditorSelectionAnchor(
-  offset: number,
-): Endomorphism<EditorSelection> {
+export function moveSelectionAnchor(offset: number): Endomorphism<Selection> {
   return selection => {
     return {
       ...selection,
@@ -112,9 +91,7 @@ export function moveEditorSelectionAnchor(
   };
 }
 
-export function moveEditorSelectionFocus(
-  offset: number,
-): Endomorphism<EditorSelection> {
+export function moveSelectionFocus(offset: number): Endomorphism<Selection> {
   return selection => {
     return {
       ...selection,
@@ -123,46 +100,34 @@ export function moveEditorSelectionFocus(
   };
 }
 
-export function moveEditorSelection(
-  offset: number,
-): Endomorphism<EditorSelection> {
+export function moveSelection(offset: number): Endomorphism<Selection> {
   return selection =>
     pipe(
       selection,
-      moveEditorSelectionAnchor(offset),
-      moveEditorSelectionFocus(offset),
+      moveSelectionAnchor(offset),
+      moveSelectionFocus(offset),
     );
 }
 
-export const collapseEditorSelectionToStart: Endomorphism<
-  EditorSelection
-> = selection => {
-  if (editorSelectionIsCollapsed(selection)) return selection;
-  const range = editorSelectionAsRange(selection);
+export const collapseSelectionToStart: Endomorphism<Selection> = selection => {
+  if (isCollapsedSelection(selection)) return selection;
+  const range = selectionAsRange(selection);
   return { anchor: range.anchor, focus: range.anchor };
 };
 
-export const collapseEditorSelectionToEnd: Endomorphism<
-  EditorSelection
-> = selection => {
-  if (editorSelectionIsCollapsed(selection)) return selection;
-  const range = editorSelectionAsRange(selection);
+export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
+  if (isCollapsedSelection(selection)) return selection;
+  const range = selectionAsRange(selection);
   return { anchor: range.focus, focus: range.focus };
 };
 
-export function rangeFromInputEvent(event: InputEvent): Option<Range> {
-  // The first range only because only Firefox supports multiple ranges.
-  // @ts-ignore Outdated types.
-  return fromNullable(event.getTargetRanges()[0]);
-}
-
-export function editorSelectionFromInputEvent(
-  getEditorPathByNode: GetEditorPathByNode,
-): (event: InputEvent) => Option<EditorSelection> {
+export function getSelectionFromInputEvent(
+  getPathByNode: (node: DOMNode) => Option<Path>,
+): (event: InputEvent) => Option<Selection> {
   return event => {
     return pipe(
-      rangeFromInputEvent(event),
-      chain(rangeToEditorSelection(getEditorPathByNode)),
+      getDOMRangeFromInputEvent(event),
+      mapDOMRangeToSelection(getPathByNode),
     );
   };
 }
@@ -170,9 +135,7 @@ export function editorSelectionFromInputEvent(
 /**
  * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
  */
-export function editorSelectionOfParent(
-  selection: EditorSelection,
-): Option<EditorSelection> {
+export function initSelection(selection: Selection): Option<Selection> {
   return pipe(
     sequenceT(option)(init(selection.anchor), init(selection.focus)),
     chain(([anchor, focus]) => some({ anchor, focus })),
@@ -182,14 +145,13 @@ export function editorSelectionOfParent(
 /**
  * `{ anchor: [0], focus: [0] }` to `{ anchor: [0, 0], focus: [0, 0] }`
  */
-export function editorSelectionForChild(
+export function snocSelection(
+  selection: Selection,
   anchorLastIndex: number,
   focusLastIndex: number,
-): Endomorphism<EditorSelection> {
-  return selection => {
-    return {
-      anchor: snoc(selection.anchor, anchorLastIndex),
-      focus: snoc(selection.focus, focusLastIndex),
-    };
+): Selection {
+  return {
+    anchor: snoc(selection.anchor, anchorLastIndex),
+    focus: snoc(selection.focus, focusLastIndex),
   };
 }

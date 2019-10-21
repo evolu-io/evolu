@@ -1,8 +1,8 @@
-import { eqEditorPath, byDirection } from './path';
+import { eqPath, byDirection } from './path';
 
-test('eqEditorPath', () => {
-  expect(eqEditorPath.equals([1], [1])).toBe(true);
-  expect(eqEditorPath.equals([0], [1])).toBe(false);
+test('eqPath', () => {
+  expect(eqPath.equals([1], [1])).toBe(true);
+  expect(eqPath.equals([0], [1])).toBe(false);
 });
 
 test('byDirection', () => {

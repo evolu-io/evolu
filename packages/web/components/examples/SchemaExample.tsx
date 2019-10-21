@@ -8,9 +8,9 @@ import { defaultEditorProps } from './_defaultEditorProps';
 // We can describe a schema with TypeScript pretty well.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-interface SchemaElement extends editor.EditorElement {
+interface SchemaElement extends editor.Element {
   type: string;
-  children: (SchemaElement | editor.EditorText)[];
+  children: (SchemaElement | editor.Text)[];
 }
 
 // For images and the other void elements.
@@ -21,17 +21,17 @@ interface SchemaVoidElement extends SchemaElement {
 interface SchemaHeadingElement extends SchemaElement {
   type: 'heading';
   // Just one text.
-  children: [editor.EditorText];
+  children: [editor.Text];
 }
 
 interface SchemaLinkElement extends SchemaElement {
   type: 'link';
   href: string;
   // Just one text.
-  children: [editor.EditorText];
+  children: [editor.Text];
 }
 
-type SchemaParagraphElementChild = editor.EditorText | SchemaLinkElement;
+type SchemaParagraphElementChild = editor.Text | SchemaLinkElement;
 
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
@@ -42,7 +42,7 @@ interface SchemaParagraphElement extends SchemaElement {
 interface SchemaListItemElement extends SchemaElement {
   type: 'listitem';
   // Just one text or text with SchemaListElement.
-  children: [editor.EditorText] | [editor.EditorText, SchemaListElement];
+  children: [editor.Text] | [editor.Text, SchemaListElement];
 }
 
 interface SchemaListElement extends SchemaElement {
@@ -68,9 +68,7 @@ export interface SchemaDocumentElement extends SchemaElement {
 }
 
 // Exported for testEditorServer.
-export const initialEditorState = editor.createEditorState<
-  SchemaDocumentElement
->({
+export const initialState = editor.createState<SchemaDocumentElement>({
   element: {
     id: editor.id(),
     type: 'document',
@@ -125,7 +123,7 @@ export const initialEditorState = editor.createEditorState<
 
 // Exported for testEditorServer.
 export function useSchemaRenderElement() {
-  const renderElement = useCallback<editor.RenderEditorElement>(
+  const renderElement = useCallback<editor.RenderElement>(
     (editorElement, children, ref) => {
       // This is how we can leverage assertNever.
       const element = editorElement as
@@ -185,36 +183,34 @@ export function SchemaExample({
   initialSelection = null,
 }: {
   autoFocus?: boolean;
-  initialSelection?: editor.EditorSelection | null;
+  initialSelection?: editor.Selection | null;
 }) {
-  const [editorState, setEditorState] = useState({
-    ...initialEditorState,
+  const [state, setState] = useState({
+    ...initialState,
     ...(autoFocus != null && { hasFocus: autoFocus }),
     ...(initialSelection != null && { selection: initialSelection }),
   });
 
-  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = editor.useLogState(state);
 
   const handleEditorChange = useCallback(
-    (editorState: editor.EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: editor.State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
   const handleFocusClick = useCallback(() => {
-    handleEditorChange({ ...editorState, hasFocus: true });
-  }, [editorState, handleEditorChange]);
+    handleEditorChange({ ...state, hasFocus: true });
+  }, [state, handleEditorChange]);
 
   const handleBlurMouseDown = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
-      handleEditorChange({ ...editorState, hasFocus: false });
+      handleEditorChange({ ...state, hasFocus: false });
     },
-    [editorState, handleEditorChange],
+    [state, handleEditorChange],
   );
 
   const renderElement = useSchemaRenderElement();
@@ -224,18 +220,18 @@ export function SchemaExample({
       <Text size={1}>Schema Example</Text>
       <editor.Editor
         {...defaultEditorProps}
-        editorState={editorState}
+        state={state}
         onChange={handleEditorChange}
         renderElement={renderElement}
       />
-      {logEditorStateElement}
+      {logStateElement}
       <div style={{ marginBottom: 24 }}>
         <button
           type="button"
           className="focus"
           onClick={handleFocusClick}
-          tabIndex={editorState.hasFocus ? 0 : -1}
-          disabled={editorState.hasFocus}
+          tabIndex={state.hasFocus ? 0 : -1}
+          disabled={state.hasFocus}
         >
           focus
         </button>
@@ -244,8 +240,8 @@ export function SchemaExample({
           className="blur"
           // Do not steal focus. Force blur.
           onMouseDown={handleBlurMouseDown}
-          tabIndex={!editorState.hasFocus ? 0 : -1}
-          disabled={!editorState.hasFocus}
+          tabIndex={!state.hasFocus ? 0 : -1}
+          disabled={!state.hasFocus}
         >
           blur
         </button>

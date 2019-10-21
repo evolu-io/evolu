@@ -31,7 +31,7 @@ exports[`render then key arrow right 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -39,7 +39,7 @@ exports[`render then key arrow right 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -81,7 +81,7 @@ exports[`render then key arrow right 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
@@ -89,7 +89,7 @@ exports[`render then key arrow right 2`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -97,7 +97,7 @@ exports[`render then key arrow right 2`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·

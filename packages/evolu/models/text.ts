@@ -1,20 +1,15 @@
 import { Predicate, Refinement } from 'fp-ts/lib/function';
-import { EditorNode } from './node';
+import { Node } from './node';
+import { stringIsBR } from './string';
 
 /**
- * EditorText is object because even the two identical texts need own identity.
- * Child index position is not enough for React key and CRDT.
- * Empty string is rendered as BR.
+ * Editor text. Empty string is rendered as BR.
  */
-export interface EditorText extends EditorNode {
+export interface Text extends Node {
   readonly text: string;
 }
 
-export const isEditorText: Refinement<EditorNode, EditorText> = (
-  u,
-): u is EditorText => typeof (u as EditorText).text === 'string';
+export const isText: Refinement<Node, Text> = (u): u is Text =>
+  typeof (u as Text).text === 'string';
 
-export const textIsBR: Predicate<string> = text => text.length === 0;
-
-export const editorTextIsBR: Predicate<EditorText> = editorText =>
-  textIsBR(editorText.text);
+export const textIsBR: Predicate<Text> = text => stringIsBR(text.text);

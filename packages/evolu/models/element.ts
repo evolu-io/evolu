@@ -1,4 +1,4 @@
-import { foldRight, last, unsafeUpdateAt, init } from 'fp-ts/lib/Array';
+import { foldRight, init, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import {
   chain,
@@ -14,97 +14,96 @@ import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children, ReactDOM, ReactNode } from 'react';
 import { $Values } from 'utility-types';
-import { EditorNode, id, SetNodeEditorPathRef } from './node';
-import { EditorPath } from './path';
-import {
-  EditorSelection,
-  editorSelectionAsRange,
-  editorSelectionIsCollapsed,
-} from './selection';
-import { EditorText, editorTextIsBR, isEditorText } from './text';
+import { SetDOMNodePathRef } from './dom';
+import { id, Node } from './node';
+import { Path } from './path';
+import { Selection, selectionAsRange, isCollapsedSelection } from './selection';
+import { isText, Text, textIsBR } from './text';
 
 /**
- * EditorElement is the base model for all other editor elements.
+ * Element is the base model for all other editor elements.
  */
-export interface EditorElement extends EditorNode {
-  readonly children: (EditorElementChild)[];
+export interface Element extends Node {
+  readonly children: (ElementChild)[];
 }
 
-export type EditorElementChild = EditorElement | EditorText;
+export type ElementChild = Element | Text;
 
-export type RenderEditorElement = (
-  element: EditorElement,
+export type RenderElement = (
+  element: Element,
   children: ReactNode,
-  ref: SetNodeEditorPathRef,
+  ref: SetDOMNodePathRef,
 ) => ReactNode;
 
-export const isEditorElement: Refinement<EditorNode, EditorElement> = (
+export const isElement: Refinement<Node, Element> = (
   value,
-): value is EditorElement => Array.isArray((value as EditorElement).children);
+): value is Element => {
+  return Array.isArray((value as Element).children);
+};
 
-export const editorElementChildIsEditorElement: Refinement<
-  EditorElementChild,
-  EditorElement
-> = (value): value is EditorElement => isEditorElement(value);
+// Still not sure whether we really need ElementChild type.
+export const elementChildIsElement: Refinement<ElementChild, Element> = (
+  value,
+): value is Element => isElement(value);
 
-export const editorElementChildIsEditorText: Refinement<
-  EditorElementChild,
-  EditorText
-> = (value): value is EditorText => isEditorText(value);
+export const elementChildIsText: Refinement<ElementChild, Text> = (
+  value,
+): value is Text => isText(value);
 
-export type EditorTextWithOffset = {
-  readonly editorText: EditorText;
+export const elementChildIsTextNotBR: Refinement<ElementChild, Text> = (
+  child,
+): child is Text => {
+  return isText(child) && !textIsBR(child);
+};
+
+export type TextWithOffset = {
+  readonly text: Text;
   readonly offset: number;
 };
 
-export interface MaterializedEditorPath {
-  to: EditorElement | EditorText | EditorTextWithOffset;
-  parents: EditorElement[];
-}
-
-export const isEditorTextWithOffset: Refinement<
-  MaterializedEditorPath['to'],
-  EditorTextWithOffset
-> = (value): value is EditorTextWithOffset => {
-  const { editorText } = value as EditorTextWithOffset;
-  return (
-    editorText != null &&
-    isEditorText(editorText) &&
-    typeof (value as EditorTextWithOffset).offset === 'number'
-  );
+export const isTextWithOffset: Refinement<
+  MaterializedPath['to'],
+  TextWithOffset
+> = (value): value is TextWithOffset => {
+  return typeof (value as TextWithOffset).offset === 'number';
 };
 
-interface EditorReactElementFactory<T, P> extends EditorElement {
-  readonly tag: T;
-  readonly props?: P;
-  readonly children: (EditorReactElement | EditorText)[];
+export interface MaterializedPath {
+  to: Element | Text | TextWithOffset;
+  parents: Element[];
 }
 
-export type EditorReactElement = $Values<
+interface ReactElementFactory<T, P> extends Element {
+  readonly tag: T;
+  readonly props?: P;
+  readonly children: (ReactElement | Text)[];
+}
+
+export type ReactElement = $Values<
   {
-    [T in keyof ReactDOM]: EditorReactElementFactory<
+    [T in keyof ReactDOM]: ReactElementFactory<
       T,
       ReturnType<ReactDOM[T]>['props']
     >;
   }
 >;
 
-export function materializeEditorPath(
-  path: EditorPath,
-): (element: EditorElement) => Option<MaterializedEditorPath> {
+export function materializePath(
+  path: Path,
+): (element: Element) => Option<MaterializedPath> {
   return element => {
-    const parents: MaterializedEditorPath['parents'] = [];
-    let to: MaterializedEditorPath['to'] = element;
+    const parents: MaterializedPath['parents'] = [];
+    let to: MaterializedPath['to'] = element;
     for (let i = 0; i < path.length; i++) {
       const pathIndex = path[i];
-      if (isEditorElement(to)) {
+      if (isElement(to)) {
         parents.push(to);
         to = to.children[pathIndex];
         if (to == null) return none;
-      } else if (isEditorText(to)) {
+      } else if (isText(to)) {
         const pathContinues = i < path.length - 1;
         if (pathContinues || pathIndex > to.text.length) return none;
-        return some({ parents, to: { editorText: to, offset: pathIndex } });
+        return some({ parents, to: { text: to, offset: pathIndex } });
       }
     }
     return some({ parents, to });
@@ -114,72 +113,62 @@ export function materializeEditorPath(
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
  */
-export function jsx(element: JSX.Element): EditorReactElement {
+export function jsx(element: JSX.Element): ReactElement {
   const {
     type: tag,
     props: { children = [], ...props },
   } = element;
-  const editorChildren = Children.toArray(children).map(child => {
+  const elementChildren = Children.toArray(children).map(child => {
     if (typeof child === 'string') {
-      const text: EditorText = { id: id(), text: child };
+      const text: Text = { id: id(), text: child };
       return text;
     }
     if (child.type === 'br') {
-      const text: EditorText = { id: id(), text: '' };
+      const text: Text = { id: id(), text: '' };
       return text;
     }
     return jsx(child);
   });
-  const editorProps = Object.keys(props).length > 0 ? props : undefined;
+  const elementProps = Object.keys(props).length > 0 ? props : undefined;
   return {
     id: id(),
     tag,
-    props: editorProps,
-    children: editorChildren,
+    props: elementProps,
+    children: elementChildren,
   };
 }
-
-export const editorElementChildIsEditorTextNotBR: Refinement<
-  EditorElementChild,
-  EditorText
-> = (child): child is EditorText => {
-  return isEditorText(child) && !editorTextIsBR(child);
-};
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty strings are rendered as BR.
  * If nothing has been normalized, the same element is returned.
  */
-export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
+export const normalizeElement: Endomorphism<Element> = element => {
   // This flag is good enough for now. We can use fp-ts These later.
   let somethingHasBeenNormalized = false;
-  const children = element.children.reduce<(EditorElementChild)[]>(
-    (array, child) => {
-      if (isEditorElement(child)) {
-        const normalizedChild = normalizeEditorElement(child);
-        if (normalizedChild !== child) somethingHasBeenNormalized = true;
-        return [...array, normalizedChild];
-      }
-      if (editorTextIsBR(child)) return [...array, child];
-      return pipe(
-        last(array),
-        chain(fromPredicate(editorElementChildIsEditorTextNotBR)),
-        fold(
-          () => [...array, child],
-          previousText => {
-            somethingHasBeenNormalized = true;
-            return unsafeUpdateAt(
-              array.length - 1,
-              { ...previousText, text: previousText.text + child.text },
-              array,
-            );
-          },
-        ),
-      );
-    },
-    [],
-  );
+  const children = element.children.reduce<(ElementChild)[]>((array, child) => {
+    if (isElement(child)) {
+      const normalizedChild = normalizeElement(child);
+      if (normalizedChild !== child) somethingHasBeenNormalized = true;
+      return [...array, normalizedChild];
+    }
+    if (textIsBR(child)) return [...array, child];
+    return pipe(
+      last(array),
+      chain(fromPredicate(elementChildIsTextNotBR)),
+      fold(
+        () => [...array, child],
+        previousText => {
+          somethingHasBeenNormalized = true;
+          return unsafeUpdateAt(
+            array.length - 1,
+            { ...previousText, text: previousText.text + child.text },
+            array,
+          );
+        },
+      ),
+    );
+  }, []);
   // Preserve identity, otherwise it would always create new objects.
   // https://github.com/gcanti/fp-ts/issues/976
   if (!somethingHasBeenNormalized) return element;
@@ -190,22 +179,22 @@ export const normalizeEditorElement: Endomorphism<EditorElement> = element => {
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty string is considered to be BR.
  */
-export const editorElementIsNormalized: Predicate<EditorElement> = element => {
-  const normalizedElement = normalizeEditorElement(element);
+export const isNormalizedElement: Predicate<Element> = element => {
+  const normalizedElement = normalizeElement(element);
   // We don't need short circuit. We can leverage identity check.
   return element === normalizedElement;
 };
 
-// TODO: Can we recursively remove ID from EditorElement type?
-export const recursiveRemoveID = (element: EditorElement): any => {
+// TODO: Can we recursively remove ID from Element type?
+export const recursiveRemoveID = (element: Element): any => {
   if (element == null) return element;
-  // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
   return {
     ...objectWithoutID,
     children: element.children.map(child => {
-      if (isEditorText(child)) {
-        // eslint-disable-next-line no-shadow, @typescript-eslint/no-unused-vars
+      if (isText(child)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...childWithoutID } = child;
         return childWithoutID;
       }
@@ -218,64 +207,62 @@ export const recursiveRemoveID = (element: EditorElement): any => {
 // https://github.com/gcanti/monocle-ts
 
 /**
- * Focus on the children of EditorElement.
+ * Focus on the children of Element.
  */
-export const childrenLens = Lens.fromProp<EditorElement>()('children');
+export const childrenLens = Lens.fromProp<Element>()('children');
 
 /**
- * Focus on the child at index of EditorElementChild[].
+ * Focus on the child at index of ElementChild[].
  */
-export function getChildAtOptional(index: number) {
-  return indexArray<EditorElementChild>().index(index);
+export function getElementChildAt(index: number) {
+  return indexArray<ElementChild>().index(index);
 }
 
 /**
- * Focus on EditorElement of EditorElementChild.
+ * Focus on Element of ElementChild.
  */
-export const elementPrism = Prism.fromPredicate(
-  editorElementChildIsEditorElement,
-);
+export const elementPrism = Prism.fromPredicate(elementChildIsElement);
 
 /**
- * Focus on EditorText of EditorElementChild.
+ * Focus on Text of ElementChild.
  */
-export const textPrism = Prism.fromPredicate(editorElementChildIsEditorText);
+export const textPrism = Prism.fromPredicate(elementChildIsText);
 
 /**
- * Focus on EditorElement by EditorPath.
+ * Focus on Element by Path.
  */
-export function getElementTraversal(path: EditorPath) {
+export function getElementTraversal(path: Path) {
   return path.reduce(
     (acc, pathIndex) => {
       return acc
         .composeLens(childrenLens)
-        .composeOptional(getChildAtOptional(pathIndex))
+        .composeOptional(getElementChildAt(pathIndex))
         .composePrism(elementPrism);
     },
-    elementPrism.asOptional() as Optional<EditorElement, EditorElement>,
+    elementPrism.asOptional() as Optional<Element, Element>,
   );
 }
 
 /**
- * Focus on EditorText by EditorPath.
+ * Focus on Text by Path.
  */
 export function getTextTraversal(
-  parentElementPath: EditorPath,
+  parentElementPath: Path,
   index: number,
-): Optional<EditorElement, EditorText> {
+): Optional<Element, Text> {
   return getElementTraversal(parentElementPath)
     .composeLens(childrenLens)
-    .composeOptional(getChildAtOptional(index))
+    .composeOptional(getElementChildAt(index))
     .composePrism(textPrism);
 }
 
 /**
- * Ensure text traversal. If EditorPath focuses to text offset, get parent path.
+ * Ensure text traversal. If Path focuses to text offset, get parent path.
  */
 export function ensureTextTraversal(
-  path: EditorPath,
-  element: EditorElement,
-): Optional<EditorElement, EditorText> {
+  path: Path,
+  element: Element,
+): Optional<Element, Text> {
   return pipe(
     path,
     foldRight(
@@ -294,27 +281,24 @@ export function ensureTextTraversal(
 
 export function setTextElement(
   text: string,
-  selection: EditorSelection,
-): Endomorphism<EditorElement> {
+  selection: Selection,
+): Endomorphism<Element> {
   return element => {
-    const onlyTextIsSelected: Predicate<EditorSelection> = selection => {
+    const onlyTextIsSelected: Predicate<Selection> = selection => {
       const anchorFold = ensureTextTraversal(
         selection.anchor,
         element,
       ).asFold();
       const focusFold = ensureTextTraversal(selection.focus, element).asFold();
-      if (!anchorFold.exist(isEditorText)(element)) return false;
-      if (!focusFold.exist(isEditorText)(element)) return false;
+      if (!anchorFold.exist(isText)(element)) return false;
+      if (!focusFold.exist(isText)(element)) return false;
       return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
     };
 
-    if (
-      editorSelectionIsCollapsed(selection) ||
-      onlyTextIsSelected(selection)
-    ) {
+    if (isCollapsedSelection(selection) || onlyTextIsSelected(selection)) {
       const path = selection.anchor;
-      return ensureTextTraversal(path, element).modify(editorText => {
-        return { ...editorText, text };
+      return ensureTextTraversal(path, element).modify(t => {
+        return { ...t, text };
       })(element);
     }
     return element;
@@ -322,26 +306,25 @@ export function setTextElement(
 }
 
 export function deleteContentElement(
-  selection: EditorSelection,
-): Endomorphism<EditorElement> {
+  selection: Selection,
+): Endomorphism<Element> {
   return element => {
-    const range = editorSelectionAsRange(selection);
+    const range = selectionAsRange(selection);
     // TODO: Refactor all.
     const anchorMaterializedPath = toNullable(
-      materializeEditorPath(range.anchor)(element),
+      materializePath(range.anchor)(element),
     );
     const focusMaterializedPath = toNullable(
-      materializeEditorPath(range.focus)(element),
+      materializePath(range.focus)(element),
     );
     if (anchorMaterializedPath == null || focusMaterializedPath == null)
       return element;
     // TODO: Handle other cases, with lenses.
     if (
-      // Just deleting text on the same EditorTexts.
-      isEditorTextWithOffset(anchorMaterializedPath.to) &&
-      isEditorTextWithOffset(focusMaterializedPath.to) &&
-      anchorMaterializedPath.to.editorText ===
-        focusMaterializedPath.to.editorText
+      // Just deleting text on the same texts.
+      isTextWithOffset(anchorMaterializedPath.to) &&
+      isTextWithOffset(focusMaterializedPath.to) &&
+      anchorMaterializedPath.to.text === focusMaterializedPath.to.text
     ) {
       return pipe(
         init(range.anchor),
@@ -354,11 +337,10 @@ export function deleteContentElement(
               const startOffset = anchorMaterializedPath.to.offset;
               // @ts-ignore Refactor later.
               const endOffset = focusMaterializedPath.to.offset;
-              return getTextTraversal(init, index).modify(editorText => {
+              return getTextTraversal(init, index).modify(t => {
                 const text =
-                  editorText.text.slice(0, startOffset) +
-                  editorText.text.slice(endOffset);
-                return { ...editorText, text };
+                  t.text.slice(0, startOffset) + t.text.slice(endOffset);
+                return { ...t, text };
               })(element);
             },
           ),

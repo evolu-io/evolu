@@ -5,7 +5,7 @@ import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
-const initialEditorState = editor.createEditorState({
+const initialState = editor.createState({
   element: editor.jsx(
     <div className="root">
       <div
@@ -45,18 +45,16 @@ const initialEditorState = editor.createEditorState({
 });
 
 function Index() {
-  const [editorState, setEditorState] = useState(initialEditorState);
+  const [state, setState] = useState(initialState);
 
-  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = editor.useLogState(state);
 
   const handleEditorChange = useCallback(
-    (state: editor.EditorState) => {
-      logEditorState(state);
-      setEditorState(state);
+    (state: editor.State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
   return (
@@ -66,14 +64,14 @@ function Index() {
       </Head>
       <Text size={2}>Sandbox</Text>
       <editor.Editor
-        editorState={editorState}
+        state={state}
         // TODO:
-        // editorReducer={customReducer}
+        // reducer={customReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         spellCheck
       />
-      {logEditorStateElement}
+      {logStateElement}
       <button
         type="button"
         onMouseDown={event => {

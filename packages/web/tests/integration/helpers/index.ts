@@ -1,7 +1,7 @@
 import path from 'path';
 import { ClickOptions, Keyboard } from 'puppeteer';
 import { IO } from 'fp-ts/lib/IO';
-import { EditorNodeID } from 'evolu';
+import { NodeID, DOMElement } from 'evolu';
 
 export function pageUrl(name: string) {
   if (process.env.JEST_WATCH) {
@@ -49,7 +49,7 @@ interface ElementJson {
 // all it needs must be defined inside.
 function serializeDom() {
   // We need exact DOM structure but not everything I suppose.
-  function elementToJson(element: Element): ElementJson {
+  function elementToJson(element: DOMElement): ElementJson {
     return {
       type: element.tagName.toLowerCase(),
       props: Array.from(element.attributes)
@@ -63,11 +63,11 @@ function serializeDom() {
         .map(child => {
           // We wrap text with · characters to explicitly denote TextNodes.
           if (child.nodeType === 3) return `·${child.nodeValue || ''}·`;
-          return elementToJson(child as Element);
+          return elementToJson(child as DOMElement);
         }),
     };
   }
-  return elementToJson(document.querySelector('#__next') as Element);
+  return elementToJson(document.querySelector('#__next') as DOMElement);
 }
 
 // That's how we trick Jest to have pretty format like react-test-render has.
@@ -116,10 +116,10 @@ export const pageKeyboard: Keyboard = [
   {} as Keyboard,
 );
 
-export function createStableIDFactory(): IO<EditorNodeID> {
+export function createStableIDFactory(): IO<NodeID> {
   let lastID = 0;
   beforeEach(async () => {
     lastID = 0;
   });
-  return () => ((lastID++).toString() as unknown) as EditorNodeID;
+  return () => ((lastID++).toString() as unknown) as NodeID;
 }

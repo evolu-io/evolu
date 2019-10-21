@@ -26,7 +26,7 @@ exports[`operations 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·6·
@@ -34,7 +34,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]},{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]}]}"
     >
       ·5·
@@ -42,7 +42,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·4·
@@ -50,7 +50,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
@@ -58,7 +58,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
@@ -66,7 +66,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -74,7 +74,7 @@ exports[`operations 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·

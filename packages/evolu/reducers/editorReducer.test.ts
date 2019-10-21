@@ -1,11 +1,11 @@
 import { editorReducer, EditorAction } from './editorReducer';
-import { createEditorStateWithText } from '../models/state';
+import { createStateWithText } from '../models/state';
 import { recursiveRemoveID } from '../models/element';
 
-const editorState = createEditorStateWithText();
+const state = createStateWithText();
 
 function testEditorReducer(action: EditorAction) {
-  const { element, ...nextState } = editorReducer(editorState, action);
+  const { element, ...nextState } = editorReducer(state, action);
   return {
     ...nextState,
     element: recursiveRemoveID(element),

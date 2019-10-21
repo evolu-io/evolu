@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'evolu';
 
-export const testSelectionElement: editor.EditorReactElement = {
+export const testSelectionElement: editor.ReactElement = {
   id: editor.id(),
   tag: 'div',
   props: {
@@ -27,28 +27,26 @@ export const testSelectionElement: editor.EditorReactElement = {
   ],
 };
 
-const initialEditorState = editor.createEditorState({
+const initialState = editor.createState({
   element: testSelectionElement,
 });
 
 function TestSelection() {
-  const [editorState, setEditorState] = useState(initialEditorState);
+  const [state, setState] = useState(initialState);
 
-  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = editor.useLogState(state);
 
   const handleEditorChange = useCallback(
-    (editorState: editor.EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: editor.State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
-  function select(selection: editor.EditorSelection) {
+  function select(selection: editor.Selection) {
     handleEditorChange({
-      ...editorState,
+      ...state,
       hasFocus: true,
       selection,
     });
@@ -56,8 +54,8 @@ function TestSelection() {
 
   return (
     <>
-      <editor.Editor editorState={editorState} onChange={handleEditorChange} />
-      {logEditorStateElement}
+      <editor.Editor state={state} onChange={handleEditorChange} />
+      {logStateElement}
       <div>
         <button
           className="select-first-two-letters"

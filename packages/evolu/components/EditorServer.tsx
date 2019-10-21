@@ -1,20 +1,16 @@
 import React, { createElement, Children, memo } from 'react';
 import { constVoid } from 'fp-ts/lib/function';
 import {
-  RenderEditorElement,
-  EditorElement,
-  EditorReactElement,
-  normalizeEditorElement,
+  RenderElement,
+  Element,
+  ReactElement,
+  normalizeElement,
 } from '../models/element';
-import { isEditorText } from '../models/text';
-import { editorNodeIDToString } from '../models/node';
+import { isText } from '../models/text';
+import { mapNodeIDToString } from '../models/node';
 
-export const renderEditorReactElement: RenderEditorElement = (
-  element,
-  children,
-  ref,
-) => {
-  const { tag, props } = element as EditorReactElement;
+export const renderReactElement: RenderElement = (element, children, ref) => {
+  const { tag, props } = element as ReactElement;
   // To bypass React void elements invariant violation.
   // We don't want to pass children are many args because they already have keys.
   if (Children.count(children) === 0) {
@@ -23,35 +19,35 @@ export const renderEditorReactElement: RenderEditorElement = (
   return createElement(tag, { ...props, ref }, children);
 };
 
-export interface EditorServerProps {
-  element: EditorElement;
-  renderElement?: RenderEditorElement;
+export interface ServerElementRendererProps {
+  element: Element;
+  renderElement?: RenderElement;
 }
 
-export function EditorServerElement({
+export function ServerElementRenderer({
   element,
   renderElement,
-}: EditorServerProps) {
+}: ServerElementRendererProps) {
   const children = element.children.map(child => {
-    if (isEditorText(child)) {
+    if (isText(child)) {
       return child.text.length === 0 ? (
-        <br key={editorNodeIDToString(child.id)} />
+        <br key={mapNodeIDToString(child.id)} />
       ) : (
         child.text
       );
     }
     return (
-      <EditorServerElement
+      <ServerElementRenderer
         element={child}
         renderElement={renderElement}
-        key={editorNodeIDToString(child.id)}
+        key={mapNodeIDToString(child.id)}
       />
     );
   });
   if (renderElement) {
     return <>{renderElement(element, children, constVoid)}</>;
   }
-  return <>{renderEditorReactElement(element, children, constVoid)}</>;
+  return <>{renderReactElement(element, children, constVoid)}</>;
 }
 
 export type UsefulReactDivAtttributesServer = Pick<
@@ -63,12 +59,12 @@ export type UsefulReactDivAtttributesServer = Pick<
  * Just render. No edit. Good for performance and tree shaking.
  */
 export const EditorServer = memo<
-  EditorServerProps & UsefulReactDivAtttributesServer
+  ServerElementRendererProps & UsefulReactDivAtttributesServer
 >(({ element, renderElement, ...rest }) => {
-  const normalizedElement = normalizeEditorElement(element);
+  const normalizedElement = normalizeElement(element);
   return (
     <div {...rest}>
-      <EditorServerElement
+      <ServerElementRenderer
         element={normalizedElement}
         renderElement={renderElement}
       />

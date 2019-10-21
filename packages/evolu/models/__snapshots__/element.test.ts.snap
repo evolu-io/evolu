@@ -12,7 +12,7 @@ Object {
 }
 `;
 
-exports[`materializeEditorPath 1`] = `
+exports[`materializePath 1`] = `
 Object {
   "_tag": "Some",
   "value": Object {
@@ -35,7 +35,7 @@ Object {
 }
 `;
 
-exports[`materializeEditorPath 2`] = `
+exports[`materializePath 2`] = `
 Object {
   "_tag": "Some",
   "value": Object {
@@ -68,7 +68,7 @@ Object {
 }
 `;
 
-exports[`materializeEditorPath 3`] = `
+exports[`materializePath 3`] = `
 Object {
   "_tag": "Some",
   "value": Object {
@@ -105,7 +105,7 @@ Object {
 }
 `;
 
-exports[`materializeEditorPath 4`] = `
+exports[`materializePath 4`] = `
 Object {
   "_tag": "Some",
   "value": Object {
@@ -135,17 +135,17 @@ Object {
       },
     ],
     "to": Object {
-      "editorText": Object {
-        "id": "0",
-        "text": "a",
-      },
       "offset": 0,
+      "text": Object {
+        "id": "0",
+        "text": "a",
+      },
     },
   },
 }
 `;
 
-exports[`materializeEditorPath 5`] = `
+exports[`materializePath 5`] = `
 Object {
   "_tag": "Some",
   "value": Object {
@@ -175,55 +175,55 @@ Object {
       },
     ],
     "to": Object {
-      "editorText": Object {
+      "offset": 1,
+      "text": Object {
         "id": "0",
         "text": "a",
       },
-      "offset": 1,
     },
   },
 }
 `;
 
-exports[`materializeEditorPath 6`] = `
+exports[`materializePath 6`] = `
 Object {
   "_tag": "None",
 }
 `;
 
-exports[`materializeEditorPath 7`] = `
+exports[`materializePath 7`] = `
 Object {
   "_tag": "None",
 }
 `;
 
-exports[`materializeEditorPath 8`] = `
+exports[`materializePath 8`] = `
 Object {
   "_tag": "None",
 }
 `;
 
-exports[`materializeEditorPath 9`] = `
+exports[`materializePath 9`] = `
 Object {
   "_tag": "None",
 }
 `;
 
-exports[`normalizeEditorElement do not add children 1`] = `
+exports[`normalizeElement do not add children 1`] = `
 Object {
   "children": Array [],
   "id": "0",
 }
 `;
 
-exports[`normalizeEditorElement do not remove children 1`] = `
+exports[`normalizeElement do not remove children 1`] = `
 Object {
   "children": Array [],
   "id": "0",
 }
 `;
 
-exports[`normalizeEditorElement do not remove children 2`] = `
+exports[`normalizeElement do not remove children 2`] = `
 Object {
   "children": Array [
     Object {
@@ -235,7 +235,7 @@ Object {
 }
 `;
 
-exports[`normalizeEditorElement do not remove children 3`] = `
+exports[`normalizeElement do not remove children 3`] = `
 Object {
   "children": Array [
     Object {
@@ -247,7 +247,7 @@ Object {
 }
 `;
 
-exports[`normalizeEditorElement merges adjacent texts 1`] = `
+exports[`normalizeElement merges adjacent texts 1`] = `
 Object {
   "children": Array [
     Object {

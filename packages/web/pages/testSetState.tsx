@@ -1,22 +1,22 @@
 import {
   childrenLens,
-  createEditorState,
+  createState,
   Editor,
-  EditorState,
+  State,
   elementLens,
-  isEditorStateWithSelection,
+  isStateWithSelection,
   jsx,
   move,
   select,
   setText,
-  useLogEditorState,
+  useLogState,
 } from 'evolu';
 import { foldLeft, reverse } from 'fp-ts/lib/Array';
 import { fold, none, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-const initialEditorState = createEditorState({
+const initialState = createState({
   element: jsx(
     <div className="root">
       <div className="heading">heading</div>
@@ -27,18 +27,16 @@ const initialEditorState = createEditorState({
 });
 
 function TestSetState() {
-  const [editorState, setEditorState] = useState(initialEditorState);
+  const [state, setState] = useState(initialState);
 
-  const [logEditorState, logEditorStateElement] = useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = useLogState(state);
 
   const handleEditorChange = useCallback(
-    (editorState: EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
   const operationsRef = useRef([
@@ -52,7 +50,7 @@ function TestSetState() {
   ]);
 
   useEffect(() => {
-    if (!isEditorStateWithSelection(editorState)) return;
+    if (!isStateWithSelection(state)) return;
     pipe(
       operationsRef.current,
       foldLeft(
@@ -67,7 +65,7 @@ function TestSetState() {
           // TODO: Here, we should call Puppeter somehow.
         },
         operation => {
-          const nextState = operation(editorState);
+          const nextState = operation(state);
           handleEditorChange(nextState);
         },
       ),
@@ -76,8 +74,8 @@ function TestSetState() {
 
   return (
     <>
-      <Editor editorState={editorState} onChange={handleEditorChange} />
-      {logEditorStateElement}
+      <Editor state={state} onChange={handleEditorChange} />
+      {logStateElement}
     </>
   );
 }

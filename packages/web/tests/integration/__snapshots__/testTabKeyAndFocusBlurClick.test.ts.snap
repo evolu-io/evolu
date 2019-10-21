@@ -37,7 +37,7 @@ exports[`click to focus button, click to blur button 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -93,7 +93,7 @@ exports[`click to focus button, click to blur button 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
@@ -101,7 +101,7 @@ exports[`click to focus button, click to blur button 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
@@ -109,7 +109,7 @@ exports[`click to focus button, click to blur button 1`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
@@ -176,7 +176,7 @@ exports[`click to focus button, click to blur button 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -232,7 +232,7 @@ exports[`click to focus button, click to blur button 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3·
@@ -240,7 +240,7 @@ exports[`click to focus button, click to blur button 2`] = `
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
@@ -248,7 +248,7 @@ exports[`click to focus button, click to blur button 2`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
@@ -256,7 +256,7 @@ exports[`click to focus button, click to blur button 2`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
@@ -323,7 +323,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
@@ -331,7 +331,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -339,7 +339,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -395,7 +395,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
@@ -462,7 +462,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
@@ -470,7 +470,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
@@ -478,7 +478,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -486,7 +486,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -542,7 +542,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
@@ -550,7 +550,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
@@ -558,7 +558,7 @@ exports[`focus blur via tab, tab, tab 2`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
@@ -625,7 +625,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
@@ -633,7 +633,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·2·
@@ -641,7 +641,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·1·
@@ -649,7 +649,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -705,7 +705,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3·
@@ -713,7 +713,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2·
@@ -721,7 +721,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1·
@@ -729,7 +729,7 @@ exports[`focus blur via tab, tab, tab 3`] = `
       ·{"hasFocus":true}·
     </span>
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
@@ -796,7 +796,7 @@ exports[`render 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
@@ -852,7 +852,7 @@ exports[`render 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-1782790912"
+      class="jsx-378398407"
       title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·

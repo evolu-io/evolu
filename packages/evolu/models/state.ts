@@ -4,59 +4,66 @@ import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
 import {
   deleteContentElement,
-  EditorElement,
-  EditorReactElement,
+  Element,
+  ReactElement,
   jsx,
-  normalizeEditorElement,
+  normalizeElement,
   setTextElement,
 } from './element';
 import {
-  collapseEditorSelectionToStart,
-  EditorSelection,
-  eqEditorSelection,
-  moveEditorSelection,
+  collapseSelectionToStart,
+  Selection,
+  eqSelection,
+  moveSelection,
 } from './selection';
 
-export interface EditorStateWithoutSelection {
-  readonly element: EditorElement;
+/**
+ * Use StateWithoutSelection everywhere where State must not have any selection.
+ */
+export interface StateWithoutSelection {
+  readonly element: Element;
   readonly hasFocus: boolean;
 }
 
-export interface EditorStateWithSelection {
-  readonly element: EditorElement;
+/**
+ * Use StateWithSelection everywhere where State must have a selection.
+ */
+export interface StateWithSelection {
+  readonly element: Element;
   readonly hasFocus: boolean;
-  readonly selection: EditorSelection;
+  readonly selection: Selection;
 }
 
-// EditorState is sum type.
+// State is sum type.
 // https://github.com/gcanti/fp-ts/issues/973#issuecomment-542185502
 // https://dev.to/gcanti/functional-design-algebraic-data-types-36kf
 // https://www.youtube.com/watch?v=PLFl95c-IiU
-export type EditorState =
-  | EditorStateWithoutSelection
-  | EditorStateWithSelection;
 
-export const isEditorStateWithSelection: Refinement<
-  EditorState,
-  EditorStateWithSelection
-> = (value): value is EditorStateWithSelection => {
-  return (value as EditorStateWithSelection).selection != null;
+/**
+ * State for Editor.
+ */
+export type State = StateWithoutSelection | StateWithSelection;
+
+export const isStateWithSelection: Refinement<State, StateWithSelection> = (
+  value,
+): value is StateWithSelection => {
+  return (value as StateWithSelection).selection != null;
 };
 
-export function createEditorState<T extends EditorElement>({
+export function createState<T extends Element>({
   element,
   selection,
   hasFocus = false,
 }: {
   element: T;
-  selection?: EditorSelection;
+  selection?: Selection;
   hasFocus?: boolean;
-}): EditorState {
+}): State {
   return { element, selection, hasFocus };
 }
 
-export function createEditorStateWithText(text = '') {
-  return createEditorState<EditorReactElement>({
+export function createStateWithText(text = '') {
+  return createState<ReactElement>({
     element: jsx(createElement('div', { className: 'root' }, text)),
     hasFocus: false,
   });
@@ -66,24 +73,24 @@ export function createEditorStateWithText(text = '') {
 // https://github.com/gcanti/monocle-ts
 
 /**
- * Focus on the element of EditorState.
+ * Focus on the element of State.
  */
-export const elementLens = Lens.fromProp<EditorState>()('element');
+export const elementLens = Lens.fromProp<State>()('element');
 
 export function select(
-  selection: EditorSelection,
-): (state: EditorState) => EditorStateWithSelection {
+  selection: Selection,
+): (state: State) => StateWithSelection {
   return state => {
     if (
-      isEditorStateWithSelection(state) &&
-      eqEditorSelection.equals(state.selection, selection)
+      isStateWithSelection(state) &&
+      eqSelection.equals(state.selection, selection)
     )
       return state;
     return { ...state, selection };
   };
 }
 
-export function setText(text: string): Endomorphism<EditorStateWithSelection> {
+export function setText(text: string): Endomorphism<StateWithSelection> {
   return state => {
     return {
       ...state,
@@ -93,34 +100,34 @@ export function setText(text: string): Endomorphism<EditorStateWithSelection> {
 }
 
 // TODO: It should traverse across nodes.
-export function move(offset: number): Endomorphism<EditorStateWithSelection> {
+export function move(offset: number): Endomorphism<StateWithSelection> {
   return state => {
     return pipe(
       state,
       select(
         pipe(
           state.selection,
-          moveEditorSelection(offset),
+          moveSelection(offset),
         ),
       ),
     );
   };
 }
 
-export const deleteContent: Endomorphism<EditorStateWithSelection> = state => {
+export const deleteContent: Endomorphism<StateWithSelection> = state => {
   return pipe(
     state,
     state => ({
       ...state,
       element: deleteContentElement(state.selection)(state.element),
     }),
-    select(collapseEditorSelectionToStart(state.selection)),
+    select(collapseSelectionToStart(state.selection)),
   );
 };
 
-export const normalize: Endomorphism<EditorState> = state => {
+export const normalize: Endomorphism<State> = state => {
   // https://github.com/gcanti/fp-ts/issues/976
-  const element = normalizeEditorElement(state.element);
+  const element = normalizeElement(state.element);
   if (element === state.element) return state;
   return { ...state, element };
 };

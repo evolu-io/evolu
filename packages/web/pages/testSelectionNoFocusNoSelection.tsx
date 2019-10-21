@@ -2,29 +2,27 @@ import React, { useState, useCallback } from 'react';
 import * as editor from 'evolu';
 import { testSelectionElement } from './testSelection';
 
-const initialEditorState = editor.createEditorState({
+const initialState = editor.createState({
   element: testSelectionElement,
 });
 
 function TestSelectionNoFocusNoSelection() {
-  const [editorState, setEditorState] = useState(initialEditorState);
+  const [state, setState] = useState(initialState);
 
-  const [logEditorState, logEditorStateElement] = editor.useLogEditorState(
-    editorState,
-  );
+  const [logState, logStateElement] = editor.useLogState(state);
 
   const handleEditorChange = useCallback(
-    (editorState: editor.EditorState) => {
-      logEditorState(editorState);
-      setEditorState(editorState);
+    (state: editor.State) => {
+      logState(state);
+      setState(state);
     },
-    [logEditorState],
+    [logState],
   );
 
   return (
     <>
-      <editor.Editor editorState={editorState} onChange={handleEditorChange} />
-      {logEditorStateElement}
+      <editor.Editor state={state} onChange={handleEditorChange} />
+      {logStateElement}
     </>
   );
 }

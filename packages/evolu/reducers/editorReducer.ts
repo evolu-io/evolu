@@ -1,30 +1,27 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
 import { absurd } from 'fp-ts/lib/function';
-import { EditorSelection } from '../models/selection';
+import { Selection } from '../models/selection';
 import {
   // deleteContent,
-  EditorState,
+  State,
   select,
   setText,
-  isEditorStateWithSelection,
+  isStateWithSelection,
 } from '../models/state';
 import { warn } from '../warn';
 
-/**
- * Various browser actions for updating EditorState.
- */
 export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
-  | { type: 'selectionChange'; selection: EditorSelection }
-  | { type: 'insertText'; text: string; selection: EditorSelection }
-  | { type: 'deleteText'; text: string; selection: EditorSelection }
+  | { type: 'selectionChange'; selection: Selection }
+  | { type: 'insertText'; text: string; selection: Selection }
+  | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string };
-// | { type: 'set'; state: EditorState }
-// | { type: 'deleteContent'; selection: EditorSelection };
+// | { type: 'set'; state: State }
+// | { type: 'deleteContent'; selection: Selection };
 
-export type EditorReducer = Reducer<EditorState, EditorAction>;
+export type EditorReducer = Reducer<State, EditorAction>;
 
 export const editorReducer: EditorReducer = (state, action) => {
   switch (action.type) {
@@ -41,7 +38,7 @@ export const editorReducer: EditorReducer = (state, action) => {
     }
 
     case 'insertText':
-      if (!isEditorStateWithSelection(state)) {
+      if (!isStateWithSelection(state)) {
         warn('State in insertText should have a selection.');
         return state;
       }
@@ -61,7 +58,7 @@ export const editorReducer: EditorReducer = (state, action) => {
       );
 
     case 'insertReplacementText':
-      if (!isEditorStateWithSelection(state)) {
+      if (!isStateWithSelection(state)) {
         warn('State in insertReplacementText should have a selection.');
         return state;
       }
