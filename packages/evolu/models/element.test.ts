@@ -129,7 +129,7 @@ test('normalizeElement do not remove children', () => {
 test('deleteContentElement', () => {
   const el = { id: id(), children: [{ id: id(), text: 'a' }] };
   expect(
-    deleteContentElement({ anchor: [0, 0], focus: [0, 1] })(el),
+    deleteContentElement({ start: [0, 0], end: [0, 1] })(el),
   ).toMatchSnapshot();
 });
 

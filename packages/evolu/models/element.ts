@@ -17,7 +17,8 @@ import { $Values } from 'utility-types';
 import { SetDOMNodePathRef } from './dom';
 import { id, Node } from './node';
 import { Path } from './path';
-import { Selection, selectionAsRange, isCollapsedSelection } from './selection';
+import { Range } from './range';
+import { Selection, isCollapsedSelection } from './selection';
 import { isText, Text, textIsBR } from './text';
 
 /**
@@ -305,17 +306,14 @@ export function setTextElement(
   };
 }
 
-export function deleteContentElement(
-  selection: Selection,
-): Endomorphism<Element> {
+export function deleteContentElement(range: Range): Endomorphism<Element> {
   return element => {
-    const range = selectionAsRange(selection);
     // TODO: Refactor all.
     const anchorMaterializedPath = toNullable(
-      materializePath(range.anchor)(element),
+      materializePath(range.start)(element),
     );
     const focusMaterializedPath = toNullable(
-      materializePath(range.focus)(element),
+      materializePath(range.end)(element),
     );
     if (anchorMaterializedPath == null || focusMaterializedPath == null)
       return element;
@@ -327,7 +325,7 @@ export function deleteContentElement(
       anchorMaterializedPath.to.text === focusMaterializedPath.to.text
     ) {
       return pipe(
-        init(range.anchor),
+        init(range.start),
         fold(
           () => element,
           foldRight(

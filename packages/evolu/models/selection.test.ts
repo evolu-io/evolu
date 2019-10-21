@@ -2,8 +2,10 @@ import {
   isCollapsedSelection,
   eqSelection,
   isForwardSelection,
-  selectionAsRange,
+  mapSelectionToRange,
   Selection,
+  collapseSelectionToStart,
+  collapseSelectionToEnd,
 } from './selection';
 
 test('isCollapsedSelection', () => {
@@ -26,13 +28,35 @@ test('isForwardSelection', () => {
   expect(isForwardSelection({ anchor: [1], focus: [0] })).toBe(false);
 });
 
-test('selectionAsRange', () => {
-  expect(selectionAsRange({ anchor: [0], focus: [1] })).toMatchObject({
+test('mapSelectionToRange', () => {
+  expect(mapSelectionToRange({ anchor: [0], focus: [1] })).toMatchObject({
+    start: [0],
+    end: [1],
+  });
+  expect(mapSelectionToRange({ anchor: [1], focus: [0] })).toMatchObject({
+    start: [0],
+    end: [1],
+  });
+});
+
+test('collapseSelectionToStart', () => {
+  expect(collapseSelectionToStart({ anchor: [0], focus: [1] })).toMatchObject({
     anchor: [0],
+    focus: [0],
+  });
+  expect(collapseSelectionToStart({ anchor: [1], focus: [0] })).toMatchObject({
+    anchor: [0],
+    focus: [0],
+  });
+});
+
+test('collapseSelectionToEnd', () => {
+  expect(collapseSelectionToEnd({ anchor: [0], focus: [1] })).toMatchObject({
+    anchor: [1],
     focus: [1],
   });
-  expect(selectionAsRange({ anchor: [1], focus: [0] })).toMatchObject({
-    anchor: [0],
+  expect(collapseSelectionToEnd({ anchor: [1], focus: [0] })).toMatchObject({
+    anchor: [1],
     focus: [1],
   });
 });

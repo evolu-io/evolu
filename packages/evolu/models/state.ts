@@ -15,6 +15,7 @@ import {
   Selection,
   eqSelection,
   moveSelection,
+  mapSelectionToRange,
 } from './selection';
 
 /**
@@ -119,7 +120,9 @@ export const deleteContent: Endomorphism<StateWithSelection> = state => {
     state,
     state => ({
       ...state,
-      element: deleteContentElement(state.selection)(state.element),
+      element: deleteContentElement(mapSelectionToRange(state.selection))(
+        state.element,
+      ),
     }),
     select(collapseSelectionToStart(state.selection)),
   );

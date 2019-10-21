@@ -11,6 +11,7 @@ import {
   DOMSelection,
   getDOMRangeFromInputEvent,
 } from './dom';
+import { Range } from './range';
 import { byDirection, eqPath, movePath, Path } from './path';
 
 /**
@@ -28,14 +29,10 @@ export interface Selection {
 export const isForwardSelection: Predicate<Selection> = selection =>
   geq(byDirection)(selection.anchor, selection.focus);
 
-/**
- * Range is forward Selection. It ensures the focus is not before the anchor.
- * TODO: Replace it with selectionToRange.
- */
-export function selectionAsRange(selection: Selection): Selection {
-  if (isForwardSelection(selection)) return selection;
-  const { anchor: focus, focus: anchor } = selection;
-  return { anchor, focus };
+export function mapSelectionToRange(selection: Selection): Range {
+  if (isForwardSelection(selection))
+    return { start: selection.anchor, end: selection.focus };
+  return { start: selection.focus, end: selection.anchor };
 }
 
 export const isCollapsedSelection: Predicate<Selection> = selection =>
@@ -111,14 +108,14 @@ export function moveSelection(offset: number): Endomorphism<Selection> {
 
 export const collapseSelectionToStart: Endomorphism<Selection> = selection => {
   if (isCollapsedSelection(selection)) return selection;
-  const range = selectionAsRange(selection);
-  return { anchor: range.anchor, focus: range.anchor };
+  const range = mapSelectionToRange(selection);
+  return { anchor: range.start, focus: range.start };
 };
 
 export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
   if (isCollapsedSelection(selection)) return selection;
-  const range = selectionAsRange(selection);
-  return { anchor: range.focus, focus: range.focus };
+  const range = mapSelectionToRange(selection);
+  return { anchor: range.end, focus: range.end };
 };
 
 export function getSelectionFromInputEvent(
