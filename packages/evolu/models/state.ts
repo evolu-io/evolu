@@ -70,9 +70,6 @@ export function createStateWithText(text = '') {
   });
 }
 
-// Functional optics.
-// https://github.com/gcanti/monocle-ts
-
 /**
  * Focus on the element of State.
  */
@@ -91,42 +88,40 @@ export function select(
   };
 }
 
-export function setText(text: string): Endomorphism<StateWithSelection> {
-  return state => {
-    return {
-      ...state,
-      element: setTextElement(text, state.selection)(state.element),
-    };
-  };
-}
+export const setText = (
+  text: string,
+): Endomorphism<StateWithSelection> => state =>
+  pipe(
+    state,
+    elementLens.modify(setTextElement(text, state.selection)),
+  ) as StateWithSelection;
 
 // TODO: It should traverse across nodes.
-export function move(offset: number): Endomorphism<StateWithSelection> {
-  return state => {
-    return pipe(
-      state,
-      select(
-        pipe(
-          state.selection,
-          moveSelection(offset),
-        ),
-      ),
-    );
-  };
-}
-
-export const deleteContent: Endomorphism<StateWithSelection> = state => {
-  return pipe(
+export const move = (
+  offset: number,
+): Endomorphism<StateWithSelection> => state =>
+  pipe(
     state,
-    state => ({
-      ...state,
-      element: deleteContentElement(mapSelectionToRange(state.selection))(
-        state.element,
+    select(
+      pipe(
+        state.selection,
+        moveSelection(offset),
       ),
-    }),
+    ),
+  );
+
+export const deleteContent: Endomorphism<StateWithSelection> = state =>
+  pipe(
+    state,
+    elementLens.modify(
+      pipe(
+        state.selection,
+        mapSelectionToRange,
+        deleteContentElement,
+      ),
+    ),
     select(collapseSelectionToStart(state.selection)),
   );
-};
 
 export const normalize: Endomorphism<State> = state => {
   // https://github.com/gcanti/fp-ts/issues/976

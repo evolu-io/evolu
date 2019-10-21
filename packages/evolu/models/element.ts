@@ -204,9 +204,6 @@ export const recursiveRemoveID = (element: Element): any => {
   };
 };
 
-// Functional optics.
-// https://github.com/gcanti/monocle-ts
-
 /**
  * Focus on the children of Element.
  */
