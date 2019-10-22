@@ -9,6 +9,7 @@ import {
   fromNullable,
   Option,
   option,
+  mapNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
@@ -135,15 +136,16 @@ export const EditorClient = memo<EditorClientProps>(
       }
     }, [tabLostFocus, divRef, valueHadFocus, value.hasFocus]);
 
-    const getDOMSelection = useCallback((): Option<DOMSelection> => {
-      // Using divRef is must for iframes.
-      // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
-      return fromNullable(
-        divRef.current &&
-          divRef.current.ownerDocument &&
-          divRef.current.ownerDocument.getSelection(),
-      );
-    }, []);
+    const getDOMSelection = useCallback(
+      (): Option<DOMSelection> =>
+        pipe(
+          // Using divRef is must for iframes.
+          fromNullable(divRef.current),
+          mapNullable(div => div.ownerDocument),
+          mapNullable(doc => doc.getSelection()),
+        ),
+      [],
+    );
 
     const getSelection = useCallback((): Option<Selection> => {
       return pipe(
@@ -152,15 +154,16 @@ export const EditorClient = memo<EditorClientProps>(
       );
     }, [getDOMSelection, getPathByDOMNode]);
 
-    // Using divRef is must for iframes.
-    const getRange = useCallback((): Option<Range> => {
-      // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
-      return fromNullable(
-        divRef.current &&
-          divRef.current.ownerDocument &&
-          divRef.current.ownerDocument.createRange(),
-      );
-    }, []);
+    const getRange = useCallback(
+      (): Option<Range> =>
+        pipe(
+          // Using divRef is must for iframes.
+          fromNullable(divRef.current),
+          mapNullable(div => div.ownerDocument),
+          mapNullable(doc => doc.createRange()),
+        ),
+      [],
+    );
 
     const pathToNodeOffset = useCallback(
       (path: Path): Option<DOMNodeOffset> => {
