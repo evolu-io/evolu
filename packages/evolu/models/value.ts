@@ -1,8 +1,7 @@
-import { Endomorphism, Predicate } from 'fp-ts/lib/function';
+import { Endomorphism } from 'fp-ts/lib/function';
 import {
   exists,
   fold,
-  isSome,
   map,
   none,
   Option,
@@ -33,9 +32,6 @@ export interface Value {
   readonly hasFocus: boolean;
   readonly selection: Option<Selection>;
 }
-
-// TODO: Remove, use pipe fold get etc.
-export const hasSelection: Predicate<Value> = value => isSome(value.selection);
 
 export function createValue<T extends Element>({
   element,

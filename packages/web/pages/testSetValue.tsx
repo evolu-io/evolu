@@ -2,17 +2,16 @@ import {
   childrenLens,
   createValue,
   Editor,
-  Value,
   elementLens,
-  hasSelection,
   jsx,
   move,
   select,
   setText,
   useLogValue,
+  Value,
 } from 'evolu';
 import { foldLeft, reverse } from 'fp-ts/lib/Array';
-import { fold, none, some } from 'fp-ts/lib/Option';
+import { fold, none, some, toNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -50,7 +49,7 @@ function TestSetValue() {
   ]);
 
   useEffect(() => {
-    if (!hasSelection(value)) return;
+    if (toNullable(value.selection) == null) return;
     pipe(
       operationsRef.current,
       foldLeft(

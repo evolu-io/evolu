@@ -1,15 +1,13 @@
+import { absurd } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
-import { absurd } from 'fp-ts/lib/function';
 import { Selection } from '../models/selection';
 import {
-  // deleteContent,
-  Value,
   select,
   setText,
-  hasSelection,
+  // deleteContent,
+  Value,
 } from '../models/value';
-import { warn } from '../warn';
 
 export type EditorAction =
   | { type: 'focus' }
@@ -38,11 +36,6 @@ export const editorReducer: EditorReducer = (value, action) => {
     }
 
     case 'insertText':
-      // TODO: Move burden to beforeInput.
-      if (!hasSelection(value)) {
-        warn('Value in insertText should have a selection.');
-        return value;
-      }
       // We have to set text first so it can be selected later.
       return pipe(
         value,
@@ -59,11 +52,6 @@ export const editorReducer: EditorReducer = (value, action) => {
       );
 
     case 'insertReplacementText':
-      // TODO: Move burden to beforeInput.
-      if (!hasSelection(value)) {
-        warn('Value in insertReplacementText should have a selection.');
-        return value;
-      }
       return pipe(
         value,
         setText(action.text),
