@@ -1,6 +1,6 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
 import { toUndefined } from 'fp-ts/lib/Option';
-import { Element, recursiveRemoveID } from '../models/element';
+import { mapElementToIDless } from '../models/element';
 import { Value } from '../models/value';
 
 const Item = memo(({ value, index }: { value: Value; index: number }) => {
@@ -8,7 +8,7 @@ const Item = memo(({ value, index }: { value: Value; index: number }) => {
   const indexItem = { hasFocus, selection: toUndefined(selection) };
   // Deliberately do not prettify. Smaller output is more readable in snapshots.
   // No IDs because that would break integration tests.
-  const title = JSON.stringify(recursiveRemoveID(element as Element))
+  const title = JSON.stringify(mapElementToIDless(element))
     .split('"')
     .join("'");
   return (

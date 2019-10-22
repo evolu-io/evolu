@@ -1,6 +1,6 @@
 import { editorReducer, EditorAction } from './editorReducer';
 import { createValueWithText } from '../models/value';
-import { recursiveRemoveID } from '../models/element';
+import { mapElementToIDless } from '../models/element';
 
 const value = createValueWithText();
 
@@ -8,7 +8,7 @@ function testEditorReducer(action: EditorAction) {
   const { element, ...nextValue } = editorReducer(value, action);
   return {
     ...nextValue,
-    element: recursiveRemoveID(element),
+    element: mapElementToIDless(element),
   };
 }
 

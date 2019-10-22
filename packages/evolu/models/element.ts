@@ -186,8 +186,8 @@ export const isNormalizedElement: Predicate<Element> = element => {
   return element === normalizedElement;
 };
 
-// TODO: Can we recursively remove ID from Element type?
-export const recursiveRemoveID = (element: Element): any => {
+// TODO: Recursively remove ID from Element and its children.
+export const mapElementToIDless = (element: Element): any => {
   if (element == null) return element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
@@ -199,7 +199,7 @@ export const recursiveRemoveID = (element: Element): any => {
         const { id, ...childWithoutID } = child;
         return childWithoutID;
       }
-      return recursiveRemoveID(child);
+      return mapElementToIDless(child);
     }),
   };
 };
