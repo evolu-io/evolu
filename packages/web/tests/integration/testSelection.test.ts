@@ -24,8 +24,4 @@ test('select', async () => {
 
   await pageClick('.select-all-backward');
   await expect(await pageDom()).toMatchSnapshot();
-
-  // TODO: Once we decide what we want.
-  // await pageClick('.unselect');
-  // await expect(await pageDom()).toMatchSnapshot();
 });

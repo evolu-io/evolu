@@ -110,17 +110,6 @@ function TestSelection() {
         >
           select all backward
         </button>
-        {/* TODO: Once we decide what we want. */}
-        {/* <button
-          className="unselect"
-          type="button"
-          onMouseDown={event => {
-            event.preventDefault();
-            select(null);
-          }}
-        >
-          unselect
-        </button> */}
       </div>
     </>
   );
