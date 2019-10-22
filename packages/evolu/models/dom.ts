@@ -1,7 +1,8 @@
 /* eslint-env browser */
+import { sequenceT } from 'fp-ts/lib/Apply';
+import { last } from 'fp-ts/lib/Array';
 import { Refinement } from 'fp-ts/lib/function';
-import { fold, none, Option, some } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { Option, option } from 'fp-ts/lib/Option';
 import { Path } from './path';
 
 // We aliases DOM types to prevent clashes with Editor types.
@@ -16,9 +17,7 @@ export type DOMText = Text;
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
-): node is DOMElement => {
-  return node.nodeType === Node.ELEMENT_NODE;
-};
+): node is DOMElement => node.nodeType === Node.ELEMENT_NODE;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
@@ -28,19 +27,12 @@ export type SetDOMNodePathRef = (node: DOMNode | null) => void;
  */
 export type DOMNodeOffset = [DOMNode, number];
 
-export function createDOMNodeOffset(
+export const createDOMNodeOffset = (
   path: Path,
-): (node: Option<DOMNode>) => Option<DOMNodeOffset> {
-  return node =>
-    pipe(
-      node,
-      // TODO: Use last.
-      fold(() => none, node => some([node, path[path.length - 1]])),
-    );
-}
+): ((node: Option<DOMNode>) => Option<DOMNodeOffset>) => node =>
+  sequenceT(option)(node, last(path));
 
-export function getDOMRangeFromInputEvent(event: InputEvent): DOMRange {
+export const getDOMRangeFromInputEvent = (event: InputEvent): DOMRange =>
   // It always returns so we don't need fromNullable.
   // @ts-ignore Outdated types.
-  return event.getTargetRanges()[0];
-}
+  event.getTargetRanges()[0];
