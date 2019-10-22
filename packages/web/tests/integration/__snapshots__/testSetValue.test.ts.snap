@@ -82,10 +82,5 @@ exports[`operations 1`] = `
       ·{"hasFocus":true}·
     </span>
   </pre>
-  <div
-    id="done"
-  >
-    ·done·
-  </div>
 </div>
 `;

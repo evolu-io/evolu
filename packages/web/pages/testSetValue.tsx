@@ -48,8 +48,6 @@ const TestSetValue = () => {
       .modify(childred => childred.slice(0, 1)),
   ]);
 
-  const [done, setDone] = useState(false);
-
   useEffect(() => {
     if (toNullable(value.selection) == null) return;
     pipe(
@@ -63,7 +61,7 @@ const TestSetValue = () => {
       ),
       fold(
         () => {
-          setDone(true);
+          // TODO: Here, we should call Puppeter somehow.
         },
         operation => {
           const nextValue = operation(value);
@@ -77,7 +75,6 @@ const TestSetValue = () => {
     <>
       <Editor value={value} onChange={handleEditorChange} />
       {logValueElement}
-      {done && <div id="done">done</div>}
     </>
   );
 };
