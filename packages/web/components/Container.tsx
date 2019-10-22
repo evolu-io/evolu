@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export function Container({ children }: { children: ReactNode }) {
+export const Container = ({ children }: { children: ReactNode }) => {
   return (
     <div>
       {children}
@@ -11,4 +11,4 @@ export function Container({ children }: { children: ReactNode }) {
       `}</style>
     </div>
   );
-}
+};

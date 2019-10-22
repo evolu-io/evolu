@@ -24,10 +24,10 @@ export interface ServerElementRendererProps {
   renderElement?: RenderElement;
 }
 
-export function ServerElementRenderer({
+export const ServerElementRenderer = ({
   element,
   renderElement,
-}: ServerElementRendererProps) {
+}: ServerElementRendererProps) => {
   const children = element.children.map(child => {
     if (isText(child)) {
       return child.text.length === 0 ? (
@@ -48,7 +48,7 @@ export function ServerElementRenderer({
     return <>{renderElement(element, children, constVoid)}</>;
   }
   return <>{renderReactElement(element, children, constVoid)}</>;
-}
+};
 
 export type UsefulReactDivAtttributesServer = Pick<
   React.HTMLAttributes<HTMLDivElement>,

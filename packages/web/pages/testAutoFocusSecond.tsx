@@ -2,13 +2,13 @@ import React from 'react';
 import { BasicExample } from '../components/examples/BasicExample';
 import { SchemaExample } from '../components/examples/SchemaExample';
 
-function TestAutoFocusSecond() {
+const TestAutoFocusSecond = () => {
   return (
     <>
       <BasicExample />
       <SchemaExample autoFocus />
     </>
   );
-}
+};
 
 export default TestAutoFocusSecond;

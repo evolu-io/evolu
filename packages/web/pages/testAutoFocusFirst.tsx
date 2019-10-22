@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BasicExample } from '../components/examples/BasicExample';
 import { SchemaExample } from '../components/examples/SchemaExample';
 
-function TestAutoFocusFirst() {
+const TestAutoFocusFirst = () => {
   useEffect(() => {
     setTimeout(() => {
       // eslint-disable-next-line no-alert, no-undef
@@ -15,6 +15,6 @@ function TestAutoFocusFirst() {
       <SchemaExample />
     </>
   );
-}
+};
 
 export default TestAutoFocusFirst;

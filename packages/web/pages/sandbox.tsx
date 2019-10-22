@@ -44,7 +44,7 @@ const initialValue = editor.createValue({
   ),
 });
 
-function Index() {
+const Sandbox = () => {
   const [value, setValue] = useState(initialValue);
 
   const [logValue, logValueElement] = editor.useLogValue(value);
@@ -84,6 +84,6 @@ function Index() {
       </button>
     </Container>
   );
-}
+};
 
-export default Index;
+export default Sandbox;

@@ -5,7 +5,7 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  plugins: ['@typescript-eslint', 'jest', 'react-hooks'],
+  plugins: ['@typescript-eslint', 'jest', 'react-hooks', 'prefer-arrow'],
   extends: [
     'airbnb',
     'plugin:jest/recommended',
@@ -23,6 +23,7 @@ module.exports = {
     jestPuppeteer: true,
   },
   rules: {
+    'prefer-arrow/prefer-arrow-functions': 'error',
     // No need, we have Prettier.
     'no-plusplus': 'off',
     // Unnecessary with TypeScript.

@@ -3,6 +3,4 @@ import { RenderElement } from '../models/element';
 
 export const RenderElementContext = createContext<RenderElement>(() => null);
 
-export function useRenderElement() {
-  return useContext(RenderElementContext);
-}
+export const useRenderElement = () => useContext(RenderElementContext);

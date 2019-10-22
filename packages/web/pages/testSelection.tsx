@@ -32,7 +32,7 @@ const initialValue = editor.createValue({
   element: testSelectionElement,
 });
 
-function TestSelection() {
+const TestSelection = () => {
   const [value, setValue] = useState(initialValue);
 
   const [logValue, logValueElement] = editor.useLogValue(value);
@@ -45,13 +45,13 @@ function TestSelection() {
     [logValue],
   );
 
-  function select(selection: editor.Selection) {
+  const select = (selection: editor.Selection) => {
     handleEditorChange({
       ...value,
       hasFocus: true,
       selection: some(selection),
     });
-  }
+  };
 
   return (
     <>
@@ -113,6 +113,6 @@ function TestSelection() {
       </div>
     </>
   );
-}
+};
 
 export default TestSelection;

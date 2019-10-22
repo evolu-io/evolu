@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 
-export function Text({
+export const Text = ({
   children,
   size = 0,
 }: {
   children: ReactNode;
   size?: number;
-}) {
+}) => {
   const baseFontSize = 16;
   const baseLineHeight = 24;
   // https://www.modularscale.com/
@@ -16,10 +16,10 @@ export function Text({
   const fontSize = baseFontSize * modularScale ** size;
 
   // http://inlehmansterms.net/2014/06/09/groove-to-a-vertical-rhythm
-  function computeRhythmLineHeight() {
+  const computeRhythmLineHeight = () => {
     const lines = Math.ceil(fontSize / baseLineHeight);
     return lines * baseLineHeight;
-  }
+  };
   const lineHeight = computeRhythmLineHeight();
 
   return (
@@ -38,4 +38,4 @@ export function Text({
       `}</style>
     </>
   );
-}
+};

@@ -26,10 +26,10 @@ const initialValue = editor.createValue({
   } as editor.ReactElement),
 });
 
-function TestNormalizeEditorElement() {
+const TestNormalizeEditorElement = () => {
   const [value, setValue] = useState(initialValue);
 
   return <editor.Editor value={value} onChange={setValue} />;
-}
+};
 
 export default TestNormalizeEditorElement;

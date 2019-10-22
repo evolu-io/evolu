@@ -6,7 +6,7 @@ import { Container } from '../components/Container';
 import { BasicExample } from '../components/examples/BasicExample';
 import { SchemaExample } from '../components/examples/SchemaExample';
 
-function LinkToTest({ name }: { name: string }) {
+const LinkToTest = ({ name }: { name: string }) => {
   return (
     <Link href={`/${name}`}>
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -25,9 +25,9 @@ function LinkToTest({ name }: { name: string }) {
       </a>
     </Link>
   );
-}
+};
 
-function Index() {
+const Index = () => {
   return (
     <Container>
       <Head>
@@ -58,6 +58,6 @@ function Index() {
       </Text>
     </Container>
   );
-}
+};
 
 export default Index;

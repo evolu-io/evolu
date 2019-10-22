@@ -10,9 +10,8 @@ export interface NodeID
 
 const isoNodeID = iso<NodeID>();
 
-export function mapNodeIDToString(nodeID: NodeID): string {
-  return isoNodeID.unwrap(nodeID);
-}
+export const mapNodeIDToString = (nodeID: NodeID): string =>
+  isoNodeID.unwrap(nodeID);
 
 export const id: IO<NodeID> = () => isoNodeID.wrap(nanoid());
 

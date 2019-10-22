@@ -25,7 +25,9 @@ const Item = memo(({ value, index }: { value: Value; index: number }) => {
   );
 });
 
-export function useLogValue(value: Value): [(value: Value) => void, ReactNode] {
+export const useLogValue = (
+  value: Value,
+): [(value: Value) => void, ReactNode] => {
   const [values, setValues] = useState<Value[]>([value]);
   const logValue = useCallback((value: Value) => {
     setValues(prevValues => [...prevValues, value]);
@@ -55,4 +57,4 @@ export function useLogValue(value: Value): [(value: Value) => void, ReactNode] {
   }, [values]);
 
   return [logValue, logValueElement];
-}
+};

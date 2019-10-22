@@ -29,11 +29,10 @@ export interface Selection {
 export const isForwardSelection: Predicate<Selection> = selection =>
   geq(byDirection)(selection.anchor, selection.focus);
 
-export function mapSelectionToRange(selection: Selection): Range {
-  if (isForwardSelection(selection))
-    return { start: selection.anchor, end: selection.focus };
-  return { start: selection.focus, end: selection.anchor };
-}
+export const mapSelectionToRange = (selection: Selection): Range =>
+  isForwardSelection(selection)
+    ? { start: selection.anchor, end: selection.focus }
+    : { start: selection.focus, end: selection.anchor };
 
 export const isCollapsedSelection: Predicate<Selection> = selection =>
   eqPath.equals(selection.anchor, selection.focus);
@@ -43,68 +42,70 @@ export const eqSelection: Eq<Selection> = getStructEq({
   focus: eqPath,
 });
 
-export function mapDOMSelectionToSelection(
+export const mapDOMSelectionToSelection = (
   getPathByNode: (node: DOMNode) => Option<Path>,
-): (selection: DOMSelection) => Option<Selection> {
-  return ({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
-    pipe(
-      sequenceT(option)(
-        anchorNode ? getPathByNode(anchorNode) : none,
-        focusNode ? getPathByNode(focusNode) : none,
-      ),
-      chain(([anchorPath, focusPath]) =>
-        some({
-          anchor: snoc(anchorPath, anchorOffset),
-          focus: snoc(focusPath, focusOffset),
-        }),
-      ),
-    );
-}
+): ((selection: DOMSelection) => Option<Selection>) => ({
+  anchorNode,
+  anchorOffset,
+  focusNode,
+  focusOffset,
+}) =>
+  pipe(
+    sequenceT(option)(
+      anchorNode ? getPathByNode(anchorNode) : none,
+      focusNode ? getPathByNode(focusNode) : none,
+    ),
+    chain(([anchorPath, focusPath]) =>
+      some({
+        anchor: snoc(anchorPath, anchorOffset),
+        focus: snoc(focusPath, focusOffset),
+      }),
+    ),
+  );
 
-export function mapDOMRangeToSelection(
+export const mapDOMRangeToSelection = (
   getPathByNode: (node: DOMNode) => Option<Path>,
-): (range: DOMRange) => Option<Selection> {
-  return ({ startContainer, startOffset, endContainer, endOffset }) =>
-    pipe(
-      sequenceT(option)(
-        getPathByNode(startContainer),
-        getPathByNode(endContainer),
-      ),
-      chain(([anchorPath, focusPath]) =>
-        some({
-          anchor: snoc(anchorPath, startOffset),
-          focus: snoc(focusPath, endOffset),
-        }),
-      ),
-    );
-}
+): ((range: DOMRange) => Option<Selection>) => ({
+  startContainer,
+  startOffset,
+  endContainer,
+  endOffset,
+}) =>
+  pipe(
+    sequenceT(option)(
+      getPathByNode(startContainer),
+      getPathByNode(endContainer),
+    ),
+    chain(([anchorPath, focusPath]) =>
+      some({
+        anchor: snoc(anchorPath, startOffset),
+        focus: snoc(focusPath, endOffset),
+      }),
+    ),
+  );
 
-export function moveSelectionAnchor(offset: number): Endomorphism<Selection> {
-  return selection => {
-    return {
-      ...selection,
-      anchor: movePath(offset)(selection.anchor),
-    };
-  };
-}
+export const moveSelectionAnchor = (
+  offset: number,
+): Endomorphism<Selection> => selection => ({
+  ...selection,
+  anchor: movePath(offset)(selection.anchor),
+});
 
-export function moveSelectionFocus(offset: number): Endomorphism<Selection> {
-  return selection => {
-    return {
-      ...selection,
-      focus: movePath(offset)(selection.focus),
-    };
-  };
-}
+export const moveSelectionFocus = (
+  offset: number,
+): Endomorphism<Selection> => selection => ({
+  ...selection,
+  focus: movePath(offset)(selection.focus),
+});
 
-export function moveSelection(offset: number): Endomorphism<Selection> {
-  return selection =>
-    pipe(
-      selection,
-      moveSelectionAnchor(offset),
-      moveSelectionFocus(offset),
-    );
-}
+export const moveSelection = (
+  offset: number,
+): Endomorphism<Selection> => selection =>
+  pipe(
+    selection,
+    moveSelectionAnchor(offset),
+    moveSelectionFocus(offset),
+  );
 
 export const collapseSelectionToStart: Endomorphism<Selection> = selection => {
   if (isCollapsedSelection(selection)) return selection;
@@ -118,37 +119,31 @@ export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
   return { anchor: range.end, focus: range.end };
 };
 
-export function getSelectionFromInputEvent(
+export const getSelectionFromInputEvent = (
   getPathByNode: (node: DOMNode) => Option<Path>,
-): (event: InputEvent) => Option<Selection> {
-  return event => {
-    return pipe(
-      getDOMRangeFromInputEvent(event),
-      mapDOMRangeToSelection(getPathByNode),
-    );
-  };
-}
+): ((event: InputEvent) => Option<Selection>) => event =>
+  pipe(
+    getDOMRangeFromInputEvent(event),
+    mapDOMRangeToSelection(getPathByNode),
+  );
 
 /**
  * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
  */
-export function initSelection(selection: Selection): Option<Selection> {
-  return pipe(
+export const initSelection = (selection: Selection): Option<Selection> =>
+  pipe(
     sequenceT(option)(init(selection.anchor), init(selection.focus)),
     chain(([anchor, focus]) => some({ anchor, focus })),
   );
-}
 
 /**
  * `{ anchor: [0], focus: [0] }` to `{ anchor: [0, 0], focus: [0, 0] }`
  */
-export function snocSelection(
+export const snocSelection = (
   selection: Selection,
   anchorLastIndex: number,
   focusLastIndex: number,
-): Selection {
-  return {
-    anchor: snoc(selection.anchor, anchorLastIndex),
-    focus: snoc(selection.focus, focusLastIndex),
-  };
-}
+): Selection => ({
+  anchor: snoc(selection.anchor, anchorLastIndex),
+  focus: snoc(selection.focus, focusLastIndex),
+});

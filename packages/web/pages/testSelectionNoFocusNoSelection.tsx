@@ -6,7 +6,7 @@ const initialValue = editor.createValue({
   element: testSelectionElement,
 });
 
-function TestSelectionNoFocusNoSelection() {
+const TestSelectionNoFocusNoSelection = () => {
   const [value, setValue] = useState(initialValue);
 
   const [logValue, logValueElement] = editor.useLogValue(value);
@@ -25,6 +25,6 @@ function TestSelectionNoFocusNoSelection() {
       {logValueElement}
     </>
   );
-}
+};
 
 export default TestSelectionNoFocusNoSelection;

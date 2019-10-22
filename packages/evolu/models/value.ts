@@ -33,7 +33,7 @@ export interface Value {
   readonly selection: Option<Selection>;
 }
 
-export function createValue<T extends Element>({
+export const createValue = <T extends Element>({
   element,
   selection = none,
   hasFocus = false,
@@ -41,16 +41,17 @@ export function createValue<T extends Element>({
   element: T;
   selection?: Option<Selection>;
   hasFocus?: boolean;
-}): Value {
-  return { element, selection, hasFocus };
-}
+}): Value => ({
+  element,
+  selection,
+  hasFocus,
+});
 
-export function createValueWithText(text = '') {
-  return createValue<ReactElement>({
+export const createValueWithText = (text = '') =>
+  createValue<ReactElement>({
     element: jsx(createElement('div', { className: 'root' }, text)),
     hasFocus: false,
   });
-}
 
 /**
  * Focus on the element of Value.

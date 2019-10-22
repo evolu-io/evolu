@@ -123,7 +123,7 @@ export const initialValue = editor.createValue<SchemaDocumentElement>({
 });
 
 // Exported for testEditorServer.
-export function useSchemaRenderElement() {
+export const useSchemaRenderElement = () => {
   const renderElement = useCallback<editor.RenderElement>(
     (editorElement, children, ref) => {
       // This is how we can leverage assertNever.
@@ -177,15 +177,15 @@ export function useSchemaRenderElement() {
   );
 
   return renderElement;
-}
+};
 
-export function SchemaExample({
+export const SchemaExample = ({
   autoFocus = false,
   initialSelection = null,
 }: {
   autoFocus?: boolean;
   initialSelection?: editor.Selection | null;
-}) {
+}) => {
   const [value, setValue] = useState<editor.Value>({
     element: initialValue.element,
     hasFocus: autoFocus,
@@ -249,4 +249,4 @@ export function SchemaExample({
       </div>
     </>
   );
-}
+};

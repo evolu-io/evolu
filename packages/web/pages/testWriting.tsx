@@ -1,8 +1,8 @@
 import React from 'react';
 import { BasicExample } from '../components/examples/BasicExample';
 
-function TestWriting() {
+const TestWriting = () => {
   return <BasicExample onlyText autoFocus />;
-}
+};
 
 export default TestWriting;

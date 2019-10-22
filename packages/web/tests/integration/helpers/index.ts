@@ -3,25 +3,25 @@ import { ClickOptions, Keyboard } from 'puppeteer';
 import { IO } from 'fp-ts/lib/IO';
 import { NodeID, DOMElement } from 'evolu';
 
-export function pageUrl(name: string) {
+export const pageUrl = (name: string) => {
   if (process.env.JEST_WATCH) {
     return `http://localhost:3000/${name}`;
   }
   return `file://${path.join(__dirname, '..', 'out', `${name}.html`)}`;
-}
+};
 
 // This waiting is required for CI and Puppeteer sometimes.
-export async function pageAwaitFor50ms() {
+export const pageAwaitFor50ms = async () => {
   // This seems to be safe.
   const waitForDuration = 50;
   await page.waitFor(waitForDuration);
-}
+};
 
-export async function pageGoto(name: string) {
+export const pageGoto = async (name: string) => {
   const url = pageUrl(name);
   await page.goto(url);
   await pageAwaitFor50ms();
-}
+};
 
 // Note on MacOS, keyboard shortcuts like ⌘ A -> Select All do not work. See #1313
 // https://github.com/GoogleChrome/puppeteer/issues/1313
@@ -31,13 +31,13 @@ export async function pageGoto(name: string) {
 // contentEditable does well. If not, add platform and browser-specific test.
 // Therefore, for key navigation, we use arrows only.
 // There will be platform dependent edge cases among elements etc. That's fine.
-export async function pressMany(key: string, count: number) {
+export const pressMany = async (key: string, count: number) => {
   for (let i = 0; i < count; i++) {
     await page.keyboard.press(key);
     // Waiting after key press is necessary, otherwise, Puppeteer will fail.
     await pageAwaitFor50ms();
   }
-}
+};
 
 interface ElementJson {
   type: string;
@@ -47,9 +47,9 @@ interface ElementJson {
 
 // Note serializeDom function is serialized itself for Puppeteer so
 // all it needs must be defined inside.
-function serializeDom() {
+const serializeDom = () => {
   // We need exact DOM structure but not everything I suppose.
-  function elementToJson(element: DOMElement): ElementJson {
+  const elementToJson = (element: DOMElement): ElementJson => {
     return {
       type: element.tagName.toLowerCase(),
       props: Array.from(element.attributes)
@@ -66,14 +66,14 @@ function serializeDom() {
           return elementToJson(child as DOMElement);
         }),
     };
-  }
+  };
   return elementToJson(document.querySelector('#__next') as DOMElement);
-}
+};
 
 // That's how we trick Jest to have pretty format like react-test-render has.
 // It's impossible to have own formatting as far as I know, because
 // toMatchSnapshot somehow escape quotes and maybe something else.
-function ensurePrettyFormat(element: ElementJson) {
+const ensurePrettyFormat = (element: ElementJson) => {
   Object.defineProperty(element, '$$typeof', {
     value: Symbol.for('react.test.json'),
   });
@@ -81,19 +81,19 @@ function ensurePrettyFormat(element: ElementJson) {
     if (typeof child === 'string') return;
     ensurePrettyFormat(child);
   });
-}
+};
 
-export async function pageDom() {
+export const pageDom = async () => {
   // https://jestjs.io/docs/en/expect#expectextendmatchers
   const json = await page.evaluate(serializeDom);
   ensurePrettyFormat(json);
   return json;
-}
+};
 
-export async function pageClick(selector: string, options?: ClickOptions) {
+export const pageClick = async (selector: string, options?: ClickOptions) => {
   await page.click(selector, options);
   await pageAwaitFor50ms();
-}
+};
 
 export const pageKeyboard: Keyboard = [
   'down',
@@ -116,10 +116,10 @@ export const pageKeyboard: Keyboard = [
   {} as Keyboard,
 );
 
-export function createStableIDFactory(): IO<NodeID> {
+export const createStableIDFactory = (): IO<NodeID> => {
   let lastID = 0;
   beforeEach(async () => {
     lastID = 0;
   });
   return () => ((lastID++).toString() as unknown) as NodeID;
-}
+};

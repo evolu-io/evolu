@@ -15,7 +15,7 @@ export interface ElementRendererProps {
 }
 
 export const ElementRenderer = memo<ElementRendererProps>(
-  function Memo({ element, path }) {
+  ({ element, path }) => {
     const renderElement = useRenderElement();
     const setNodePathRef = useSetDOMNodePathRef(path);
     const handleElementRef = useCallback<SetDOMNodePathRef>(

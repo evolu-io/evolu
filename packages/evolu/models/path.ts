@@ -16,10 +16,8 @@ export const byDirection: Ord<Path> = fromCompare((x, y) =>
     : -1,
 );
 
-export function movePath(offset: number): Endomorphism<Path> {
-  return path =>
-    pipe(
-      path,
-      foldRight(() => path, (init, last) => [...init, last + offset]),
-    );
-}
+export const movePath = (offset: number): Endomorphism<Path> => path =>
+  pipe(
+    path,
+    foldRight(() => path, (init, last) => [...init, last + offset]),
+  );

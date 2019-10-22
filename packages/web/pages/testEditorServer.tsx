@@ -7,7 +7,7 @@ import {
   SchemaDocumentElement,
 } from '../components/examples/SchemaExample';
 
-function TestEditorServer() {
+const TestEditorServer = () => {
   const renderSchemaElement = useSchemaRenderElement();
   return (
     <div>
@@ -34,6 +34,6 @@ function TestEditorServer() {
       />
     </div>
   );
-}
+};
 
 export default TestEditorServer;

@@ -4,7 +4,7 @@
  * For rare situations when external data are invalid, console.warn is good enough.
  * https://github.com/gcanti/fp-ts/issues/973
  */
-export function warn(message: string) {
+export const warn = (message: string) => {
   // eslint-disable-next-line no-console
   warn(message);
-}
+};

@@ -14,10 +14,10 @@ export type SetDOMNodePath = (
   path: Path,
 ) => void;
 
-function useDebugNodesPaths(
+const useDebugNodesPaths = (
   nodesPathsMap: Map<DOMNode, Path>,
   element: Element,
-) {
+) => {
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
@@ -43,19 +43,19 @@ function useDebugNodesPaths(
         );
     }, [nodesPathsMap, element]);
   }
-}
+};
 
 /**
  * Mapping between nodes and paths. Some contentEditable editors are
  * using IDs with DOM traversal. We leverage React refs instead.
  */
-export function useNodesPathsMapping(
+export const useNodesPathsMapping = (
   element: Element,
 ): {
   setDOMNodePath: SetDOMNodePath;
   getDOMNodeByPath: (path: Path) => Option<DOMNode>;
   getPathByDOMNode: (node: DOMNode) => Option<Path>;
-} {
+} => {
   const nodesPathsMapRef = useRef<Map<DOMNode, Path>>(new Map());
   const pathsNodesMapRef = useRef<Map<string, DOMNode>>(new Map());
 
@@ -103,4 +103,4 @@ export function useNodesPathsMapping(
     getDOMNodeByPath,
     getPathByDOMNode,
   };
-}
+};

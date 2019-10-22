@@ -25,7 +25,7 @@ const initialValue = createValue({
   hasFocus: true,
 });
 
-function TestSetValue() {
+const TestSetValue = () => {
   const [value, setValue] = useState(initialValue);
 
   const [logValue, logValueElement] = useLogValue(value);
@@ -77,6 +77,6 @@ function TestSetValue() {
       {logValueElement}
     </>
   );
-}
+};
 
 export default TestSetValue;

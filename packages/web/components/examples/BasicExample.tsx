@@ -39,7 +39,7 @@ export const initialValueWithTextOnly = editor.createValue({
   element: editor.jsx(<div className="root">a</div>),
 });
 
-export function BasicExample({
+export const BasicExample = ({
   autoFocus = false,
   initialSelection = null,
   onlyText = false,
@@ -47,7 +47,7 @@ export function BasicExample({
   autoFocus?: boolean;
   initialSelection?: editor.Selection | null;
   onlyText?: boolean;
-}) {
+}) => {
   const [value, setValue] = useState<editor.Value>({
     ...(onlyText ? initialValueWithTextOnly : initialValue),
     hasFocus: autoFocus,
@@ -75,4 +75,4 @@ export function BasicExample({
       {logValueElement}
     </>
   );
-}
+};

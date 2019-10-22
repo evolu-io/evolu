@@ -12,7 +12,7 @@ const initialValue = createValue({
   }),
 });
 
-function TestSelectionNoFocusSomeSelection() {
+const TestSelectionNoFocusSomeSelection = () => {
   const [value, setValue] = useState(initialValue);
 
   const [logValue, logValueElement] = useLogValue(value);
@@ -31,6 +31,6 @@ function TestSelectionNoFocusSomeSelection() {
       {logValueElement}
     </>
   );
-}
+};
 
 export default TestSelectionNoFocusSomeSelection;

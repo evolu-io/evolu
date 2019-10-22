@@ -84,7 +84,7 @@ export interface TextRendererProps {
 }
 
 export const TextRenderer = memo<TextRendererProps>(
-  function Memo({ text, path }) {
+  ({ text, path }) => {
     const setNodePathRef = useSetDOMNodePathRef(path);
     return (
       <Text

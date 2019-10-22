@@ -89,32 +89,30 @@ export type ReactElement = $Values<
   }
 >;
 
-export function materializePath(
+export const materializePath = (
   path: Path,
-): (element: Element) => Option<MaterializedPath> {
-  return element => {
-    const parents: MaterializedPath['parents'] = [];
-    let to: MaterializedPath['to'] = element;
-    for (let i = 0; i < path.length; i++) {
-      const pathIndex = path[i];
-      if (isElement(to)) {
-        parents.push(to);
-        to = to.children[pathIndex];
-        if (to == null) return none;
-      } else if (isText(to)) {
-        const pathContinues = i < path.length - 1;
-        if (pathContinues || pathIndex > to.text.length) return none;
-        return some({ parents, to: { text: to, offset: pathIndex } });
-      }
+): ((element: Element) => Option<MaterializedPath>) => element => {
+  const parents: MaterializedPath['parents'] = [];
+  let to: MaterializedPath['to'] = element;
+  for (let i = 0; i < path.length; i++) {
+    const pathIndex = path[i];
+    if (isElement(to)) {
+      parents.push(to);
+      to = to.children[pathIndex];
+      if (to == null) return none;
+    } else if (isText(to)) {
+      const pathContinues = i < path.length - 1;
+      if (pathContinues || pathIndex > to.text.length) return none;
+      return some({ parents, to: { text: to, offset: pathIndex } });
     }
-    return some({ parents, to });
-  };
-}
+  }
+  return some({ parents, to });
+};
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
  */
-export function jsx(element: JSX.Element): ReactElement {
+export const jsx = (element: JSX.Element): ReactElement => {
   const {
     type: tag,
     props: { children = [], ...props },
@@ -137,7 +135,7 @@ export function jsx(element: JSX.Element): ReactElement {
     props: elementProps,
     children: elementChildren,
   };
-}
+};
 
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
@@ -212,9 +210,8 @@ export const childrenLens = Lens.fromProp<Element>()('children');
 /**
  * Focus on the child at index of ElementChild[].
  */
-export function getElementChildAt(index: number) {
-  return indexArray<ElementChild>().index(index);
-}
+export const getElementChildAt = (index: number) =>
+  indexArray<ElementChild>().index(index);
 
 /**
  * Focus on Element of ElementChild.
@@ -229,39 +226,36 @@ export const textPrism = Prism.fromPredicate(elementChildIsText);
 /**
  * Focus on Element by Path.
  */
-export function getElementTraversal(path: Path) {
-  return path.reduce(
-    (acc, pathIndex) => {
-      return acc
+export const getElementTraversal = (path: Path) =>
+  path.reduce(
+    (acc, pathIndex) =>
+      acc
         .composeLens(childrenLens)
         .composeOptional(getElementChildAt(pathIndex))
-        .composePrism(elementPrism);
-    },
+        .composePrism(elementPrism),
     elementPrism.asOptional() as Optional<Element, Element>,
   );
-}
 
 /**
  * Focus on Text by Path.
  */
-export function getTextTraversal(
+export const getTextTraversal = (
   parentElementPath: Path,
   index: number,
-): Optional<Element, Text> {
-  return getElementTraversal(parentElementPath)
+): Optional<Element, Text> =>
+  getElementTraversal(parentElementPath)
     .composeLens(childrenLens)
     .composeOptional(getElementChildAt(index))
     .composePrism(textPrism);
-}
 
 /**
  * Ensure text traversal. If Path focuses to text offset, get parent path.
  */
-export function ensureTextTraversal(
+export const ensureTextTraversal = (
   path: Path,
   element: Element,
-): Optional<Element, Text> {
-  return pipe(
+): Optional<Element, Text> =>
+  pipe(
     path,
     foldRight(
       () => {
@@ -275,73 +269,65 @@ export function ensureTextTraversal(
       },
     ),
   );
-}
 
-export function setTextElement(
+export const setTextElement = (
   text: string,
   selection: Selection,
-): Endomorphism<Element> {
-  return element => {
-    const onlyTextIsSelected: Predicate<Selection> = selection => {
-      const anchorFold = ensureTextTraversal(
-        selection.anchor,
-        element,
-      ).asFold();
-      const focusFold = ensureTextTraversal(selection.focus, element).asFold();
-      if (!anchorFold.exist(isText)(element)) return false;
-      if (!focusFold.exist(isText)(element)) return false;
-      return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
-    };
-
-    if (isCollapsedSelection(selection) || onlyTextIsSelected(selection)) {
-      const path = selection.anchor;
-      return ensureTextTraversal(path, element).modify(t => {
-        return { ...t, text };
-      })(element);
-    }
-    return element;
+): Endomorphism<Element> => element => {
+  const onlyTextIsSelected: Predicate<Selection> = selection => {
+    const anchorFold = ensureTextTraversal(selection.anchor, element).asFold();
+    const focusFold = ensureTextTraversal(selection.focus, element).asFold();
+    if (!anchorFold.exist(isText)(element)) return false;
+    if (!focusFold.exist(isText)(element)) return false;
+    return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
   };
-}
 
-export function deleteContentElement(range: Range): Endomorphism<Element> {
-  return element => {
-    // TODO: Refactor all.
-    const anchorMaterializedPath = toNullable(
-      materializePath(range.start)(element),
-    );
-    const focusMaterializedPath = toNullable(
-      materializePath(range.end)(element),
-    );
-    if (anchorMaterializedPath == null || focusMaterializedPath == null)
-      return element;
-    // TODO: Handle other cases, with lenses.
-    if (
-      // Just deleting text on the same texts.
-      isTextWithOffset(anchorMaterializedPath.to) &&
-      isTextWithOffset(focusMaterializedPath.to) &&
-      anchorMaterializedPath.to.text === focusMaterializedPath.to.text
-    ) {
-      return pipe(
-        init(range.start),
-        fold(
+  if (isCollapsedSelection(selection) || onlyTextIsSelected(selection)) {
+    const path = selection.anchor;
+    return ensureTextTraversal(path, element).modify(t => {
+      return { ...t, text };
+    })(element);
+  }
+  return element;
+};
+
+export const deleteContentElement = (
+  range: Range,
+): Endomorphism<Element> => element => {
+  // TODO: Refactor all.
+  const anchorMaterializedPath = toNullable(
+    materializePath(range.start)(element),
+  );
+  const focusMaterializedPath = toNullable(materializePath(range.end)(element));
+  if (anchorMaterializedPath == null || focusMaterializedPath == null)
+    return element;
+  // TODO: Handle other cases, with lenses.
+  if (
+    // Just deleting text on the same texts.
+    isTextWithOffset(anchorMaterializedPath.to) &&
+    isTextWithOffset(focusMaterializedPath.to) &&
+    anchorMaterializedPath.to.text === focusMaterializedPath.to.text
+  ) {
+    return pipe(
+      init(range.start),
+      fold(
+        () => element,
+        foldRight(
           () => element,
-          foldRight(
-            () => element,
-            (init, index) => {
-              // @ts-ignore Refactor later.
-              const startOffset = anchorMaterializedPath.to.offset;
-              // @ts-ignore Refactor later.
-              const endOffset = focusMaterializedPath.to.offset;
-              return getTextTraversal(init, index).modify(t => {
-                const text =
-                  t.text.slice(0, startOffset) + t.text.slice(endOffset);
-                return { ...t, text };
-              })(element);
-            },
-          ),
+          (init, index) => {
+            // @ts-ignore Refactor later.
+            const startOffset = anchorMaterializedPath.to.offset;
+            // @ts-ignore Refactor later.
+            const endOffset = focusMaterializedPath.to.offset;
+            return getTextTraversal(init, index).modify(t => {
+              const text =
+                t.text.slice(0, startOffset) + t.text.slice(endOffset);
+              return { ...t, text };
+            })(element);
+          },
         ),
-      );
-    }
-    return element;
-  };
-}
+      ),
+    );
+  }
+  return element;
+};

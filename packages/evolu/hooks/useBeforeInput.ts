@@ -16,18 +16,18 @@ import { warn } from '../warn';
 import { DOMNode, DOMText, getDOMRangeFromInputEvent } from '../models/dom';
 import { Path } from '../models/path';
 
-export function useBeforeInput(
+export const useBeforeInput = (
   divRef: RefObject<HTMLDivElement>,
   userIsTypingRef: MutableRefObject<boolean>,
   getPathByNode: (node: DOMNode) => Option<Path>,
   dispatch: Dispatch<EditorAction>,
-) {
+) => {
   useEffect(() => {
     const { current: div } = divRef;
     if (div == null) return;
 
     let lastAfterTypingCallback: () => void = () => {};
-    function afterTyping(callback: () => void) {
+    const afterTyping = (callback: () => void) => {
       userIsTypingRef.current = true;
       lastAfterTypingCallback = callback;
       // DraftJS uses setImmediate polyfil, but it breaks selection here.
@@ -36,9 +36,9 @@ export function useBeforeInput(
         userIsTypingRef.current = false;
         lastAfterTypingCallback();
       });
-    }
+    };
 
-    function handleBeforeInput(event: InputEvent) {
+    const handleBeforeInput = (event: InputEvent) => {
       // In Chrome and Safari, we can use event.preventDefault to replace browsers
       // default behavior with custom. As for Firefox, we can polyfill it somehow, but
       // Firefox is already working on beforeinput support, so let's wait.
@@ -201,7 +201,7 @@ export function useBeforeInput(
         default:
           warn(`Unhandled beforeinput inputType: ${event.inputType}`);
       }
-    }
+    };
 
     // @ts-ignore Outdated types.
     div.addEventListener('beforeinput', handleBeforeInput);
@@ -210,4 +210,4 @@ export function useBeforeInput(
       div.removeEventListener('beforeinput', handleBeforeInput);
     };
   }, [dispatch, divRef, getPathByNode, userIsTypingRef]);
-}
+};
