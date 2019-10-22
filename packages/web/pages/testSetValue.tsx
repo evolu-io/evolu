@@ -62,6 +62,7 @@ const TestSetValue = () => {
       fold(
         () => {
           // TODO: Here, we should call Puppeter somehow.
+          // waitForSelector does not work.
         },
         operation => {
           const nextValue = operation(value);

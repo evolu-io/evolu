@@ -5,7 +5,6 @@ beforeEach(async () => {
 });
 
 test('operations', async () => {
-  // TODO: We should register testSetValue callback somehow.
-  await page.waitFor(500);
+  await page.waitFor(1000);
   await expect(await pageDom()).toMatchSnapshot();
 });
