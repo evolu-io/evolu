@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'evolu';
+import { fromNullable } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -47,10 +48,10 @@ export function BasicExample({
   initialSelection?: editor.Selection | null;
   onlyText?: boolean;
 }) {
-  const [value, setValue] = useState({
+  const [value, setValue] = useState<editor.Value>({
     ...(onlyText ? initialValueWithTextOnly : initialValue),
-    ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: initialSelection }),
+    hasFocus: autoFocus,
+    selection: fromNullable(initialSelection),
   });
 
   const [logValue, logValueElement] = editor.useLogValue(value);

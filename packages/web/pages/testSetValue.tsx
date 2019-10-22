@@ -4,7 +4,7 @@ import {
   Editor,
   Value,
   elementLens,
-  isValueWithSelection,
+  hasSelection,
   jsx,
   move,
   select,
@@ -50,7 +50,7 @@ function TestSetValue() {
   ]);
 
   useEffect(() => {
-    if (!isValueWithSelection(value)) return;
+    if (!hasSelection(value)) return;
     pipe(
       operationsRef.current,
       foldLeft(

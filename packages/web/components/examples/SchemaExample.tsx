@@ -2,6 +2,7 @@ import { css, SerializedStyles } from '@emotion/core';
 import * as editor from 'evolu';
 import { absurd } from 'fp-ts/lib/function';
 import React, { ReactNode, useCallback, useState } from 'react';
+import { fromNullable } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -185,10 +186,10 @@ export function SchemaExample({
   autoFocus?: boolean;
   initialSelection?: editor.Selection | null;
 }) {
-  const [value, setValue] = useState({
-    ...initialValue,
-    ...(autoFocus != null && { hasFocus: autoFocus }),
-    ...(initialSelection != null && { selection: initialSelection }),
+  const [value, setValue] = useState<editor.Value>({
+    element: initialValue.element,
+    hasFocus: autoFocus,
+    selection: fromNullable(initialSelection),
   });
 
   const [logValue, logValueElement] = editor.useLogValue(value);

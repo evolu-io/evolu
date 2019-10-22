@@ -1,10 +1,11 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
+import { toUndefined } from 'fp-ts/lib/Option';
 import { Element, recursiveRemoveID } from '../models/element';
-import { Value, ValueWithSelection } from '../models/value';
+import { Value } from '../models/value';
 
 const Item = memo(({ value, index }: { value: Value; index: number }) => {
-  const { element, hasFocus, selection } = value as ValueWithSelection;
-  const indexItem = { hasFocus, selection };
+  const { element, hasFocus, selection } = value;
+  const indexItem = { hasFocus, selection: toUndefined(selection) };
   // Deliberately do not prettify. Smaller output is more readable in snapshots.
   // No IDs because that would break integration tests.
   const title = JSON.stringify(recursiveRemoveID(element as Element))

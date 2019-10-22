@@ -1,60 +1,49 @@
-import { Endomorphism, Refinement } from 'fp-ts/lib/function';
+import { Endomorphism, Predicate } from 'fp-ts/lib/function';
+import {
+  exists,
+  fold,
+  isSome,
+  map,
+  none,
+  Option,
+  some,
+  toNullable,
+} from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
 import {
   deleteContentElement,
   Element,
-  ReactElement,
   jsx,
   normalizeElement,
+  ReactElement,
   setTextElement,
 } from './element';
 import {
   collapseSelectionToStart,
-  Selection,
   eqSelection,
-  moveSelection,
   mapSelectionToRange,
+  moveSelection,
+  Selection,
 } from './selection';
 
-/**
- * Use ValueWithoutSelection everywhere where Value must not have any selection.
- */
-export interface ValueWithoutSelection {
+export interface Value {
   readonly element: Element;
   readonly hasFocus: boolean;
+  readonly selection: Option<Selection>;
 }
 
-/**
- * Use ValueWithSelection everywhere where Value must have a selection.
- */
-export interface ValueWithSelection {
-  readonly element: Element;
-  readonly hasFocus: boolean;
-  readonly selection: Selection;
-}
-
-// Value is sum type.
-// https://github.com/gcanti/fp-ts/issues/973#issuecomment-542185502
-// https://dev.to/gcanti/functional-design-algebraic-data-types-36kf
-// https://www.youtube.com/watch?v=PLFl95c-IiU
-
-export type Value = ValueWithoutSelection | ValueWithSelection;
-
-export const isValueWithSelection: Refinement<Value, ValueWithSelection> = (
-  value,
-): value is ValueWithSelection => {
-  return (value as ValueWithSelection).selection != null;
-};
+// TODO: Remove, use pipe fold get etc.
+export const hasSelection: Predicate<Value> = value => isSome(value.selection);
 
 export function createValue<T extends Element>({
   element,
-  selection,
+  selection = none,
   hasFocus = false,
 }: {
   element: T;
-  selection?: Selection;
+  selection?: Option<Selection>;
   hasFocus?: boolean;
 }): Value {
   return { element, selection, hasFocus };
@@ -72,57 +61,54 @@ export function createValueWithText(text = '') {
  */
 export const elementLens = Lens.fromProp<Value>()('element');
 
-export function select(
-  selection: Selection,
-): (value: Value) => ValueWithSelection {
-  return value => {
-    if (
-      isValueWithSelection(value) &&
-      eqSelection.equals(value.selection, selection)
-    )
-      return value;
-    return { ...value, selection };
-  };
-}
-
-export const setText = (
-  text: string,
-): Endomorphism<ValueWithSelection> => value =>
-  pipe(
-    value,
-    elementLens.modify(setTextElement(text, value.selection)),
-  ) as ValueWithSelection;
-
-// TODO: It should traverse across nodes.
-export const move = (
-  offset: number,
-): Endomorphism<ValueWithSelection> => value =>
-  pipe(
-    value,
-    select(
-      pipe(
-        value.selection,
-        moveSelection(offset),
-      ),
-    ),
-  );
-
-export const deleteContent: Endomorphism<ValueWithSelection> = value =>
-  pipe(
-    value,
-    elementLens.modify(
-      pipe(
-        value.selection,
-        mapSelectionToRange,
-        deleteContentElement,
-      ),
-    ),
-    select(collapseSelectionToStart(value.selection)),
-  );
-
 export const normalize: Endomorphism<Value> = value => {
   // https://github.com/gcanti/fp-ts/issues/976
   const element = normalizeElement(value.element);
   if (element === value.element) return value;
   return { ...value, element };
 };
+
+export const select = (selection: Selection): Endomorphism<Value> => value =>
+  pipe(
+    value.selection,
+    exists(s => eqSelection.equals(s, selection)),
+  )
+    ? value
+    : { ...value, selection: some(selection) };
+
+export const setText = (text: string): Endomorphism<Value> => value => {
+  const selection = toNullable(value.selection);
+  if (selection == null) return value;
+  return pipe(
+    value,
+    elementLens.modify(setTextElement(text, selection)),
+  );
+};
+
+// TODO: It should traverse across nodes.
+export const move = (offset: number): Endomorphism<Value> => value =>
+  pipe(
+    value.selection,
+    map(moveSelection(offset)),
+    fold(() => value, selection => select(selection)(value)),
+  );
+
+export const deleteContent: Endomorphism<Value> = value =>
+  pipe(
+    value.selection,
+    fold(
+      () => value,
+      selection =>
+        pipe(
+          value,
+          elementLens.modify(
+            pipe(
+              selection,
+              mapSelectionToRange,
+              deleteContentElement,
+            ),
+          ),
+          select(collapseSelectionToStart(selection)),
+        ),
+    ),
+  );

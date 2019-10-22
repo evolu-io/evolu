@@ -76,6 +76,7 @@ function Index() {
         type="button"
         onMouseDown={event => {
           event.preventDefault();
+          // console.log('f');
           // handleEditorChange(nextValue);
         }}
       >

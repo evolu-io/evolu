@@ -1,13 +1,13 @@
 import Debug from 'debug';
+import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty, init } from 'fp-ts/lib/Array';
 import { constVoid } from 'fp-ts/lib/function';
 import {
   chain,
+  filter,
   fold,
   fromNullable,
-  none,
   Option,
-  some,
   option,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -20,34 +20,33 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { sequenceT } from 'fp-ts/lib/Apply';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useNodesPathsMapping } from '../hooks/useNodesPathsMapping';
 import { usePrevious } from '../hooks/usePrevious';
 import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
+import {
+  createDOMNodeOffset,
+  DOMNodeOffset,
+  DOMSelection,
+} from '../models/dom';
 import { RenderElement } from '../models/element';
 import { Path } from '../models/path';
 import {
-  Selection,
-  isForwardSelection,
   eqSelection,
+  isForwardSelection,
   mapDOMSelectionToSelection,
+  Selection,
 } from '../models/selection';
-import { Value, isValueWithSelection, normalize } from '../models/value';
+import { normalize, Value } from '../models/value';
 import {
   EditorAction,
   editorReducer as defaultEditorReducer,
   EditorReducer,
 } from '../reducers/editorReducer';
 import { warn } from '../warn';
-import { ElementRenderer } from './ElementRenderer';
 import { renderReactElement } from './EditorServer';
-import {
-  DOMNodeOffset,
-  createDOMNodeOffset,
-  DOMSelection,
-} from '../models/dom';
+import { ElementRenderer } from './ElementRenderer';
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -136,8 +135,8 @@ export const EditorClient = memo<EditorClientProps>(
       }
     }, [tabLostFocus, divRef, valueHadFocus, value.hasFocus]);
 
-    // Using divRef is must for iframes.
     const getDOMSelection = useCallback((): Option<DOMSelection> => {
+      // Using divRef is must for iframes.
       // TODO: Use TypeScript 3.7 optional chaining when Prettier will be ready.
       return fromNullable(
         divRef.current &&
@@ -145,6 +144,13 @@ export const EditorClient = memo<EditorClientProps>(
           divRef.current.ownerDocument.getSelection(),
       );
     }, []);
+
+    const getSelection = useCallback((): Option<Selection> => {
+      return pipe(
+        getDOMSelection(),
+        chain(mapDOMSelectionToSelection(getPathByDOMNode)),
+      );
+    }, [getDOMSelection, getPathByDOMNode]);
 
     // Using divRef is must for iframes.
     const getRange = useCallback((): Option<Range> => {
@@ -184,7 +190,7 @@ export const EditorClient = memo<EditorClientProps>(
       [getDOMNodeByPath],
     );
 
-    const setSelection = useCallback(
+    const setDOMSelection = useCallback(
       (selection: Selection) => {
         const bla = isForwardSelection(selection);
         pipe(
@@ -245,34 +251,22 @@ export const EditorClient = memo<EditorClientProps>(
       };
     }, [dispatch, getPathByDOMNode, getDOMSelection]);
 
-    const maybeUpdateSelection = useCallback(() => {
-      if (!isValueWithSelection(value)) return;
+    const ensureDOMSelectionIsActual = useCallback(() => {
       pipe(
-        getDOMSelection(),
-        chain(mapDOMSelectionToSelection(getPathByDOMNode)),
-        chain(currentSelection => {
-          return value.selection &&
-            eqSelection.equals(currentSelection, value.selection)
-            ? none
-            : some(value.selection);
+        sequenceT(option)(value.selection, getSelection()),
+        filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
+        fold(constVoid, ([selection]) => {
+          setDOMSelection(selection);
         }),
-        fold(
-          () => {
-            // No selection, nothing to update.
-          },
-          selection => {
-            setSelection(selection);
-          },
-        ),
       );
-    }, [value, getPathByDOMNode, getDOMSelection, setSelection]);
+    }, [getSelection, setDOMSelection, value.selection]);
 
     // useLayoutEffect is a must to keep browser selection in sync with editor selection.
     // With useEffect, fast typing would lose caret position.
     useLayoutEffect(() => {
       if (!value.hasFocus) return;
-      maybeUpdateSelection();
-    }, [value.hasFocus, maybeUpdateSelection]);
+      ensureDOMSelectionIsActual();
+    }, [value.hasFocus, ensureDOMSelectionIsActual]);
 
     useBeforeInput(divRef, userIsTypingRef, getPathByDOMNode, dispatch);
 
@@ -289,10 +283,10 @@ export const EditorClient = memo<EditorClientProps>(
     }, [value.element, renderElement, setDOMNodePath]);
 
     const handleDivFocus = useCallback(() => {
-      maybeUpdateSelection();
+      ensureDOMSelectionIsActual();
       setTabLostFocus(false);
       dispatch({ type: 'focus' });
-    }, [dispatch, maybeUpdateSelection]);
+    }, [dispatch, ensureDOMSelectionIsActual]);
 
     const handleDivBlur = useCallback(() => {
       const tabLostFocus =

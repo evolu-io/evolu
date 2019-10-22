@@ -7,7 +7,7 @@ import {
   Value,
   select,
   setText,
-  isValueWithSelection,
+  hasSelection,
 } from '../models/value';
 import { warn } from '../warn';
 
@@ -39,7 +39,7 @@ export const editorReducer: EditorReducer = (value, action) => {
 
     case 'insertText':
       // TODO: Move burden to beforeInput.
-      if (!isValueWithSelection(value)) {
+      if (!hasSelection(value)) {
         warn('Value in insertText should have a selection.');
         return value;
       }
@@ -60,7 +60,7 @@ export const editorReducer: EditorReducer = (value, action) => {
 
     case 'insertReplacementText':
       // TODO: Move burden to beforeInput.
-      if (!isValueWithSelection(value)) {
+      if (!hasSelection(value)) {
         warn('Value in insertReplacementText should have a selection.');
         return value;
       }
