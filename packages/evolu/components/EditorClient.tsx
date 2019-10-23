@@ -9,7 +9,6 @@ import {
   fromNullable,
   Option,
   option,
-  mapNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
@@ -29,7 +28,8 @@ import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
 import {
   createDOMNodeOffset,
   DOMNodeOffset,
-  DOMSelection,
+  getDOMSelection,
+  getDOMRange,
 } from '../models/dom';
 import { RenderElement } from '../models/element';
 import { Path } from '../models/path';
@@ -137,34 +137,12 @@ export const EditorClient = memo<EditorClientProps>(
       }
     }, [tabLostFocus, divRef, valueHadFocus, value.hasFocus]);
 
-    const getDOMSelection = useCallback(
-      (): Option<DOMSelection> =>
-        pipe(
-          // Using divRef is must for iframes.
-          fromNullable(divRef.current),
-          mapNullable(div => div.ownerDocument),
-          mapNullable(doc => doc.getSelection()),
-        ),
-      [],
-    );
-
     const getSelection = useCallback((): Option<Selection> => {
       return pipe(
-        getDOMSelection(),
+        getDOMSelection(divRef.current),
         chain(mapDOMSelectionToSelection(getPathByDOMNode)),
       );
-    }, [getDOMSelection, getPathByDOMNode]);
-
-    const getRange = useCallback(
-      (): Option<Range> =>
-        pipe(
-          // Using divRef is must for iframes.
-          fromNullable(divRef.current),
-          mapNullable(div => div.ownerDocument),
-          mapNullable(doc => doc.createRange()),
-        ),
-      [],
-    );
+    }, [getPathByDOMNode]);
 
     const pathToNodeOffset = useCallback(
       (path: Path): Option<DOMNodeOffset> => {
@@ -199,8 +177,8 @@ export const EditorClient = memo<EditorClientProps>(
         const bla = isForwardSelection(selection);
         pipe(
           sequenceT(option)(
-            getDOMSelection(),
-            getRange(),
+            getDOMSelection(divRef.current),
+            getDOMRange(divRef.current),
             pathToNodeOffset(bla ? selection.anchor : selection.focus),
             pathToNodeOffset(bla ? selection.focus : selection.anchor),
           ),
@@ -225,7 +203,7 @@ export const EditorClient = memo<EditorClientProps>(
           ),
         );
       },
-      [pathToNodeOffset, getRange, getDOMSelection],
+      [pathToNodeOffset],
     );
 
     // Update editor selection by DOM selection.
@@ -236,7 +214,7 @@ export const EditorClient = memo<EditorClientProps>(
       const handleDocumentSelectionChange = () => {
         if (isTypingRef.current) return;
         pipe(
-          getDOMSelection(),
+          getDOMSelection(divRef.current),
           chain(mapDOMSelectionToSelection(getPathByDOMNode)),
           // We ignore none because editor has to remember the last selection to
           // restore it later on the focus.
@@ -253,7 +231,7 @@ export const EditorClient = memo<EditorClientProps>(
           handleDocumentSelectionChange,
         );
       };
-    }, [dispatch, getPathByDOMNode, getDOMSelection, isTypingRef]);
+    }, [dispatch, getPathByDOMNode, isTypingRef]);
 
     const ensureDOMSelectionIsActual = useCallback(() => {
       pipe(
