@@ -5,6 +5,6 @@ beforeEach(async () => {
 });
 
 test('operations', async () => {
-  await page.waitFor(2000);
+  await page.waitForSelector('#done');
   await expect(await pageDom()).toMatchSnapshot();
 });

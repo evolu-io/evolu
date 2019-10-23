@@ -16,9 +16,9 @@ exports[`operations 1`] = `
       class="root"
     >
       <div
-        class="paragraph"
+        class="heading"
       >
-        ·paragraph·
+        ·heading·
       </div>
     </div>
   </div>
@@ -27,11 +27,11 @@ exports[`operations 1`] = `
   >
     <span
       class="jsx-378398407"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]}]}"
     >
       ·6·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
     </span>
     <span
       class="jsx-378398407"
@@ -39,7 +39,7 @@ exports[`operations 1`] = `
     >
       ·5·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
     </span>
     <span
       class="jsx-378398407"
@@ -47,11 +47,11 @@ exports[`operations 1`] = `
     >
       ·4·
       · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,3]}}·
+      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]}}·
     </span>
     <span
       class="jsx-378398407"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
+      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
       ·3·
       · ·
@@ -82,5 +82,10 @@ exports[`operations 1`] = `
       ·{"hasFocus":true}·
     </span>
   </pre>
+  <b
+    id="done"
+  >
+    ·done·
+  </b>
 </div>
 `;

@@ -48,6 +48,8 @@ const TestSetValue = () => {
       .modify(childred => childred.slice(0, 1)),
   ]);
 
+  const [done, setDone] = useState(false);
+
   useEffect(() => {
     if (toNullable(value.selection) == null) return;
     pipe(
@@ -61,12 +63,13 @@ const TestSetValue = () => {
       ),
       fold(
         () => {
-          // TODO: Here, we should call Puppeter somehow.
-          // waitForSelector does not work.
+          setDone(true);
         },
         operation => {
           const nextValue = operation(value);
-          handleEditorChange(nextValue);
+          setTimeout(() => {
+            handleEditorChange(nextValue);
+          }, 10);
         },
       ),
     );
@@ -76,6 +79,7 @@ const TestSetValue = () => {
     <>
       <Editor value={value} onChange={handleEditorChange} />
       {logValueElement}
+      {done && <b id="done">done</b>}
     </>
   );
 };
