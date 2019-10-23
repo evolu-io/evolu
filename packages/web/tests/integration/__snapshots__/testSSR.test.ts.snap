@@ -37,8 +37,8 @@ exports[`dom after JS is executed 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-378398407"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      class="jsx-2185133862"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -93,8 +93,8 @@ exports[`dom after JS is executed 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-378398407"
-      title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      class="jsx-2185133862"
+      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·
@@ -154,8 +154,8 @@ exports[`dom before JS is executed 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-378398407"
-      title="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      class="jsx-2185133862"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
       ·0·
       · ·
@@ -219,8 +219,8 @@ exports[`dom before JS is executed 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-378398407"
-      title="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      class="jsx-2185133862"
+      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0·
       · ·

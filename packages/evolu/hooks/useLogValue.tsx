@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-env browser */
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
 import { toUndefined } from 'fp-ts/lib/Option';
 import { mapElementToIDless } from '../models/element';
@@ -8,17 +10,42 @@ const Item = memo(({ value, index }: { value: Value; index: number }) => {
   const indexItem = { hasFocus, selection: toUndefined(selection) };
   // Deliberately do not prettify. Smaller output is more readable in snapshots.
   // No IDs because that would break integration tests.
-  const title = JSON.stringify(mapElementToIDless(element))
+  const elementTextForSnapshots = JSON.stringify(mapElementToIDless(element))
     .split('"')
     .join("'");
+  const [shown, setShow] = useState(false);
+  const handleItemMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.preventDefault();
+      setShow(!shown);
+    },
+    [shown],
+  );
   return (
-    <span title={title}>
+    <span onMouseDown={handleItemMouseDown} data-json={elementTextForSnapshots}>
       {index} {JSON.stringify(indexItem)}
+      {shown && (
+        <div onMouseDown={handleItemMouseDown}>
+          {JSON.stringify(mapElementToIDless(element), null, 2)}
+        </div>
+      )}
       <style jsx>{`
         span {
           color: #888;
           display: block;
           line-height: 24px;
+          cursor: pointer;
+        }
+        div {
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 10;
+          line-height: 16px;
+          background-color: #fff;
+          padding: 16px;
         }
       `}</style>
     </span>
