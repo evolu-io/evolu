@@ -1,31 +1,26 @@
 import { Endomorphism } from 'fp-ts/lib/function';
 import {
+  alt,
   exists,
   fold,
+  fromNullable,
+  getOrElse,
   map,
   none,
   Option,
   some,
-  toNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
 import {
-  deleteContentElement,
   Element,
   jsx,
   normalizeElement,
   ReactElement,
   setTextElement,
 } from './element';
-import {
-  collapseSelectionToStart,
-  eqSelection,
-  mapSelectionToRange,
-  moveSelection,
-  Selection,
-} from './selection';
+import { eqSelection, moveSelection, Selection } from './selection';
 
 export interface Value {
   readonly element: Element;
@@ -73,14 +68,22 @@ export const select = (selection: Selection): Endomorphism<Value> => value =>
     ? value
     : { ...value, selection: some(selection) };
 
-export const setText = (text: string): Endomorphism<Value> => value => {
-  const selection = toNullable(value.selection);
-  if (selection == null) return value;
-  return pipe(
-    value,
-    elementLens.modify(setTextElement(text, selection)),
+export const setText = (
+  text: string,
+  selection?: Selection,
+): Endomorphism<Value> => value =>
+  pipe(
+    fromNullable(selection),
+    alt(() => value.selection),
+    // Simple pipe nesting is ok. We can always refactor it out.
+    map(selection =>
+      pipe(
+        value,
+        elementLens.modify(setTextElement(text, selection)),
+      ),
+    ),
+    getOrElse(() => value),
   );
-};
 
 // TODO: It should traverse across nodes.
 export const move = (offset: number): Endomorphism<Value> => value =>
@@ -88,24 +91,4 @@ export const move = (offset: number): Endomorphism<Value> => value =>
     value.selection,
     map(moveSelection(offset)),
     fold(() => value, selection => select(selection)(value)),
-  );
-
-export const deleteContent: Endomorphism<Value> = value =>
-  pipe(
-    value.selection,
-    fold(
-      () => value,
-      selection =>
-        pipe(
-          value,
-          elementLens.modify(
-            pipe(
-              selection,
-              mapSelectionToRange,
-              deleteContentElement,
-            ),
-          ),
-          select(collapseSelectionToStart(selection)),
-        ),
-    ),
   );

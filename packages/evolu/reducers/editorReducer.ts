@@ -2,12 +2,7 @@ import { absurd } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Reducer } from 'react';
 import { Selection } from '../models/selection';
-import {
-  select,
-  setText,
-  // deleteContent,
-  Value,
-} from '../models/value';
+import { select, setText, Value } from '../models/value';
 
 export type EditorAction =
   | { type: 'focus' }
@@ -16,8 +11,6 @@ export type EditorAction =
   | { type: 'insertText'; text: string; selection: Selection }
   | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string };
-// | { type: 'set'; value: Value }
-// | { type: 'deleteContent'; selection: Selection };
 
 export type EditorReducer = Reducer<Value, EditorAction>;
 
@@ -56,9 +49,6 @@ export const editorReducer: EditorReducer = (value, action) => {
         value,
         setText(action.text),
       );
-
-    // case 'deleteContent':
-    //   return deleteContent(action.selection)(value);
 
     default:
       return absurd(action);

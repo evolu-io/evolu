@@ -1,4 +1,4 @@
-import { foldRight, init, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { foldRight, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import {
   chain,
@@ -7,7 +7,6 @@ import {
   none,
   Option,
   some,
-  toNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
@@ -17,8 +16,7 @@ import { $Values } from 'utility-types';
 import { SetDOMNodePathRef } from './dom';
 import { id, Node } from './node';
 import { Path } from './path';
-import { Range } from './range';
-import { Selection, isCollapsedSelection } from './selection';
+import { isCollapsedSelection, Selection } from './selection';
 import { isText, Text, textIsBR } from './text';
 
 /**
@@ -287,47 +285,6 @@ export const setTextElement = (
     return ensureTextTraversal(path, element).modify(t => {
       return { ...t, text };
     })(element);
-  }
-  return element;
-};
-
-export const deleteContentElement = (
-  range: Range,
-): Endomorphism<Element> => element => {
-  // TODO: Refactor all.
-  const anchorMaterializedPath = toNullable(
-    materializePath(range.start)(element),
-  );
-  const focusMaterializedPath = toNullable(materializePath(range.end)(element));
-  if (anchorMaterializedPath == null || focusMaterializedPath == null)
-    return element;
-  // TODO: Handle other cases, with lenses.
-  if (
-    // Just deleting text on the same texts.
-    isTextWithOffset(anchorMaterializedPath.to) &&
-    isTextWithOffset(focusMaterializedPath.to) &&
-    anchorMaterializedPath.to.text === focusMaterializedPath.to.text
-  ) {
-    return pipe(
-      init(range.start),
-      fold(
-        () => element,
-        foldRight(
-          () => element,
-          (init, index) => {
-            // @ts-ignore Refactor later.
-            const startOffset = anchorMaterializedPath.to.offset;
-            // @ts-ignore Refactor later.
-            const endOffset = focusMaterializedPath.to.offset;
-            return getTextTraversal(init, index).modify(t => {
-              const text =
-                t.text.slice(0, startOffset) + t.text.slice(endOffset);
-              return { ...t, text };
-            })(element);
-          },
-        ),
-      ),
-    );
   }
   return element;
 };

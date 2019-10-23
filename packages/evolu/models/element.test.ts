@@ -1,6 +1,5 @@
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
 import {
-  deleteContentElement,
   Element,
   isNormalizedElement,
   materializePath,
@@ -123,13 +122,6 @@ test('normalizeElement do not remove children', () => {
   ).toMatchSnapshot();
   expect(
     normalizeElement({ id: id(), children: [{ id: id(), text: '.' }] }),
-  ).toMatchSnapshot();
-});
-
-test('deleteContentElement', () => {
-  const el = { id: id(), children: [{ id: id(), text: 'a' }] };
-  expect(
-    deleteContentElement({ start: [0, 0], end: [0, 1] })(el),
   ).toMatchSnapshot();
 });
 

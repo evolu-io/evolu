@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`deleteContentElement 1`] = `
-Object {
-  "children": Array [
-    Object {
-      "id": "1",
-      "text": "",
-    },
-  ],
-  "id": "0",
-}
-`;
-
 exports[`materializePath 1`] = `
 Object {
   "_tag": "Some",
