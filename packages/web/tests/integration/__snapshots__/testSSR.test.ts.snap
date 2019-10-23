@@ -63,17 +63,17 @@ exports[`dom after JS is executed 1`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -174,32 +174,32 @@ exports[`dom before JS is executed 1`] = `
       class="css-0"
     >
       <style
-        data-emotion-css="1s76os7-heading"
+        data-emotion-css="vlbfxt-heading"
       >
-        ·.css-1s76os7-heading{font-size:24px;}·
+        ·.css-vlbfxt-heading{font-size:24px;}·
       </style>
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <style
-        data-emotion-css="1mzu32r-paragraph"
+        data-emotion-css="1yjna00-paragraph"
       >
-        ·.css-1mzu32r-paragraph{font-size:16px;}·
+        ·.css-1yjna00-paragraph{font-size:16px;}·
       </style>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <style
-        data-emotion-css="1kkfp6h-list"
+        data-emotion-css="1n9mwyn-list"
       >
-        ·.css-1kkfp6h-list{margin:16px;}·
+        ·.css-1n9mwyn-list{margin:16px;}·
       </style>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -305,32 +305,32 @@ exports[`dom diff before and after JS is executed 1`] = `
         class=\\"css-0\\"
 -     >
 -       <style
--         data-emotion-css=\\"1s76os7-heading\\"
+-         data-emotion-css=\\"vlbfxt-heading\\"
       >
--         ·.css-1s76os7-heading{font-size:24px;}·
+-         ·.css-vlbfxt-heading{font-size:24px;}·
 -       </style>
         <div
-          class=\\"css-1s76os7-heading\\"
+          class=\\"css-vlbfxt-heading\\"
         >
           ·heading·
         </div>
 -       <style
--         data-emotion-css=\\"1mzu32r-paragraph\\"
+-         data-emotion-css=\\"1yjna00-paragraph\\"
 -       >
--         ·.css-1mzu32r-paragraph{font-size:16px;}·
+-         ·.css-1yjna00-paragraph{font-size:16px;}·
 -       </style>
         <div
-          class=\\"css-1mzu32r-paragraph\\"
+          class=\\"css-1yjna00-paragraph\\"
         >
           ·paragraph·
         </div>
 -       <style
--         data-emotion-css=\\"1kkfp6h-list\\"
+-         data-emotion-css=\\"1n9mwyn-list\\"
 -       >
--         ·.css-1kkfp6h-list{margin:16px;}·
+-         ·.css-1n9mwyn-list{margin:16px;}·
 -       </style>
         <div
-          class=\\"css-1kkfp6h-list\\"
+          class=\\"css-1n9mwyn-list\\"
         >
           <div
             class=\\"css-0\\""

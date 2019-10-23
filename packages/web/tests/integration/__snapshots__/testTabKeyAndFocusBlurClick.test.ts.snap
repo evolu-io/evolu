@@ -63,17 +63,17 @@ exports[`click to focus button, click to blur button 1`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -202,17 +202,17 @@ exports[`click to focus button, click to blur button 2`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -365,17 +365,17 @@ exports[`focus blur via tab, tab, tab 1`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -512,17 +512,17 @@ exports[`focus blur via tab, tab, tab 2`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -675,17 +675,17 @@ exports[`focus blur via tab, tab, tab 3`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
@@ -822,17 +822,17 @@ exports[`render 1`] = `
       class="css-0"
     >
       <div
-        class="css-1s76os7-heading"
+        class="css-vlbfxt-heading"
       >
         ·heading·
       </div>
       <div
-        class="css-1mzu32r-paragraph"
+        class="css-1yjna00-paragraph"
       >
         ·paragraph·
       </div>
       <div
-        class="css-1kkfp6h-list"
+        class="css-1n9mwyn-list"
       >
         <div
           class="css-0"
