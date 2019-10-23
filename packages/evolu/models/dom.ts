@@ -33,11 +33,11 @@ export const createDOMNodeOffset = (
 ): ((node: Option<DOMNode>) => Option<DOMNodeOffset>) => node =>
   sequenceT(option)(node, last(path));
 
-// TODO: Option.
-export const getDOMRangeFromInputEvent = (event: InputEvent): DOMRange =>
-  // It always returns so we don't need fromNullable.
+export const getDOMRangeFromInputEvent = (
+  event: InputEvent,
+): Option<DOMRange> =>
   // @ts-ignore Outdated types.
-  event.getTargetRanges()[0];
+  fromNullable(event.getTargetRanges()[0]);
 
 export const getDOMSelection = (
   element: HTMLElement | null,

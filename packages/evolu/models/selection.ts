@@ -2,7 +2,7 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { init, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { chain, none, Option, option, some } from 'fp-ts/lib/Option';
+import { chain, none, Option, option, some, map } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
@@ -124,7 +124,7 @@ export const getSelectionFromInputEvent = (
 ): ((event: InputEvent) => Option<Selection>) => event =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    mapDOMRangeToSelection(getPathByNode),
+    chain(mapDOMRangeToSelection(getPathByNode)),
   );
 
 /**
