@@ -48,6 +48,7 @@ import {
 import { warn } from '../warn';
 import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
+import { useAfterTyping } from '../hooks/useAfterTyping';
 
 type UsefulReactDivAtttributes = Pick<
   React.HTMLAttributes<HTMLDivElement>,
@@ -84,7 +85,7 @@ export const EditorClient = memo<EditorClientProps>(
     // Always normalize outer value. It's fast enough. And we can optimize it later.
     const value = normalize(valueMaybeNotNormalized);
 
-    const userIsTypingRef = useRef(false);
+    const { afterTyping, isTypingRef } = useAfterTyping();
 
     // We don't want to use useReducer because we don't want derived state.
     // Naive dispatch implementation re-subscribes document listeners to often.
@@ -233,7 +234,7 @@ export const EditorClient = memo<EditorClientProps>(
       if (doc == null) return;
 
       const handleDocumentSelectionChange = () => {
-        if (userIsTypingRef.current) return;
+        if (isTypingRef.current) return;
         pipe(
           getDOMSelection(),
           chain(mapDOMSelectionToSelection(getPathByDOMNode)),
@@ -252,7 +253,7 @@ export const EditorClient = memo<EditorClientProps>(
           handleDocumentSelectionChange,
         );
       };
-    }, [dispatch, getPathByDOMNode, getDOMSelection]);
+    }, [dispatch, getPathByDOMNode, getDOMSelection, isTypingRef]);
 
     const ensureDOMSelectionIsActual = useCallback(() => {
       pipe(
@@ -271,7 +272,7 @@ export const EditorClient = memo<EditorClientProps>(
       ensureDOMSelectionIsActual();
     }, [value.hasFocus, ensureDOMSelectionIsActual]);
 
-    useBeforeInput(divRef, userIsTypingRef, getPathByDOMNode, dispatch);
+    useBeforeInput(divRef, afterTyping, getPathByDOMNode, dispatch);
 
     const children = useMemo(() => {
       return (

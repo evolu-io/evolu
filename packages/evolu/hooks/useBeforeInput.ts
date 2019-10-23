@@ -2,7 +2,7 @@
 import { identity } from 'fp-ts/lib/function';
 import { fold, some, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Dispatch, MutableRefObject, RefObject, useEffect } from 'react';
+import { Dispatch, RefObject, useEffect } from 'react';
 import {
   collapseSelectionToStart,
   snocSelection,
@@ -15,28 +15,17 @@ import { EditorAction } from '../reducers/editorReducer';
 import { warn } from '../warn';
 import { DOMNode, DOMText, getDOMRangeFromInputEvent } from '../models/dom';
 import { Path } from '../models/path';
+import { AfterTyping } from './useAfterTyping';
 
 export const useBeforeInput = (
   divRef: RefObject<HTMLDivElement>,
-  userIsTypingRef: MutableRefObject<boolean>,
+  afterTyping: AfterTyping,
   getPathByNode: (node: DOMNode) => Option<Path>,
   dispatch: Dispatch<EditorAction>,
 ) => {
   useEffect(() => {
     const { current: div } = divRef;
     if (div == null) return;
-
-    let lastAfterTypingCallback: () => void = () => {};
-    const afterTyping = (callback: () => void) => {
-      userIsTypingRef.current = true;
-      lastAfterTypingCallback = callback;
-      // DraftJS uses setImmediate polyfil, but it breaks selection here.
-      // requestAnimationFrame does what we need. Everything else fails.
-      requestAnimationFrame(() => {
-        userIsTypingRef.current = false;
-        lastAfterTypingCallback();
-      });
-    };
 
     const handleBeforeInput = (event: InputEvent) => {
       // In Chrome and Safari, we can use event.preventDefault to replace browsers
@@ -209,5 +198,5 @@ export const useBeforeInput = (
       // @ts-ignore Outdated types.
       div.removeEventListener('beforeinput', handleBeforeInput);
     };
-  }, [dispatch, divRef, getPathByNode, userIsTypingRef]);
+  }, [afterTyping, dispatch, divRef, getPathByNode]);
 };
