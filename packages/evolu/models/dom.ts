@@ -22,6 +22,16 @@ export const isDOMElement: Refinement<DOMNode, DOMElement> = (
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
+export type SetDOMNodePath = (
+  operation: 'add' | 'remove',
+  node: DOMNode,
+  path: Path,
+) => void;
+
+export type GetDOMNodeByPath = (path: Path) => Option<DOMNode>;
+
+export type GetPathByDOMNode = (domNode: DOMNode) => Option<Path>;
+
 /**
  * Node and offset tuple for selection anchor and focus props.
  * https://developer.mozilla.org/en-US/docs/Web/API/Selection

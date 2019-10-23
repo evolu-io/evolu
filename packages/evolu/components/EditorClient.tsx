@@ -21,7 +21,7 @@ import React, {
   useState,
 } from 'react';
 import { useBeforeInput } from '../hooks/useBeforeInput';
-import { useNodesPathsMapping } from '../hooks/useNodesPathsMapping';
+import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
 import { usePrevious } from '../hooks/usePrevious';
 import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
@@ -113,7 +113,7 @@ export const EditorClient = memo<EditorClientProps>(
       setDOMNodePath,
       getDOMNodeByPath,
       getPathByDOMNode,
-    } = useNodesPathsMapping(value.element);
+    } = useDOMNodesPathsMap(value.element);
 
     const divRef = useRef<HTMLDivElement>(null);
 

@@ -1,21 +1,20 @@
-import { fromNullable, Option } from 'fp-ts/lib/Option';
-import { useCallback, useEffect, useRef } from 'react';
 import { absurd } from 'fp-ts/lib/function';
+import { fromNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { useCallback, useEffect, useRef } from 'react';
+import {
+  DOMNode,
+  GetDOMNodeByPath,
+  GetPathByDOMNode,
+  SetDOMNodePath,
+} from '../models/dom';
 import { Element, ElementChild } from '../models/element';
 import { Path } from '../models/path';
 import { isText } from '../models/text';
 import { warn } from '../warn';
-import { DOMNode } from '../models/dom';
-
-export type SetDOMNodePath = (
-  operation: 'add' | 'remove',
-  node: DOMNode,
-  path: Path,
-) => void;
 
 const useDebugNodesPaths = (
-  nodesPathsMap: Map<DOMNode, Path>,
+  domNodesPathsMap: Map<DOMNode, Path>,
   element: Element,
 ) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -35,51 +34,45 @@ const useDebugNodesPaths = (
           });
         return count + 1 + childrenCount;
       };
-      const nodesLength = countNodes(element);
+      const domNodesLength = countNodes(element);
       // console.log(nodesLength, nodesPathsMap.size);
-      if (nodesLength !== nodesPathsMap.size)
+      if (domNodesLength !== domNodesPathsMap.size)
         warn(
           'It looks like the ref arg in the custom renderElement is not used.',
         );
-    }, [nodesPathsMap, element]);
+    }, [domNodesPathsMap, element]);
   }
 };
 
 /**
- * Mapping between nodes and paths. Some contentEditable editors are
+ * Mapping between DOM nodes and paths. Some contentEditable editors are
  * using IDs with DOM traversal. We leverage React refs instead.
  */
-export const useNodesPathsMapping = (
+export const useDOMNodesPathsMap = (
   element: Element,
 ): {
   setDOMNodePath: SetDOMNodePath;
-  getDOMNodeByPath: (path: Path) => Option<DOMNode>;
-  getPathByDOMNode: (node: DOMNode) => Option<Path>;
+  getDOMNodeByPath: GetDOMNodeByPath;
+  getPathByDOMNode: GetPathByDOMNode;
 } => {
   const nodesPathsMapRef = useRef<Map<DOMNode, Path>>(new Map());
   const pathsNodesMapRef = useRef<Map<string, DOMNode>>(new Map());
 
   useDebugNodesPaths(nodesPathsMapRef.current, element);
 
-  const getDOMNodeByPath = useCallback<(path: Path) => Option<DOMNode>>(
-    path => {
-      return pipe(
-        pathsNodesMapRef.current.get(path.join()),
-        fromNullable,
-      );
-    },
-    [],
-  );
+  const getDOMNodeByPath = useCallback<GetDOMNodeByPath>(path => {
+    return pipe(
+      pathsNodesMapRef.current.get(path.join()),
+      fromNullable,
+    );
+  }, []);
 
-  const getPathByDOMNode = useCallback<(node: DOMNode) => Option<Path>>(
-    node => {
-      return pipe(
-        nodesPathsMapRef.current.get(node),
-        fromNullable,
-      );
-    },
-    [],
-  );
+  const getPathByDOMNode = useCallback<GetPathByDOMNode>(node => {
+    return pipe(
+      nodesPathsMapRef.current.get(node),
+      fromNullable,
+    );
+  }, []);
 
   const setDOMNodePath = useCallback<SetDOMNodePath>(
     (operation, node, path) => {

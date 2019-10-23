@@ -1,7 +1,6 @@
 import { useContext, useCallback, useRef, createContext } from 'react';
 import { Path } from '../models/path';
-import { SetDOMNodePathRef } from '../models/dom';
-import { SetDOMNodePath } from './useNodesPathsMapping';
+import { SetDOMNodePathRef, SetDOMNodePath } from '../models/dom';
 
 export const SetNodePathContext = createContext<SetDOMNodePath>(() => {});
 

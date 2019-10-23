@@ -2,17 +2,17 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { init, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { chain, none, Option, option, some, map } from 'fp-ts/lib/Option';
+import { chain, none, Option, option, some } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  DOMNode,
   DOMRange,
   DOMSelection,
   getDOMRangeFromInputEvent,
+  GetPathByDOMNode,
 } from './dom';
-import { Range } from './range';
 import { byDirection, eqPath, movePath, Path } from './path';
+import { Range } from './range';
 
 /**
  * Like DOM Selection, but with Path for the anchor and the focus.
@@ -43,7 +43,7 @@ export const eqSelection: Eq<Selection> = getStructEq({
 });
 
 export const mapDOMSelectionToSelection = (
-  getPathByNode: (node: DOMNode) => Option<Path>,
+  getPathByDOMNode: GetPathByDOMNode,
 ): ((selection: DOMSelection) => Option<Selection>) => ({
   anchorNode,
   anchorOffset,
@@ -52,8 +52,8 @@ export const mapDOMSelectionToSelection = (
 }) =>
   pipe(
     sequenceT(option)(
-      anchorNode ? getPathByNode(anchorNode) : none,
-      focusNode ? getPathByNode(focusNode) : none,
+      anchorNode ? getPathByDOMNode(anchorNode) : none,
+      focusNode ? getPathByDOMNode(focusNode) : none,
     ),
     chain(([anchorPath, focusPath]) =>
       some({
@@ -64,7 +64,7 @@ export const mapDOMSelectionToSelection = (
   );
 
 export const mapDOMRangeToSelection = (
-  getPathByNode: (node: DOMNode) => Option<Path>,
+  getPathByDOMNode: GetPathByDOMNode,
 ): ((range: DOMRange) => Option<Selection>) => ({
   startContainer,
   startOffset,
@@ -73,8 +73,8 @@ export const mapDOMRangeToSelection = (
 }) =>
   pipe(
     sequenceT(option)(
-      getPathByNode(startContainer),
-      getPathByNode(endContainer),
+      getPathByDOMNode(startContainer),
+      getPathByDOMNode(endContainer),
     ),
     chain(([anchorPath, focusPath]) =>
       some({
@@ -120,11 +120,11 @@ export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
 };
 
 export const getSelectionFromInputEvent = (
-  getPathByNode: (node: DOMNode) => Option<Path>,
+  getPathByDOMNode: GetPathByDOMNode,
 ): ((event: InputEvent) => Option<Selection>) => event =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    chain(mapDOMRangeToSelection(getPathByNode)),
+    chain(mapDOMRangeToSelection(getPathByDOMNode)),
   );
 
 /**
