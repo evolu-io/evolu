@@ -37,7 +37,7 @@ import {
   mapDOMSelectionToSelection,
 } from '../models/selection';
 import { normalize } from '../models/value';
-import { editorReducer as defaultEditorReducer } from '../reducers/reducer';
+import { reducer as defaultEditorReducer } from '../reducers/reducer';
 import {
   Action,
   DOMNodeOffset,

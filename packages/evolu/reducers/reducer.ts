@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { select, setText } from '../models/value';
 import { Reducer } from '../types';
 
-export const editorReducer: Reducer = (value, action) => {
+export const reducer: Reducer = (value, action) => {
   switch (action.type) {
     case 'focus':
       if (value.hasFocus) return value;

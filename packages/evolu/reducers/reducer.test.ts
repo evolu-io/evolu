@@ -1,12 +1,12 @@
-import { editorReducer } from './reducer';
+import { reducer } from './reducer';
 import { createValueWithText } from '../models/value';
 import { mapElementToIDless } from '../models/element';
 import { Action } from '../types';
 
 const value = createValueWithText();
 
-const testEditorReducer = (action: Action) => {
-  const { element, ...nextValue } = editorReducer(value, action);
+const testReducer = (action: Action) => {
+  const { element, ...nextValue } = reducer(value, action);
   return {
     ...nextValue,
     element: mapElementToIDless(element),
@@ -14,9 +14,9 @@ const testEditorReducer = (action: Action) => {
 };
 
 test('focus', () => {
-  expect(testEditorReducer({ type: 'focus' })).toMatchSnapshot();
+  expect(testReducer({ type: 'focus' })).toMatchSnapshot();
 });
 
 test('blur', () => {
-  expect(testEditorReducer({ type: 'blur' })).toMatchSnapshot();
+  expect(testReducer({ type: 'blur' })).toMatchSnapshot();
 });
