@@ -156,13 +156,13 @@ export const EditorClient = memo<EditorClientProps>(
 
     const setDOMSelection = useCallback(
       (selection: Selection) => {
-        const bla = isForwardSelection(selection);
+        const isForward = isForwardSelection(selection);
         pipe(
           sequenceT(option)(
             getDOMSelection(divRef.current),
             getDOMRange(divRef.current),
-            pathToNodeOffset(bla ? selection.anchor : selection.focus),
-            pathToNodeOffset(bla ? selection.focus : selection.anchor),
+            pathToNodeOffset(isForward ? selection.anchor : selection.focus),
+            pathToNodeOffset(isForward ? selection.focus : selection.anchor),
           ),
           fold(
             () => {
@@ -172,7 +172,7 @@ export const EditorClient = memo<EditorClientProps>(
               range.setStart(...startNodeOffset);
               range.setEnd(...endNodeOffset);
               selection.removeAllRanges();
-              if (bla) {
+              if (isForward) {
                 selection.addRange(range);
               } else {
                 // https://stackoverflow.com/a/4802994/233902
