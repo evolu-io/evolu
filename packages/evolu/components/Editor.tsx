@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
-import { EditorClientProps, EditorClient } from './EditorClient';
+import { EditorClient } from './EditorClient';
 import { EditorServer } from './EditorServer';
+import { EditorClientProps } from '../types';
 
 export const Editor = memo<EditorClientProps>(props => {
   const [renderClient, setRenderClient] = useState(false);

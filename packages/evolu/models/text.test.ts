@@ -1,6 +1,6 @@
-import { isText, Text } from './text';
-import { id, Node } from './node';
-import { Element } from './element';
+import { isText } from './text';
+import { id } from './node';
+import { Text, Node, Element } from '../types';
 
 test('isText', () => {
   const node: Node = { id: id() };

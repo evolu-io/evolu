@@ -10,11 +10,7 @@ import {
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
-import {
-  DOMText,
-  getDOMRangeFromInputEvent,
-  GetPathByDOMNode,
-} from '../models/dom';
+import { getDOMRangeFromInputEvent } from '../models/dom';
 import {
   collapseSelectionToStart,
   getSelectionFromInputEvent,
@@ -23,9 +19,9 @@ import {
   moveSelection,
   snocSelection,
 } from '../models/selection';
-import { EditorAction } from '../reducers/editorReducer';
 import { warn } from '../warn';
-import { AfterTyping } from './useAfterTyping';
+import { GetPathByDOMNode, AfterTyping, Action } from '../types';
+import { DOMText } from '../types/dom';
 
 const rangeStartContainerToText: (a: Range) => Option<string> = ({
   startContainer,
@@ -35,7 +31,7 @@ const insertText = (
   getPathByDOMNode: GetPathByDOMNode,
   event: InputEvent,
   afterTyping: AfterTyping,
-  dispatch: Dispatch<EditorAction>,
+  dispatch: Dispatch<Action>,
 ) => {
   pipe(
     sequenceT(option)(
@@ -85,7 +81,7 @@ const deleteContent = (
   getPathByDOMNode: GetPathByDOMNode,
   event: InputEvent,
   afterTyping: AfterTyping,
-  dispatch: Dispatch<EditorAction>,
+  dispatch: Dispatch<Action>,
 ) => {
   pipe(
     sequenceT(option)(
@@ -126,7 +122,7 @@ const deleteContent = (
 const insertReplacementText = (
   event: InputEvent,
   afterTyping: AfterTyping,
-  dispatch: Dispatch<EditorAction>,
+  dispatch: Dispatch<Action>,
 ) => {
   pipe(
     getDOMRangeFromInputEvent(event),
@@ -143,7 +139,7 @@ export const useBeforeInput = (
   divRef: RefObject<HTMLDivElement>,
   afterTyping: AfterTyping,
   getPathByDOMNode: GetPathByDOMNode,
-  dispatch: Dispatch<EditorAction>,
+  dispatch: Dispatch<Action>,
 ) => {
   useEffect(() => {
     const { current: div } = divRef;

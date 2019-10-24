@@ -1,7 +1,6 @@
 /* eslint-env browser */
 import { useRef, MutableRefObject, useCallback } from 'react';
-
-export type AfterTyping = (callback: () => void) => void;
+import { AfterTyping } from '../types';
 
 /**
  * Run the last callback on the requestAnimationFrame to get DOM changes

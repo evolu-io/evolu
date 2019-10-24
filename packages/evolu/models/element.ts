@@ -11,28 +11,21 @@ import {
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
-import { Children, ReactDOM, ReactNode } from 'react';
-import { $Values } from 'utility-types';
-import { SetDOMNodePathRef } from './dom';
-import { id, Node } from './node';
-import { Path } from './path';
-import { isCollapsedSelection, Selection } from './selection';
-import { isText, Text, textIsBR } from './text';
-
-/**
- * Element is the base model for all other editor elements.
- */
-export interface Element extends Node {
-  readonly children: (ElementChild)[];
-}
-
-export type ElementChild = Element | Text;
-
-export type RenderElement = (
-  element: Element,
-  children: ReactNode,
-  ref: SetDOMNodePathRef,
-) => ReactNode;
+import { Children } from 'react';
+import {
+  Element,
+  ElementChild,
+  Node,
+  Text,
+  Path,
+  Selection,
+  MaterializedPath,
+  TextWithOffset,
+  ReactElement,
+} from '../types';
+import { id } from './node';
+import { isCollapsedSelection } from './selection';
+import { isText, textIsBR } from './text';
 
 export const isElement: Refinement<Node, Element> = (
   value,
@@ -40,7 +33,6 @@ export const isElement: Refinement<Node, Element> = (
   return Array.isArray((value as Element).children);
 };
 
-// Still not sure whether we really need ElementChild type.
 export const elementChildIsElement: Refinement<ElementChild, Element> = (
   value,
 ): value is Element => isElement(value);
@@ -55,37 +47,12 @@ export const elementChildIsTextNotBR: Refinement<ElementChild, Text> = (
   return isText(child) && !textIsBR(child);
 };
 
-export type TextWithOffset = {
-  readonly text: Text;
-  readonly offset: number;
-};
-
 export const isTextWithOffset: Refinement<
   MaterializedPath['to'],
   TextWithOffset
 > = (value): value is TextWithOffset => {
   return typeof (value as TextWithOffset).offset === 'number';
 };
-
-export interface MaterializedPath {
-  to: Element | Text | TextWithOffset;
-  parents: Element[];
-}
-
-interface ReactElementFactory<T, P> extends Element {
-  readonly tag: T;
-  readonly props?: P;
-  readonly children: (ReactElement | Text)[];
-}
-
-export type ReactElement = $Values<
-  {
-    [T in keyof ReactDOM]: ReactElementFactory<
-      T,
-      ReturnType<ReactDOM[T]>['props']
-    >;
-  }
->;
 
 export const materializePath = (
   path: Path,

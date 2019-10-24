@@ -1,7 +1,7 @@
 import path from 'path';
 import { ClickOptions, Keyboard } from 'puppeteer';
 import { IO } from 'fp-ts/lib/IO';
-import { NodeID, DOMElement } from 'evolu';
+import { NodeID } from 'evolu';
 
 export const pageUrl = (name: string) => {
   if (process.env.JEST_WATCH) {
@@ -49,7 +49,7 @@ interface ElementJson {
 // all it needs must be defined inside.
 const serializeDom = () => {
   // We need exact DOM structure but not everything I suppose.
-  const elementToJson = (element: DOMElement): ElementJson => {
+  const elementToJson = (element: Element): ElementJson => {
     return {
       type: element.tagName.toLowerCase(),
       props: Array.from(element.attributes)
@@ -63,11 +63,11 @@ const serializeDom = () => {
         .map(child => {
           // We wrap text with · characters to explicitly denote TextNodes.
           if (child.nodeType === 3) return `·${child.nodeValue || ''}·`;
-          return elementToJson(child as DOMElement);
+          return elementToJson(child as Element);
         }),
     };
   };
-  return elementToJson(document.querySelector('#__next') as DOMElement);
+  return elementToJson(document.querySelector('#__next') as Element);
 };
 
 // That's how we trick Jest to have pretty format like react-test-render has.

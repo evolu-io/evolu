@@ -1,20 +1,18 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
-import { Element } from '../models/element';
 import { mapNodeIDToString } from '../models/node';
-import { Path, eqPath } from '../models/path';
+import { eqPath } from '../models/path';
 import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
-import { SetDOMNodePathRef, isDOMElement } from '../models/dom';
+import { isDOMElement } from '../models/dom';
+import { Element, Path, SetDOMNodePathRef } from '../types';
 
-export interface ElementRendererProps {
+export const ElementRenderer = memo<{
   element: Element;
   path: Path;
-}
-
-export const ElementRenderer = memo<ElementRendererProps>(
+}>(
   ({ element, path }) => {
     const renderElement = useRenderElement();
     const setNodePathRef = useSetDOMNodePathRef(path);

@@ -2,16 +2,17 @@ import { absurd } from 'fp-ts/lib/function';
 import { fromNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useCallback, useEffect, useRef } from 'react';
-import {
-  DOMNode,
-  GetDOMNodeByPath,
-  GetPathByDOMNode,
-  SetDOMNodePath,
-} from '../models/dom';
-import { Element, ElementChild } from '../models/element';
-import { Path } from '../models/path';
 import { isText } from '../models/text';
 import { warn } from '../warn';
+import { DOMNode } from '../types/dom';
+import {
+  Path,
+  Element,
+  ElementChild,
+  SetDOMNodePath,
+  GetDOMNodeByPath,
+  GetPathByDOMNode,
+} from '../types';
 
 const useDebugNodesPaths = (
   domNodesPathsMap: Map<DOMNode, Path>,

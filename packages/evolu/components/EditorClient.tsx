@@ -20,6 +20,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
 import { usePrevious } from '../hooks/usePrevious';
@@ -27,49 +28,30 @@ import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
 import {
   createDOMNodeOffset,
-  DOMNodeOffset,
-  getDOMSelection,
   getDOMRange,
+  getDOMSelection,
 } from '../models/dom';
-import { RenderElement } from '../models/element';
-import { Path } from '../models/path';
 import {
   eqSelection,
   isForwardSelection,
   mapDOMSelectionToSelection,
-  Selection,
 } from '../models/selection';
-import { normalize, Value } from '../models/value';
+import { normalize } from '../models/value';
+import { editorReducer as defaultEditorReducer } from '../reducers/reducer';
 import {
-  EditorAction,
-  editorReducer as defaultEditorReducer,
-  EditorReducer,
-} from '../reducers/editorReducer';
+  Action,
+  DOMNodeOffset,
+  EditorClientProps,
+  Path,
+  Reducer,
+  Selection,
+  Value,
+} from '../types';
 import { warn } from '../warn';
 import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
-import { useAfterTyping } from '../hooks/useAfterTyping';
 
-type UsefulReactDivAtttributes = Pick<
-  React.HTMLAttributes<HTMLDivElement>,
-  | 'accessKey'
-  | 'autoCorrect'
-  | 'className'
-  | 'id'
-  | 'role'
-  | 'spellCheck'
-  | 'style'
-  | 'tabIndex'
->;
-
-export interface EditorClientProps extends UsefulReactDivAtttributes {
-  value: Value;
-  onChange: (value: Value) => void;
-  renderElement?: RenderElement;
-  reducer?: EditorReducer;
-}
-
-const debugEditorAction = Debug('editor:action');
+const debugAction = Debug('action');
 
 export const EditorClient = memo<EditorClientProps>(
   ({
@@ -93,18 +75,18 @@ export const EditorClient = memo<EditorClientProps>(
     // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
     const dispatchDepsRef = useRef<{
       value: Value;
-      reducer: EditorReducer;
+      reducer: Reducer;
       onChange: EditorClientProps['onChange'];
     }>();
     useLayoutEffect(() => {
       dispatchDepsRef.current = { value, reducer, onChange };
     });
-    const dispatch = useCallback((action: EditorAction) => {
+    const dispatch = useCallback((action: Action) => {
       const { current } = dispatchDepsRef;
       if (current == null) return;
       const { value, reducer, onChange } = current;
       const nextValue = reducer(value, action);
-      debugEditorAction(action.type, [value, action, nextValue]);
+      debugAction(action.type, [value, action, nextValue]);
       if (nextValue === value) return;
       onChange(nextValue);
     }, []);

@@ -13,20 +13,9 @@ import {
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
-import {
-  Element,
-  jsx,
-  normalizeElement,
-  ReactElement,
-  setTextElement,
-} from './element';
-import { eqSelection, moveSelection, Selection } from './selection';
-
-export interface Value {
-  readonly element: Element;
-  readonly hasFocus: boolean;
-  readonly selection: Option<Selection>;
-}
+import { jsx, normalizeElement, setTextElement } from './element';
+import { eqSelection, moveSelection } from './selection';
+import { Element, Selection, Value, ReactElement } from '../types';
 
 export const createValue = <T extends Element>({
   element,

@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react';
-import { RenderElement } from '../models/element';
+import { RenderElement } from '../types';
 
 export const RenderElementContext = createContext<RenderElement>(() => null);
 

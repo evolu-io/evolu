@@ -1,13 +1,9 @@
 import React, { createElement, Children, memo } from 'react';
 import { constVoid } from 'fp-ts/lib/function';
-import {
-  RenderElement,
-  Element,
-  ReactElement,
-  normalizeElement,
-} from '../models/element';
+import { normalizeElement } from '../models/element';
 import { isText } from '../models/text';
 import { mapNodeIDToString } from '../models/node';
+import { RenderElement, Element, ReactElement } from '../types';
 
 export const renderReactElement: RenderElement = (element, children, ref) => {
   const { tag, props } = element as ReactElement;
@@ -19,7 +15,7 @@ export const renderReactElement: RenderElement = (element, children, ref) => {
   return createElement(tag, { ...props, ref }, children);
 };
 
-export interface ServerElementRendererProps {
+interface ServerElementRendererProps {
   element: Element;
   renderElement?: RenderElement;
 }
@@ -50,7 +46,7 @@ export const ServerElementRenderer = ({
   return <>{renderReactElement(element, children, constVoid)}</>;
 };
 
-export type UsefulReactDivAtttributesServer = Pick<
+type UsefulReactDivAtttributesServer = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   'className' | 'id' | 'style'
 >;

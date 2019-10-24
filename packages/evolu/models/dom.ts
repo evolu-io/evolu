@@ -2,41 +2,14 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { last } from 'fp-ts/lib/Array';
 import { Refinement } from 'fp-ts/lib/function';
-import { Option, option, fromNullable, mapNullable } from 'fp-ts/lib/Option';
+import { fromNullable, mapNullable, Option, option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Path } from './path';
-
-// We aliases DOM types to prevent clashes with Editor types.
-// We were using editor namespacing everywhere, but that's verbose and unnecessary,
-// because DOM is an implementation detail. Editor user will not need DOM types.
-// If so, it's better to be explicit with DOM* types.
-export type DOMElement = Element;
-export type DOMNode = Node;
-export type DOMRange = Range;
-export type DOMSelection = Selection;
-export type DOMText = Text;
+import { DOMNodeOffset, Path } from '../types';
+import { DOMNode, DOMElement, DOMRange, DOMSelection } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
 ): node is DOMElement => node.nodeType === Node.ELEMENT_NODE;
-
-export type SetDOMNodePathRef = (node: DOMNode | null) => void;
-
-export type SetDOMNodePath = (
-  operation: 'add' | 'remove',
-  node: DOMNode,
-  path: Path,
-) => void;
-
-export type GetDOMNodeByPath = (path: Path) => Option<DOMNode>;
-
-export type GetPathByDOMNode = (domNode: DOMNode) => Option<Path>;
-
-/**
- * Node and offset tuple for selection anchor and focus props.
- * https://developer.mozilla.org/en-US/docs/Web/API/Selection
- */
-export type DOMNodeOffset = [DOMNode, number];
 
 export const createDOMNodeOffset = (
   path: Path,

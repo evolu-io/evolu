@@ -1,10 +1,10 @@
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
 import {
-  Element,
   isNormalizedElement,
   materializePath,
   normalizeElement,
 } from './element';
+import { Element } from '../types';
 
 const id = createStableIDFactory();
 

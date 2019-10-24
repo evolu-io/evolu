@@ -5,23 +5,10 @@ import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import { chain, none, Option, option, some } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import {
-  DOMRange,
-  DOMSelection,
-  getDOMRangeFromInputEvent,
-  GetPathByDOMNode,
-} from './dom';
-import { byDirection, eqPath, movePath, Path } from './path';
-import { Range } from './range';
-
-/**
- * Like DOM Selection, but with Path for the anchor and the focus.
- * https://developer.mozilla.org/en-US/docs/Web/API/Selection
- */
-export interface Selection {
-  readonly anchor: Path;
-  readonly focus: Path;
-}
+import { Selection, Range, GetPathByDOMNode } from '../types';
+import { getDOMRangeFromInputEvent } from './dom';
+import { byDirection, eqPath, movePath } from './path';
+import { DOMSelection, DOMRange } from '../types/dom';
 
 /**
  * The focus in not before the anchor.

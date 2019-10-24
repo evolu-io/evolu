@@ -3,10 +3,10 @@ import {
   eqSelection,
   isForwardSelection,
   mapSelectionToRange,
-  Selection,
   collapseSelectionToStart,
   collapseSelectionToEnd,
 } from './selection';
+import { Selection } from '../types';
 
 test('isCollapsedSelection', () => {
   expect(isCollapsedSelection({ anchor: [0], focus: [0] })).toBe(true);

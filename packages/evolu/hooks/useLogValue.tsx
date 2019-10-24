@@ -3,7 +3,7 @@
 import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
 import { toUndefined } from 'fp-ts/lib/Option';
 import { mapElementToIDless } from '../models/element';
-import { Value } from '../models/value';
+import { Value } from '../types';
 
 const Item = memo(({ value, index }: { value: Value; index: number }) => {
   const { element, hasFocus, selection } = value;

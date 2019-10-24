@@ -1,20 +1,9 @@
 import { absurd } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Reducer } from 'react';
-import { Selection } from '../models/selection';
-import { select, setText, Value } from '../models/value';
+import { select, setText } from '../models/value';
+import { Reducer } from '../types';
 
-export type EditorAction =
-  | { type: 'focus' }
-  | { type: 'blur' }
-  | { type: 'selectionChange'; selection: Selection }
-  | { type: 'insertText'; text: string; selection: Selection }
-  | { type: 'deleteText'; text: string; selection: Selection }
-  | { type: 'insertReplacementText'; text: string };
-
-export type EditorReducer = Reducer<Value, EditorAction>;
-
-export const editorReducer: EditorReducer = (value, action) => {
+export const editorReducer: Reducer = (value, action) => {
   switch (action.type) {
     case 'focus':
       if (value.hasFocus) return value;

@@ -3,8 +3,7 @@ import { eqNumber } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-
-export type Path = number[];
+import { Path } from '../types';
 
 export const eqPath = getEq(eqNumber);
 
