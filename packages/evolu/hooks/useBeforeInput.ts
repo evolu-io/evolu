@@ -126,10 +126,15 @@ const insertReplacementText = (
 ) => {
   pipe(
     getDOMRangeFromInputEvent(event),
-    chain(rangeStartContainerToText),
-    fold(constVoid, text => {
+    fold(constVoid, range => {
       afterTyping(() => {
-        dispatch({ type: 'insertReplacementText', text });
+        pipe(
+          range,
+          rangeStartContainerToText,
+          fold(constVoid, text => {
+            dispatch({ type: 'insertReplacementText', text });
+          }),
+        );
       });
     }),
   );
@@ -146,19 +151,25 @@ export const useBeforeInput = (
     if (div == null) return;
 
     const handleBeforeInput = (event: InputEvent) => {
+      // We can not use preventDefault for typing because we have to read
+      // DOM content possibly changed by an extension or a spellcheck or by
+      // contentEditable (whitespaces) itself. We read DOM content immediately
+      // after the change instead. We also have to restore DOM for React.
       switch (event.inputType) {
         case 'insertText':
           insertText(getPathByDOMNode, event, afterTyping, dispatch);
-          break;
+          return;
+        case 'insertReplacementText':
+          insertReplacementText(event, afterTyping, dispatch);
+          return;
+        // case 'insertCompositionText':
+        //   return;
         case 'deleteContentBackward':
         case 'deleteContentForward':
           deleteContent(getPathByDOMNode, event, afterTyping, dispatch);
-          break;
-        case 'insertReplacementText': {
-          insertReplacementText(event, afterTyping, dispatch);
-          break;
-        }
+          return;
         default:
+          event.preventDefault();
           warn(`Unhandled beforeinput inputType: ${event.inputType}`);
       }
     };
