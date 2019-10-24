@@ -25,7 +25,7 @@ const Item = memo(({ value, index }: { value: Value; index: number }) => {
     <span onMouseDown={handleItemMouseDown} data-json={elementTextForSnapshots}>
       {index} {JSON.stringify(indexItem)}
       {shown && (
-        <div onMouseDown={handleItemMouseDown}>
+        <div title="click to close" onMouseDown={handleItemMouseDown}>
           {JSON.stringify(mapElementToIDless(element), null, 2)}
         </div>
       )}
