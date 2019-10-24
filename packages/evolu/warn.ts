@@ -6,5 +6,5 @@
  */
 export const warn = (message: string) => {
   // eslint-disable-next-line no-console
-  warn(message);
+  console.warn(message);
 };
