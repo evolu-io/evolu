@@ -5161,9 +5161,9 @@ jsprim@^1.2.2:
     verror "1.10.0"
 
 jsx-ast-utils@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-2.2.1.tgz#4d4973ebf8b9d2837ee91a8208cc66f3a2776cfb"
-  integrity sha512-v3FxCcAf20DayI+uxnCuw795+oOIkVu6EnJ1+kSzhqqTZHNkTZ7B66ZgLp4oLJ/gbA64cI0B7WRoHZMSRdyVRQ==
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-2.2.2.tgz#fca08cb25ba3b700a4bd8406e673578616829d6c"
+  integrity sha512-jK3crZZB4qONJzFC7e3sQnGgkzswsKmBpyShe1vO4KRJkf5Jf2gYvvD31ERN4+YoZXrugBuV1VGPRor3UN5EXA==
   dependencies:
     array-includes "^3.0.3"
     object.assign "^4.1.0"
