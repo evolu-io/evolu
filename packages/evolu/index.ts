@@ -9,6 +9,7 @@ export * from './hooks/useDOMNodesPathsMap';
 export * from './hooks/useLogValue';
 export * from './hooks/usePrevious';
 export * from './hooks/useSetDOMNodePathRef';
+export * from './logPipe';
 export * from './models/dom';
 export * from './models/element';
 export * from './models/node';
