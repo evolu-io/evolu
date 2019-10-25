@@ -7,10 +7,11 @@ import {
   Option,
   option,
   some,
+  toNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
-import { getDOMRangeFromInputEvent } from '../models/dom';
+import { getDOMRangeFromInputEvent, getDOMSelection } from '../models/dom';
 import {
   collapseSelectionToStart,
   getSelectionFromInputEvent,
@@ -19,20 +20,27 @@ import {
   moveSelection,
   snocSelection,
 } from '../models/selection';
-import { warn } from '../warn';
-import { GetPathByDOMNode, AfterTyping, Action } from '../types';
+import { Action, AfterTyping, GetPathByDOMNode } from '../types';
 import { DOMText } from '../types/dom';
+import { warn } from '../warn';
 
 const rangeStartContainerToText: (a: Range) => Option<string> = ({
   startContainer,
 }) => fromNullable(startContainer.textContent);
 
-const insertText = (
-  getPathByDOMNode: GetPathByDOMNode,
-  event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-) => {
+type HandleInputEventArg = {
+  getPathByDOMNode: GetPathByDOMNode;
+  event: InputEvent;
+  afterTyping: AfterTyping;
+  dispatch: Dispatch<Action>;
+};
+
+const insertTextOnCollapsed = ({
+  getPathByDOMNode,
+  event,
+  afterTyping,
+  dispatch,
+}: HandleInputEventArg) =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode)(event),
@@ -75,14 +83,26 @@ const insertText = (
       },
     ),
   );
+
+const insertText = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPathByDOMNode,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  event,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  afterTyping,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dispatch,
+}: HandleInputEventArg) => {
+  //
 };
 
-const deleteContent = (
-  getPathByDOMNode: GetPathByDOMNode,
-  event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-) => {
+const deleteContentOnCollapsed = ({
+  getPathByDOMNode,
+  event,
+  afterTyping,
+  dispatch,
+}: HandleInputEventArg) =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode)(event),
@@ -117,13 +137,25 @@ const deleteContent = (
       );
     }),
   );
+
+const deleteContent = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPathByDOMNode,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  event,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  afterTyping,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dispatch,
+}: HandleInputEventArg) => {
+  //
 };
 
-const insertReplacementText = (
-  event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-) => {
+const insertReplacementText = ({
+  event,
+  afterTyping,
+  dispatch,
+}: HandleInputEventArg) =>
   pipe(
     getDOMRangeFromInputEvent(event),
     fold(constVoid, range => {
@@ -138,7 +170,6 @@ const insertReplacementText = (
       });
     }),
   );
-};
 
 export const useBeforeInput = (
   divRef: RefObject<HTMLDivElement>,
@@ -151,27 +182,74 @@ export const useBeforeInput = (
     if (div == null) return;
 
     const handleBeforeInput = (event: InputEvent) => {
-      // We can not use preventDefault for typing because we have to read
-      // DOM content possibly changed by an extension or a spellcheck or by
-      // contentEditable (whitespaces) itself. We read DOM content immediately
-      // after the change instead. We also have to restore DOM for React.
+      // This should be refactored somehow.
+      const domSelection = toNullable(getDOMSelection(div));
+      if (
+        domSelection == null ||
+        domSelection.anchorNode == null ||
+        domSelection.anchorNode.textContent == null ||
+        domSelection.focusNode == null
+      ) {
+        // TODO: Handle composition events.
+        warn('Selection should exists.');
+        return;
+      }
+
+      const arg: HandleInputEventArg = {
+        getPathByDOMNode,
+        event,
+        afterTyping,
+        dispatch,
+      };
+
+      // We prevent everything except typing on collapsed selection which can not
+      // be prevented, because we have to let browser to update DOM by an extension
+      // or spellcheck or by contentEditable itself (it replaces spaces with nbsps).
+      // In those cases, we read content from DOM then restore it so React is not
+      // confused. We do not handle composition events yet.
+      // https://www.w3.org/TR/input-events-2/
+      let preventDefault = true;
+
       switch (event.inputType) {
         case 'insertText':
-          insertText(getPathByDOMNode, event, afterTyping, dispatch);
-          return;
+          if (domSelection.isCollapsed) {
+            preventDefault = false;
+            insertTextOnCollapsed(arg);
+          } else {
+            insertText(arg);
+          }
+          break;
+
         case 'insertReplacementText':
-          insertReplacementText(event, afterTyping, dispatch);
-          return;
-        // case 'insertCompositionText':
-        //   return;
+          insertReplacementText(arg);
+          break;
+
         case 'deleteContentBackward':
-        case 'deleteContentForward':
-          deleteContent(getPathByDOMNode, event, afterTyping, dispatch);
-          return;
+        case 'deleteContentForward': {
+          const onlyTextNodeIsAffected =
+            domSelection.isCollapsed &&
+            domSelection.anchorOffset !==
+              (event.inputType === 'deleteContentBackward'
+                ? 0
+                : domSelection.anchorNode.textContent.length);
+          if (onlyTextNodeIsAffected) {
+            preventDefault = false;
+            deleteContentOnCollapsed(arg);
+          } else {
+            deleteContent(arg);
+          }
+          break;
+        }
+
+        // case 'insertParagraph':
+        //   break;
+
         default:
           event.preventDefault();
           warn(`Unhandled beforeinput inputType: ${event.inputType}`);
       }
+
+      if (preventDefault) event.preventDefault();
     };
 
     // @ts-ignore Outdated types.
