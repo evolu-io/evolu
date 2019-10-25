@@ -28,7 +28,7 @@ import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
 import {
   createDOMNodeOffset,
-  getDOMRange,
+  createDOMRange,
   getDOMSelection,
 } from '../models/dom';
 import {
@@ -160,7 +160,7 @@ export const EditorClient = memo<EditorClientProps>(
         pipe(
           sequenceT(option)(
             getDOMSelection(divRef.current),
-            getDOMRange(divRef.current),
+            createDOMRange(divRef.current),
             pathToNodeOffset(isForward ? selection.anchor : selection.focus),
             pathToNodeOffset(isForward ? selection.focus : selection.anchor),
           ),

@@ -31,7 +31,7 @@ export const getDOMSelection = (
     mapNullable(doc => doc.getSelection()),
   );
 
-export const getDOMRange = (element: HTMLElement | null): Option<DOMRange> =>
+export const createDOMRange = (element: HTMLElement | null): Option<DOMRange> =>
   pipe(
     fromNullable(element),
     mapNullable(element => element.ownerDocument),
