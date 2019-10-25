@@ -57,5 +57,7 @@ module.exports = {
     'no-else-return': 'off',
     'no-nested-ternary': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
+    // Buggy when some variable is refactored.
+    'import/named': 'off',
   },
 };
