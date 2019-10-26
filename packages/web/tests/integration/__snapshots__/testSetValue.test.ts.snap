@@ -26,60 +26,46 @@ exports[`operations 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]}]}"
     >
-      ·6·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·6 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]},{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]}]}"
     >
-      ·5·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·5 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,1],"focus":[0,0,1]}}·
+      ·4 {'hasFocus':true,'selection':{'anchor':[0,0,1],'focus':[0,0,1]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·3 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'foo'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'className':'heading'},'children':[{'text':'heading'}]},{'tag':'div','props':{'className':'paragraph'},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":true}·
+      ·0 {'hasFocus':true}·
     </span>
   </pre>
   <b

@@ -37,12 +37,10 @@ exports[`click to focus button, click to blur button 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -93,28 +91,22 @@ exports[`click to focus button, click to blur button 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -176,12 +168,10 @@ exports[`click to focus button, click to blur button 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -232,36 +222,28 @@ exports[`click to focus button, click to blur button 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -323,28 +305,22 @@ exports[`focus blur via tab, tab, tab 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -395,12 +371,10 @@ exports[`focus blur via tab, tab, tab 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -462,36 +436,28 @@ exports[`focus blur via tab, tab, tab 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -542,28 +508,22 @@ exports[`focus blur via tab, tab, tab 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -625,36 +585,28 @@ exports[`focus blur via tab, tab, tab 3`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -705,36 +657,28 @@ exports[`focus blur via tab, tab, tab 3`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":false,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true}·
+      ·1 {'hasFocus':true}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -796,12 +740,10 @@ exports[`render 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div
@@ -852,12 +794,10 @@ exports[`render 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div

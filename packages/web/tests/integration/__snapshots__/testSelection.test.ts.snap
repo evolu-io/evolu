@@ -31,12 +31,10 @@ exports[`select 1`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
@@ -99,20 +97,16 @@ exports[`select 2`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
@@ -175,28 +169,22 @@ exports[`select 3`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
@@ -259,36 +247,28 @@ exports[`select 4`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·3 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,1]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
@@ -351,44 +331,34 @@ exports[`select 5`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+      ·4 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[1,0,9]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·3 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,1]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
@@ -451,52 +421,40 @@ exports[`select 6`] = `
     class="jsx-2255726786"
   >
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·5·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[1,0,9],"focus":[0,0,0]}}·
+      ·5 {'hasFocus':true,'selection':{'anchor':[1,0,9],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·4·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[1,0,9]}}·
+      ·4 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[1,0,9]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·3·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,1]}}·
+      ·3 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,1]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·2·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,2],"focus":[0,0,0]}}·
+      ·2 {'hasFocus':true,'selection':{'anchor':[0,0,2],'focus':[0,0,0]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·1·
-      · ·
-      ·{"hasFocus":true,"selection":{"anchor":[0,0,0],"focus":[0,0,2]}}·
+      ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,2]}}·
     </span>
     <span
-      class="jsx-2185133862"
+      class="jsx-4269328595"
       data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
     >
-      ·0·
-      · ·
-      ·{"hasFocus":false}·
+      ·0 {'hasFocus':false}·
     </span>
   </pre>
   <div>
