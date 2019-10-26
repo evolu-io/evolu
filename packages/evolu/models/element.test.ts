@@ -1,9 +1,5 @@
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
-import {
-  isNormalizedElement,
-  materializePath,
-  normalizeElement,
-} from './element';
+import { isNormalizedElement, normalizeElement } from './element';
 import { Element } from '../types';
 
 const id = createStableIDFactory();
@@ -123,23 +119,4 @@ test('normalizeElement do not remove children', () => {
   expect(
     normalizeElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
-});
-
-test('materializePath', () => {
-  // <div><b>a</b></div>
-  const text = { id: id(), text: 'a' };
-  const b = { id: id(), children: [text] };
-  const div = { id: id(), children: [b] };
-
-  expect(materializePath([])(div)).toMatchSnapshot();
-  expect(materializePath([0])(div)).toMatchSnapshot();
-  expect(materializePath([0, 0])(div)).toMatchSnapshot();
-  expect(materializePath([0, 0, 0])(div)).toMatchSnapshot();
-  expect(materializePath([0, 0, 1])(div)).toMatchSnapshot();
-
-  // Nulls.
-  expect(materializePath([0, 0, 0, 0])(div)).toMatchSnapshot();
-  expect(materializePath([1])(div)).toMatchSnapshot();
-  expect(materializePath([0, 1])(div)).toMatchSnapshot();
-  expect(materializePath([0, 0, 2])(div)).toMatchSnapshot();
 });

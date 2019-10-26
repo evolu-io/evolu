@@ -1,13 +1,6 @@
 import { foldRight, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
-import {
-  chain,
-  fold,
-  fromPredicate,
-  none,
-  Option,
-  some,
-} from 'fp-ts/lib/Option';
+import { chain, fold, fromPredicate } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
@@ -16,12 +9,10 @@ import {
   Element,
   ElementChild,
   Node,
-  Text,
   Path,
-  Selection,
-  MaterializedPath,
-  TextWithOffset,
   ReactElement,
+  Selection,
+  Text,
 } from '../types';
 import { id } from './node';
 import { isCollapsedSelection } from './selection';
@@ -45,33 +36,6 @@ export const elementChildIsTextNotBR: Refinement<ElementChild, Text> = (
   child,
 ): child is Text => {
   return isText(child) && !textIsBR(child);
-};
-
-export const isTextWithOffset: Refinement<
-  MaterializedPath['to'],
-  TextWithOffset
-> = (value): value is TextWithOffset => {
-  return typeof (value as TextWithOffset).offset === 'number';
-};
-
-export const materializePath = (
-  path: Path,
-): ((element: Element) => Option<MaterializedPath>) => element => {
-  const parents: MaterializedPath['parents'] = [];
-  let to: MaterializedPath['to'] = element;
-  for (let i = 0; i < path.length; i++) {
-    const pathIndex = path[i];
-    if (isElement(to)) {
-      parents.push(to);
-      to = to.children[pathIndex];
-      if (to == null) return none;
-    } else if (isText(to)) {
-      const pathContinues = i < path.length - 1;
-      if (pathContinues || pathIndex > to.text.length) return none;
-      return some({ parents, to: { text: to, offset: pathIndex } });
-    }
-  }
-  return some({ parents, to });
 };
 
 /**
@@ -149,8 +113,8 @@ export const isNormalizedElement: Predicate<Element> = element => {
   return element === normalizedElement;
 };
 
-// TODO: Recursively remove ID from Element and its children.
-export const mapElementToIDless = (element: Element): any => {
+// @ts-ignore TODO: Recursively remove ID from Element and its children.
+export const mapElementToIDless = (element: Element) => {
   if (element == null) return element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
@@ -239,6 +203,7 @@ export const setTextElement = (
   text: string,
   selection: Selection,
 ): Endomorphism<Element> => element => {
+  // TODO: Refactor to range operation.
   const onlyTextIsSelected: Predicate<Selection> = selection => {
     const anchorFold = ensureTextTraversal(selection.anchor, element).asFold();
     const focusFold = ensureTextTraversal(selection.focus, element).asFold();
@@ -255,3 +220,30 @@ export const setTextElement = (
   }
   return element;
 };
+
+// TODO: Some of those from symbol-tree lib.
+// hasChildren
+// firstChild
+// lastChild
+// previousSibling
+// nextSibling
+// parent
+// lastInclusiveDescendant
+// preceding
+// following
+// childrenToArray
+// ancestorsToArray
+// treeToArray
+// childrenIterator
+// previousSiblingsIterator
+// nextSiblingsIterator
+// ancestorsIterator
+// treeIterator
+// index
+// childrenCount
+// compareTreePosition
+// remove
+// insertBefore
+// insertAfter
+// prependChild
+// appendChild
