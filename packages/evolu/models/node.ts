@@ -8,4 +8,6 @@ const isoNodeID = iso<NodeID>();
 export const mapNodeIDToString = (nodeID: NodeID): string =>
   isoNodeID.unwrap(nodeID);
 
-export const id: IO<NodeID> = () => isoNodeID.wrap(nanoid());
+// 10 is ok.
+// https://zelark.github.io/nano-id-cc/
+export const id: IO<NodeID> = () => isoNodeID.wrap(nanoid(10));
