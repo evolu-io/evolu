@@ -5,6 +5,7 @@ import { pageDom, pageUrl, pageAwaitFor50ms } from './helpers';
 // TODO: Reenable disabled tests once we figure out how to "fix" it. We
 // need `yarn jest` for dev
 
+// eslint-disable-next-line jest/no-commented-out-tests
 // test('dom before JS is executed', async () => {
 //   await page.goto(pageUrl('testSSR'), { waitUntil: 'domcontentloaded' });
 //   await expect(await pageDom()).toMatchSnapshot();
@@ -16,6 +17,7 @@ test('dom after JS is executed', async () => {
   await expect(await pageDom()).toMatchSnapshot();
 });
 
+// eslint-disable-next-line jest/no-commented-out-tests
 // test('dom diff before and after JS is executed', async () => {
 //   await page.goto(pageUrl('testSSR'), { waitUntil: 'domcontentloaded' });
 //   const before = await pageDom();
