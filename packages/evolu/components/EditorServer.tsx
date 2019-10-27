@@ -46,26 +46,29 @@ export const ServerElementRenderer = ({
   return <>{renderReactElement(element, children, constVoid)}</>;
 };
 
-type UsefulReactDivAtttributesServer = Pick<
+type ReactDivAtttributesUsefulForEditorServer = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   'className' | 'id' | 'style'
 >;
 
+type EditorServerProps = ServerElementRendererProps &
+  ReactDivAtttributesUsefulForEditorServer;
+
 /**
  * Just render. No edit. Good for performance and tree shaking.
  */
-export const EditorServer = memo<
-  ServerElementRendererProps & UsefulReactDivAtttributesServer
->(({ element, renderElement, ...rest }) => {
-  const normalizedElement = normalizeElement(element);
-  return (
-    <div {...rest}>
-      <ServerElementRenderer
-        element={normalizedElement}
-        renderElement={renderElement}
-      />
-    </div>
-  );
-});
+export const EditorServer = memo<EditorServerProps>(
+  ({ element, renderElement, ...rest }) => {
+    const normalizedElement = normalizeElement(element);
+    return (
+      <div {...rest}>
+        <ServerElementRenderer
+          element={normalizedElement}
+          renderElement={renderElement}
+        />
+      </div>
+    );
+  },
+);
 
 EditorServer.displayName = 'EditorServer';

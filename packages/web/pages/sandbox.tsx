@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useReducer, useRef } from 'react';
 import * as editor from 'evolu';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
@@ -15,8 +15,8 @@ const initialValue = editor.createValue({
         }}
       >
         {/* <br /> */}
-        {/* <div style={{ fontWeight: 'bold', display: 'inline' }}>heading</div> */}
-        heading
+        hello <span style={{ fontWeight: 'bold' }}>world</span>, foo
+        {/* <span style={{ fontWeight: 'bold' }}>foo</span> */}
         {/* To test normalize */}
         {/* {'heading'}
         {'foo'} */}
@@ -33,7 +33,28 @@ const initialValue = editor.createValue({
         </div>
         bla */}
       </div>
-      <div style={{ fontSize: '16px' }}>paragraph</div>
+      <div style={{ fontSize: '16px' }}>
+        paragraph with{' '}
+        <i data-foo>
+          <b data-foo>bold italic</b>
+        </i>{' '}
+        text
+      </div>
+      <img
+        alt="Square placeholder"
+        src="https://via.placeholder.com/80"
+        style={{ width: 50, height: 80 }}
+      />
+      {/* <div style={{ border: 'solid 1px #ccc', padding: '3px' }}>
+        <img
+          alt="Square placeholder"
+          src="https://via.placeholder.com/80"
+          style={{ width: 50, height: 80 }}
+        />
+      </div> */}
+      <div style={{ fontSize: '16px' }}>
+        bar <b data-foo>bla</b> baz
+      </div>
       {/* <span className="text">fixx me</span> */}
       {/* <div style={{ fontSize: '16px' }}>
         foo
@@ -46,6 +67,11 @@ const initialValue = editor.createValue({
 
 const Sandbox = () => {
   const [value, setValue] = useState(initialValue);
+  const [forceUpdateKey, forceUpdate] = useReducer(x => x + 1, 0);
+
+  // tady bych mohl mit, ze pokud se zmeni info
+  // jenze, info neni state, nenastavuje se, ok
+  // jak jinej callback, imho ok
 
   const [logValue, logValueElement] = editor.useLogValue(value);
 
@@ -57,6 +83,9 @@ const Sandbox = () => {
     [logValue],
   );
 
+  const editorRef = useRef<editor.EditorRef>(null);
+  // if (editorRef.current) editorRef.current.focus
+
   return (
     <Container>
       <Head>
@@ -64,15 +93,17 @@ const Sandbox = () => {
       </Head>
       <Text size={2}>Sandbox</Text>
       <editor.Editor
+        ref={editorRef}
         value={value}
         // TODO:
         // reducer={customReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         spellCheck
+        key={forceUpdateKey}
       />
       {logValueElement}
-      <button
+      {/* <button
         type="button"
         onMouseDown={event => {
           event.preventDefault();
@@ -81,6 +112,23 @@ const Sandbox = () => {
         }}
       >
         update value
+      </button> */}
+      <button
+        type="button"
+        onMouseDown={event => {
+          event.preventDefault();
+          forceUpdate({});
+        }}
+      >
+        force update
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          if (editorRef.current) editorRef.current.focus();
+        }}
+      >
+        focus
       </button>
     </Container>
   );

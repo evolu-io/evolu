@@ -1,6 +1,6 @@
 import { absurd } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { select, setText } from '../models/value';
+import { select, setText, deleteContent } from '../models/value';
 import { Reducer } from '../types';
 
 export const reducer: Reducer = (value, action) => {
@@ -37,6 +37,12 @@ export const reducer: Reducer = (value, action) => {
       return pipe(
         value,
         setText(action.text),
+      );
+
+    case 'deleteContent':
+      return pipe(
+        value,
+        deleteContent(action.selection),
       );
 
     default:

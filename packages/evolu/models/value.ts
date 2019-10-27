@@ -81,3 +81,24 @@ export const move = (offset: number): Endomorphism<Value> => value =>
     map(moveSelection(offset)),
     fold(() => value, selection => select(selection)(value)),
   );
+
+export const deleteContent = (
+  // zatim editor, ok
+  selection: Selection,
+): Endomorphism<Value> => value =>
+  pipe(
+    value,
+    a => {
+      // pipe()
+      // eslint-disable-next-line no-console
+      console.log(selection);
+      return a;
+    },
+  );
+
+// pipe(
+//   value,
+//   deleteContent(editor),
+//   select(foo),
+
+// );

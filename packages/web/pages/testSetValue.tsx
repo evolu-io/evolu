@@ -46,6 +46,7 @@ const TestSetValue = () => {
     elementLens
       .composeLens(childrenLens)
       .modify(childred => childred.slice(0, 1)),
+    // deleteContent({ anchor })
   ]);
 
   const [done, setDone] = useState(false);

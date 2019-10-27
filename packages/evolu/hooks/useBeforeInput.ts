@@ -35,6 +35,10 @@ type HandleInputEventArg = {
   dispatch: Dispatch<Action>;
 };
 
+// These functions are not pure because they manipulate with DOM.
+// It's only for typing to handle edge cases. Everything else is
+// prevented so reducer can be pure.
+
 const insertTextOnCollapsed = ({
   getPathByDOMNode,
   event,
@@ -138,19 +142,6 @@ const deleteContentOnCollapsed = ({
     }),
   );
 
-const deleteContent = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getPathByDOMNode,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  event,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  afterTyping,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  dispatch,
-}: HandleInputEventArg) => {
-  //
-};
-
 const insertReplacementText = ({
   event,
   afterTyping,
@@ -236,13 +227,25 @@ export const useBeforeInput = (
             preventDefault = false;
             deleteContentOnCollapsed(arg);
           } else {
-            deleteContent(arg);
+            pipe(
+              event,
+              getSelectionFromInputEvent(getPathByDOMNode),
+              fold(constVoid, selection => {
+                dispatch({ type: 'deleteContent', selection });
+              }),
+            );
+            // deleteContent(arg);
+            // getSelectionFromInputEvent(getPathByDOMNode)(event),
+            // dispatch({ type: 'deleteContent', selection })
           }
           break;
         }
 
-        // case 'insertParagraph':
-        //   break;
+        case 'insertParagraph': {
+          // console.log('f');
+          // jo
+          break;
+        }
 
         default:
           event.preventDefault();

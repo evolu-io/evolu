@@ -5,8 +5,14 @@ import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Path } from '../types';
 
+/**
+ * To compare paths whether they are equal.
+ */
 export const eqPath = getEq(eqNumber);
 
+/**
+ * To sort paths by direction aka if they are forward or backward or the same.
+ */
 export const byDirection: Ord<Path> = fromCompare((x, y) =>
   eqPath.equals(x, y)
     ? 0
@@ -15,8 +21,11 @@ export const byDirection: Ord<Path> = fromCompare((x, y) =>
     : -1,
 );
 
+// Do we need it? Is the name right?
 export const movePath = (offset: number): Endomorphism<Path> => path =>
   pipe(
     path,
     foldRight(() => path, (init, last) => [...init, last + offset]),
   );
+
+// TODO: contains, parent, etc.
