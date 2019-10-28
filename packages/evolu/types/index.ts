@@ -2,6 +2,7 @@ import { ReactNode, ReactDOM, Reducer as ReactReducer } from 'react';
 import { Newtype } from 'newtype-ts';
 import { Option } from 'fp-ts/lib/Option';
 import { $Values } from 'utility-types';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { DOMNode } from './dom';
 
 /**
@@ -149,16 +150,29 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
 
 export interface EditorRef {
   readonly focus: () => void;
+  // TODO: findDOMNodeByPath, materizalizeSelection
 }
 
 // TODO: Fragment, probably ElementChild[].
 
-// Je to dobrej nazev? MaterializedSelection?
-// Imho asi jo, je to selection plus dalsi veci, ok
-export interface Info {
+export interface MaterializedSelectionNode {
   readonly node: ElementChild;
-  readonly parents: Element[];
-  // previous, next
-  // allChildrenCount? children recursively.
-  // nebo flat children?
+  readonly path: Path;
+  readonly parents: NonEmptyArray<Element>;
+  readonly parentBlocks: NonEmptyArray<Element>;
+  readonly previousSibling: Option<ElementChild>;
+  readonly nextSibling: Option<ElementChild>;
+  readonly textOffset: Option<number>;
+  readonly allChildrenCount: number;
+}
+
+/**
+ * MaterializedSelection is Selection with aditional useful computations.
+ * Some of them are depending on DOM state. Editor model knows nothing about
+ * block/inline styles because it depends on CSS. That's why MaterializedSelection
+ * is not part of Value. It's side effect.
+ */
+export interface MaterializedSelection extends Selection {
+  nodes: MaterializedSelectionNode[];
+  text: string;
 }
