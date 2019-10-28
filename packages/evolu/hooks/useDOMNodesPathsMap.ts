@@ -8,7 +8,7 @@ import { DOMNode } from '../types/dom';
 import {
   Path,
   Element,
-  ElementChild,
+  Child,
   SetDOMNodePath,
   GetDOMNodeByPath,
   GetPathByDOMNode,
@@ -26,7 +26,7 @@ const useDebugNodesPaths = (
       //   nodes.push([path.join(), node]);
       // });
       // console.log(nodes);
-      const countNodes = (child: ElementChild, count = 0) => {
+      const countNodes = (child: Child, count = 0) => {
         if (isText(child)) return count + 1;
         let childrenCount = 0;
         if (child.children)

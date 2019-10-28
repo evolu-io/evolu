@@ -30,13 +30,13 @@ export interface Text extends Node {
  * Editor element. The base for all other editor elements.
  */
 export interface Element extends Node {
-  readonly children: (ElementChild)[];
+  readonly children: (Child)[];
 }
 
 /**
- * Editor element child. Only editor element or text.
+ * Editor child. Only editor element or text.
  */
-export type ElementChild = Element | Text;
+export type Child = Element | Text;
 
 /**
  * Editor path to editor element or text or text with offset or nothing.
@@ -153,15 +153,15 @@ export interface EditorRef {
   // TODO: findDOMNodeByPath, materizalizeSelection
 }
 
-// TODO: Fragment, probably ElementChild[].
+// TODO: Fragment, probably Child[].
 
-export interface MaterializedSelectionNode {
-  readonly node: ElementChild;
+export interface MaterializedSelectionChild {
+  readonly child: Child;
   readonly path: Path;
   readonly parents: NonEmptyArray<Element>;
   readonly parentBlocks: NonEmptyArray<Element>;
-  readonly previousSibling: Option<ElementChild>;
-  readonly nextSibling: Option<ElementChild>;
+  readonly previousSibling: Option<Child>;
+  readonly nextSibling: Option<Child>;
   readonly textOffset: Option<number>;
   readonly allChildrenCount: number;
 }
@@ -173,6 +173,6 @@ export interface MaterializedSelectionNode {
  * is not part of Value. It's side effect.
  */
 export interface MaterializedSelection extends Selection {
-  nodes: MaterializedSelectionNode[];
+  children: MaterializedSelectionChild[];
   text: string;
 }

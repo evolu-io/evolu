@@ -7,7 +7,7 @@ import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children } from 'react';
 import {
   Element,
-  ElementChild,
+  Child,
   Node,
   Path,
   ReactElement,
@@ -18,21 +18,18 @@ import { id } from './node';
 import { isCollapsedSelection } from './selection';
 import { isText, textIsBR } from './text';
 
-export const isElement: Refinement<Node, Element> = (
-  value,
-): value is Element => {
-  return Array.isArray((value as Element).children);
+export const isElement: Refinement<Node, Element> = (node): node is Element => {
+  return Array.isArray((node as Element).children);
 };
 
-export const elementChildIsElement: Refinement<ElementChild, Element> = (
-  value,
-): value is Element => isElement(value);
+export const childIsElement: Refinement<Child, Element> = (
+  child,
+): child is Element => isElement(child);
 
-export const elementChildIsText: Refinement<ElementChild, Text> = (
-  value,
-): value is Text => isText(value);
+export const childIsText: Refinement<Child, Text> = (child): child is Text =>
+  isText(child);
 
-export const elementChildIsTextNotBR: Refinement<ElementChild, Text> = (
+export const childIsTextNotBR: Refinement<Child, Text> = (
   child,
 ): child is Text => {
   return isText(child) && !textIsBR(child);
@@ -74,7 +71,7 @@ export const jsx = (element: JSX.Element): ReactElement => {
 export const normalizeElement: Endomorphism<Element> = element => {
   // This flag is good enough for now. We can use fp-ts These later.
   let somethingHasBeenNormalized = false;
-  const children = element.children.reduce<(ElementChild)[]>((array, child) => {
+  const children = element.children.reduce<(Child)[]>((array, child) => {
     if (isElement(child)) {
       const normalizedChild = normalizeElement(child);
       if (normalizedChild !== child) somethingHasBeenNormalized = true;
@@ -83,7 +80,7 @@ export const normalizeElement: Endomorphism<Element> = element => {
     if (textIsBR(child)) return [...array, child];
     return pipe(
       last(array),
-      chain(fromPredicate(elementChildIsTextNotBR)),
+      chain(fromPredicate(childIsTextNotBR)),
       fold(
         () => [...array, child],
         previousText => {
@@ -137,20 +134,19 @@ export const mapElementToIDless = (element: Element) => {
 export const childrenLens = Lens.fromProp<Element>()('children');
 
 /**
- * Focus on the child at index of ElementChild[].
+ * Focus on the child at index of Child[].
  */
-export const getElementChildAt = (index: number) =>
-  indexArray<ElementChild>().index(index);
+export const getChildAt = (index: number) => indexArray<Child>().index(index);
 
 /**
- * Focus on Element of ElementChild.
+ * Focus on Element of Child.
  */
-export const elementPrism = Prism.fromPredicate(elementChildIsElement);
+export const elementPrism = Prism.fromPredicate(childIsElement);
 
 /**
- * Focus on Text of ElementChild.
+ * Focus on Text of Child.
  */
-export const textPrism = Prism.fromPredicate(elementChildIsText);
+export const textPrism = Prism.fromPredicate(childIsText);
 
 /**
  * Focus on Element by Path.
@@ -160,7 +156,7 @@ export const getElementTraversal = (path: Path) =>
     (acc, pathIndex) =>
       acc
         .composeLens(childrenLens)
-        .composeOptional(getElementChildAt(pathIndex))
+        .composeOptional(getChildAt(pathIndex))
         .composePrism(elementPrism),
     elementPrism.asOptional() as Optional<Element, Element>,
   );
@@ -174,7 +170,7 @@ export const getTextTraversal = (
 ): Optional<Element, Text> =>
   getElementTraversal(parentElementPath)
     .composeLens(childrenLens)
-    .composeOptional(getElementChildAt(index))
+    .composeOptional(getChildAt(index))
     .composePrism(textPrism);
 
 /**
