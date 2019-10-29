@@ -9,10 +9,10 @@ import {
   Element,
   Child,
   Node,
-  Path,
   ReactElement,
   Selection,
   Text,
+  Path,
 } from '../types';
 import { id } from './node';
 import { isCollapsedSelection } from './selection';
@@ -187,10 +187,10 @@ export const ensureTextTraversal = (
         throw new Error('TODO: Refactor.');
       },
       (path, index) => {
-        const textTraversal = getTextTraversal(path, index);
+        const textTraversal = getTextTraversal(path as Path, index);
         if (textTraversal.asFold().getAll(element).length > 0)
           return textTraversal;
-        return ensureTextTraversal(path, element);
+        return ensureTextTraversal(path as Path, element);
       },
     ),
   );

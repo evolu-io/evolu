@@ -1,5 +1,5 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { init, snoc } from 'fp-ts/lib/Array';
+import { init, snoc, isNonEmpty } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import { chain, none, Option, option, some } from 'fp-ts/lib/Option';
@@ -115,12 +115,18 @@ export const getSelectionFromInputEvent = (
   );
 
 /**
- * `{ anchor: [0, 0], focus: [0, 0] }` to `{ anchor: [0], focus: [0] }`
+ * `{ anchor: [1, 2], focus: [1, 3] }` to `{ anchor: [1], focus: [1] }`
  */
 export const initSelection = (selection: Selection): Option<Selection> =>
   pipe(
     sequenceT(option)(init(selection.anchor), init(selection.focus)),
-    chain(([anchor, focus]) => some({ anchor, focus })),
+    // TODO: Figure out how to chain each option via fromPredicate(isNonEmpty).
+    // https://github.com/gcanti/fp-ts/issues/990
+    chain(([anchor, focus]) => {
+      if (isNonEmpty(anchor) && isNonEmpty(focus))
+        return some({ anchor, focus });
+      return none;
+    }),
   );
 
 /**

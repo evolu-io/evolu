@@ -1,4 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
+import { empty } from 'fp-ts/lib/Array';
+import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
 import { mapNodeIDToString } from '../models/node';
@@ -7,13 +9,13 @@ import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
-import { Element, Path, SetDOMNodePathRef } from '../types';
+import { Element, Path, SetDOMNodePathRef, PathOrEmpty } from '../types';
 
 export const ElementRenderer = memo<{
   element: Element;
-  path: Path;
+  path: PathOrEmpty;
 }>(
-  ({ element, path }) => {
+  ({ element, path = empty }) => {
     const renderElement = useRenderElement();
     const setNodePathRef = useSetDOMNodePathRef(path);
     const handleElementRef = useCallback<SetDOMNodePathRef>(
@@ -40,7 +42,7 @@ export const ElementRenderer = memo<{
 
     const children = useMemo(() => {
       return element.children.map((child, index) => {
-        const childPath: Path = [...path, index];
+        const childPath: Path = snoc(path, index);
         if (isText(child)) {
           return (
             <TextRenderer

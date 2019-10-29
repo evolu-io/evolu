@@ -1,27 +1,30 @@
 import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { empty, init } from 'fp-ts/lib/Array';
+import { empty } from 'fp-ts/lib/Array';
 import { constVoid } from 'fp-ts/lib/function';
 import {
+  alt,
   chain,
   filter,
   fold,
-  fromNullable,
+  mapNullable,
   Option,
   option,
+  map,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
+  forwardRef,
   memo,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
-  forwardRef,
-  useImperativeHandle,
 } from 'react';
+import { last } from 'fp-ts/lib/NonEmptyArray';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
@@ -33,6 +36,7 @@ import {
   createDOMRange,
   getDOMSelection,
 } from '../models/dom';
+import { initPath } from '../models/path';
 import {
   eqSelection,
   isForwardSelection,
@@ -44,11 +48,11 @@ import {
   Action,
   DOMNodeOffset,
   EditorProps,
+  EditorRef,
   Path,
   Reducer,
   Selection,
   Value,
-  EditorRef,
 } from '../types';
 import { warn } from '../warn';
 import { renderReactElement } from './EditorServer';
@@ -138,30 +142,20 @@ export const EditorClient = memo(
       }, [getPathByDOMNode]);
 
       const pathToNodeOffset = useCallback(
-        (path: Path): Option<DOMNodeOffset> => {
-          return pipe(
-            getDOMNodeByPath(path),
-            // That's how we can console.log within a pipe.
-            // foo => {
-            //   console.log(foo);
-            //   return foo;
-            // },
-            fold(
-              () =>
-                pipe(
-                  path,
-                  init,
-                  chain(getDOMNodeByPath),
-                  createDOMNodeOffset(path),
-                ),
-              element =>
-                pipe(
-                  fromNullable(element.parentNode),
-                  createDOMNodeOffset(path),
-                ),
+        (path: Path): Option<DOMNodeOffset> =>
+          pipe(
+            path,
+            getDOMNodeByPath,
+            mapNullable(node => node.parentNode),
+            alt(() =>
+              pipe(
+                path,
+                initPath,
+                chain(getDOMNodeByPath),
+              ),
             ),
-          );
-        },
+            map(createDOMNodeOffset(last(path))),
+          ),
         [getDOMNodeByPath],
       );
 

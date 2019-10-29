@@ -6,16 +6,16 @@ import { isText } from '../models/text';
 import { warn } from '../warn';
 import { DOMNode } from '../types/dom';
 import {
-  Path,
   Element,
   Child,
   SetDOMNodePath,
   GetDOMNodeByPath,
   GetPathByDOMNode,
+  PathOrEmpty,
 } from '../types';
 
 const useDebugNodesPaths = (
-  domNodesPathsMap: Map<DOMNode, Path>,
+  domNodesPathsMap: Map<DOMNode, PathOrEmpty>,
   element: Element,
 ) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -56,7 +56,7 @@ export const useDOMNodesPathsMap = (
   getDOMNodeByPath: GetDOMNodeByPath;
   getPathByDOMNode: GetPathByDOMNode;
 } => {
-  const nodesPathsMapRef = useRef<Map<DOMNode, Path>>(new Map());
+  const nodesPathsMapRef = useRef<Map<DOMNode, PathOrEmpty>>(new Map());
   const pathsNodesMapRef = useRef<Map<string, DOMNode>>(new Map());
 
   useDebugNodesPaths(nodesPathsMapRef.current, element);

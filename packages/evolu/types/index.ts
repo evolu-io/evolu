@@ -3,6 +3,7 @@ import { Newtype } from 'newtype-ts';
 import { Option } from 'fp-ts/lib/Option';
 import { $Values } from 'utility-types';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { empty } from 'fp-ts/lib/Array';
 import { DOMNode } from './dom';
 
 /**
@@ -39,10 +40,13 @@ export interface Element extends Node {
 export type Child = Element | Text;
 
 /**
- * Editor path to editor element or text or text with offset or nothing.
- * It's not readonly array, because https://github.com/gcanti/fp-ts/issues/987.
+ * Editor path is non empty array of path indexes which can be resolved
+ * to element or text or text with offset or to nothing.
  */
-export type Path = number[];
+// It's not readonly array, because https://github.com/gcanti/fp-ts/issues/987.
+export type Path = NonEmptyArray<number>;
+
+export type PathOrEmpty = Path | typeof empty;
 
 /**
  * Editor selection. It's like DOM Selection, but with Path for the anchor and the focus.
@@ -91,16 +95,16 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
-export type GetDOMNodeByPath = (path: Path) => Option<DOMNode>;
+export type GetDOMNodeByPath = (path: PathOrEmpty) => Option<DOMNode>;
 
-export type GetPathByDOMNode = (domNode: DOMNode) => Option<Path>;
+export type GetPathByDOMNode = (domNode: DOMNode) => Option<PathOrEmpty>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
 export type SetDOMNodePath = (
   operation: 'add' | 'remove',
   node: DOMNode,
-  path: Path,
+  path: PathOrEmpty,
 ) => void;
 
 export type RenderElement = (

@@ -1,20 +1,17 @@
 /* eslint-env browser */
-import { sequenceT } from 'fp-ts/lib/Apply';
-import { last } from 'fp-ts/lib/Array';
 import { Refinement } from 'fp-ts/lib/function';
-import { fromNullable, mapNullable, Option, option } from 'fp-ts/lib/Option';
+import { fromNullable, mapNullable, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { DOMNodeOffset, Path } from '../types';
-import { DOMNode, DOMElement, DOMRange, DOMSelection } from '../types/dom';
+import { DOMNodeOffset } from '../types';
+import { DOMElement, DOMNode, DOMRange, DOMSelection } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
 ): node is DOMElement => node.nodeType === Node.ELEMENT_NODE;
 
 export const createDOMNodeOffset = (
-  path: Path,
-): ((node: Option<DOMNode>) => Option<DOMNodeOffset>) => node =>
-  sequenceT(option)(node, last(path));
+  offset: number,
+): ((node: DOMNode) => DOMNodeOffset) => node => [node, offset];
 
 export const getDOMRangeFromInputEvent = (
   event: InputEvent,

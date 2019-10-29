@@ -1,8 +1,10 @@
-import { foldRight, getEq } from 'fp-ts/lib/Array';
+import { snoc, getEq, isNonEmpty, init } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Option, fromPredicate, chain } from 'fp-ts/lib/Option';
+import { last } from 'fp-ts/lib/NonEmptyArray';
 import { Path } from '../types';
 
 /**
@@ -21,11 +23,15 @@ export const byDirection: Ord<Path> = fromCompare((x, y) =>
     : -1,
 );
 
-// Do we need it? Is the name right?
-export const movePath = (offset: number): Endomorphism<Path> => path =>
+export const initPath = (path: Path): Option<Path> =>
   pipe(
     path,
-    foldRight(() => path, (init, last) => [...init, last + offset]),
+    init,
+    chain(fromPredicate(isNonEmpty)),
   );
+
+// TODO: Rename.
+export const movePath = (offset: number): Endomorphism<Path> => path =>
+  snoc(path.slice(0, -1), last(path) + offset);
 
 // TODO: contains, parent, etc.

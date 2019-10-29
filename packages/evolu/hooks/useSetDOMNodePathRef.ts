@@ -1,10 +1,10 @@
 import { useContext, useCallback, useRef, createContext } from 'react';
-import { SetDOMNodePath, Path, SetDOMNodePathRef } from '../types';
+import { SetDOMNodePath, PathOrEmpty, SetDOMNodePathRef } from '../types';
 
 export const SetNodePathContext = createContext<SetDOMNodePath>(() => {});
 
-export const useSetDOMNodePathRef = (path: Path) => {
-  const previousRef = useRef<{ node: Node; path: Path } | null>(null);
+export const useSetDOMNodePathRef = (path: PathOrEmpty) => {
+  const previousRef = useRef<{ node: Node; path: PathOrEmpty } | null>(null);
   const setNodePath = useContext(SetNodePathContext);
   const setNodePathRef = useCallback<SetDOMNodePathRef>(
     node => {
