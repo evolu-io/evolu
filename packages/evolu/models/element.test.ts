@@ -1,6 +1,12 @@
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
-import { isNormalizedElement, normalizeElement } from './element';
-import { Element } from '../types';
+import {
+  isNormalizedElement,
+  normalizeElement,
+  childrenLens,
+  getChildAt,
+  elementPrism,
+} from './element';
+import { Element, Text } from '../types';
 
 const id = createStableIDFactory();
 
@@ -120,3 +126,60 @@ test('normalizeElement do not remove children', () => {
     normalizeElement({ id: id(), children: [{ id: id(), text: '.' }] }),
   ).toMatchSnapshot();
 });
+
+// It does not make sense to test simple functional optics,
+// but it's helpful to understand how they work.
+
+test('childrenLens', () => {
+  const children: Element['children'] = [];
+  const element: Element = { id: id(), children };
+  expect(childrenLens.get(element)).toBe(children);
+  expect(childrenLens.modify(a => a)(element)).toBe(element);
+  const newChildren: Element['children'] = [];
+  expect(childrenLens.modify(() => newChildren)(element).children).toBe(
+    newChildren,
+  );
+});
+
+test('getChildAt', () => {
+  const child: Element = { id: id(), children: [] };
+  const children: Element['children'] = [{ id: id(), children: [] }];
+  expect(getChildAt(0).set(child)(children)[0]).toBe(child);
+});
+
+test('elementPrism', () => {
+  const el1: Element = { id: id(), children: [] };
+  const text1: Text = { id: id(), text: 'a' };
+  const newId = id();
+  // Prism is like filter.
+  expect(
+    elementPrism.modify(el => {
+      return { ...el, id: newId };
+    })(el1).id,
+  ).toBe(newId);
+  expect(
+    elementPrism.modify(el => {
+      return { ...el, id: newId };
+    })(text1).id,
+  ).not.toBe(newId);
+});
+
+// eslint-disable-next-line jest/no-commented-out-tests
+// test('getElementTraversal', () => {
+//   const el: Element = {
+//     id: id(),
+//     children: [
+//       {
+//         id: id(),
+//         children: [{ id: id(), children: [] }],
+//       },
+//     ],
+//   };
+//   const child: Element = { id: id(), children: [] };
+//   expect(
+//     getElementTraversal([0, 0]).modify(el => {
+//       return { ...el, children: [child] };
+//       // @ts-ignore
+//     })(el).children[0].children[0].children[0],
+//   ).toBe(child);
+// });

@@ -22,6 +22,9 @@ export const isElement: Refinement<Node, Element> = (node): node is Element => {
   return Array.isArray((node as Element).children);
 };
 
+// export const isChild: Refinement<Node, Child> = (node): node is Child =>
+//   isElement(node) || isText(node);
+
 export const childIsElement: Refinement<Child, Element> = (
   child,
 ): child is Element => isElement(child);
@@ -31,9 +34,7 @@ export const childIsText: Refinement<Child, Text> = (child): child is Text =>
 
 export const childIsTextNotBR: Refinement<Child, Text> = (
   child,
-): child is Text => {
-  return isText(child) && !textIsBR(child);
-};
+): child is Text => isText(child) && !textIsBR(child);
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -128,25 +129,12 @@ export const mapElementToIDless = (element: Element) => {
   };
 };
 
-/**
- * Focus on the children of Element.
- */
+// Functional optics.
+// https://github.com/gcanti/monocle-ts
 export const childrenLens = Lens.fromProp<Element>()('children');
-
-/**
- * Focus on the child at index of Child[].
- */
-export const getChildAt = (index: number) => indexArray<Child>().index(index);
-
-/**
- * Focus on Element of Child.
- */
 export const elementPrism = Prism.fromPredicate(childIsElement);
-
-/**
- * Focus on Text of Child.
- */
 export const textPrism = Prism.fromPredicate(childIsText);
+export const getChildAt = (index: number) => indexArray<Child>().index(index);
 
 /**
  * Focus on Element by Path.
