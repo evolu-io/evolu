@@ -11,11 +11,11 @@ import {
   SetDOMNodePath,
   GetDOMNodeByPath,
   GetPathByDOMNode,
-  PathOrEmpty,
+  PathMaybeEmpty,
 } from '../types';
 
 const useDebugNodesPaths = (
-  domNodesPathsMap: Map<DOMNode, PathOrEmpty>,
+  domNodesPathsMap: Map<DOMNode, PathMaybeEmpty>,
   element: Element,
 ) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -56,7 +56,7 @@ export const useDOMNodesPathsMap = (
   getDOMNodeByPath: GetDOMNodeByPath;
   getPathByDOMNode: GetPathByDOMNode;
 } => {
-  const nodesPathsMapRef = useRef<Map<DOMNode, PathOrEmpty>>(new Map());
+  const nodesPathsMapRef = useRef<Map<DOMNode, PathMaybeEmpty>>(new Map());
   const pathsNodesMapRef = useRef<Map<string, DOMNode>>(new Map());
 
   useDebugNodesPaths(nodesPathsMapRef.current, element);

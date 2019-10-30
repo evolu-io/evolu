@@ -9,11 +9,11 @@ import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
-import { Element, Path, SetDOMNodePathRef, PathOrEmpty } from '../types';
+import { Element, Path, SetDOMNodePathRef, PathMaybeEmpty } from '../types';
 
 export const ElementRenderer = memo<{
   element: Element;
-  path: PathOrEmpty;
+  path: PathMaybeEmpty;
 }>(
   ({ element, path = empty }) => {
     const renderElement = useRenderElement();

@@ -1,9 +1,8 @@
-import { ReactNode, ReactDOM, Reducer as ReactReducer } from 'react';
-import { Newtype } from 'newtype-ts';
-import { Option } from 'fp-ts/lib/Option';
-import { $Values } from 'utility-types';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { empty } from 'fp-ts/lib/Array';
+import { Option } from 'fp-ts/lib/Option';
+import { Newtype } from 'newtype-ts';
+import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
+import { $Values } from 'utility-types';
 import { DOMNode } from './dom';
 
 /**
@@ -45,8 +44,7 @@ export type Child = Element | Text;
  */
 // It's not readonly array, because https://github.com/gcanti/fp-ts/issues/987.
 export type Path = NonEmptyArray<number>;
-
-export type PathOrEmpty = Path | typeof empty;
+export type PathMaybeEmpty = number[];
 
 /**
  * Editor selection. It's like DOM Selection, but with Path for the anchor and the focus.
@@ -95,16 +93,16 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
-export type GetDOMNodeByPath = (path: PathOrEmpty) => Option<DOMNode>;
+export type GetDOMNodeByPath = (path: PathMaybeEmpty) => Option<DOMNode>;
 
-export type GetPathByDOMNode = (domNode: DOMNode) => Option<PathOrEmpty>;
+export type GetPathByDOMNode = (domNode: DOMNode) => Option<PathMaybeEmpty>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
 export type SetDOMNodePath = (
   operation: 'add' | 'remove',
   node: DOMNode,
-  path: PathOrEmpty,
+  path: PathMaybeEmpty,
 ) => void;
 
 export type RenderElement = (
@@ -161,22 +159,16 @@ export interface EditorRef {
 
 export interface MaterializedSelectionChild {
   readonly child: Child;
-  readonly path: Path;
-  readonly parents: NonEmptyArray<Element>;
-  readonly parentBlocks: NonEmptyArray<Element>;
-  readonly previousSibling: Option<Child>;
-  readonly nextSibling: Option<Child>;
-  readonly textOffset: Option<number>;
-  readonly allChildrenCount: number;
+  // readonly path: Path;
+  // readonly parents: NonEmptyArray<Element>;
+  // readonly parentBlocks: NonEmptyArray<Element>;
+  // readonly previousSibling: Option<Child>;
+  // readonly nextSibling: Option<Child>;
+  // readonly textOffset: Option<number>;
+  // readonly allChildrenCount: number;
 }
 
-/**
- * MaterializedSelection is Selection with aditional useful computations.
- * Some of them are depending on DOM state. Editor model knows nothing about
- * block/inline styles because it depends on CSS. That's why MaterializedSelection
- * is not part of Value. It's side effect.
- */
 export interface MaterializedSelection extends Selection {
   children: MaterializedSelectionChild[];
-  text: string;
+  // text: string;
 }

@@ -1,11 +1,11 @@
-import { snoc, getEq, isNonEmpty, init } from 'fp-ts/lib/Array';
+import { getEq, init, isNonEmpty, snoc } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
+import { head, last, tail } from 'fp-ts/lib/NonEmptyArray';
+import { chain, fromPredicate, Option } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Option, fromPredicate, chain } from 'fp-ts/lib/Option';
-import { last } from 'fp-ts/lib/NonEmptyArray';
-import { Path } from '../types';
+import { Path, PathMaybeEmpty } from '../types';
 
 /**
  * To compare paths whether they are equal.
@@ -35,3 +35,13 @@ export const movePath = (offset: number): Endomorphism<Path> => path =>
   snoc(path.slice(0, -1), last(path) + offset);
 
 // TODO: contains, parent, etc.
+
+export const mapPathToHeadAndTail = (path: Path): [number, PathMaybeEmpty] => [
+  head(path),
+  tail(path),
+];
+
+export const mapPathToInitAndLast = (path: Path): [PathMaybeEmpty, number] => [
+  path.slice(0, -1),
+  last(path),
+];
