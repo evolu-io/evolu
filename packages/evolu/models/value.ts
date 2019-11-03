@@ -1,7 +1,7 @@
+import { Eq, getStructEq, strictEqual } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import {
   alt,
-  exists,
   fold,
   fromNullable,
   getOrElse,
@@ -13,9 +13,9 @@ import {
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
+import { Element, ReactElement, Selection, Value } from '../types';
 import { jsx, normalizeElement, setTextElement } from './element';
-import { eqSelection, moveSelection } from './selection';
-import { Element, Selection, Value, ReactElement } from '../types';
+import { moveSelection } from './selection';
 
 export const createValue = <T extends Element>({
   element,
@@ -41,6 +41,13 @@ export const createValueWithText = (text = '') =>
     hasFocus: false,
   });
 
+export const eqValueShallow: Eq<Value> = getStructEq({
+  element: { equals: strictEqual },
+  hasFocus: { equals: strictEqual },
+  selection: { equals: strictEqual },
+  info: { equals: strictEqual },
+});
+
 /**
  * Focus on the element of Value.
  */
@@ -53,13 +60,10 @@ export const normalize: Endomorphism<Value> = value => {
   return { ...value, element };
 };
 
-export const select = (selection: Selection): Endomorphism<Value> => value =>
-  pipe(
-    value.selection,
-    exists(s => eqSelection.equals(s, selection)),
-  )
-    ? value
-    : { ...value, selection: some(selection) };
+export const select = (selection: Selection): Endomorphism<Value> => value => ({
+  ...value,
+  selection: some(selection),
+});
 
 export const setText = (
   text: string,

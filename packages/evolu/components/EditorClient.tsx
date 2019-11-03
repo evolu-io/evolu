@@ -1,7 +1,7 @@
 import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
-import { constVoid } from 'fp-ts/lib/function';
+import { constTrue, constVoid } from 'fp-ts/lib/function';
 import { last } from 'fp-ts/lib/NonEmptyArray';
 import {
   alt,
@@ -11,6 +11,7 @@ import {
   fromNullable,
   map,
   mapNullable,
+  none,
   Option,
   option,
   toNullable,
@@ -45,7 +46,7 @@ import {
   eqSelection,
   isForwardSelection,
 } from '../models/selection';
-import { normalize } from '../models/value';
+import { eqValueShallow, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
 import {
   Action,
@@ -97,7 +98,7 @@ export const EditorClient = memo(
         const { value, reducer, onChange } = dispatchDepsRef.current;
         const nextValue = reducer(value, action);
         debugAction(action.type, [value, action, nextValue]);
-        if (nextValue === value) return;
+        if (eqValueShallow.equals(nextValue, value)) return;
         onChange(nextValue);
       }, []);
 
@@ -150,7 +151,7 @@ export const EditorClient = memo(
         }
       }, [value.hasFocus, tabLostFocus, valueHadFocus]);
 
-      const getSelection = useCallback((): Option<Selection> => {
+      const getSelectionFromDOM = useCallback((): Option<Selection> => {
         return pipe(
           getDOMSelection(divRef.current),
           chain(DOMSelectionToSelection(getPathByDOMNode)),
@@ -213,18 +214,26 @@ export const EditorClient = memo(
 
       const { afterTyping, isTypingRef } = useAfterTyping();
 
-      const handleSelectionChange = useCallback(() => {
-        if (isTypingRef.current) return;
-        pipe(
-          getSelection(),
-          // We ignore none because editor has to remember the last selection
-          // to restore it later on the focus.
-          fold(constVoid, selection => {
-            const info = createInfo(selection);
-            dispatch({ type: 'selectionChange', selection, info });
-          }),
-        );
-      }, [createInfo, dispatch, getSelection, isTypingRef]);
+      const handleSelectionChange = useCallback(
+        () =>
+          pipe(
+            isTypingRef.current ? none : getSelectionFromDOM(),
+            filter(s1 =>
+              // Nested pipe is ok, we can refactor it out as Predicate if necessary.
+              pipe(
+                dispatchDepsRef.current.value.selection,
+                fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
+              ),
+            ),
+            map(selection => ({ selection, info: createInfo(selection) })),
+            // We ignore none because editor has to remember the last selection
+            // to restore it later on the focus.
+            fold(constVoid, ({ selection, info }) => {
+              dispatch({ type: 'selectionChange', selection, info });
+            }),
+          ),
+        [createInfo, dispatch, getSelectionFromDOM, isTypingRef],
+      );
 
       useEffect(() => {
         const doc = toNullable(getDocument());
@@ -235,22 +244,25 @@ export const EditorClient = memo(
         };
       }, [getDocument, handleSelectionChange]);
 
-      const ensureDOMSelectionIsActual = useCallback(() => {
-        pipe(
-          sequenceT(option)(value.selection, getSelection()),
-          filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
-          fold(constVoid, ([selection]) => {
-            setDOMSelection(selection);
-          }),
-        );
-      }, [getSelection, setDOMSelection, value.selection]);
+      const ensureDOMSelectionIsActual = useCallback(
+        (selection: Option<Selection>) => {
+          pipe(
+            sequenceT(option)(selection, getSelectionFromDOM()),
+            filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
+            fold(constVoid, ([selection]) => {
+              setDOMSelection(selection);
+            }),
+          );
+        },
+        [getSelectionFromDOM, setDOMSelection],
+      );
 
       // useLayoutEffect is a must to keep browser selection in sync with editor selection.
       // With useEffect, fast typing would lose caret position.
       useLayoutEffect(() => {
         if (!value.hasFocus) return;
-        ensureDOMSelectionIsActual();
-      }, [value.hasFocus, ensureDOMSelectionIsActual]);
+        ensureDOMSelectionIsActual(value.selection);
+      }, [value.hasFocus, ensureDOMSelectionIsActual, value.selection]);
 
       useBeforeInput(divRef, afterTyping, getPathByDOMNode, dispatch);
 
@@ -267,7 +279,7 @@ export const EditorClient = memo(
       }, [value.element, renderElement, setDOMNodePath]);
 
       const handleDivFocus = useCallback(() => {
-        ensureDOMSelectionIsActual();
+        ensureDOMSelectionIsActual(dispatchDepsRef.current.value.selection);
         setTabLostFocus(false);
         dispatch({ type: 'focus' });
       }, [dispatch, ensureDOMSelectionIsActual]);

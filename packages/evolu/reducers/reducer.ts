@@ -6,11 +6,9 @@ import { Reducer } from '../types';
 export const reducer: Reducer = (value, action) => {
   switch (action.type) {
     case 'focus':
-      if (value.hasFocus) return value;
       return { ...value, hasFocus: true };
 
     case 'blur':
-      if (!value.hasFocus) return value;
       return { ...value, hasFocus: false };
 
     case 'selectionChange': {

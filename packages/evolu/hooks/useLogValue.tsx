@@ -44,8 +44,8 @@ const Item = memo(
     return (
       <span
         onMouseDown={handleItemMouseDown}
+        // TODO: Add info.
         data-json={elementTextForSnapshots}
-        // data-info={infoTextForSnapshots}
       >
         {shown ? <b>{text}</b> : text}
         {shown && (
