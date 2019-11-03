@@ -14,6 +14,9 @@ Object {
     "tag": "div",
   },
   "hasFocus": false,
+  "info": Object {
+    "nodes": Array [],
+  },
   "selection": Object {
     "_tag": "None",
   },
@@ -34,6 +37,9 @@ Object {
     "tag": "div",
   },
   "hasFocus": true,
+  "info": Object {
+    "nodes": Array [],
+  },
   "selection": Object {
     "_tag": "None",
   },

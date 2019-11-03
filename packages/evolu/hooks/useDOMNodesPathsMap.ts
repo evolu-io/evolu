@@ -7,7 +7,7 @@ import { warn } from '../warn';
 import { DOMNode } from '../types/dom';
 import {
   Element,
-  Child,
+  Node,
   SetDOMNodePath,
   GetDOMNodeByPath,
   GetPathByDOMNode,
@@ -26,11 +26,11 @@ const useDebugNodesPaths = (
       //   nodes.push([path.join(), node]);
       // });
       // console.log(nodes);
-      const countNodes = (child: Child, count = 0) => {
-        if (isText(child)) return count + 1;
+      const countNodes = (node: Node, count = 0) => {
+        if (isText(node)) return count + 1;
         let childrenCount = 0;
-        if (child.children)
-          child.children.forEach(child => {
+        if (node.children)
+          node.children.forEach(child => {
             childrenCount += countNodes(child, count);
           });
         return count + 1 + childrenCount;

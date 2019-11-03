@@ -3,7 +3,7 @@ import { empty } from 'fp-ts/lib/Array';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
-import { mapNodeIDToString } from '../models/node';
+import { nodeIDToString } from '../models/node';
 import { eqPath } from '../models/path';
 import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
@@ -17,7 +17,7 @@ export const ElementRenderer = memo<{
 }>(
   ({ element, path = empty }) => {
     const renderElement = useRenderElement();
-    const setNodePathRef = useSetDOMNodePathRef(path);
+    const setDOMNodePathRef = useSetDOMNodePathRef(path);
     const handleElementRef = useCallback<SetDOMNodePathRef>(
       node => {
         if (process.env.NODE_ENV !== 'production') {
@@ -35,9 +35,9 @@ export const ElementRenderer = memo<{
                 `${node.outerHTML}`,
             );
         }
-        setNodePathRef(node);
+        setDOMNodePathRef(node);
       },
-      [setNodePathRef],
+      [setDOMNodePathRef],
     );
 
     const children = useMemo(() => {
@@ -46,7 +46,7 @@ export const ElementRenderer = memo<{
         if (isText(child)) {
           return (
             <TextRenderer
-              key={mapNodeIDToString(child.id)}
+              key={nodeIDToString(child.id)}
               text={child.text}
               path={childPath}
             />
@@ -54,7 +54,7 @@ export const ElementRenderer = memo<{
         }
         return (
           <ElementRenderer
-            key={mapNodeIDToString(child.id)}
+            key={nodeIDToString(child.id)}
             element={child}
             path={childPath}
           />

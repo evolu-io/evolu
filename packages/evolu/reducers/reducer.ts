@@ -14,7 +14,12 @@ export const reducer: Reducer = (value, action) => {
       return { ...value, hasFocus: false };
 
     case 'selectionChange': {
-      return select(action.selection)(value);
+      return pipe(
+        value,
+        select(action.selection),
+        // This should be always internal I suppose.
+        // value => ({ ...value, info: action.info }),
+      );
     }
 
     case 'insertText':

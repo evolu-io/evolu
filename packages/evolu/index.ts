@@ -12,6 +12,7 @@ export * from './hooks/useSetDOMNodePathRef';
 export * from './logPipe';
 export * from './models/dom';
 export * from './models/element';
+export * from './models/info';
 export * from './models/node';
 export * from './models/path';
 export * from './models/selection';

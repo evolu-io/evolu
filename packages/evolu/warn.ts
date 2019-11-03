@@ -1,7 +1,7 @@
 /**
  * Something like tiny-invariant, but with console.warn instead of throwing.
- * With typed functional programming, we never throw. App should "fail" silently.
- * For rare situations when external data are invalid, console.warn is good enough.
+ * With typed functional programming, we never throw. App must "fail" silently.
+ * Instead of throwing, we use console.warn.
  * https://github.com/gcanti/fp-ts/issues/973
  */
 export const warn = (message: string) => {

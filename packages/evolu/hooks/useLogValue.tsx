@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-env browser */
-import React, { useCallback, ReactNode, useState, useMemo, memo } from 'react';
 import { toUndefined } from 'fp-ts/lib/Option';
-import { mapElementToIDless } from '../models/element';
+import React, { memo, ReactNode, useCallback, useMemo, useState } from 'react';
+import { elementToIDless } from '../models/element';
 import { Value } from '../types';
 
 const Item = memo(
@@ -17,13 +17,21 @@ const Item = memo(
     selectedIndex: number | null;
     onSelect: (index: number) => void;
   }) => {
-    const { element, hasFocus, selection } = value;
+    const {
+      element,
+      hasFocus,
+      selection,
+      // info
+    } = value;
     const indexItem = { hasFocus, selection: toUndefined(selection) };
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
-    const elementTextForSnapshots = JSON.stringify(mapElementToIDless(element))
+    const elementTextForSnapshots = JSON.stringify(elementToIDless(element))
       .split('"')
       .join("'");
+    // const infoTextForSnapshots = JSON.stringify(info)
+    //   .split('"')
+    //   .join("'");
     const shown = index === selectedIndex;
     const handleItemMouseDown = useCallback(
       (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -37,11 +45,12 @@ const Item = memo(
       <span
         onMouseDown={handleItemMouseDown}
         data-json={elementTextForSnapshots}
+        // data-info={infoTextForSnapshots}
       >
         {shown ? <b>{text}</b> : text}
         {shown && (
           <div title="click to close" onMouseDown={handleItemMouseDown}>
-            {JSON.stringify(mapElementToIDless(element), null, 2)}
+            {JSON.stringify(elementToIDless(element), null, 2)}
           </div>
         )}
         <style jsx>{`

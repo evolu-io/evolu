@@ -5,36 +5,14 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children } from 'react';
-import {
-  Element,
-  Child,
-  Node,
-  ReactElement,
-  Selection,
-  Text,
-  Path,
-} from '../types';
+import { Element, ReactElement, Selection, Text, Node, Path } from '../types';
 import { id } from './node';
 import { isCollapsedSelection } from './selection';
-import { isText, textIsBR } from './text';
+import { isText, textIsBR, isTextNotBR } from './text';
 
 export const isElement: Refinement<Node, Element> = (node): node is Element => {
   return Array.isArray((node as Element).children);
 };
-
-// export const isChild: Refinement<Node, Child> = (node): node is Child =>
-//   isElement(node) || isText(node);
-
-export const childIsElement: Refinement<Child, Element> = (
-  child,
-): child is Element => isElement(child);
-
-export const childIsText: Refinement<Child, Text> = (child): child is Text =>
-  isText(child);
-
-export const childIsTextNotBR: Refinement<Child, Text> = (
-  child,
-): child is Text => isText(child) && !textIsBR(child);
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -72,7 +50,7 @@ export const jsx = (element: JSX.Element): ReactElement => {
 export const normalizeElement: Endomorphism<Element> = element => {
   // This flag is good enough for now. We can use fp-ts These later.
   let somethingHasBeenNormalized = false;
-  const children = element.children.reduce<(Child)[]>((array, child) => {
+  const children = element.children.reduce<(Node)[]>((array, child) => {
     if (isElement(child)) {
       const normalizedChild = normalizeElement(child);
       if (normalizedChild !== child) somethingHasBeenNormalized = true;
@@ -81,7 +59,7 @@ export const normalizeElement: Endomorphism<Element> = element => {
     if (textIsBR(child)) return [...array, child];
     return pipe(
       last(array),
-      chain(fromPredicate(childIsTextNotBR)),
+      chain(fromPredicate(isTextNotBR)),
       fold(
         () => [...array, child],
         previousText => {
@@ -112,7 +90,7 @@ export const isNormalizedElement: Predicate<Element> = element => {
 };
 
 // @ts-ignore TODO: Recursively remove ID from Element and its children.
-export const mapElementToIDless = (element: Element) => {
+export const elementToIDless = (element: Element) => {
   if (element == null) return element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...objectWithoutID } = element;
@@ -124,7 +102,7 @@ export const mapElementToIDless = (element: Element) => {
         const { id, ...childWithoutID } = child;
         return childWithoutID;
       }
-      return mapElementToIDless(child);
+      return elementToIDless(child);
     }),
   };
 };
@@ -132,13 +110,14 @@ export const mapElementToIDless = (element: Element) => {
 // Functional optics.
 // https://github.com/gcanti/monocle-ts
 export const childrenLens = Lens.fromProp<Element>()('children');
-export const elementPrism = Prism.fromPredicate(childIsElement);
-export const textPrism = Prism.fromPredicate(childIsText);
-export const getChildAt = (index: number) => indexArray<Child>().index(index);
+export const elementPrism = Prism.fromPredicate(isElement);
+export const textPrism = Prism.fromPredicate(isText);
+export const getChildAt = (index: number) => indexArray<Node>().index(index);
 
 /**
  * Focus on Element by Path.
  */
+// TODO: Maybe refactor to Optional<Element, Element> without as.
 export const getElementTraversal = (path: Path) =>
   path.reduce(
     (acc, pathIndex) =>

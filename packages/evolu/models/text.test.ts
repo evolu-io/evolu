@@ -3,7 +3,7 @@ import { id } from './node';
 import { Text, Node, Element } from '../types';
 
 test('isText', () => {
-  const node: Node = { id: id() };
+  const node: Node = { id: id(), children: [] };
   expect(isText(node)).toBe(false);
 
   const element: Element = { id: id(), children: [] };

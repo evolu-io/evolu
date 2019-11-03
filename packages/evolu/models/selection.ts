@@ -16,7 +16,7 @@ import { DOMSelection, DOMRange } from '../types/dom';
 export const isForwardSelection: Predicate<Selection> = selection =>
   geq(byDirection)(selection.anchor, selection.focus);
 
-export const mapSelectionToRange = (selection: Selection): Range =>
+export const selectionToRange = (selection: Selection): Range =>
   isForwardSelection(selection)
     ? { start: selection.anchor, end: selection.focus }
     : { start: selection.focus, end: selection.anchor };
@@ -29,7 +29,7 @@ export const eqSelection: Eq<Selection> = getStructEq({
   focus: eqPath,
 });
 
-export const mapDOMSelectionToSelection = (
+export const DOMSelectionToSelection = (
   getPathByDOMNode: GetPathByDOMNode,
 ): ((selection: DOMSelection) => Option<Selection>) => ({
   anchorNode,
@@ -50,7 +50,7 @@ export const mapDOMSelectionToSelection = (
     ),
   );
 
-export const mapDOMRangeToSelection = (
+export const DOMRangeToSelection = (
   getPathByDOMNode: GetPathByDOMNode,
 ): ((range: DOMRange) => Option<Selection>) => ({
   startContainer,
@@ -96,13 +96,13 @@ export const moveSelection = (
 
 export const collapseSelectionToStart: Endomorphism<Selection> = selection => {
   if (isCollapsedSelection(selection)) return selection;
-  const range = mapSelectionToRange(selection);
+  const range = selectionToRange(selection);
   return { anchor: range.start, focus: range.start };
 };
 
 export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
   if (isCollapsedSelection(selection)) return selection;
-  const range = mapSelectionToRange(selection);
+  const range = selectionToRange(selection);
   return { anchor: range.end, focus: range.end };
 };
 
@@ -111,7 +111,7 @@ export const getSelectionFromInputEvent = (
 ): ((event: InputEvent) => Option<Selection>) => event =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    chain(mapDOMRangeToSelection(getPathByDOMNode)),
+    chain(DOMRangeToSelection(getPathByDOMNode)),
   );
 
 /**

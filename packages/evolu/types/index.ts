@@ -12,39 +12,35 @@ import { DOMNode } from './dom';
 export interface NodeID
   extends Newtype<{ readonly NodeID: unique symbol }, string> {}
 
-/**
- * Editor node.
- */
-export interface Node {
+export interface WithNodeID {
   readonly id: NodeID;
 }
 
 /**
  * Editor text.
  */
-export interface Text extends Node {
+export interface Text extends WithNodeID {
   readonly text: string;
 }
 
 /**
  * Editor element. The base for all other editor elements.
  */
-export interface Element extends Node {
-  readonly children: (Child)[];
+export interface Element extends WithNodeID {
+  readonly children: (Node)[];
 }
 
-/**
- * Editor child. Only editor element or text.
- */
-export type Child = Element | Text;
+export type Node = Element | Text;
+
+export type PathIndex = number;
 
 /**
- * Editor path is non empty array of path indexes which can be resolved
- * to element or text or text with offset or to nothing.
+ * Editor path can be resolved to Element, Text, or Text char.
+ * Not readonly because https://github.com/gcanti/fp-ts/issues/987.
  */
-// It's not readonly array, because https://github.com/gcanti/fp-ts/issues/987.
-export type Path = NonEmptyArray<number>;
-export type PathMaybeEmpty = number[];
+export type Path = NonEmptyArray<PathIndex>;
+
+export type PathMaybeEmpty = PathIndex[];
 
 /**
  * Editor selection. It's like DOM Selection, but with Path for the anchor and the focus.
@@ -55,6 +51,30 @@ export interface Selection {
   readonly focus: Path;
 }
 
+export interface NodeInfo {
+  readonly node: Node;
+  readonly path: Path;
+  // readonly text: string;
+  // readonly parents: NonEmptyArray<Element>;
+  // readonly parentBlocks: NonEmptyArray<Element>;
+  // readonly previousSibling: Option<Child>;
+  // readonly nextSibling: Option<Child>;
+  // readonly textOffset: Option<number>;
+  // readonly allChildrenCount: number;
+}
+
+/**
+ * Info is materialized selection. It provides useful computations for
+ * toolbars and operations.
+ */
+export interface Info {
+  // selection: Selection;
+  // range: Range;
+  nodes: NodeInfo[];
+  // text: Node;
+  // range position
+}
+
 /**
  * Editor value.
  */
@@ -62,6 +82,7 @@ export interface Value {
   readonly element: Element;
   readonly hasFocus: boolean;
   readonly selection: Option<Selection>;
+  readonly info: Info;
 }
 
 /**
@@ -70,7 +91,7 @@ export interface Value {
 export type Action =
   | { type: 'focus' }
   | { type: 'blur' }
-  | { type: 'selectionChange'; selection: Selection }
+  | { type: 'selectionChange'; selection: Selection; info: Info }
   | { type: 'insertText'; text: string; selection: Selection }
   | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string }
@@ -152,23 +173,8 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
 
 export interface EditorRef {
   readonly focus: () => void;
-  // TODO: findDOMNodeByPath, materizalizeSelection
+  readonly createInfo: (selection: Selection) => Info;
+  // TODO: findDOMNodeByPath, computeInfo, etc.
 }
 
 // TODO: Fragment, probably Child[].
-
-export interface MaterializedSelectionChild {
-  readonly child: Child;
-  // readonly path: Path;
-  // readonly parents: NonEmptyArray<Element>;
-  // readonly parentBlocks: NonEmptyArray<Element>;
-  // readonly previousSibling: Option<Child>;
-  // readonly nextSibling: Option<Child>;
-  // readonly textOffset: Option<number>;
-  // readonly allChildrenCount: number;
-}
-
-export interface MaterializedSelection extends Selection {
-  children: MaterializedSelectionChild[];
-  // text: string;
-}

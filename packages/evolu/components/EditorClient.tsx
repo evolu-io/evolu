@@ -2,15 +2,18 @@ import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constVoid } from 'fp-ts/lib/function';
+import { last } from 'fp-ts/lib/NonEmptyArray';
 import {
   alt,
   chain,
   filter,
   fold,
+  fromNullable,
+  map,
   mapNullable,
   Option,
   option,
-  map,
+  toNullable,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
@@ -24,7 +27,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { last } from 'fp-ts/lib/NonEmptyArray';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
@@ -36,11 +38,12 @@ import {
   createDOMRange,
   getDOMSelection,
 } from '../models/dom';
+import { createInfo as modelCreateInfo } from '../models/info';
 import { initPath } from '../models/path';
 import {
+  DOMSelectionToSelection,
   eqSelection,
   isForwardSelection,
-  mapDOMSelectionToSelection,
 } from '../models/selection';
 import { normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
@@ -79,21 +82,19 @@ export const EditorClient = memo(
       const value = normalize(valueMaybeNotNormalized);
 
       // We don't want to use useReducer because we don't want derived state.
-      // Naive dispatch implementation re-subscribes document listeners to often.
+      // Naive dispatch implementation would re-subscribes listeners too often.
       // React will provide better API because this could be tricky in concurrent mode.
       // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
       const dispatchDepsRef = useRef<{
         value: Value;
         reducer: Reducer;
         onChange: EditorProps['onChange'];
-      }>();
+      }>({ value, reducer, onChange });
       useLayoutEffect(() => {
         dispatchDepsRef.current = { value, reducer, onChange };
       });
       const dispatch = useCallback((action: Action) => {
-        const { current } = dispatchDepsRef;
-        if (current == null) return;
-        const { value, reducer, onChange } = current;
+        const { value, reducer, onChange } = dispatchDepsRef.current;
         const nextValue = reducer(value, action);
         debugAction(action.type, [value, action, nextValue]);
         if (nextValue === value) return;
@@ -108,14 +109,29 @@ export const EditorClient = memo(
 
       const divRef = useRef<HTMLDivElement>(null);
 
-      useImperativeHandle(ref, () => ({
-        focus: () => {
-          if (divRef.current) divRef.current.focus();
-        },
-      }));
+      const getDocument = useCallback(
+        () =>
+          pipe(
+            fromNullable(divRef.current),
+            mapNullable(div => div.ownerDocument),
+          ),
+        [],
+      );
 
+      const focus = useCallback<EditorRef['focus']>(() => {
+        if (divRef.current) divRef.current.focus();
+      }, []);
+
+      const createInfo = useCallback<EditorRef['createInfo']>(
+        selection =>
+          modelCreateInfo(selection, dispatchDepsRef.current.value.element),
+        [],
+      );
+
+      useImperativeHandle(ref, () => ({ focus, createInfo }));
+
+      // Internal state, it does not belong to Value I suppose.
       const [tabLostFocus, setTabLostFocus] = useState(false);
-
       const valueHadFocus = usePrevious(value.hasFocus);
 
       // Map editor declarative focus to imperative DOM focus and blur methods.
@@ -132,12 +148,12 @@ export const EditorClient = memo(
           // Editor selection must be preserved.
           if (divHasFocus && !tabLostFocus) div.blur();
         }
-      }, [tabLostFocus, divRef, valueHadFocus, value.hasFocus]);
+      }, [value.hasFocus, tabLostFocus, valueHadFocus]);
 
       const getSelection = useCallback((): Option<Selection> => {
         return pipe(
           getDOMSelection(divRef.current),
-          chain(mapDOMSelectionToSelection(getPathByDOMNode)),
+          chain(DOMSelectionToSelection(getPathByDOMNode)),
         );
       }, [getPathByDOMNode]);
 
@@ -197,32 +213,27 @@ export const EditorClient = memo(
 
       const { afterTyping, isTypingRef } = useAfterTyping();
 
-      // Update editor selection by DOM selection.
+      const handleSelectionChange = useCallback(() => {
+        if (isTypingRef.current) return;
+        pipe(
+          getSelection(),
+          // We ignore none because editor has to remember the last selection
+          // to restore it later on the focus.
+          fold(constVoid, selection => {
+            const info = createInfo(selection);
+            dispatch({ type: 'selectionChange', selection, info });
+          }),
+        );
+      }, [createInfo, dispatch, getSelection, isTypingRef]);
+
       useEffect(() => {
-        const doc = divRef.current && divRef.current.ownerDocument;
+        const doc = toNullable(getDocument());
         if (doc == null) return;
-
-        const handleDocumentSelectionChange = () => {
-          if (isTypingRef.current) return;
-          pipe(
-            getDOMSelection(divRef.current),
-            chain(mapDOMSelectionToSelection(getPathByDOMNode)),
-            // We ignore none because editor has to remember the last selection to
-            // restore it later on the focus.
-            fold(constVoid, selection => {
-              dispatch({ type: 'selectionChange', selection });
-            }),
-          );
-        };
-
-        doc.addEventListener('selectionchange', handleDocumentSelectionChange);
+        doc.addEventListener('selectionchange', handleSelectionChange);
         return () => {
-          doc.removeEventListener(
-            'selectionchange',
-            handleDocumentSelectionChange,
-          );
+          doc.removeEventListener('selectionchange', handleSelectionChange);
         };
-      }, [dispatch, getPathByDOMNode, isTypingRef]);
+      }, [getDocument, handleSelectionChange]);
 
       const ensureDOMSelectionIsActual = useCallback(() => {
         pipe(

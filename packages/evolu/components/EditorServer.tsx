@@ -1,9 +1,9 @@
-import React, { createElement, Children, memo } from 'react';
 import { constVoid } from 'fp-ts/lib/function';
-import { normalizeElement } from '../models/element';
-import { isText } from '../models/text';
-import { mapNodeIDToString } from '../models/node';
-import { RenderElement, Element, ReactElement } from '../types';
+import React, { Children, createElement, memo } from 'react';
+import { isElement, normalizeElement } from '../models/element';
+import { nodeIDToString } from '../models/node';
+import { textIsBR } from '../models/text';
+import { Element, ReactElement, RenderElement } from '../types';
 
 export const renderReactElement: RenderElement = (element, children, ref) => {
   const { tag, props } = element as ReactElement;
@@ -25,20 +25,15 @@ export const ServerElementRenderer = ({
   renderElement,
 }: ServerElementRendererProps) => {
   const children = element.children.map(child => {
-    if (isText(child)) {
-      return child.text.length === 0 ? (
-        <br key={mapNodeIDToString(child.id)} />
-      ) : (
-        child.text
+    if (isElement(child))
+      return (
+        <ServerElementRenderer
+          element={child}
+          renderElement={renderElement}
+          key={nodeIDToString(child.id)}
+        />
       );
-    }
-    return (
-      <ServerElementRenderer
-        element={child}
-        renderElement={renderElement}
-        key={mapNodeIDToString(child.id)}
-      />
-    );
+    return textIsBR(child) ? <br key={nodeIDToString(child.id)} /> : child.text;
   });
   if (renderElement) {
     return <>{renderElement(element, children, constVoid)}</>;

@@ -201,6 +201,8 @@ export const useBeforeInput = (
       // https://www.w3.org/TR/input-events-2/
       let preventDefault = true;
 
+      // console.log(event.inputType);
+
       switch (event.inputType) {
         case 'insertText':
           if (domSelection.isCollapsed) {

@@ -29,6 +29,10 @@ export const createValue = <T extends Element>({
   element,
   selection,
   hasFocus,
+  info: {
+    nodes: [],
+    // text: '',
+  },
 });
 
 export const createValueWithText = (text = '') =>
@@ -83,22 +87,14 @@ export const move = (offset: number): Endomorphism<Value> => value =>
   );
 
 export const deleteContent = (
-  // zatim editor, ok
   selection: Selection,
 ): Endomorphism<Value> => value =>
   pipe(
     value,
     a => {
-      // pipe()
+      // TODO:
       // eslint-disable-next-line no-console
       console.log(selection);
       return a;
     },
   );
-
-// pipe(
-//   value,
-//   deleteContent(editor),
-//   select(foo),
-
-// );

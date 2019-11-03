@@ -5,7 +5,7 @@ import { NodeID } from '../types';
 
 const isoNodeID = iso<NodeID>();
 
-export const mapNodeIDToString = (nodeID: NodeID): string =>
+export const nodeIDToString = (nodeID: NodeID): string =>
   isoNodeID.unwrap(nodeID);
 
 // 10 is ok.

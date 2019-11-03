@@ -6,3 +6,6 @@ export const isText: Refinement<Node, Text> = (node): node is Text =>
   typeof (node as Text).text === 'string';
 
 export const textIsBR: Predicate<Text> = text => stringIsBR(text.text);
+
+export const isTextNotBR: Refinement<Node, Text> = (child): child is Text =>
+  isText(child) && !textIsBR(child);
