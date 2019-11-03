@@ -5,7 +5,7 @@ import {
   normalizeElement,
   makeKeyForElement,
 } from '../models/element';
-import { textIsBR, makeKeyForText } from '../models/text';
+import { textIsBR } from '../models/text';
 import { Element, ReactElement, RenderElement } from '../types';
 
 export const renderReactElement: RenderElement = (element, children, ref) => {
@@ -36,7 +36,7 @@ export const ServerElementRenderer = ({
           key={makeKeyForElement(child)}
         />
       );
-    const key = makeKeyForText(child, index);
+    const key = index.toString();
     return textIsBR(child) ? (
       <br key={key} />
     ) : (

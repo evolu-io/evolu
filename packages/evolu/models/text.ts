@@ -9,6 +9,3 @@ export const textIsBR: Predicate<Text> = text => stringIsBR(text);
 
 export const isTextNotBR: Refinement<Node, Text> = (child): child is Text =>
   isText(child) && !textIsBR(child);
-
-export const makeKeyForText = (text: Text, index: number): string =>
-  `${text}-${index}`;

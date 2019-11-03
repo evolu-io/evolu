@@ -4,7 +4,7 @@ import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
 import { eqPath } from '../models/path';
-import { isText, makeKeyForText } from '../models/text';
+import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
@@ -46,7 +46,7 @@ export const ElementRenderer = memo<{
         if (isText(child)) {
           return (
             <TextRenderer
-              key={makeKeyForText(child, index)}
+              key={index.toString()}
               text={child}
               path={childPath}
             />
