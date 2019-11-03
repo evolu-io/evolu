@@ -38,7 +38,7 @@ exports[`render 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -92,13 +92,13 @@ exports[`render 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':true}·
     </span>

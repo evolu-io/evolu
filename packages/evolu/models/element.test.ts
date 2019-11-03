@@ -4,9 +4,8 @@ import {
   normalizeElement,
   childrenLens,
   getChildAt,
-  elementPrism,
 } from './element';
-import { Element, Text } from '../types';
+import { Element } from '../types';
 
 const id = createStableIDFactory();
 
@@ -14,28 +13,23 @@ test('normalizeElement merges adjacent texts', () => {
   const element: Element = {
     id: id(),
     children: [
-      { id: id(), text: 'a' },
-      { id: id(), text: 'b' },
+      'a',
+      'b',
       {
         id: id(),
         children: [
-          { id: id(), text: 'a' },
-          { id: id(), text: 'b' },
-          { id: id(), text: 'c' },
+          'a',
+          'b',
+          'c',
           {
             id: id(),
-            children: [
-              { id: id(), text: 'a' },
-              { id: id(), children: [] },
-              { id: id(), text: 'b' },
-              { id: id(), text: 'c' },
-            ],
+            children: ['a', { id: id(), children: [] }, 'b', 'c'],
           },
         ],
       },
-      { id: id(), text: 'a' },
-      { id: id(), text: '' },
-      { id: id(), text: 'b' },
+      'a',
+      '',
+      'b',
     ],
   };
   expect(normalizeElement(element)).toMatchSnapshot();
@@ -50,18 +44,14 @@ test('normalizeElement preserves identity', () => {
 
   const element2: Element = {
     id: id(),
-    children: [{ id: id(), children: [] }, { id: id(), text: 'a' }],
+    children: [{ id: id(), children: [] }, 'a'],
   };
   expect(normalizeElement(element2)).toBe(element2);
 
   const preservedChild = { id: id(), children: [] };
   const element3: Element = {
     id: id(),
-    children: [
-      preservedChild,
-      { id: id(), text: 'a' },
-      { id: id(), text: 'b' },
-    ],
+    children: [preservedChild, 'a', 'b'],
   };
   const normalizedElement3 = normalizeElement(element3);
   expect(normalizedElement3).not.toBe(element3);
@@ -72,7 +62,7 @@ test('isNormalizedElement', () => {
   expect(
     isNormalizedElement({
       id: id(),
-      children: [{ id: id(), text: 'a' }],
+      children: ['a'],
     }),
   ).toBe(true);
 
@@ -80,7 +70,7 @@ test('isNormalizedElement', () => {
   expect(
     isNormalizedElement({
       id: id(),
-      children: [{ id: id(), text: '' }],
+      children: [''],
     }),
   ).toBe(true);
 
@@ -88,7 +78,7 @@ test('isNormalizedElement', () => {
   expect(
     isNormalizedElement({
       id: id(),
-      children: [{ id: id(), text: 'a' }, { id: id(), text: 'b' }],
+      children: ['a', 'b'],
     }),
   ).toBe(false);
 
@@ -96,7 +86,7 @@ test('isNormalizedElement', () => {
   expect(
     isNormalizedElement({
       id: id(),
-      children: [{ id: id(), children: [{ id: id(), text: '' }] }],
+      children: [{ id: id(), children: [''] }],
     }),
   ).toBe(true);
 
@@ -104,11 +94,7 @@ test('isNormalizedElement', () => {
   expect(
     isNormalizedElement({
       id: id(),
-      children: [
-        { id: id(), text: 'a' },
-        { id: id(), text: '' },
-        { id: id(), text: 'a' },
-      ],
+      children: ['a', '', 'a'],
     }),
   ).toBe(true);
 });
@@ -119,12 +105,8 @@ test('normalizeElement do not add children', () => {
 
 test('normalizeElement do not remove children', () => {
   expect(normalizeElement({ id: id(), children: [] })).toMatchSnapshot();
-  expect(
-    normalizeElement({ id: id(), children: [{ id: id(), text: '' }] }),
-  ).toMatchSnapshot();
-  expect(
-    normalizeElement({ id: id(), children: [{ id: id(), text: '.' }] }),
-  ).toMatchSnapshot();
+  expect(normalizeElement({ id: id(), children: [''] })).toMatchSnapshot();
+  expect(normalizeElement({ id: id(), children: ['.'] })).toMatchSnapshot();
 });
 
 // It does not make sense to test simple functional optics,
@@ -147,22 +129,23 @@ test('getChildAt', () => {
   expect(getChildAt(0).set(child)(children)[0]).toBe(child);
 });
 
-test('elementPrism', () => {
-  const el1: Element = { id: id(), children: [] };
-  const text1: Text = { id: id(), text: 'a' };
-  const newId = id();
-  // Prism is like filter.
-  expect(
-    elementPrism.modify(el => {
-      return { ...el, id: newId };
-    })(el1).id,
-  ).toBe(newId);
-  expect(
-    elementPrism.modify(el => {
-      return { ...el, id: newId };
-    })(text1).id,
-  ).not.toBe(newId);
-});
+// eslint-disable-next-line jest/no-commented-out-tests
+// test('elementPrism', () => {
+//   const el1: Element = { id: id(), children: [] };
+//   const text1: Text = 'a';
+//   const newId = id();
+//   // Prism is like filter.
+//   expect(
+//     elementPrism.modify(el => {
+//       return { ...el, id: newId };
+//     })(el1).id,
+//   ).toBe(newId);
+//   expect(
+//     elementPrism.modify(el => {
+//       return { ...el, id: newId };
+//     })(text1).id,
+//   ).not.toBe(newId);
+// });
 
 // eslint-disable-next-line jest/no-commented-out-tests
 // test('getElementTraversal', () => {

@@ -9,12 +9,7 @@ import {
 const reactElement: editor.ReactElement = {
   id: editor.id(),
   tag: 'div',
-  children: [
-    { id: editor.id(), text: 'a' },
-    { id: editor.id(), text: 'b' },
-    { id: editor.id(), text: '' },
-    { id: editor.id(), text: 'c' },
-  ],
+  children: ['a', 'b', '', 'c'],
 };
 
 const TestEditorServer = () => {

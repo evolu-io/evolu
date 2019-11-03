@@ -3,13 +3,13 @@ import { empty } from 'fp-ts/lib/Array';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
-import { nodeIDToString } from '../models/node';
 import { eqPath } from '../models/path';
-import { isText } from '../models/text';
+import { isText, makeKeyForText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
 import { Element, Path, SetDOMNodePathRef, PathMaybeEmpty } from '../types';
+import { makeKeyForElement } from '../models/element';
 
 export const ElementRenderer = memo<{
   element: Element;
@@ -46,15 +46,15 @@ export const ElementRenderer = memo<{
         if (isText(child)) {
           return (
             <TextRenderer
-              key={nodeIDToString(child.id)}
-              text={child.text}
+              key={makeKeyForText(child, index)}
+              text={child}
               path={childPath}
             />
           );
         }
         return (
           <ElementRenderer
-            key={nodeIDToString(child.id)}
+            key={makeKeyForElement(child)}
             element={child}
             path={childPath}
           />

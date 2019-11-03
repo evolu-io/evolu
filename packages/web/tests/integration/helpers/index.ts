@@ -1,7 +1,7 @@
 import path from 'path';
 import { ClickOptions, Keyboard } from 'puppeteer';
 import { IO } from 'fp-ts/lib/IO';
-import { NodeID } from 'evolu';
+import { ElementID } from 'evolu';
 
 export const pageUrl = (name: string) => {
   if (process.env.JEST_WATCH) {
@@ -116,10 +116,10 @@ export const pageKeyboard: Keyboard = [
   {} as Keyboard,
 );
 
-export const createStableIDFactory = (): IO<NodeID> => {
+export const createStableIDFactory = (): IO<ElementID> => {
   let lastID = 0;
   beforeEach(async () => {
     lastID = 0;
   });
-  return () => ((lastID++).toString() as unknown) as NodeID;
+  return () => ((lastID++).toString() as unknown) as ElementID;
 };

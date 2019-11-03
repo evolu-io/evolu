@@ -15,7 +15,7 @@ export const testSelectionElement: editor.ReactElement = {
       props: {
         style: { fontSize: '24px' },
       },
-      children: [{ id: editor.id(), text: 'heading' }],
+      children: ['heading'],
     },
     {
       id: editor.id(),
@@ -23,7 +23,7 @@ export const testSelectionElement: editor.ReactElement = {
       props: {
         style: { fontSize: '16px' },
       },
-      children: [{ id: editor.id(), text: 'paragraph' }],
+      children: ['paragraph'],
     },
   ],
 };

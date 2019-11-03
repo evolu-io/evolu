@@ -77,12 +77,12 @@ export const initialValue = editor.createValue<SchemaDocumentElement>({
       {
         id: editor.id(),
         type: 'heading',
-        children: [{ id: editor.id(), text: 'heading' }],
+        children: ['heading'],
       },
       {
         id: editor.id(),
         type: 'paragraph',
-        children: [{ id: editor.id(), text: 'paragraph' }],
+        children: ['paragraph'],
       },
       {
         id: editor.id(),
@@ -92,7 +92,7 @@ export const initialValue = editor.createValue<SchemaDocumentElement>({
             id: editor.id(),
             type: 'listitem',
             children: [
-              { id: editor.id(), text: 'listitem' },
+              'listitem',
               // List can be nested. With recursive type checking of course.
               // {
               //   id: id(),

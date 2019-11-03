@@ -1,8 +1,11 @@
 import { constVoid } from 'fp-ts/lib/function';
-import React, { Children, createElement, memo } from 'react';
-import { isElement, normalizeElement } from '../models/element';
-import { nodeIDToString } from '../models/node';
-import { textIsBR } from '../models/text';
+import React, { Children, createElement, memo, Fragment } from 'react';
+import {
+  isElement,
+  normalizeElement,
+  makeKeyForElement,
+} from '../models/element';
+import { textIsBR, makeKeyForText } from '../models/text';
 import { Element, ReactElement, RenderElement } from '../types';
 
 export const renderReactElement: RenderElement = (element, children, ref) => {
@@ -24,16 +27,21 @@ export const ServerElementRenderer = ({
   element,
   renderElement,
 }: ServerElementRendererProps) => {
-  const children = element.children.map(child => {
+  const children = element.children.map((child, index) => {
     if (isElement(child))
       return (
         <ServerElementRenderer
           element={child}
           renderElement={renderElement}
-          key={nodeIDToString(child.id)}
+          key={makeKeyForElement(child)}
         />
       );
-    return textIsBR(child) ? <br key={nodeIDToString(child.id)} /> : child.text;
+    const key = makeKeyForText(child, index);
+    return textIsBR(child) ? (
+      <br key={key} />
+    ) : (
+      <Fragment key={key}>{child}</Fragment>
+    );
   });
   if (renderElement) {
     return <>{renderElement(element, children, constVoid)}</>;

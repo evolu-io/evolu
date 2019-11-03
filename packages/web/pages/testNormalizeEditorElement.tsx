@@ -15,12 +15,7 @@ const initialValue = editor.createValue({
         props: {
           className: 'list',
         },
-        children: [
-          { id: editor.id(), text: 'a' },
-          { id: editor.id(), text: 'b' },
-          { id: editor.id(), text: '' },
-          { id: editor.id(), text: 'c' },
-        ],
+        children: ['a', 'b', '', 'c'],
       },
     ],
   } as editor.ReactElement),

@@ -5,14 +5,38 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import { Children } from 'react';
-import { Element, ReactElement, Selection, Text, Node, Path } from '../types';
-import { id } from './node';
+import { iso } from 'newtype-ts';
+import { IO } from 'fp-ts/lib/IO';
+import nanoid from 'nanoid';
+import {
+  Element,
+  ReactElement,
+  Selection,
+  Text,
+  Node,
+  Path,
+  ElementID,
+} from '../types';
 import { isCollapsedSelection } from './selection';
 import { isText, textIsBR, isTextNotBR } from './text';
 
 export const isElement: Refinement<Node, Element> = (node): node is Element => {
   return Array.isArray((node as Element).children);
 };
+
+const isoNodeID = iso<ElementID>();
+
+/**
+ * Make React key for Element from its ID.
+ */
+export const makeKeyForElement = (element: Element): string =>
+  isoNodeID.unwrap(element.id);
+
+/**
+ * Make ElementID by nanoid(10).
+ * https://zelark.github.io/nano-id-cc
+ */
+export const id: IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -23,14 +47,8 @@ export const jsx = (element: JSX.Element): ReactElement => {
     props: { children = [], ...props },
   } = element;
   const elementChildren = Children.toArray(children).map(child => {
-    if (typeof child === 'string') {
-      const text: Text = { id: id(), text: child };
-      return text;
-    }
-    if (child.type === 'br') {
-      const text: Text = { id: id(), text: '' };
-      return text;
-    }
+    if (typeof child === 'string') return child;
+    if (child.type === 'br') return '';
     return jsx(child);
   });
   const elementProps = Object.keys(props).length > 0 ? props : undefined;
@@ -64,11 +82,7 @@ export const normalizeElement: Endomorphism<Element> = element => {
         () => [...array, child],
         previousText => {
           somethingHasBeenNormalized = true;
-          return unsafeUpdateAt(
-            array.length - 1,
-            { ...previousText, text: previousText.text + child.text },
-            array,
-          );
+          return unsafeUpdateAt(array.length - 1, previousText + child, array);
         },
       ),
     );
@@ -97,11 +111,7 @@ export const elementToIDless = (element: Element) => {
   return {
     ...objectWithoutID,
     children: element.children.map(child => {
-      if (isText(child)) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id, ...childWithoutID } = child;
-        return childWithoutID;
-      }
+      if (isText(child)) return child;
       return elementToIDless(child);
     }),
   };
@@ -177,9 +187,7 @@ export const setTextElement = (
 
   if (isCollapsedSelection(selection) || onlyTextIsSelected(selection)) {
     const path = selection.anchor;
-    return ensureTextTraversal(path, element).modify(t => {
-      return { ...t, text };
-    })(element);
+    return ensureTextTraversal(path, element).set(text)(element);
   }
   return element;
 };

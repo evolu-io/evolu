@@ -17,10 +17,7 @@ Object {
 exports[`normalizeElement do not remove children 2`] = `
 Object {
   "children": Array [
-    Object {
-      "id": "2",
-      "text": "",
-    },
+    "",
   ],
   "id": "1",
 }
@@ -29,60 +26,36 @@ Object {
 exports[`normalizeElement do not remove children 3`] = `
 Object {
   "children": Array [
-    Object {
-      "id": "4",
-      "text": ".",
-    },
+    ".",
   ],
-  "id": "3",
+  "id": "2",
 }
 `;
 
 exports[`normalizeElement merges adjacent texts 1`] = `
 Object {
   "children": Array [
-    Object {
-      "id": "1",
-      "text": "ab",
-    },
+    "ab",
     Object {
       "children": Array [
-        Object {
-          "id": "4",
-          "text": "abc",
-        },
+        "abc",
         Object {
           "children": Array [
-            Object {
-              "id": "8",
-              "text": "a",
-            },
+            "a",
             Object {
               "children": Array [],
-              "id": "9",
+              "id": "3",
             },
-            Object {
-              "id": "10",
-              "text": "bc",
-            },
+            "bc",
           ],
-          "id": "7",
+          "id": "2",
         },
       ],
-      "id": "3",
+      "id": "1",
     },
-    Object {
-      "id": "12",
-      "text": "a",
-    },
-    Object {
-      "id": "13",
-      "text": "",
-    },
-    Object {
-      "id": "14",
-      "text": "b",
-    },
+    "a",
+    "",
+    "b",
   ],
   "id": "0",
 }

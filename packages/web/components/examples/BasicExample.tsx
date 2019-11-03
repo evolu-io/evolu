@@ -21,7 +21,7 @@ export const initialValue = editor.createValue<editor.ReactElement>({
           // width: 1,
           style: { fontSize: '24px' },
         },
-        children: [{ id: editor.id(), text: 'heading' }],
+        children: ['heading'],
       },
       {
         id: editor.id(),
@@ -29,7 +29,7 @@ export const initialValue = editor.createValue<editor.ReactElement>({
         props: {
           style: { fontSize: '16px' },
         },
-        children: [{ id: editor.id(), text: 'paragraph' }],
+        children: ['paragraph'],
       },
     ],
   },

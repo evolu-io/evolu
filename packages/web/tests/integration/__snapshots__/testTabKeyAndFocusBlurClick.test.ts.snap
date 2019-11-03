@@ -38,7 +38,7 @@ exports[`click to focus button, click to blur button 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -92,19 +92,19 @@ exports[`click to focus button, click to blur button 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -169,7 +169,7 @@ exports[`click to focus button, click to blur button 2`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -223,25 +223,25 @@ exports[`click to focus button, click to blur button 2`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -306,19 +306,19 @@ exports[`focus blur via tab, tab, tab 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -372,7 +372,7 @@ exports[`focus blur via tab, tab, tab 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -437,25 +437,25 @@ exports[`focus blur via tab, tab, tab 2`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -509,19 +509,19 @@ exports[`focus blur via tab, tab, tab 2`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -586,25 +586,25 @@ exports[`focus blur via tab, tab, tab 3`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -658,25 +658,25 @@ exports[`focus blur via tab, tab, tab 3`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·3 {'hasFocus':false,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -741,7 +741,7 @@ exports[`render 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -795,7 +795,7 @@ exports[`render 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'type':'document','children':[{'type':'heading','children':[{'text':'heading'}]},{'type':'paragraph','children':[{'text':'paragraph'}]},{'type':'list','children':[{'type':'listitem','children':[{'text':'listitem'}]}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
+      data-json="{'type':'document','children':[{'type':'heading','children':['heading']},{'type':'paragraph','children':['paragraph']},{'type':'list','children':[{'type':'listitem','children':['listitem']}]},{'type':'image','src':'https://via.placeholder.com/80','alt':'Square placeholder image 80px','width':80,'height':80,'children':[]}]}"
     >
       ·0 {'hasFocus':false}·
     </span>

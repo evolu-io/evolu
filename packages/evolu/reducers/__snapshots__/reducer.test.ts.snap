@@ -4,9 +4,7 @@ exports[`blur 1`] = `
 Object {
   "element": Object {
     "children": Array [
-      Object {
-        "text": "",
-      },
+      "",
     ],
     "props": Object {
       "className": "root",
@@ -27,9 +25,7 @@ exports[`focus 1`] = `
 Object {
   "element": Object {
     "children": Array [
-      Object {
-        "text": "",
-      },
+      "",
     ],
     "props": Object {
       "className": "root",

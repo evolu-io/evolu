@@ -32,19 +32,19 @@ exports[`tab then key arrow right 1`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
@@ -84,25 +84,25 @@ exports[`tab then key arrow right 2`] = `
   >
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·3 {'hasFocus':true,'selection':{'anchor':[0,0,1],'focus':[0,0,1]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·2 {'hasFocus':true,'selection':{'anchor':[0,0,0],'focus':[0,0,0]}}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·1 {'hasFocus':true}·
     </span>
     <span
       class="jsx-4269328595"
-      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':[{'text':'heading'}]},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':[{'text':'paragraph'}]}]}"
+      data-json="{'tag':'div','props':{'className':'root'},'children':[{'tag':'div','props':{'style':{'fontSize':'24px'}},'children':['heading']},{'tag':'div','props':{'style':{'fontSize':'16px'}},'children':['paragraph']}]}"
     >
       ·0 {'hasFocus':false}·
     </span>
