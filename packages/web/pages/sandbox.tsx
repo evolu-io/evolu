@@ -78,10 +78,6 @@ const Sandbox = () => {
   const [value, setValue] = useState(initialValue);
   const [forceUpdateKey, forceUpdate] = useReducer(x => x + 1, 0);
 
-  // tady bych mohl mit, ze pokud se zmeni info
-  // jenze, info neni state, nenastavuje se, ok
-  // jak jinej callback, imho ok
-
   const [logValue, logValueElement] = editor.useLogValue(value);
 
   const handleEditorChange = useCallback(

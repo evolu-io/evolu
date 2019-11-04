@@ -225,14 +225,13 @@ export const EditorClient = memo(
                 fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
               ),
             ),
-            map(selection => ({ selection, info: createInfo(selection) })),
             // We ignore none because editor has to remember the last selection
             // to restore it later on the focus.
-            fold(constVoid, ({ selection, info }) => {
-              dispatch({ type: 'selectionChange', selection, info });
+            fold(constVoid, selection => {
+              dispatch({ type: 'selectionChange', selection });
             }),
           ),
-        [createInfo, dispatch, getSelectionFromDOM, isTypingRef],
+        [dispatch, getSelectionFromDOM, isTypingRef],
       );
 
       useEffect(() => {

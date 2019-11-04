@@ -3,6 +3,9 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { select, setText, deleteContent } from '../models/value';
 import { Reducer } from '../types';
 
+/**
+ * Reducer maps various browser actions to editor value.
+ */
 export const reducer: Reducer = (value, action) => {
   switch (action.type) {
     case 'focus':
@@ -11,34 +14,32 @@ export const reducer: Reducer = (value, action) => {
     case 'blur':
       return { ...value, hasFocus: false };
 
-    case 'selectionChange': {
+    case 'selectionChange':
       return pipe(
         value,
         select(action.selection),
-        // This should be always internal I suppose.
-        // value => ({ ...value, info: action.info }),
       );
-    }
 
     case 'insertText':
-      // We have to set text first so it can be selected later.
       return pipe(
         value,
         setText(action.text),
         select(action.selection),
-      );
-
-    case 'deleteText':
-      // We have to set selection of text to be deleted.
-      return pipe(
-        value,
-        select(action.selection),
-        setText(action.text),
       );
 
     case 'insertReplacementText':
       return pipe(
         value,
+        // insert text pres text, nic vic
+        setText(action.text),
+      );
+
+    // insertText
+    case 'deleteText':
+      return pipe(
+        value,
+        // select, insert pres text?
+        select(action.selection),
         setText(action.text),
       );
 

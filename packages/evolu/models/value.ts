@@ -1,4 +1,4 @@
-import { Eq, getStructEq, strictEqual } from 'fp-ts/lib/Eq';
+import { Eq, getStructEq, strictEqual, eqBoolean } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import {
   alt,
@@ -29,10 +29,6 @@ export const createValue = <T extends Element>({
   element,
   selection,
   hasFocus,
-  info: {
-    nodes: [],
-    // text: '',
-  },
 });
 
 export const createValueWithText = (text = '') =>
@@ -41,11 +37,12 @@ export const createValueWithText = (text = '') =>
     hasFocus: false,
   });
 
+// TODO: eqValue, it's ok, because fromEquals is using strict comparison.
 export const eqValueShallow: Eq<Value> = getStructEq({
   element: { equals: strictEqual },
-  hasFocus: { equals: strictEqual },
+  hasFocus: eqBoolean,
+  // How to compare optional?
   selection: { equals: strictEqual },
-  info: { equals: strictEqual },
 });
 
 /**
@@ -65,6 +62,9 @@ export const select = (selection: Selection): Endomorphism<Value> => value => ({
   selection: some(selection),
 });
 
+// export const insertText =
+
+// TODO: Replace with insertText.
 export const setText = (
   text: string,
   selection?: Selection,
@@ -72,7 +72,6 @@ export const setText = (
   pipe(
     fromNullable(selection),
     alt(() => value.selection),
-    // Simple pipe nesting is ok. We can always refactor it out.
     map(selection =>
       pipe(
         value,

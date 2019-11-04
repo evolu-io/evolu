@@ -46,30 +46,6 @@ export interface Selection {
   readonly focus: Path;
 }
 
-export interface NodeInfo {
-  readonly node: Node;
-  readonly path: Path;
-  // readonly text: string;
-  // readonly parents: NonEmptyArray<Element>;
-  // readonly parentBlocks: NonEmptyArray<Element>;
-  // readonly previousSibling: Option<Child>;
-  // readonly nextSibling: Option<Child>;
-  // readonly textOffset: Option<number>;
-  // readonly allChildrenCount: number;
-}
-
-/**
- * Info is materialized selection. It provides useful computations for
- * toolbars and operations.
- */
-export interface Info {
-  // selection: Selection;
-  // range: Range;
-  nodes: NodeInfo[];
-  // text: Node;
-  // range position
-}
-
 /**
  * Editor value.
  */
@@ -77,7 +53,6 @@ export interface Value {
   readonly element: Element;
   readonly hasFocus: boolean;
   readonly selection: Option<Selection>;
-  readonly info: Info;
 }
 
 /**
@@ -86,10 +61,11 @@ export interface Value {
 export type Action =
   | { type: 'focus' }
   | { type: 'blur' }
-  | { type: 'selectionChange'; selection: Selection; info: Info }
+  | { type: 'selectionChange'; selection: Selection }
   | { type: 'insertText'; text: string; selection: Selection }
-  | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string }
+  // prijde akce insert pres, ok, ale pro text?
+  | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'deleteContent'; selection: Selection };
 
 /**
@@ -173,3 +149,27 @@ export interface EditorRef {
 }
 
 // TODO: Fragment, probably Child[].
+
+export interface NodeInfo {
+  readonly node: Node;
+  readonly path: Path;
+  // readonly text: string;
+  // readonly parents: NonEmptyArray<Element>;
+  // readonly parentBlocks: NonEmptyArray<Element>;
+  // readonly previousSibling: Option<Child>;
+  // readonly nextSibling: Option<Child>;
+  // readonly textOffset: Option<number>;
+  // readonly allChildrenCount: number;
+}
+
+/**
+ * Info is materialized selection. It provides useful computations for
+ * toolbars and operations.
+ */
+export interface Info {
+  // selection: Selection;
+  // range: Range;
+  nodes: NodeInfo[];
+  // text: Node;
+  // range position
+}

@@ -172,11 +172,11 @@ export const ensureTextTraversal = (
     ),
   );
 
+// TODO: Replace with insertTextElement
 export const setTextElement = (
   text: string,
   selection: Selection,
 ): Endomorphism<Element> => element => {
-  // TODO: Refactor to range operation.
   const onlyTextIsSelected: Predicate<Selection> = selection => {
     const anchorFold = ensureTextTraversal(selection.anchor, element).asFold();
     const focusFold = ensureTextTraversal(selection.focus, element).asFold();

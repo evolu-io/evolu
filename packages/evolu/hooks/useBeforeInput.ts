@@ -35,11 +35,7 @@ type HandleInputEventArg = {
   dispatch: Dispatch<Action>;
 };
 
-// These functions are not pure because they manipulate with DOM.
-// It's only for typing to handle edge cases. Everything else is
-// prevented so reducer can be pure.
-
-const insertTextOnCollapsed = ({
+const insertTextOnTyping = ({
   getPathByDOMNode,
   event,
   afterTyping,
@@ -88,20 +84,27 @@ const insertTextOnCollapsed = ({
     ),
   );
 
-const insertText = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getPathByDOMNode,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const insertReplacementTextOnTyping = ({
   event,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   afterTyping,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dispatch,
-}: HandleInputEventArg) => {
-  //
-};
+}: HandleInputEventArg) =>
+  pipe(
+    getDOMRangeFromInputEvent(event),
+    fold(constVoid, range => {
+      afterTyping(() => {
+        pipe(
+          range,
+          rangeStartContainerToText,
+          fold(constVoid, text => {
+            dispatch({ type: 'insertReplacementText', text });
+          }),
+        );
+      });
+    }),
+  );
 
-const deleteContentOnCollapsed = ({
+const deleteContentOnTyping = ({
   getPathByDOMNode,
   event,
   afterTyping,
@@ -142,26 +145,6 @@ const deleteContentOnCollapsed = ({
     }),
   );
 
-const insertReplacementText = ({
-  event,
-  afterTyping,
-  dispatch,
-}: HandleInputEventArg) =>
-  pipe(
-    getDOMRangeFromInputEvent(event),
-    fold(constVoid, range => {
-      afterTyping(() => {
-        pipe(
-          range,
-          rangeStartContainerToText,
-          fold(constVoid, text => {
-            dispatch({ type: 'insertReplacementText', text });
-          }),
-        );
-      });
-    }),
-  );
-
 export const useBeforeInput = (
   divRef: RefObject<HTMLDivElement>,
   afterTyping: AfterTyping,
@@ -173,7 +156,7 @@ export const useBeforeInput = (
     if (div == null) return;
 
     const handleBeforeInput = (event: InputEvent) => {
-      // This should be refactored somehow.
+      // TODO: Refactor.
       const domSelection = toNullable(getDOMSelection(div));
       if (
         domSelection == null ||
@@ -201,33 +184,34 @@ export const useBeforeInput = (
       // https://www.w3.org/TR/input-events-2/
       let preventDefault = true;
 
-      // console.log(event.inputType);
+      // console.log(event.inputType, event.getTargetRanges());
 
       switch (event.inputType) {
         case 'insertText':
           if (domSelection.isCollapsed) {
             preventDefault = false;
-            insertTextOnCollapsed(arg);
+            insertTextOnTyping(arg);
           } else {
-            insertText(arg);
+            // insertText(arg);
           }
           break;
 
         case 'insertReplacementText':
-          insertReplacementText(arg);
+          preventDefault = false;
+          insertReplacementTextOnTyping(arg);
           break;
 
         case 'deleteContentBackward':
         case 'deleteContentForward': {
-          const onlyTextNodeIsAffected =
+          const onlyTextIsAffectedByAction =
             domSelection.isCollapsed &&
             domSelection.anchorOffset !==
               (event.inputType === 'deleteContentBackward'
                 ? 0
                 : domSelection.anchorNode.textContent.length);
-          if (onlyTextNodeIsAffected) {
+          if (onlyTextIsAffectedByAction) {
             preventDefault = false;
-            deleteContentOnCollapsed(arg);
+            deleteContentOnTyping(arg);
           } else {
             pipe(
               event,
@@ -236,9 +220,6 @@ export const useBeforeInput = (
                 dispatch({ type: 'deleteContent', selection });
               }),
             );
-            // deleteContent(arg);
-            // getSelectionFromInputEvent(getPathByDOMNode)(event),
-            // dispatch({ type: 'deleteContent', selection })
           }
           break;
         }

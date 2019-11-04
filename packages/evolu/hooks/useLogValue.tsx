@@ -17,21 +17,13 @@ const Item = memo(
     selectedIndex: number | null;
     onSelect: (index: number) => void;
   }) => {
-    const {
-      element,
-      hasFocus,
-      selection,
-      // info
-    } = value;
+    const { element, hasFocus, selection } = value;
     const indexItem = { hasFocus, selection: toUndefined(selection) };
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
     const elementTextForSnapshots = JSON.stringify(elementToIDless(element))
       .split('"')
       .join("'");
-    // const infoTextForSnapshots = JSON.stringify(info)
-    //   .split('"')
-    //   .join("'");
     const shown = index === selectedIndex;
     const handleItemMouseDown = useCallback(
       (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -44,7 +36,6 @@ const Item = memo(
     return (
       <span
         onMouseDown={handleItemMouseDown}
-        // TODO: Add info.
         data-json={elementTextForSnapshots}
       >
         {shown ? <b>{text}</b> : text}
