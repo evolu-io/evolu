@@ -27,13 +27,13 @@ export const isElement: Refinement<Node, Element> = (node): node is Element => {
 const isoNodeID = iso<ElementID>();
 
 /**
- * Make React key for Element from its ID.
+ * Create React key for Element from its ID.
  */
-export const makeKeyForElement = (element: Element): string =>
+export const createKeyForElement = (element: Element): string =>
   isoNodeID.unwrap(element.id);
 
 /**
- * Make ElementID by nanoid(10).
+ * Create ElementID via nanoid(10).
  * https://zelark.github.io/nano-id-cc
  */
 export const id: IO<ElementID> = () => isoNodeID.wrap(nanoid(10));

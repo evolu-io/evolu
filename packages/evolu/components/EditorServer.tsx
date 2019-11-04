@@ -3,7 +3,7 @@ import React, { Children, createElement, memo, Fragment } from 'react';
 import {
   isElement,
   normalizeElement,
-  makeKeyForElement,
+  createKeyForElement,
 } from '../models/element';
 import { textIsBR } from '../models/text';
 import { Element, ReactElement, RenderElement } from '../types';
@@ -33,7 +33,7 @@ export const ServerElementRenderer = ({
         <ServerElementRenderer
           element={child}
           renderElement={renderElement}
-          key={makeKeyForElement(child)}
+          key={createKeyForElement(child)}
         />
       );
     const key = index.toString();

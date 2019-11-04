@@ -9,7 +9,7 @@ import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
 import { Element, Path, SetDOMNodePathRef, PathMaybeEmpty } from '../types';
-import { makeKeyForElement } from '../models/element';
+import { createKeyForElement } from '../models/element';
 
 export const ElementRenderer = memo<{
   element: Element;
@@ -54,7 +54,7 @@ export const ElementRenderer = memo<{
         }
         return (
           <ElementRenderer
-            key={makeKeyForElement(child)}
+            key={createKeyForElement(child)}
             element={child}
             path={childPath}
           />
