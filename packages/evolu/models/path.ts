@@ -7,10 +7,6 @@ import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Path, PathMaybeEmpty, PathIndex } from '../types';
 
-/**
- * Whether paths are equal.
- * `eqPath.equals(p1, p2)`
- */
 export const eqPath = getEq(eqNumber);
 
 /**

@@ -1,24 +1,47 @@
-import { foldRight, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { foldRight, last, unsafeUpdateAt, getEq } from 'fp-ts/lib/Array';
+import { Eq, getStructEq, strictEqual, fromEquals } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
 import { chain, fold, fromPredicate } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
-import { Children } from 'react';
-import { iso } from 'newtype-ts';
-import { IO } from 'fp-ts/lib/IO';
 import nanoid from 'nanoid';
+import { iso } from 'newtype-ts';
+import { Children } from 'react';
 import {
   Element,
+  ElementID,
+  Node,
+  Path,
   ReactElement,
   Selection,
   Text,
-  Node,
-  Path,
-  ElementID,
 } from '../types';
 import { isCollapsedSelection } from './selection';
-import { isText, textIsBR, isTextNotBR } from './text';
+import { isText, isTextNotBR, textIsBR } from './text';
+
+export const eqElementID: Eq<ElementID> = { equals: strictEqual };
+
+export const eqNode: Eq<Node> = fromEquals((x, y) => {
+  return isText(x)
+    ? isText(y)
+      ? strictEqual(x, y)
+      : false
+    : isText(y)
+    ? false
+    : // It's probably a bug in @typescript-eslint.
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      eqElement.equals(x, y);
+});
+
+export const eqNodes = getEq(eqNode);
+
+// Recursive checking is cheap because fromEquals is using strict comparison.
+export const eqElement: Eq<Element> = getStructEq({
+  id: eqElementID,
+  children: eqNodes,
+});
 
 export const isElement: Refinement<Node, Element> = (node): node is Element => {
   return Array.isArray((node as Element).children);

@@ -10,6 +10,11 @@ import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
 import { DOMSelection, DOMRange } from '../types/dom';
 
+export const eqSelection: Eq<Selection> = getStructEq({
+  anchor: eqPath,
+  focus: eqPath,
+});
+
 /**
  * The focus in not before the anchor.
  */
@@ -23,11 +28,6 @@ export const selectionToRange = (selection: Selection): Range =>
 
 export const isCollapsedSelection: Predicate<Selection> = selection =>
   eqPath.equals(selection.anchor, selection.focus);
-
-export const eqSelection: Eq<Selection> = getStructEq({
-  anchor: eqPath,
-  focus: eqPath,
-});
 
 export const DOMSelectionToSelection = (
   getPathByDOMNode: GetPathByDOMNode,

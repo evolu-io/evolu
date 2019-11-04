@@ -1,9 +1,10 @@
-import { Eq, getStructEq, strictEqual, eqBoolean } from 'fp-ts/lib/Eq';
+import { Eq, eqBoolean, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import {
   alt,
   fold,
   fromNullable,
+  getEq,
   getOrElse,
   map,
   none,
@@ -14,8 +15,14 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
 import { Element, ReactElement, Selection, Value } from '../types';
-import { jsx, normalizeElement, setTextElement } from './element';
-import { moveSelection } from './selection';
+import { eqElement, jsx, normalizeElement, setTextElement } from './element';
+import { eqSelection, moveSelection } from './selection';
+
+export const eqValue: Eq<Value> = getStructEq({
+  element: eqElement,
+  hasFocus: eqBoolean,
+  selection: getEq(eqSelection),
+});
 
 export const createValue = <T extends Element>({
   element,
@@ -36,14 +43,6 @@ export const createValueWithText = (text = '') =>
     element: jsx(createElement('div', { className: 'root' }, text)),
     hasFocus: false,
   });
-
-// TODO: eqValue, it's ok, because fromEquals is using strict comparison.
-export const eqValueShallow: Eq<Value> = getStructEq({
-  element: { equals: strictEqual },
-  hasFocus: eqBoolean,
-  // How to compare optional?
-  selection: { equals: strictEqual },
-});
 
 /**
  * Focus on the element of Value.

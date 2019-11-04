@@ -46,7 +46,7 @@ import {
   eqSelection,
   isForwardSelection,
 } from '../models/selection';
-import { eqValueShallow, normalize } from '../models/value';
+import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
 import {
   Action,
@@ -98,7 +98,7 @@ export const EditorClient = memo(
         const { value, reducer, onChange } = dispatchDepsRef.current;
         const nextValue = reducer(value, action);
         debugAction(action.type, [value, action, nextValue]);
-        if (eqValueShallow.equals(nextValue, value)) return;
+        if (eqValue.equals(nextValue, value)) return;
         onChange(nextValue);
       }, []);
 

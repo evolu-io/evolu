@@ -4,6 +4,7 @@ import {
   normalizeElement,
   childrenLens,
   getChildAt,
+  eqElement,
 } from './element';
 import { Element } from '../types';
 
@@ -127,6 +128,16 @@ test('getChildAt', () => {
   const child: Element = { id: id(), children: [] };
   const children: Element['children'] = [{ id: id(), children: [] }];
   expect(getChildAt(0).set(child)(children)[0]).toBe(child);
+});
+
+test('eqElement', () => {
+  const someId = id();
+  const el1: Element = { id: someId, children: [] };
+  const el2: Element = { id: someId, children: [] };
+  expect(eqElement.equals(el1, el1)).toBe(true);
+  expect(eqElement.equals(el1, el2)).toBe(true);
+  el2.children.push(el1);
+  expect(eqElement.equals(el1, el2)).toBe(false);
 });
 
 // eslint-disable-next-line jest/no-commented-out-tests
