@@ -13,10 +13,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
 import { getDOMRangeFromInputEvent, getDOMSelection } from '../models/dom';
 import {
-  collapseSelectionToStart,
+  collapseToStart,
   getSelectionFromInputEvent,
   initSelection,
-  isCollapsedSelection,
+  isCollapsed,
   moveSelection,
   snocSelection,
 } from '../models/selection';
@@ -124,7 +124,7 @@ const deleteContentOnTyping = ({
       getDOMRangeFromInputEvent(event),
     ),
     fold(constTrue, ([selection, domRange]) => {
-      if (isCollapsedSelection(selection)) return true;
+      if (isCollapsed(selection)) return true;
       const textIsGoingToBeReplacedWithBR =
         domRange.startContainer === domRange.endContainer &&
         domRange.startOffset === 0 &&
@@ -132,7 +132,7 @@ const deleteContentOnTyping = ({
       if (textIsGoingToBeReplacedWithBR) event.preventDefault();
       const getSelectionAfterDelete = () => {
         if (!textIsGoingToBeReplacedWithBR)
-          return some(collapseSelectionToStart(selection));
+          return some(collapseToStart(selection));
         return initSelection(selection);
       };
       pipe(

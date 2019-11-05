@@ -18,7 +18,7 @@ import {
   Selection,
   Text,
 } from '../types';
-import { isCollapsedSelection } from './selection';
+import { isCollapsed } from './selection';
 import { isText, isTextNotBR, textIsBR } from './text';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
@@ -208,7 +208,7 @@ export const setTextElement = (
     return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
   };
 
-  if (isCollapsedSelection(selection) || onlyTextIsSelected(selection)) {
+  if (isCollapsed(selection) || onlyTextIsSelected(selection)) {
     const path = selection.anchor;
     return ensureTextTraversal(path, element).set(text)(element);
   }

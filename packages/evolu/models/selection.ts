@@ -26,7 +26,7 @@ export const selectionToRange = (selection: Selection): Range =>
     ? { start: selection.anchor, end: selection.focus }
     : { start: selection.focus, end: selection.anchor };
 
-export const isCollapsedSelection: Predicate<Selection> = selection =>
+export const isCollapsed: Predicate<Selection> = selection =>
   eqPath.equals(selection.anchor, selection.focus);
 
 export const DOMSelectionToSelection = (
@@ -94,14 +94,14 @@ export const moveSelection = (
     moveSelectionFocus(offset),
   );
 
-export const collapseSelectionToStart: Endomorphism<Selection> = selection => {
-  if (isCollapsedSelection(selection)) return selection;
+export const collapseToStart: Endomorphism<Selection> = selection => {
+  if (isCollapsed(selection)) return selection;
   const range = selectionToRange(selection);
   return { anchor: range.start, focus: range.start };
 };
 
-export const collapseSelectionToEnd: Endomorphism<Selection> = selection => {
-  if (isCollapsedSelection(selection)) return selection;
+export const collapseToEnd: Endomorphism<Selection> = selection => {
+  if (isCollapsed(selection)) return selection;
   const range = selectionToRange(selection);
   return { anchor: range.end, focus: range.end };
 };

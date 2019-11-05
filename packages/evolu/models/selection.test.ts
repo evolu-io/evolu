@@ -1,16 +1,16 @@
 import {
-  isCollapsedSelection,
+  isCollapsed,
   eqSelection,
   isForwardSelection,
   selectionToRange,
-  collapseSelectionToStart,
-  collapseSelectionToEnd,
+  collapseToStart,
+  collapseToEnd,
 } from './selection';
 import { Selection } from '../types';
 
-test('isCollapsedSelection', () => {
-  expect(isCollapsedSelection({ anchor: [0], focus: [0] })).toBe(true);
-  expect(isCollapsedSelection({ anchor: [0], focus: [1] })).toBe(false);
+test('isCollapsed', () => {
+  expect(isCollapsed({ anchor: [0], focus: [0] })).toBe(true);
+  expect(isCollapsed({ anchor: [0], focus: [1] })).toBe(false);
 });
 
 test('eqSelection', () => {
@@ -39,23 +39,23 @@ test('selectionToRange', () => {
   });
 });
 
-test('collapseSelectionToStart', () => {
-  expect(collapseSelectionToStart({ anchor: [0], focus: [1] })).toMatchObject({
+test('collapseToStart', () => {
+  expect(collapseToStart({ anchor: [0], focus: [1] })).toMatchObject({
     anchor: [0],
     focus: [0],
   });
-  expect(collapseSelectionToStart({ anchor: [1], focus: [0] })).toMatchObject({
+  expect(collapseToStart({ anchor: [1], focus: [0] })).toMatchObject({
     anchor: [0],
     focus: [0],
   });
 });
 
-test('collapseSelectionToEnd', () => {
-  expect(collapseSelectionToEnd({ anchor: [0], focus: [1] })).toMatchObject({
+test('collapseToEnd', () => {
+  expect(collapseToEnd({ anchor: [0], focus: [1] })).toMatchObject({
     anchor: [1],
     focus: [1],
   });
-  expect(collapseSelectionToEnd({ anchor: [1], focus: [0] })).toMatchObject({
+  expect(collapseToEnd({ anchor: [1], focus: [0] })).toMatchObject({
     anchor: [1],
     focus: [1],
   });
