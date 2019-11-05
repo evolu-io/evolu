@@ -1,7 +1,7 @@
 import {
   isCollapsed,
   eqSelection,
-  isForwardSelection,
+  isForward,
   selectionToRange,
   collapseToStart,
   collapseToEnd,
@@ -22,10 +22,10 @@ test('eqSelection', () => {
   expect(eqSelection.equals(s2, s3)).toBe(false);
 });
 
-test('isForwardSelection', () => {
-  expect(isForwardSelection({ anchor: [0], focus: [0] })).toBe(true);
-  expect(isForwardSelection({ anchor: [0], focus: [1] })).toBe(true);
-  expect(isForwardSelection({ anchor: [1], focus: [0] })).toBe(false);
+test('isForward', () => {
+  expect(isForward({ anchor: [0], focus: [0] })).toBe(true);
+  expect(isForward({ anchor: [0], focus: [1] })).toBe(true);
+  expect(isForward({ anchor: [1], focus: [0] })).toBe(false);
 });
 
 test('selectionToRange', () => {

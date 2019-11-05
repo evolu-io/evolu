@@ -44,7 +44,7 @@ import { initPath } from '../models/path';
 import {
   DOMSelectionToSelection,
   eqSelection,
-  isForwardSelection,
+  isForward,
 } from '../models/selection';
 import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
@@ -178,13 +178,13 @@ export const EditorClient = memo(
 
       const setDOMSelection = useCallback(
         (selection: Selection) => {
-          const isForward = isForwardSelection(selection);
+          const forward = isForward(selection);
           pipe(
             sequenceT(option)(
               getDOMSelection(divRef.current),
               createDOMRange(divRef.current),
-              pathToNodeOffset(isForward ? selection.anchor : selection.focus),
-              pathToNodeOffset(isForward ? selection.focus : selection.anchor),
+              pathToNodeOffset(forward ? selection.anchor : selection.focus),
+              pathToNodeOffset(forward ? selection.focus : selection.anchor),
             ),
             fold(
               () => {
@@ -196,9 +196,8 @@ export const EditorClient = memo(
                 range.setStart(...startNodeOffset);
                 range.setEnd(...endNodeOffset);
                 selection.removeAllRanges();
-                if (isForward) {
-                  selection.addRange(range);
-                } else {
+                if (forward) selection.addRange(range);
+                else {
                   // https://stackoverflow.com/a/4802994/233902
                   const endRange = range.cloneRange();
                   endRange.collapse(false);

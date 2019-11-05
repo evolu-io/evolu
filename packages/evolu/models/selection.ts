@@ -18,11 +18,11 @@ export const eqSelection: Eq<Selection> = getStructEq({
 /**
  * The focus in not before the anchor.
  */
-export const isForwardSelection: Predicate<Selection> = selection =>
+export const isForward: Predicate<Selection> = selection =>
   geq(byDirection)(selection.anchor, selection.focus);
 
 export const selectionToRange = (selection: Selection): Range =>
-  isForwardSelection(selection)
+  isForward(selection)
     ? { start: selection.anchor, end: selection.focus }
     : { start: selection.focus, end: selection.anchor };
 
