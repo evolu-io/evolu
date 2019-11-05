@@ -2,7 +2,8 @@ import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { last } from 'fp-ts/lib/NonEmptyArray';
+import { IO } from 'fp-ts/lib/IO';
+import { last, snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   alt,
   chain,
@@ -38,14 +39,11 @@ import {
   createDOMNodeOffset,
   createDOMRange,
   getDOMSelection,
+  isExistingDOMSelection,
 } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
 import { initPath } from '../models/path';
-import {
-  DOMSelectionToSelection,
-  eqSelection,
-  isForward,
-} from '../models/selection';
+import { eqSelection, isForward } from '../models/selection';
 import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
 import {
@@ -151,12 +149,27 @@ export const EditorClient = memo(
         }
       }, [value.hasFocus, tabLostFocus, valueHadFocus]);
 
-      const getSelectionFromDOM = useCallback((): Option<Selection> => {
-        return pipe(
-          getDOMSelection(divRef.current),
-          chain(DOMSelectionToSelection(getPathByDOMNode)),
-        );
-      }, [getPathByDOMNode]);
+      const getSelectionFromDOM = useCallback<IO<Option<Selection>>>(
+        () =>
+          pipe(
+            getDOMSelection(divRef.current),
+            filter(isExistingDOMSelection),
+            chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
+              // Nested pipe is ok, we can always refactor it out later.
+              pipe(
+                sequenceT(option)(
+                  getPathByDOMNode(anchorNode),
+                  getPathByDOMNode(focusNode),
+                ),
+                map(([anchorPath, focusPath]) => ({
+                  anchor: snoc(anchorPath, anchorOffset),
+                  focus: snoc(focusPath, focusOffset),
+                })),
+              ),
+            ),
+          ),
+        [getPathByDOMNode],
+      );
 
       const pathToNodeOffset = useCallback(
         (path: Path): Option<DOMNodeOffset> =>

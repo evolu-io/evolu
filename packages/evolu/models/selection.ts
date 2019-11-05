@@ -2,13 +2,13 @@ import { sequenceT, sequenceS } from 'fp-ts/lib/Apply';
 import { init, snoc, isNonEmpty } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { chain, none, Option, option, some, filter } from 'fp-ts/lib/Option';
+import { chain, Option, option, some, filter } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Selection, Range, GetPathByDOMNode } from '../types';
 import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
-import { DOMSelection, DOMRange } from '../types/dom';
+import { DOMRange } from '../types/dom';
 
 export const eqSelection: Eq<Selection> = getStructEq({
   anchor: eqPath,
@@ -29,27 +29,7 @@ export const selectionToRange = (selection: Selection): Range =>
 export const isCollapsed: Predicate<Selection> = selection =>
   eqPath.equals(selection.anchor, selection.focus);
 
-export const DOMSelectionToSelection = (
-  getPathByDOMNode: GetPathByDOMNode,
-): ((selection: DOMSelection) => Option<Selection>) => ({
-  anchorNode,
-  anchorOffset,
-  focusNode,
-  focusOffset,
-}) =>
-  pipe(
-    sequenceT(option)(
-      anchorNode ? getPathByDOMNode(anchorNode) : none,
-      focusNode ? getPathByDOMNode(focusNode) : none,
-    ),
-    chain(([anchorPath, focusPath]) =>
-      some({
-        anchor: snoc(anchorPath, anchorOffset),
-        focus: snoc(focusPath, focusOffset),
-      }),
-    ),
-  );
-
+// to same
 export const DOMRangeToSelection = (
   getPathByDOMNode: GetPathByDOMNode,
 ): ((range: DOMRange) => Option<Selection>) => ({
@@ -111,6 +91,7 @@ export const getSelectionFromInputEvent = (
 ): ((event: InputEvent) => Option<Selection>) => event =>
   pipe(
     getDOMRangeFromInputEvent(event),
+    // nactu
     chain(DOMRangeToSelection(getPathByDOMNode)),
   );
 

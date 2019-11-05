@@ -1,13 +1,39 @@
 /* eslint-env browser */
-import { Refinement } from 'fp-ts/lib/function';
-import { fromNullable, mapNullable, Option } from 'fp-ts/lib/Option';
+import { Refinement, constFalse, constTrue } from 'fp-ts/lib/function';
+import {
+  fromNullable,
+  mapNullable,
+  Option,
+  option,
+  fold,
+} from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { sequenceT } from 'fp-ts/lib/Apply';
 import { DOMNodeOffset } from '../types';
-import { DOMElement, DOMNode, DOMRange, DOMSelection } from '../types/dom';
+import {
+  DOMElement,
+  DOMNode,
+  DOMRange,
+  DOMSelection,
+  ExistingDOMSelection,
+} from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
 ): node is DOMElement => node.nodeType === Node.ELEMENT_NODE;
+
+export const isExistingDOMSelection: Refinement<
+  DOMSelection,
+  ExistingDOMSelection
+> = (s): s is ExistingDOMSelection =>
+  // Sure we can just check s.anchorNode != null && s.focusNode != null, but
+  // this is like Kata. Excercise to demonstrate how we can generalize a problem.
+  // This pipe can be refactored to allIsExisting or something. Maybe fp-ts already
+  // has something for that.
+  pipe(
+    sequenceT(option)(fromNullable(s.anchorNode), fromNullable(s.focusNode)),
+    fold(constFalse, constTrue),
+  );
 
 export const createDOMNodeOffset = (
   offset: number,

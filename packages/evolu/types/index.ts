@@ -85,9 +85,9 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
+// TODO: Refactor to IO<Option<DOMNode>> and IO<Option<PathMaybeEmpty>>.
 export type GetDOMNodeByPath = (path: PathMaybeEmpty) => Option<DOMNode>;
-
-export type GetPathByDOMNode = (domNode: DOMNode) => Option<PathMaybeEmpty>;
+export type GetPathByDOMNode = (node: DOMNode) => Option<PathMaybeEmpty>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
