@@ -1,5 +1,5 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { constVoid } from 'fp-ts/lib/function';
+import { constVoid, constTrue } from 'fp-ts/lib/function';
 import {
   chain,
   fold,
@@ -35,12 +35,18 @@ type HandleInputEventArg = {
   dispatch: Dispatch<Action>;
 };
 
+// We should handle *OnTyping functions in Reducer, but I am not sure how yet.
+// Probably via some kind of transaction. Remember, Reducer has to be pure.
+// Meahwhile, *OnTyping functions are internal.
+
+type PreventDefault = boolean;
+
 const insertTextOnTyping = ({
   getPathByDOMNode,
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg) =>
+}: HandleInputEventArg): PreventDefault =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode)(event),
@@ -69,7 +75,7 @@ const insertTextOnTyping = ({
       });
     }),
     fold(
-      constVoid,
+      constTrue,
       ({ getText, maybeReplaceBRWithText, selectionAfterInsert }) => {
         afterTyping(() => {
           const text = getText();
@@ -80,6 +86,7 @@ const insertTextOnTyping = ({
             selection: selectionAfterInsert,
           });
         });
+        return false;
       },
     ),
   );
@@ -88,10 +95,10 @@ const insertReplacementTextOnTyping = ({
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg) =>
+}: HandleInputEventArg): PreventDefault =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    fold(constVoid, range => {
+    fold(constTrue, range => {
       afterTyping(() => {
         pipe(
           range,
@@ -101,6 +108,7 @@ const insertReplacementTextOnTyping = ({
           }),
         );
       });
+      return false;
     }),
   );
 
@@ -109,14 +117,14 @@ const deleteContentOnTyping = ({
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg) =>
+}: HandleInputEventArg): PreventDefault =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode)(event),
       getDOMRangeFromInputEvent(event),
     ),
-    fold(constVoid, ([selection, domRange]) => {
-      if (isCollapsedSelection(selection)) return;
+    fold(constTrue, ([selection, domRange]) => {
+      if (isCollapsedSelection(selection)) return true;
       const textIsGoingToBeReplacedWithBR =
         domRange.startContainer === domRange.endContainer &&
         domRange.startOffset === 0 &&
@@ -142,6 +150,7 @@ const deleteContentOnTyping = ({
           },
         ),
       );
+      return false;
     }),
   );
 
@@ -182,23 +191,21 @@ export const useBeforeInput = (
       // In those cases, we read content from DOM then restore it so React is not
       // confused. We do not handle composition events yet.
       // https://www.w3.org/TR/input-events-2/
-      let preventDefault = true;
+      let preventDefault: PreventDefault = true;
 
       // console.log(event.inputType, event.getTargetRanges());
 
       switch (event.inputType) {
         case 'insertText':
           if (domSelection.isCollapsed) {
-            preventDefault = false;
-            insertTextOnTyping(arg);
+            preventDefault = insertTextOnTyping(arg);
           } else {
             // insertText(arg);
           }
           break;
 
         case 'insertReplacementText':
-          preventDefault = false;
-          insertReplacementTextOnTyping(arg);
+          preventDefault = insertReplacementTextOnTyping(arg);
           break;
 
         case 'deleteContentBackward':
@@ -210,8 +217,7 @@ export const useBeforeInput = (
                 ? 0
                 : domSelection.anchorNode.textContent.length);
           if (onlyTextIsAffectedByAction) {
-            preventDefault = false;
-            deleteContentOnTyping(arg);
+            preventDefault = deleteContentOnTyping(arg);
           } else {
             pipe(
               event,

@@ -23,8 +23,8 @@ import { isText, isTextNotBR, textIsBR } from './text';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
 
-export const eqNode: Eq<Node> = fromEquals((x, y) => {
-  return isText(x)
+export const eqNode: Eq<Node> = fromEquals((x, y) =>
+  isText(x)
     ? isText(y)
       ? strictEqual(x, y)
       : false
@@ -32,8 +32,8 @@ export const eqNode: Eq<Node> = fromEquals((x, y) => {
     ? false
     : // It's probably a bug in @typescript-eslint.
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      eqElement.equals(x, y);
-});
+      eqElement.equals(x, y),
+);
 
 export const eqNodes = getEq(eqNode);
 
