@@ -106,19 +106,19 @@ export const EditorClient = memo(
         getPathByDOMNode,
       } = useDOMNodesPathsMap(value.element);
 
-      const divRef = useRef<HTMLDivElement>(null);
+      const editorElementRef = useRef<HTMLDivElement>(null);
 
       const getDocument = useCallback(
         () =>
           pipe(
-            fromNullable(divRef.current),
-            mapNullable(div => div.ownerDocument),
+            fromNullable(editorElementRef.current),
+            mapNullable(el => el.ownerDocument),
           ),
         [],
       );
 
       const focus = useCallback<EditorRef['focus']>(() => {
-        if (divRef.current) divRef.current.focus();
+        if (editorElementRef.current) editorElementRef.current.focus();
       }, []);
 
       const createInfo = useCallback<EditorRef['createInfo']>(
@@ -135,17 +135,19 @@ export const EditorClient = memo(
 
       // Map editor declarative focus to imperative DOM focus and blur methods.
       useEffect(() => {
-        const { current: div } = divRef;
-        if (div == null) return;
-        const divHasFocus =
-          div === (div.ownerDocument && div.ownerDocument.activeElement);
+        const { current: editorElement } = editorElementRef;
+        if (editorElement == null) return;
+        const hasFocus =
+          editorElement ===
+          (editorElement.ownerDocument &&
+            editorElement.ownerDocument.activeElement);
         if (!valueHadFocus && value.hasFocus) {
-          if (!divHasFocus) div.focus();
+          if (!hasFocus) editorElement.focus();
         } else if (valueHadFocus && !value.hasFocus) {
           // Do not call blur when tab lost focus so editor can be focused back.
           // For manual test, click to editor then press cmd-tab twice.
           // Editor selection must be preserved.
-          if (divHasFocus && !tabLostFocus) div.blur();
+          if (hasFocus && !tabLostFocus) editorElement.blur();
         }
       }, [value.hasFocus, tabLostFocus, valueHadFocus]);
 
@@ -198,7 +200,7 @@ export const EditorClient = memo(
                   getDocument(),
                   chain(doc => getDOMSelection(doc)()),
                 ),
-                createDOMRange(divRef.current)(),
+                createDOMRange(editorElementRef.current)(),
                 pathToNodeOffset(
                   forward ? selection.anchor : selection.focus,
                 )(),
@@ -284,7 +286,7 @@ export const EditorClient = memo(
         ensureDOMSelectionIsActual(value.selection)();
       }, [value.hasFocus, ensureDOMSelectionIsActual, value.selection]);
 
-      useBeforeInput(divRef, afterTyping, getPathByDOMNode, dispatch);
+      useBeforeInput(editorElementRef, afterTyping, getPathByDOMNode, dispatch);
 
       const children = useMemo(() => {
         return (
@@ -298,17 +300,18 @@ export const EditorClient = memo(
         );
       }, [value.element, renderElement, setDOMNodePath]);
 
-      const handleDivFocus = useCallback(() => {
+      const handleEditorElementFocus = useCallback(() => {
         ensureDOMSelectionIsActual(dispatchDepsRef.current.value.selection)();
         setTabLostFocus(false);
         dispatch({ type: 'focus' });
       }, [dispatch, ensureDOMSelectionIsActual]);
 
-      const handleDivBlur = useCallback(() => {
+      const handleEditorElementBlur = useCallback(() => {
         const tabLostFocus =
-          (divRef.current &&
-            divRef.current.ownerDocument &&
-            divRef.current.ownerDocument.activeElement === divRef.current) ||
+          (editorElementRef.current &&
+            editorElementRef.current.ownerDocument &&
+            editorElementRef.current.ownerDocument.activeElement ===
+              editorElementRef.current) ||
           false;
         setTabLostFocus(tabLostFocus);
         dispatch({ type: 'blur' });
@@ -320,9 +323,9 @@ export const EditorClient = memo(
             autoCorrect={autoCorrect}
             contentEditable
             data-gramm // Disable Grammarly Chrome extension.
-            onBlur={handleDivBlur}
-            onFocus={handleDivFocus}
-            ref={divRef}
+            onBlur={handleEditorElementBlur}
+            onFocus={handleEditorElementFocus}
+            ref={editorElementRef}
             role={role}
             spellCheck={spellCheck}
             suppressContentEditableWarning
@@ -337,8 +340,8 @@ export const EditorClient = memo(
       }, [
         autoCorrect,
         children,
-        handleDivBlur,
-        handleDivFocus,
+        handleEditorElementBlur,
+        handleEditorElementFocus,
         rest,
         role,
         spellCheck,

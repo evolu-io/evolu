@@ -33,25 +33,24 @@ const rangeStartContainerToText: (a: Range) => Option<string> = ({
   startContainer,
 }) => fromNullable(startContainer.textContent);
 
-type HandleInputEventArg = {
+type TypingHandlerArg = {
   getPathByDOMNode: GetPathByDOMNode;
   event: InputEvent;
   afterTyping: AfterTyping;
   dispatch: Dispatch<Action>;
 };
 
-// We should handle *OnTyping functions in Reducer, but I am not sure how yet.
-// Probably via some kind of transaction. Remember, Reducer has to be pure.
-// Meahwhile, *OnTyping functions are internal.
-
 type PreventDefault = boolean;
 
-const insertTextOnTyping = ({
+// Maybe we should handle typing handlers in Reducer, but I am not sure yet.
+export type TypingHandler = (arg: TypingHandlerArg) => PreventDefault;
+
+const insertTextOnTyping: TypingHandler = ({
   getPathByDOMNode,
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg): PreventDefault =>
+}) =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode, event)(),
@@ -96,11 +95,11 @@ const insertTextOnTyping = ({
     ),
   );
 
-const insertReplacementTextOnTyping = ({
+const insertReplacementTextOnTyping: TypingHandler = ({
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg): PreventDefault =>
+}) =>
   pipe(
     getDOMRangeFromInputEvent(event),
     fold(constTrue, range => {
@@ -117,12 +116,12 @@ const insertReplacementTextOnTyping = ({
     }),
   );
 
-const deleteContentOnTyping = ({
+const deleteContentOnTyping: TypingHandler = ({
   getPathByDOMNode,
   event,
   afterTyping,
   dispatch,
-}: HandleInputEventArg): PreventDefault =>
+}) =>
   pipe(
     sequenceT(option)(
       getSelectionFromInputEvent(getPathByDOMNode, event)(),
@@ -160,22 +159,25 @@ const deleteContentOnTyping = ({
   );
 
 export const useBeforeInput = (
-  divRef: RefObject<HTMLDivElement>,
+  editorElementRef: RefObject<HTMLDivElement>,
   afterTyping: AfterTyping,
   getPathByDOMNode: GetPathByDOMNode,
   dispatch: Dispatch<Action>,
 ) => {
   useEffect(() => {
-    const { current: div } = divRef;
-    if (div == null) return;
+    const { current: editorElement } = editorElementRef;
+    if (editorElement == null) return;
 
     const handleBeforeInput = (event: InputEvent) => {
       const domSelection = pipe(
-        fromNullable(div.ownerDocument),
+        fromNullable(editorElement.ownerDocument),
         chain(doc => getDOMSelection(doc)()),
         filter(isExistingDOMSelection),
         toNullable,
       );
+
+      // pipe switch?
+      // imho jo
 
       if (domSelection == null) {
         // TODO: Handle composition events.
@@ -183,7 +185,7 @@ export const useBeforeInput = (
         return;
       }
 
-      const arg: HandleInputEventArg = {
+      const arg: TypingHandlerArg = {
         getPathByDOMNode,
         event,
         afterTyping,
@@ -196,6 +198,8 @@ export const useBeforeInput = (
       // In those cases, we read content from DOM then restore it so React is not
       // confused. We do not handle composition events yet.
       // https://www.w3.org/TR/input-events-2/
+      // nejde to jinak? pres Option?
+      // zrusit ten switch?
       let preventDefault: PreventDefault = true;
 
       // console.log(event.inputType, event.getTargetRanges());
@@ -252,10 +256,10 @@ export const useBeforeInput = (
     };
 
     // @ts-ignore Outdated types.
-    div.addEventListener('beforeinput', handleBeforeInput);
+    editorElement.addEventListener('beforeinput', handleBeforeInput);
     return () => {
       // @ts-ignore Outdated types.
-      div.removeEventListener('beforeinput', handleBeforeInput);
+      editorElement.removeEventListener('beforeinput', handleBeforeInput);
     };
-  }, [afterTyping, dispatch, divRef, getPathByDOMNode]);
+  }, [afterTyping, dispatch, editorElementRef, getPathByDOMNode]);
 };
