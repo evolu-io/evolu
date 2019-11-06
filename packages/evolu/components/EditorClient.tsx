@@ -2,21 +2,7 @@ import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { last, snoc } from 'fp-ts/lib/NonEmptyArray';
-import {
-  alt,
-  chain,
-  filter,
-  fold,
-  fromNullable,
-  map,
-  mapNullable,
-  none,
-  Option,
-  option,
-  toNullable,
-} from 'fp-ts/lib/Option';
+import { last, snoc, head } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   forwardRef,
@@ -29,6 +15,20 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { IO } from 'fp-ts/lib/IO';
+import {
+  Option,
+  fromNullable,
+  mapNullable,
+  filter,
+  chain,
+  map,
+  option,
+  alt,
+  fold,
+  none,
+  toNullable,
+} from 'fp-ts/lib/Option';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
@@ -152,14 +152,15 @@ export const EditorClient = memo(
       const getSelectionFromDOM = useCallback<IO<Option<Selection>>>(
         () =>
           pipe(
-            getDOMSelection(divRef.current),
+            getDocument(),
+            chain(doc => getDOMSelection(doc)()),
             filter(isExistingDOMSelection),
             chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
               // Nested pipe is ok, we can always refactor it out later.
               pipe(
                 sequenceT(option)(
-                  getPathByDOMNode(anchorNode),
-                  getPathByDOMNode(focusNode),
+                  getPathByDOMNode(anchorNode)(),
+                  getPathByDOMNode(focusNode)(),
                 ),
                 map(([anchorPath, focusPath]) => ({
                   anchor: snoc(anchorPath, anchorOffset),
@@ -168,20 +169,18 @@ export const EditorClient = memo(
               ),
             ),
           ),
-        [getPathByDOMNode],
+        [getDocument, getPathByDOMNode],
       );
 
       const pathToNodeOffset = useCallback(
-        (path: Path): Option<DOMNodeOffset> =>
+        (path: Path): IO<Option<DOMNodeOffset>> => () =>
           pipe(
-            path,
-            getDOMNodeByPath,
+            getDOMNodeByPath(path)(),
             mapNullable(node => node.parentNode),
             alt(() =>
               pipe(
-                path,
-                initPath,
-                chain(getDOMNodeByPath),
+                initPath(path),
+                chain(path => getDOMNodeByPath(path)()),
               ),
             ),
             map(createDOMNodeOffset(last(path))),
@@ -190,38 +189,47 @@ export const EditorClient = memo(
       );
 
       const setDOMSelection = useCallback(
-        (selection: Selection) => {
+        (selection: Selection): IO<void> => {
           const forward = isForward(selection);
-          pipe(
-            sequenceT(option)(
-              getDOMSelection(divRef.current),
-              createDOMRange(divRef.current),
-              pathToNodeOffset(forward ? selection.anchor : selection.focus),
-              pathToNodeOffset(forward ? selection.focus : selection.anchor),
-            ),
-            fold(
-              () => {
-                warn(
-                  'DOMSelection, DOMRange, and DOMNodeOffsets should exists.',
-                );
-              },
-              ([selection, range, startNodeOffset, endNodeOffset]) => {
-                range.setStart(...startNodeOffset);
-                range.setEnd(...endNodeOffset);
-                selection.removeAllRanges();
-                if (forward) selection.addRange(range);
-                else {
-                  // https://stackoverflow.com/a/4802994/233902
-                  const endRange = range.cloneRange();
-                  endRange.collapse(false);
-                  selection.addRange(endRange);
-                  selection.extend(range.startContainer, range.startOffset);
-                }
-              },
-            ),
-          );
+          return () => {
+            pipe(
+              sequenceT(option)(
+                pipe(
+                  getDocument(),
+                  chain(doc => getDOMSelection(doc)()),
+                ),
+                createDOMRange(divRef.current)(),
+                pathToNodeOffset(
+                  forward ? selection.anchor : selection.focus,
+                )(),
+                pathToNodeOffset(
+                  forward ? selection.focus : selection.anchor,
+                )(),
+              ),
+              fold(
+                () => {
+                  warn(
+                    'DOMSelection, DOMRange, and DOMNodeOffsets should exists.',
+                  );
+                },
+                ([selection, range, startNodeOffset, endNodeOffset]) => {
+                  range.setStart(...startNodeOffset);
+                  range.setEnd(...endNodeOffset);
+                  selection.removeAllRanges();
+                  if (forward) selection.addRange(range);
+                  else {
+                    // https://stackoverflow.com/a/4802994/233902
+                    const endRange = range.cloneRange();
+                    endRange.collapse(false);
+                    selection.addRange(endRange);
+                    selection.extend(range.startContainer, range.startOffset);
+                  }
+                },
+              ),
+            );
+          };
         },
-        [pathToNodeOffset],
+        [getDocument, pathToNodeOffset],
       );
 
       const { afterTyping, isTypingRef } = useAfterTyping();
@@ -256,12 +264,13 @@ export const EditorClient = memo(
       }, [getDocument, handleSelectionChange]);
 
       const ensureDOMSelectionIsActual = useCallback(
-        (selection: Option<Selection>) => {
+        (selection: Option<Selection>): IO<void> => () => {
           pipe(
             sequenceT(option)(selection, getSelectionFromDOM()),
             filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
-            fold(constVoid, ([selection]) => {
-              setDOMSelection(selection);
+            map(head),
+            fold(constVoid, selection => {
+              setDOMSelection(selection)();
             }),
           );
         },
@@ -272,7 +281,7 @@ export const EditorClient = memo(
       // With useEffect, fast typing would lose caret position.
       useLayoutEffect(() => {
         if (!value.hasFocus) return;
-        ensureDOMSelectionIsActual(value.selection);
+        ensureDOMSelectionIsActual(value.selection)();
       }, [value.hasFocus, ensureDOMSelectionIsActual, value.selection]);
 
       useBeforeInput(divRef, afterTyping, getPathByDOMNode, dispatch);
@@ -290,7 +299,7 @@ export const EditorClient = memo(
       }, [value.element, renderElement, setDOMNodePath]);
 
       const handleDivFocus = useCallback(() => {
-        ensureDOMSelectionIsActual(dispatchDepsRef.current.value.selection);
+        ensureDOMSelectionIsActual(dispatchDepsRef.current.value.selection)();
         setTabLostFocus(false);
         dispatch({ type: 'focus' });
       }, [dispatch, ensureDOMSelectionIsActual]);

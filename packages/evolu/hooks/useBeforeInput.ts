@@ -1,7 +1,8 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { constVoid, constTrue } from 'fp-ts/lib/function';
+import { constTrue, constVoid } from 'fp-ts/lib/function';
 import {
   chain,
+  filter,
   fold,
   fromNullable,
   Option,
@@ -11,7 +12,11 @@ import {
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
-import { getDOMRangeFromInputEvent, getDOMSelection } from '../models/dom';
+import {
+  getDOMRangeFromInputEvent,
+  getDOMSelection,
+  isExistingDOMSelection,
+} from '../models/dom';
 import {
   collapseToStart,
   getSelectionFromInputEvent,
@@ -49,7 +54,7 @@ const insertTextOnTyping = ({
 }: HandleInputEventArg): PreventDefault =>
   pipe(
     sequenceT(option)(
-      getSelectionFromInputEvent(getPathByDOMNode)(event),
+      getSelectionFromInputEvent(getPathByDOMNode, event)(),
       getDOMRangeFromInputEvent(event),
       fromNullable(event.data),
     ),
@@ -120,7 +125,7 @@ const deleteContentOnTyping = ({
 }: HandleInputEventArg): PreventDefault =>
   pipe(
     sequenceT(option)(
-      getSelectionFromInputEvent(getPathByDOMNode)(event),
+      getSelectionFromInputEvent(getPathByDOMNode, event)(),
       getDOMRangeFromInputEvent(event),
     ),
     fold(constTrue, ([selection, domRange]) => {
@@ -165,14 +170,14 @@ export const useBeforeInput = (
     if (div == null) return;
 
     const handleBeforeInput = (event: InputEvent) => {
-      // TODO: Refactor.
-      const domSelection = toNullable(getDOMSelection(div));
-      if (
-        domSelection == null ||
-        domSelection.anchorNode == null ||
-        domSelection.anchorNode.textContent == null ||
-        domSelection.focusNode == null
-      ) {
+      const domSelection = pipe(
+        fromNullable(div.ownerDocument),
+        chain(doc => getDOMSelection(doc)()),
+        filter(isExistingDOMSelection),
+        toNullable,
+      );
+
+      if (domSelection == null) {
         // TODO: Handle composition events.
         warn('Selection should exists.');
         return;
@@ -212,16 +217,18 @@ export const useBeforeInput = (
         case 'deleteContentForward': {
           const onlyTextIsAffectedByAction =
             domSelection.isCollapsed &&
+            // nodeValue != null for text node.
+            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue
+            domSelection.anchorNode.nodeValue != null &&
             domSelection.anchorOffset !==
               (event.inputType === 'deleteContentBackward'
                 ? 0
-                : domSelection.anchorNode.textContent.length);
+                : domSelection.anchorNode.nodeValue.length);
           if (onlyTextIsAffectedByAction) {
             preventDefault = deleteContentOnTyping(arg);
           } else {
             pipe(
-              event,
-              getSelectionFromInputEvent(getPathByDOMNode),
+              getSelectionFromInputEvent(getPathByDOMNode, event)(),
               fold(constVoid, selection => {
                 dispatch({ type: 'deleteContent', selection });
               }),

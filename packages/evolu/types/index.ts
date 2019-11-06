@@ -3,6 +3,7 @@ import { Option } from 'fp-ts/lib/Option';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
 import { $Values } from 'utility-types';
+import { IO } from 'fp-ts/lib/IO';
 import { DOMNode } from './dom';
 
 /**
@@ -85,9 +86,8 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
-// TODO: Refactor to IO<Option<DOMNode>> and IO<Option<PathMaybeEmpty>>.
-export type GetDOMNodeByPath = (path: PathMaybeEmpty) => Option<DOMNode>;
-export type GetPathByDOMNode = (node: DOMNode) => Option<PathMaybeEmpty>;
+export type GetDOMNodeByPath = (path: PathMaybeEmpty) => IO<Option<DOMNode>>;
+export type GetPathByDOMNode = (node: DOMNode) => IO<Option<PathMaybeEmpty>>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 

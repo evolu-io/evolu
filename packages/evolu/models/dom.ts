@@ -9,6 +9,7 @@ import {
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { sequenceT } from 'fp-ts/lib/Apply';
+import { IO } from 'fp-ts/lib/IO';
 import { DOMNodeOffset } from '../types';
 import {
   DOMElement,
@@ -46,15 +47,12 @@ export const getDOMRangeFromInputEvent = (
   fromNullable(event.getTargetRanges()[0]);
 
 export const getDOMSelection = (
-  element: HTMLElement | null,
-): Option<DOMSelection> =>
-  pipe(
-    fromNullable(element),
-    mapNullable(element => element.ownerDocument),
-    mapNullable(doc => doc.getSelection()),
-  );
+  doc: Document,
+): IO<Option<DOMSelection>> => () => fromNullable(doc.getSelection());
 
-export const createDOMRange = (element: HTMLElement | null): Option<DOMRange> =>
+export const createDOMRange = (
+  element: HTMLElement | null,
+): IO<Option<DOMRange>> => () =>
   pipe(
     fromNullable(element),
     mapNullable(element => element.ownerDocument),

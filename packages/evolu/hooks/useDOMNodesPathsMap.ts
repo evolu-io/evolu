@@ -61,19 +61,23 @@ export const useDOMNodesPathsMap = (
 
   useDebugNodesPaths(nodesPathsMapRef.current, element);
 
-  const getDOMNodeByPath = useCallback<GetDOMNodeByPath>(path => {
-    return pipe(
-      pathsNodesMapRef.current.get(path.join()),
-      fromNullable,
-    );
-  }, []);
+  const getDOMNodeByPath = useCallback<GetDOMNodeByPath>(
+    path => () =>
+      pipe(
+        pathsNodesMapRef.current.get(path.join()),
+        fromNullable,
+      ),
+    [],
+  );
 
-  const getPathByDOMNode = useCallback<GetPathByDOMNode>(node => {
-    return pipe(
-      nodesPathsMapRef.current.get(node),
-      fromNullable,
-    );
-  }, []);
+  const getPathByDOMNode = useCallback<GetPathByDOMNode>(
+    node => () =>
+      pipe(
+        nodesPathsMapRef.current.get(node),
+        fromNullable,
+      ),
+    [],
+  );
 
   const setDOMNodePath = useCallback<SetDOMNodePath>(
     (operation, node, path) => {
