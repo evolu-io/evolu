@@ -1,24 +1,36 @@
 import { absurd } from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { select, setText, deleteContent } from '../models/value';
+import { select, setText, deleteContent, setFocus } from '../models/value';
 import { Reducer } from '../types';
 
 /**
- * Reducer maps various browser actions to editor value.
+ * Reducer maps browser actions to Value endomorphisms.
  */
 export const reducer: Reducer = (value, action) => {
   switch (action.type) {
     case 'focus':
-      return { ...value, hasFocus: true };
+      return pipe(
+        value,
+        setFocus(true),
+      );
 
     case 'blur':
-      return { ...value, hasFocus: false };
+      return pipe(
+        value,
+        setFocus(false),
+      );
 
     case 'selectionChange':
       return pipe(
         value,
         select(action.selection),
       );
+
+    // case 'setText':
+    //   return pipe(
+    //     value,
+    //     // setText(action.operation),
+    //   );
 
     case 'insertText':
       return pipe(
@@ -30,15 +42,12 @@ export const reducer: Reducer = (value, action) => {
     case 'insertReplacementText':
       return pipe(
         value,
-        // insert text pres text, nic vic
         setText(action.text),
       );
 
-    // insertText
     case 'deleteText':
       return pipe(
         value,
-        // select, insert pres text?
         select(action.selection),
         setText(action.text),
       );

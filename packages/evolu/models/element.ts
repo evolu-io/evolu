@@ -195,7 +195,6 @@ export const ensureTextTraversal = (
     ),
   );
 
-// TODO: Replace with insertTextElement
 export const setTextElement = (
   text: string,
   selection: Selection,

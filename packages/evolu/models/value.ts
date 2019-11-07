@@ -56,14 +56,16 @@ export const normalize: Endomorphism<Value> = value => {
   return { ...value, element };
 };
 
+export const setFocus = (hasFocus: boolean): Endomorphism<Value> => value => ({
+  ...value,
+  hasFocus,
+});
+
 export const select = (selection: Selection): Endomorphism<Value> => value => ({
   ...value,
   selection: some(selection),
 });
 
-// export const insertText =
-
-// TODO: Replace with insertText.
 export const setText = (
   text: string,
   selection?: Selection,

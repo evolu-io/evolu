@@ -65,7 +65,6 @@ export type Action =
   | { type: 'selectionChange'; selection: Selection }
   | { type: 'insertText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string }
-  // prijde akce insert pres, ok, ale pro text?
   | { type: 'deleteText'; text: string; selection: Selection }
   | { type: 'deleteContent'; selection: Selection };
 
