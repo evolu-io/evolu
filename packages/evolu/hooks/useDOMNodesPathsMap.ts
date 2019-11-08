@@ -1,5 +1,5 @@
 import { absurd } from 'fp-ts/lib/function';
-import { fromNullable } from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useCallback, useEffect, useRef } from 'react';
 import { isText } from '../models/text';
@@ -65,7 +65,7 @@ export const useDOMNodesPathsMap = (
     path => () =>
       pipe(
         pathsNodesMapRef.current.get(path.join()),
-        fromNullable,
+        o.fromNullable,
       ),
     [],
   );
@@ -74,7 +74,7 @@ export const useDOMNodesPathsMap = (
     node => () =>
       pipe(
         nodesPathsMapRef.current.get(node),
-        fromNullable,
+        o.fromNullable,
       ),
     [],
   );

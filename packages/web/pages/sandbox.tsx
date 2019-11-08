@@ -15,7 +15,8 @@ const initialValue = editor.createValue({
         }}
       >
         {/* <br /> */}
-        hello{' '}
+        heading
+        {/* hello{' '}
         <span
           style={{
             fontWeight: 'bold',
@@ -24,7 +25,7 @@ const initialValue = editor.createValue({
         >
           world
         </span>
-        , foo
+        , foo */}
         {/* <span style={{ fontWeight: 'bold' }}>foo</span> */}
         {/* To test normalize */}
         {/* {'heading'}

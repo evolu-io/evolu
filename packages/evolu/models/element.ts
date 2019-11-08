@@ -1,8 +1,8 @@
 import { foldRight, last, unsafeUpdateAt, getEq } from 'fp-ts/lib/Array';
 import { Eq, getStructEq, strictEqual, fromEquals } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { chain, fold, fromPredicate } from 'fp-ts/lib/Option';
+import * as i from 'fp-ts/lib/IO';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
@@ -59,7 +59,7 @@ export const createKeyForElement = (element: Element): string =>
  * Create ElementID via nanoid(10).
  * https://zelark.github.io/nano-id-cc
  */
-export const id: IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
+export const id: i.IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -100,8 +100,8 @@ export const normalizeElement: Endomorphism<Element> = element => {
     if (textIsBR(child)) return [...array, child];
     return pipe(
       last(array),
-      chain(fromPredicate(isTextNotBR)),
-      fold(
+      o.chain(o.fromPredicate(isTextNotBR)),
+      o.fold(
         () => [...array, child],
         previousText => {
           somethingHasBeenNormalized = true;

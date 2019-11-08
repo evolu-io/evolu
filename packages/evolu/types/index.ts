@@ -1,9 +1,9 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { Option } from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
 import { $Values } from 'utility-types';
-import { IO } from 'fp-ts/lib/IO';
+import * as i from 'fp-ts/lib/IO';
 import { DOMNode } from './dom';
 
 /**
@@ -53,7 +53,7 @@ export interface Selection {
 export interface Value {
   readonly element: Element;
   readonly hasFocus: boolean;
-  readonly selection: Option<Selection>;
+  readonly selection: o.Option<Selection>;
 }
 
 /**
@@ -63,6 +63,9 @@ export type Action =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: Selection }
+  // | { type: 'setText'; text: string; path: Path; offset: Option<number> }
+
+  // zrusit
   | { type: 'insertText'; text: string; selection: Selection }
   | { type: 'insertReplacementText'; text: string }
   | { type: 'deleteText'; text: string; selection: Selection }
@@ -85,8 +88,12 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
-export type GetDOMNodeByPath = (path: PathMaybeEmpty) => IO<Option<DOMNode>>;
-export type GetPathByDOMNode = (node: DOMNode) => IO<Option<PathMaybeEmpty>>;
+export type GetDOMNodeByPath = (
+  path: PathMaybeEmpty,
+) => i.IO<o.Option<DOMNode>>;
+export type GetPathByDOMNode = (
+  node: DOMNode,
+) => i.IO<o.Option<PathMaybeEmpty>>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 

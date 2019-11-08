@@ -1,6 +1,6 @@
 import path from 'path';
 import { ClickOptions, Keyboard } from 'puppeteer';
-import { IO } from 'fp-ts/lib/IO';
+import * as i from 'fp-ts/lib/IO';
 import { ElementID } from 'evolu';
 
 export const pageUrl = (name: string) => {
@@ -116,7 +116,7 @@ export const pageKeyboard: Keyboard = [
   {} as Keyboard,
 );
 
-export const createStableIDFactory = (): IO<ElementID> => {
+export const createStableIDFactory = (): i.IO<ElementID> => {
   let lastID = 0;
   beforeEach(async () => {
     lastID = 0;

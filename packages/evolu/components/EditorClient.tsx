@@ -2,21 +2,9 @@ import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constTrue, constVoid, Predicate } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
+import * as i from 'fp-ts/lib/IO';
 import { head, last, snoc } from 'fp-ts/lib/NonEmptyArray';
-import {
-  alt,
-  chain,
-  filter,
-  fold,
-  fromNullable,
-  map,
-  mapNullable,
-  none,
-  Option,
-  option,
-  toNullable,
-} from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   forwardRef,
@@ -111,8 +99,8 @@ export const EditorClient = memo(
       const getDocument = useCallback(
         () =>
           pipe(
-            fromNullable(editorElementRef.current),
-            mapNullable(el => el.ownerDocument),
+            o.fromNullable(editorElementRef.current),
+            o.mapNullable(el => el.ownerDocument),
           ),
         [],
       );
@@ -151,20 +139,20 @@ export const EditorClient = memo(
         }
       }, [value.hasFocus, tabLostFocus, valueHadFocus]);
 
-      const getSelectionFromDOM = useCallback<IO<Option<Selection>>>(
+      const getSelectionFromDOM = useCallback<i.IO<o.Option<Selection>>>(
         () =>
           pipe(
             getDocument(),
-            chain(doc => getDOMSelection(doc)()),
-            filter(isExistingDOMSelection),
-            chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
+            o.chain(doc => getDOMSelection(doc)()),
+            o.filter(isExistingDOMSelection),
+            o.chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
               // Nested pipe is ok, we can always refactor it out later.
               pipe(
-                sequenceT(option)(
+                sequenceT(o.option)(
                   getPathByDOMNode(anchorNode)(),
                   getPathByDOMNode(focusNode)(),
                 ),
-                map(([anchorPath, focusPath]) => ({
+                o.map(([anchorPath, focusPath]) => ({
                   anchor: snoc(anchorPath, anchorOffset),
                   focus: snoc(focusPath, focusOffset),
                 })),
@@ -175,30 +163,29 @@ export const EditorClient = memo(
       );
 
       const pathToNodeOffset = useCallback(
-        (path: Path): IO<Option<DOMNodeOffset>> => () =>
+        (path: Path): i.IO<o.Option<DOMNodeOffset>> =>
           pipe(
-            getDOMNodeByPath(path)(),
-            mapNullable(node => node.parentNode),
-            alt(() =>
+            getDOMNodeByPath(initPath(path)),
+            i.map(
               pipe(
-                initPath(path),
-                chain(path => getDOMNodeByPath(path)()),
+                last(path),
+                createDOMNodeOffset,
+                o.map,
               ),
             ),
-            map(createDOMNodeOffset(last(path))),
           ),
         [getDOMNodeByPath],
       );
 
       const setDOMSelection = useCallback(
-        (selection: Selection): IO<void> => {
+        (selection: Selection): i.IO<void> => {
           const forward = isForward(selection);
           return () => {
             pipe(
-              sequenceT(option)(
+              sequenceT(o.option)(
                 pipe(
                   getDocument(),
-                  chain(doc => getDOMSelection(doc)()),
+                  o.chain(doc => getDOMSelection(doc)()),
                 ),
                 createDOMRange(editorElementRef.current)(),
                 pathToNodeOffset(
@@ -208,7 +195,7 @@ export const EditorClient = memo(
                   forward ? selection.focus : selection.anchor,
                 )(),
               ),
-              fold(
+              o.fold(
                 () => {
                   warn(
                     'DOMSelection, DOMRange, and DOMNodeOffsets should exists.',
@@ -239,15 +226,15 @@ export const EditorClient = memo(
       const isNewEditorSelection: Predicate<Selection> = s1 =>
         pipe(
           dispatchDepsRef.current.value.selection,
-          fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
+          o.fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
         );
 
       const handleSelectionChange = useCallback(
         () =>
           pipe(
-            isTypingRef.current ? none : getSelectionFromDOM(),
-            filter(isNewEditorSelection),
-            fold(constVoid, selection => {
+            isTypingRef.current ? o.none : getSelectionFromDOM(),
+            o.filter(isNewEditorSelection),
+            o.fold(constVoid, selection => {
               dispatch({ type: 'selectionChange', selection });
             }),
           ),
@@ -255,7 +242,7 @@ export const EditorClient = memo(
       );
 
       useEffect(() => {
-        const doc = toNullable(getDocument());
+        const doc = o.toNullable(getDocument());
         if (doc == null) return;
         doc.addEventListener('selectionchange', handleSelectionChange);
         return () => {
@@ -264,12 +251,12 @@ export const EditorClient = memo(
       }, [getDocument, handleSelectionChange]);
 
       const ensureDOMSelectionIsActual = useCallback(
-        (selection: Option<Selection>): IO<void> => () => {
+        (selection: o.Option<Selection>): i.IO<void> => () => {
           pipe(
-            sequenceT(option)(selection, getSelectionFromDOM()),
-            filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
-            map(head),
-            fold(constVoid, selection => {
+            sequenceT(o.option)(selection, getSelectionFromDOM()),
+            o.filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
+            o.map(head),
+            o.fold(constVoid, selection => {
               setDOMSelection(selection)();
             }),
           );

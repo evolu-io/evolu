@@ -1,11 +1,9 @@
-import { getEq, init, isNonEmpty, snoc, takeLeft } from 'fp-ts/lib/Array';
+import { getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
 import { head, last, tail } from 'fp-ts/lib/NonEmptyArray';
-import { chain, fromPredicate, Option } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { Path, PathMaybeEmpty, PathIndex } from '../types';
+import { Path, PathIndex, PathMaybeEmpty } from '../types';
 
 export const eqPath = getEq(eqNumber);
 
@@ -33,19 +31,11 @@ export const byContains: Ord<Path> = fromCompare((x, y) =>
     : -1,
 );
 
-/**
- * Get Path with initial (without the last) PathIndexes.
- */
-export const initPath = (path: Path): Option<Path> =>
-  pipe(
-    path,
-    init,
-    chain(fromPredicate(isNonEmpty)),
-  );
+export const initPath = (path: Path): PathMaybeEmpty => path.slice(0, -1);
 
 // TODO: Rename.
 export const movePath = (offset: number): Endomorphism<Path> => path =>
-  snoc(path.slice(0, -1), last(path) + offset);
+  snoc(initPath(path), last(path) + offset);
 
 export const pathToHeadAndTail = (path: Path): [PathIndex, PathMaybeEmpty] => [
   head(path),
@@ -53,6 +43,6 @@ export const pathToHeadAndTail = (path: Path): [PathIndex, PathMaybeEmpty] => [
 ];
 
 export const pathToInitAndLast = (path: Path): [PathMaybeEmpty, PathIndex] => [
-  path.slice(0, -1),
+  initPath(path),
   last(path),
 ];

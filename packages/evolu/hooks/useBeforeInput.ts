@@ -1,17 +1,9 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { IO } from 'fp-ts/lib/IO';
-import {
-  chain,
-  filter,
-  fold,
-  fromNullable,
-  Option,
-  option,
-  some,
-} from 'fp-ts/lib/Option';
+import { constVoid } from 'fp-ts/lib/function';
+import * as i from 'fp-ts/lib/IO';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
-import { constVoid } from 'fp-ts/lib/function';
 import {
   getDOMRangeFromInputEvent,
   getDOMSelection,
@@ -35,15 +27,13 @@ import { warn } from '../warn';
 // In those cases, we read content from DOM then restore it so React is not confused.
 // We do not handle composition events yet.
 // https://www.w3.org/TR/input-events-2/
-const preventDefault = (event: InputEvent): IO<void> => () => {
+const preventDefault = (event: InputEvent): i.IO<void> => () => {
   event.preventDefault();
 };
 
-const rangeStartContainerToText: (a: Range) => Option<string> = ({
+const rangeStartContainerToText: (a: Range) => o.Option<string> = ({
   startContainer,
-}) => fromNullable(startContainer.textContent);
-
-// TODO: Refactor pyramids of doom, afterTyping and dispatch should be functional.
+}) => o.fromNullable(startContainer.textContent);
 
 const insertText = (
   event: InputEvent,
@@ -52,20 +42,21 @@ const insertText = (
   doc: Document,
   getPathByDOMNode: GetPathByDOMNode,
 ) =>
+  // TODO: Refactor.
   pipe(
     getDOMSelection(doc)(),
-    fold(preventDefault(event), selection => {
+    o.fold(preventDefault(event), selection => {
       if (!selection.isCollapsed) {
         event.preventDefault();
         return;
       }
       pipe(
-        sequenceT(option)(
+        sequenceT(o.option)(
           getSelectionFromInputEvent(getPathByDOMNode, event)(),
           getDOMRangeFromInputEvent(event),
-          fromNullable(event.data),
+          o.fromNullable(event.data),
         ),
-        chain(([selection, domRange, eventData]) => {
+        o.chain(([selection, domRange, eventData]) => {
           const maybeBR =
             domRange.startContainer.childNodes[domRange.startOffset];
           const brIsGoingToBeReplacedWithText =
@@ -81,18 +72,30 @@ const insertText = (
           const selectionAfterInsert = brIsGoingToBeReplacedWithText
             ? snocSelection(selection, 1, 1)
             : moveSelection(eventData.length)(selection);
-          return some({
+          return o.some({
             getText,
             maybeReplaceBRWithText,
             selectionAfterInsert,
+            // selection,
           });
         }),
-        fold(
+        o.fold(
           preventDefault(event),
-          ({ getText, maybeReplaceBRWithText, selectionAfterInsert }) => {
+          ({
+            getText,
+            maybeReplaceBRWithText,
+            selectionAfterInsert,
+            // selection,
+          }) => {
             afterTyping(() => {
               const text = getText();
               maybeReplaceBRWithText();
+              // const [path, offset] = pathToInitAndLast(
+              //   selectionAfterInsert.anchor,
+              // );
+              // pockat, nejde!
+              // takze jo, init path melo smysl!
+              // text, path, offset
               dispatch({
                 type: 'insertText',
                 text,
@@ -110,14 +113,19 @@ const insertReplacementText = (
   afterTyping: AfterTyping,
   dispatch: Dispatch<Action>,
 ) =>
+  // TODO: Refactor afterTyping to be chainable.
+  // Jak to ma vypadat funkcionalne?
+  // odstranit async? jak?
+  // dispatch jako IO? hmm, lakave
+  // ten for IO je v tom, ze ho nastavim, ale
   pipe(
     getDOMRangeFromInputEvent(event),
-    fold(preventDefault(event), range => {
+    o.fold(preventDefault(event), range => {
       afterTyping(() => {
         pipe(
           range,
           rangeStartContainerToText,
-          fold(constVoid, text => {
+          o.fold(constVoid, text => {
             dispatch({ type: 'insertReplacementText', text });
           }),
         );
@@ -132,10 +140,11 @@ const deleteContent = (
   doc: Document,
   getPathByDOMNode: GetPathByDOMNode,
 ) => {
+  // TODO: Make it flat.
   pipe(
     getDOMSelection(doc)(),
-    filter(isExistingDOMSelection),
-    fold(preventDefault(event), selection => {
+    o.filter(isExistingDOMSelection),
+    o.fold(preventDefault(event), selection => {
       const onlyTextIsAffectedByAction =
         selection.isCollapsed &&
         // nodeValue != null for text node.
@@ -147,11 +156,11 @@ const deleteContent = (
             : selection.anchorNode.nodeValue.length);
       if (onlyTextIsAffectedByAction) {
         pipe(
-          sequenceT(option)(
+          sequenceT(o.option)(
             getSelectionFromInputEvent(getPathByDOMNode, event)(),
             getDOMRangeFromInputEvent(event),
           ),
-          fold(preventDefault(event), ([selection, domRange]) => {
+          o.fold(preventDefault(event), ([selection, domRange]) => {
             if (isCollapsed(selection)) return;
             const textIsGoingToBeReplacedWithBR =
               domRange.startContainer === domRange.endContainer &&
@@ -161,12 +170,12 @@ const deleteContent = (
             if (textIsGoingToBeReplacedWithBR) event.preventDefault();
             const getSelectionAfterDelete = () => {
               if (!textIsGoingToBeReplacedWithBR)
-                return some(collapseToStart(selection));
+                return o.some(collapseToStart(selection));
               return initSelection(selection);
             };
             pipe(
               getSelectionAfterDelete(),
-              fold(
+              o.fold(
                 () => {
                   warn('Selection should exists.');
                 },

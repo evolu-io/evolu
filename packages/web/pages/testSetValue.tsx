@@ -11,7 +11,7 @@ import {
   Value,
 } from 'evolu';
 import { foldLeft, reverse } from 'fp-ts/lib/Array';
-import { fold, none, some, toNullable } from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -52,17 +52,17 @@ const TestSetValue = () => {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (toNullable(value.selection) == null) return;
+    if (o.toNullable(value.selection) == null) return;
     pipe(
       operationsRef.current,
       foldLeft(
-        () => none,
+        () => o.none,
         (operation, remaining) => {
           operationsRef.current = remaining;
-          return some(operation);
+          return o.some(operation);
         },
       ),
-      fold(
+      o.fold(
         () => {
           setDone(true);
         },

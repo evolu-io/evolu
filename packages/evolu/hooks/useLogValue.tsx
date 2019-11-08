@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-env browser */
-import { toUndefined } from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import React, { memo, ReactNode, useCallback, useMemo, useState } from 'react';
 import { elementToIDless } from '../models/element';
 import { Value } from '../types';
@@ -18,7 +18,7 @@ const Item = memo(
     onSelect: (index: number) => void;
   }) => {
     const { element, hasFocus, selection } = value;
-    const indexItem = { hasFocus, selection: toUndefined(selection) };
+    const indexItem = { hasFocus, selection: o.toUndefined(selection) };
     // Deliberately do not prettify. Smaller output is more readable in snapshots.
     // No IDs because that would break integration tests.
     const elementTextForSnapshots = JSON.stringify(elementToIDless(element))

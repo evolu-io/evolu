@@ -1,16 +1,6 @@
 import { Eq, eqBoolean, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
-import {
-  alt,
-  fold,
-  fromNullable,
-  getEq,
-  getOrElse,
-  map,
-  none,
-  Option,
-  some,
-} from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
@@ -21,16 +11,16 @@ import { eqSelection, moveSelection } from './selection';
 export const eqValue: Eq<Value> = getStructEq({
   element: eqElement,
   hasFocus: eqBoolean,
-  selection: getEq(eqSelection),
+  selection: o.getEq(eqSelection),
 });
 
 export const createValue = <T extends Element>({
   element,
-  selection = none,
+  selection = o.none,
   hasFocus = false,
 }: {
   element: T;
-  selection?: Option<Selection>;
+  selection?: o.Option<Selection>;
   hasFocus?: boolean;
 }): Value => ({
   element,
@@ -63,7 +53,7 @@ export const setFocus = (hasFocus: boolean): Endomorphism<Value> => value => ({
 
 export const select = (selection: Selection): Endomorphism<Value> => value => ({
   ...value,
-  selection: some(selection),
+  selection: o.some(selection),
 });
 
 export const setText = (
@@ -71,23 +61,23 @@ export const setText = (
   selection?: Selection,
 ): Endomorphism<Value> => value =>
   pipe(
-    fromNullable(selection),
-    alt(() => value.selection),
-    map(selection =>
+    o.fromNullable(selection),
+    o.alt(() => value.selection),
+    o.map(selection =>
       pipe(
         value,
         elementLens.modify(setTextElement(text, selection)),
       ),
     ),
-    getOrElse(() => value),
+    o.getOrElse(() => value),
   );
 
 // TODO: It should traverse across nodes.
 export const move = (offset: number): Endomorphism<Value> => value =>
   pipe(
     value.selection,
-    map(moveSelection(offset)),
-    fold(() => value, selection => select(selection)(value)),
+    o.map(moveSelection(offset)),
+    o.fold(() => value, selection => select(selection)(value)),
   );
 
 export const deleteContent = (

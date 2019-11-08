@@ -1,15 +1,9 @@
 /* eslint-env browser */
 import { Refinement, constFalse, constTrue } from 'fp-ts/lib/function';
-import {
-  fromNullable,
-  mapNullable,
-  Option,
-  option,
-  fold,
-} from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
+import * as i from 'fp-ts/lib/IO';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { IO } from 'fp-ts/lib/IO';
 import { DOMNodeOffset } from '../types';
 import {
   DOMElement,
@@ -32,8 +26,11 @@ export const isExistingDOMSelection: Refinement<
   // This pipe can be refactored to allIsExisting or something. Maybe fp-ts already
   // has something for that.
   pipe(
-    sequenceT(option)(fromNullable(s.anchorNode), fromNullable(s.focusNode)),
-    fold(constFalse, constTrue),
+    sequenceT(o.option)(
+      o.fromNullable(s.anchorNode),
+      o.fromNullable(s.focusNode),
+    ),
+    o.fold(constFalse, constTrue),
   );
 
 export const createDOMNodeOffset = (
@@ -42,19 +39,19 @@ export const createDOMNodeOffset = (
 
 export const getDOMRangeFromInputEvent = (
   event: InputEvent,
-): Option<DOMRange> =>
+): o.Option<DOMRange> =>
   // @ts-ignore Outdated types.
-  fromNullable(event.getTargetRanges()[0]);
+  o.fromNullable(event.getTargetRanges()[0]);
 
 export const getDOMSelection = (
   doc: Document,
-): IO<Option<DOMSelection>> => () => fromNullable(doc.getSelection());
+): i.IO<o.Option<DOMSelection>> => () => o.fromNullable(doc.getSelection());
 
 export const createDOMRange = (
   element: HTMLElement | null,
-): IO<Option<DOMRange>> => () =>
+): i.IO<o.Option<DOMRange>> => () =>
   pipe(
-    fromNullable(element),
-    mapNullable(element => element.ownerDocument),
-    mapNullable(doc => doc.createRange()),
+    o.fromNullable(element),
+    o.mapNullable(element => element.ownerDocument),
+    o.mapNullable(doc => doc.createRange()),
   );

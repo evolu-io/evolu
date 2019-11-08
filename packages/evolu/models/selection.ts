@@ -2,10 +2,10 @@ import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { init, isNonEmpty, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { chain, filter, Option, option, some } from 'fp-ts/lib/Option';
+import * as o from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { IO } from 'fp-ts/lib/IO';
+import * as i from 'fp-ts/lib/IO';
 import { GetPathByDOMNode, Range, Selection } from '../types';
 import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
@@ -67,17 +67,17 @@ export const collapseToEnd: Endomorphism<Selection> = selection => {
 export const getSelectionFromInputEvent = (
   getPathByDOMNode: GetPathByDOMNode,
   event: InputEvent,
-): IO<Option<Selection>> => () =>
+): i.IO<o.Option<Selection>> => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    chain(({ startContainer, startOffset, endContainer, endOffset }) =>
+    o.chain(({ startContainer, startOffset, endContainer, endOffset }) =>
       pipe(
-        sequenceT(option)(
+        sequenceT(o.option)(
           getPathByDOMNode(startContainer)(),
           getPathByDOMNode(endContainer)(),
         ),
-        chain(([anchorPath, focusPath]) =>
-          some({
+        o.chain(([anchorPath, focusPath]) =>
+          o.some({
             anchor: snoc(anchorPath, startOffset),
             focus: snoc(focusPath, endOffset),
           }),
@@ -89,15 +89,15 @@ export const getSelectionFromInputEvent = (
 /**
  * `{ anchor: [1, 2], focus: [1, 3] }` to `{ anchor: [1], focus: [1] }`
  */
-export const initSelection = (selection: Selection): Option<Selection> =>
-  sequenceS(option)({
+export const initSelection = (selection: Selection): o.Option<Selection> =>
+  sequenceS(o.option)({
     anchor: pipe(
       init(selection.anchor),
-      filter(isNonEmpty),
+      o.filter(isNonEmpty),
     ),
     focus: pipe(
       init(selection.focus),
-      filter(isNonEmpty),
+      o.filter(isNonEmpty),
     ),
   });
 
