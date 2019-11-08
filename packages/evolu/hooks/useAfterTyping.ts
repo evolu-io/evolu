@@ -14,6 +14,7 @@ export const useAfterTyping = (): {
   const lastCallback = useRef(() => {});
   const afterTyping = useCallback<AfterTyping>(callback => {
     isTypingRef.current = true;
+    // Maybe call current before overriding.
     lastCallback.current = callback;
     requestAnimationFrame(() => {
       isTypingRef.current = false;

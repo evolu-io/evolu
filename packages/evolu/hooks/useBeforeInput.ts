@@ -42,7 +42,6 @@ const insertText = (
   doc: Document,
   getPathByDOMNode: GetPathByDOMNode,
 ) =>
-  // TODO: Refactor.
   pipe(
     getDOMSelection(doc)(),
     o.fold(preventDefault(event), selection => {
@@ -113,18 +112,12 @@ const insertReplacementText = (
   afterTyping: AfterTyping,
   dispatch: Dispatch<Action>,
 ) =>
-  // TODO: Refactor afterTyping to be chainable.
-  // Jak to ma vypadat funkcionalne?
-  // odstranit async? jak?
-  // dispatch jako IO? hmm, lakave
-  // ten for IO je v tom, ze ho nastavim, ale
   pipe(
     getDOMRangeFromInputEvent(event),
     o.fold(preventDefault(event), range => {
       afterTyping(() => {
         pipe(
-          range,
-          rangeStartContainerToText,
+          rangeStartContainerToText(range),
           o.fold(constVoid, text => {
             dispatch({ type: 'insertReplacementText', text });
           }),
