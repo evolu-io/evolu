@@ -1,8 +1,22 @@
 import Debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
-import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { last, snoc, head } from 'fp-ts/lib/NonEmptyArray';
+import { constTrue, constVoid, Predicate } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import { head, last, snoc } from 'fp-ts/lib/NonEmptyArray';
+import {
+  alt,
+  chain,
+  filter,
+  fold,
+  fromNullable,
+  map,
+  mapNullable,
+  none,
+  Option,
+  option,
+  toNullable,
+} from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   forwardRef,
@@ -15,20 +29,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { IO } from 'fp-ts/lib/IO';
-import {
-  Option,
-  fromNullable,
-  mapNullable,
-  filter,
-  chain,
-  map,
-  option,
-  alt,
-  fold,
-  none,
-  toNullable,
-} from 'fp-ts/lib/Option';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
@@ -236,19 +236,17 @@ export const EditorClient = memo(
 
       const { afterTyping, isTypingRef } = useAfterTyping();
 
+      const isNewEditorSelection: Predicate<Selection> = s1 =>
+        pipe(
+          dispatchDepsRef.current.value.selection,
+          fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
+        );
+
       const handleSelectionChange = useCallback(
         () =>
           pipe(
             isTypingRef.current ? none : getSelectionFromDOM(),
-            filter(s1 =>
-              // Nested pipe is ok, we can refactor it out as Predicate if necessary.
-              pipe(
-                dispatchDepsRef.current.value.selection,
-                fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
-              ),
-            ),
-            // We ignore none because editor has to remember the last selection
-            // to restore it later on the focus.
+            filter(isNewEditorSelection),
             fold(constVoid, selection => {
               dispatch({ type: 'selectionChange', selection });
             }),
