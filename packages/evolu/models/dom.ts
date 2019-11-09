@@ -11,11 +11,16 @@ import {
   DOMRange,
   DOMSelection,
   ExistingDOMSelection,
+  DOMText,
 } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
 ): node is DOMElement => node.nodeType === Node.ELEMENT_NODE;
+
+export const isDOMText: Refinement<DOMNode, DOMText> = (
+  node,
+): node is DOMText => node.nodeType === Node.TEXT_NODE;
 
 export const isExistingDOMSelection: Refinement<
   DOMSelection,
