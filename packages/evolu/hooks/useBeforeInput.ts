@@ -35,7 +35,6 @@ const rangeStartContainerToText: (a: Range) => o.Option<string> = ({
   startContainer,
 }) => o.fromNullable(startContainer.textContent);
 
-// TODO: Do we need it? Imho ne.
 const getNonEmptyPathWithOffsetFromInputEvent = (
   event: InputEvent,
   getPathByDOMNode: GetPathByDOMNode,
