@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import * as editor from 'evolu';
-import * as o from 'fp-ts/lib/Option';
+import { some } from 'fp-ts/lib/Option';
 
 export const testSelectionElement: editor.ReactElement = {
   id: editor.id(),
@@ -49,7 +49,7 @@ const TestSelection = () => {
     handleEditorChange({
       ...value,
       hasFocus: true,
-      selection: o.some(selection),
+      selection: some(selection),
     });
   };
 

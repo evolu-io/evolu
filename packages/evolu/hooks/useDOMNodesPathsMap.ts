@@ -1,7 +1,7 @@
 import { absurd } from 'fp-ts/lib/function';
-import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useCallback, useEffect, useRef } from 'react';
+import { fromNullable } from 'fp-ts/lib/Option';
 import { isText } from '../models/text';
 import { warn } from '../warn';
 import { DOMNode } from '../types/dom';
@@ -62,20 +62,12 @@ export const useDOMNodesPathsMap = (
   useDebugNodesPaths(nodesPathsMapRef.current, element);
 
   const getDOMNodeByPath = useCallback<GetDOMNodeByPath>(
-    path => () =>
-      pipe(
-        pathsNodesMapRef.current.get(path.join()),
-        o.fromNullable,
-      ),
+    path => () => pipe(pathsNodesMapRef.current.get(path.join()), fromNullable),
     [],
   );
 
   const getPathByDOMNode = useCallback<GetPathByDOMNode>(
-    node => () =>
-      pipe(
-        nodesPathsMapRef.current.get(node),
-        o.fromNullable,
-      ),
+    node => () => pipe(nodesPathsMapRef.current.get(node), fromNullable),
     [],
   );
 

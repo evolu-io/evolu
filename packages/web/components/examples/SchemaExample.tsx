@@ -1,8 +1,8 @@
 import { css, SerializedStyles } from '@emotion/core';
 import * as editor from 'evolu';
 import { absurd } from 'fp-ts/lib/function';
-import * as o from 'fp-ts/lib/Option';
 import React, { ReactNode, useCallback, useState } from 'react';
+import { fromNullable } from 'fp-ts/lib/Option';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
@@ -37,7 +37,7 @@ type SchemaParagraphElementChild = editor.Text | SchemaLinkElement;
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
   // At least one child.
-  children: [SchemaParagraphElementChild, ...(SchemaParagraphElementChild)[]];
+  children: [SchemaParagraphElementChild, ...SchemaParagraphElementChild[]];
 }
 
 interface SchemaListItemElement extends SchemaElement {
@@ -65,7 +65,8 @@ export interface SchemaDocumentElement extends SchemaElement {
     | SchemaHeadingElement
     | SchemaParagraphElement
     | SchemaListElement
-    | SchemaImageElement)[];
+    | SchemaImageElement
+  )[];
 }
 
 // Exported for testEditorServer.
@@ -189,7 +190,7 @@ export const SchemaExample = ({
   const [value, setValue] = useState<editor.Value>({
     ...initialValue,
     hasFocus: autoFocus,
-    selection: o.fromNullable(initialSelection),
+    selection: fromNullable(initialSelection),
   });
 
   const [logValue, logValueElement] = editor.useLogValue(value);

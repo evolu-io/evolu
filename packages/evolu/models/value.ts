@@ -1,9 +1,18 @@
 import { Eq, eqBoolean, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
-import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
+import {
+  Option,
+  getEq,
+  none,
+  some,
+  fromNullable,
+  map,
+  getOrElse,
+  fold,
+} from 'fp-ts/lib/Option';
 import { Element, ReactElement, Selection, SetTextArg, Value } from '../types';
 import { eqElement, jsx, normalizeElement, setTextElement } from './element';
 import { eqSelection, moveSelection } from './selection';
@@ -11,16 +20,16 @@ import { eqSelection, moveSelection } from './selection';
 export const eqValue: Eq<Value> = getStructEq({
   element: eqElement,
   hasFocus: eqBoolean,
-  selection: o.getEq(eqSelection),
+  selection: getEq(eqSelection),
 });
 
 export const createValue = <T extends Element>({
   element,
-  selection = o.none,
+  selection = none,
   hasFocus = false,
 }: {
   element: T;
-  selection?: o.Option<Selection>;
+  selection?: Option<Selection>;
   hasFocus?: boolean;
 }): Value => ({
   element,
@@ -53,7 +62,7 @@ export const setFocus = (hasFocus: boolean): Endomorphism<Value> => value => ({
 
 export const select = (selection: Selection): Endomorphism<Value> => value => ({
   ...value,
-  selection: o.some(selection),
+  selection: some(selection),
 });
 
 export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
@@ -62,17 +71,17 @@ export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
     elementLens.modify(setTextElement({ text: arg.text, path: arg.path })),
     value =>
       pipe(
-        o.fromNullable(arg.selection),
-        o.map(selection => ({ ...value, selection: o.some(selection) })),
-        o.getOrElse(() => value),
+        fromNullable(arg.selection),
+        map(selection => ({ ...value, selection: some(selection) })),
+        getOrElse(() => value),
       ),
   );
 
 export const move = (offset: number): Endomorphism<Value> => value =>
   pipe(
     value.selection,
-    o.map(moveSelection(offset)),
-    o.fold(
+    map(moveSelection(offset)),
+    fold(
       () => value,
       selection => select(selection)(value),
     ),

@@ -1,8 +1,8 @@
-import * as o from 'fp-ts/lib/Option';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
 import { $Values } from 'utility-types';
-import * as i from 'fp-ts/lib/IO';
+import { IO } from 'fp-ts/lib/IO';
+import { Option } from 'fp-ts/lib/Option';
 import { DOMNode } from './dom';
 
 /**
@@ -67,7 +67,7 @@ export interface Selection {
 export interface Value {
   readonly element: Element;
   readonly hasFocus: boolean;
-  readonly selection: o.Option<Selection>;
+  readonly selection: Option<Selection>;
 }
 
 export type SetTextArg = {
@@ -103,8 +103,8 @@ export interface Range {
 
 export type DOMNodeOffset = [DOMNode, number];
 
-export type GetDOMNodeByPath = (path: Path) => i.IO<o.Option<DOMNode>>;
-export type GetPathByDOMNode = (node: DOMNode) => i.IO<o.Option<Path>>;
+export type GetDOMNodeByPath = (path: Path) => IO<Option<DOMNode>>;
+export type GetPathByDOMNode = (node: DOMNode) => IO<Option<Path>>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 

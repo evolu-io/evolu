@@ -2,10 +2,10 @@ import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { init, isNonEmpty, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import * as o from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as i from 'fp-ts/lib/IO';
+import { IO } from 'fp-ts/lib/IO';
+import { Option, chain, option, some, filter } from 'fp-ts/lib/Option';
 import { GetPathByDOMNode, Range, Selection, NonEmptyPath } from '../types';
 import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
@@ -62,17 +62,17 @@ export const collapseToEnd: Endomorphism<Selection> = selection => {
 
 export const selectionFromInputEvent = (getPathByDOMNode: GetPathByDOMNode) => (
   event: InputEvent,
-): i.IO<o.Option<Selection>> => () =>
+): IO<Option<Selection>> => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    o.chain(({ startContainer, startOffset, endContainer, endOffset }) =>
+    chain(({ startContainer, startOffset, endContainer, endOffset }) =>
       pipe(
-        sequenceT(o.option)(
+        sequenceT(option)(
           getPathByDOMNode(startContainer)(),
           getPathByDOMNode(endContainer)(),
         ),
-        o.chain(([anchorPath, focusPath]) =>
-          o.some({
+        chain(([anchorPath, focusPath]) =>
+          some({
             anchor: snoc(anchorPath, startOffset),
             focus: snoc(focusPath, endOffset),
           }),
@@ -89,10 +89,10 @@ export const selectionFromPath = (path: NonEmptyPath): Selection => ({
 /**
  * `{ anchor: [1, 2], focus: [1, 3] }` to `{ anchor: [1], focus: [1] }`
  */
-export const initSelection = (selection: Selection): o.Option<Selection> =>
-  sequenceS(o.option)({
-    anchor: pipe(init(selection.anchor), o.filter(isNonEmpty)),
-    focus: pipe(init(selection.focus), o.filter(isNonEmpty)),
+export const initSelection = (selection: Selection): Option<Selection> =>
+  sequenceS(option)({
+    anchor: pipe(init(selection.anchor), filter(isNonEmpty)),
+    focus: pipe(init(selection.focus), filter(isNonEmpty)),
   });
 
 /**

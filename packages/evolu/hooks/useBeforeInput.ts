@@ -1,10 +1,20 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { constVoid } from 'fp-ts/lib/function';
-import * as i from 'fp-ts/lib/IO';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
-import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dispatch, RefObject, useEffect } from 'react';
+import { IO } from 'fp-ts/lib/IO';
+import {
+  Option,
+  fromNullable,
+  some,
+  none,
+  option,
+  filter,
+  map,
+  chain,
+  fold,
+} from 'fp-ts/lib/Option';
 import {
   getDOMRangeFromInputEvent,
   getDOMSelection,
@@ -27,13 +37,13 @@ import { Action, AfterTyping, GetPathByDOMNode, NonEmptyPath } from '../types';
 import { DOMRange, DOMText } from '../types/dom';
 import { warn } from '../warn';
 
-const preventDefault = (event: InputEvent): i.IO<void> => () => {
+const preventDefault = (event: InputEvent): IO<void> => () => {
   event.preventDefault();
 };
 
-const rangeStartContainerToText: (a: Range) => o.Option<string> = ({
+const rangeStartContainerToText: (a: Range) => Option<string> = ({
   startContainer,
-}) => o.fromNullable(startContainer.textContent);
+}) => fromNullable(startContainer.textContent);
 
 const getNonEmptyPathWithOffsetFromInputEvent = (
   event: InputEvent,
@@ -41,8 +51,8 @@ const getNonEmptyPathWithOffsetFromInputEvent = (
 ) =>
   pipe(
     selectionFromInputEvent(getPathByDOMNode)(event)(),
-    o.map(s => s.anchor),
-    o.filter(isNonEmptyPathWithOffset),
+    map(s => s.anchor),
+    filter(isNonEmptyPathWithOffset),
   );
 
 const insertText = (
@@ -54,12 +64,12 @@ const insertText = (
 ) => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
-      sequenceT(o.option)(
+      sequenceT(option)(
         selectionFromInputEvent(getPathByDOMNode)(event)(),
         getDOMRangeFromInputEvent(event),
-        o.fromNullable(event.data),
+        fromNullable(event.data),
       ),
-      o.chain(([selection, range, eventData]) => {
+      chain(([selection, range, eventData]) => {
         const maybeBR = range.startContainer.childNodes[range.startOffset];
         const putBRback =
           range.startContainer === range.endContainer &&
@@ -81,21 +91,21 @@ const insertText = (
           selectionFromPath,
         );
         if (putBRback)
-          return o.some({
+          return some({
             getText,
             selection: selectionAfterInsert,
             path: nonEmptyPath,
           });
         if (isNonEmptyPathWithOffset(nonEmptyPath)) {
-          return o.some({
+          return some({
             getText,
             selection: selectionAfterInsert,
             path: initNonEmptyPathWithOffset(nonEmptyPath),
           });
         }
-        return o.none;
+        return none;
       }),
-      o.fold(preventDefault(event), ({ getText, path, selection }) => {
+      fold(preventDefault(event), ({ getText, path, selection }) => {
         afterTyping(() => {
           const text = getText();
           dispatch({
@@ -108,8 +118,8 @@ const insertText = (
 
   pipe(
     getDOMSelection(doc)(),
-    o.filter(isExistingDOMSelection),
-    o.fold(preventDefault(event), selection => {
+    filter(isExistingDOMSelection),
+    fold(preventDefault(event), selection => {
       if (isCollapsedDOMSelectionOnTextOrBR(selection)) {
         dispatchSetTextAfterTyping();
         return;
@@ -131,20 +141,20 @@ const insertReplacementText = (
     afterTyping(() =>
       pipe(
         rangeStartContainerToText(range),
-        o.fold(constVoid, text => {
+        fold(constVoid, text => {
           dispatch({ type: 'setText', arg: { text, path } });
         }),
       ),
     );
   pipe(
-    sequenceT(o.option)(
+    sequenceT(option)(
       getDOMRangeFromInputEvent(event),
       pipe(
         getNonEmptyPathWithOffsetFromInputEvent(event, getPathByDOMNode),
-        o.map(initNonEmptyPathWithOffset),
+        map(initNonEmptyPathWithOffset),
       ),
     ),
-    o.fold(preventDefault(event), dispatchAfterTyping),
+    fold(preventDefault(event), dispatchAfterTyping),
   );
 };
 
@@ -157,12 +167,12 @@ const deleteContent = (
 ) => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
-      sequenceT(o.option)(
+      sequenceT(option)(
         selectionFromInputEvent(getPathByDOMNode)(event)(),
         getNonEmptyPathWithOffsetFromInputEvent(event, getPathByDOMNode),
         getDOMRangeFromInputEvent(event),
       ),
-      o.fold(preventDefault(event), ([selection, nonEmptyPath, range]) => {
+      fold(preventDefault(event), ([selection, nonEmptyPath, range]) => {
         const textIsGoingToBeReplacedWithBR =
           range.startContainer === range.endContainer &&
           range.startOffset === 0 &&
@@ -170,12 +180,12 @@ const deleteContent = (
         if (textIsGoingToBeReplacedWithBR) event.preventDefault();
         const getSelectionAfterDelete = () => {
           if (!textIsGoingToBeReplacedWithBR)
-            return o.some(collapseToStart(selection));
+            return some(collapseToStart(selection));
           return initSelection(selection);
         };
         pipe(
           getSelectionAfterDelete(),
-          o.fold(constVoid, selection => {
+          fold(constVoid, selection => {
             afterTyping(() => {
               const { data } = range.startContainer as DOMText;
               const text = textIsGoingToBeReplacedWithBR ? '' : data;
@@ -195,8 +205,8 @@ const deleteContent = (
 
   pipe(
     getDOMSelection(doc)(),
-    o.filter(isExistingDOMSelection),
-    o.fold(preventDefault(event), selection => {
+    filter(isExistingDOMSelection),
+    fold(preventDefault(event), selection => {
       const isForward = event.inputType === 'deleteContentForward';
       if (onlyTextIsAffected(isForward)(selection)) {
         dispatchSetTextAfterTyping();

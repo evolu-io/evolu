@@ -1,8 +1,8 @@
 /* eslint-env browser */
 import { Predicate, Refinement } from 'fp-ts/lib/function';
-import * as i from 'fp-ts/lib/IO';
-import * as o from 'fp-ts/lib/Option';
+import { IO } from 'fp-ts/lib/IO';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Option, fromNullable, mapNullable } from 'fp-ts/lib/Option';
 import { DOMNodeOffset } from '../types';
 import {
   DOMElement,
@@ -33,21 +33,21 @@ export const createDOMNodeOffset = (
 
 export const getDOMRangeFromInputEvent = (
   event: InputEvent,
-): o.Option<DOMRange> =>
+): Option<DOMRange> =>
   // @ts-ignore Outdated types.
-  o.fromNullable(event.getTargetRanges()[0]);
+  fromNullable(event.getTargetRanges()[0]);
 
 export const getDOMSelection = (
   doc: Document,
-): i.IO<o.Option<DOMSelection>> => () => o.fromNullable(doc.getSelection());
+): IO<Option<DOMSelection>> => () => fromNullable(doc.getSelection());
 
 export const createDOMRange = (
   element: HTMLElement | null,
-): i.IO<o.Option<DOMRange>> => () =>
+): IO<Option<DOMRange>> => () =>
   pipe(
-    o.fromNullable(element),
-    o.mapNullable(element => element.ownerDocument),
-    o.mapNullable(doc => doc.createRange()),
+    fromNullable(element),
+    mapNullable(element => element.ownerDocument),
+    mapNullable(doc => doc.createRange()),
   );
 
 export const onlyTextIsAffected = (

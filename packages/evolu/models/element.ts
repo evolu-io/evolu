@@ -1,28 +1,25 @@
-import { foldRight, last, unsafeUpdateAt, getEq } from 'fp-ts/lib/Array';
-import { Eq, getStructEq, strictEqual, fromEquals } from 'fp-ts/lib/Eq';
+import { getEq, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
+import { Eq, fromEquals, getStructEq, strictEqual } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
-import * as i from 'fp-ts/lib/IO';
-import * as o from 'fp-ts/lib/Option';
-import * as nea from 'fp-ts/lib/NonEmptyArray';
+import { IO } from 'fp-ts/lib/IO';
+import { last as lastNonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import nanoid from 'nanoid';
 import { iso } from 'newtype-ts';
 import { Children } from 'react';
+import { fromPredicate, fold, chain } from 'fp-ts/lib/Option';
 import {
   Element,
   ElementID,
   Node,
   NonEmptyPath,
-  ReactElement,
-  Selection,
-  Text,
   Path,
+  ReactElement,
 } from '../types';
-import { isCollapsed } from './selection';
-import { isText, isTextNotBR, textIsBR } from './text';
 import { initNonEmptyPath } from './path';
+import { isText, isTextNotBR, textIsBR } from './text';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
 
@@ -62,7 +59,7 @@ export const createKeyForElement = (element: Element): string =>
  * Create ElementID via nanoid(10).
  * https://zelark.github.io/nano-id-cc
  */
-export const id: i.IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
+export const id: IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -103,8 +100,8 @@ export const normalizeElement: Endomorphism<Element> = element => {
     if (textIsBR(child)) return [...array, child];
     return pipe(
       last(array),
-      o.chain(o.fromPredicate(isTextNotBR)),
-      o.fold(
+      chain(fromPredicate(isTextNotBR)),
+      fold(
         () => [...array, child],
         previousText => {
           somethingHasBeenNormalized = true;
@@ -173,7 +170,7 @@ export const getTextTraversal = (
 ): Optional<Element, string> =>
   getElementTraversal(initNonEmptyPath(path))
     .composeLens(childrenLens)
-    .composeOptional(getChildAt(nea.last(path)))
+    .composeOptional(getChildAt(lastNonEmptyArray(path)))
     .composePrism(textPrism);
 
 export const setTextElement = ({
