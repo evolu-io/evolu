@@ -166,13 +166,7 @@ export const EditorClient = memo(
         (path: NonEmptyPath): i.IO<o.Option<DOMNodeOffset>> =>
           pipe(
             getDOMNodeByPath(initNonEmptyPath(path)),
-            i.map(
-              pipe(
-                last(path),
-                createDOMNodeOffset,
-                o.map,
-              ),
-            ),
+            i.map(pipe(last(path), createDOMNodeOffset, o.map)),
           ),
         [getDOMNodeByPath],
       );
@@ -202,8 +196,15 @@ export const EditorClient = memo(
                   );
                 },
                 ([selection, range, startNodeOffset, endNodeOffset]) => {
-                  range.setStart(...startNodeOffset);
-                  range.setEnd(...endNodeOffset);
+                  // This error can happen:
+                  // Uncaught DOMException: Failed to execute 'setEnd' on 'Range': The offset 12 is larger than the node's length (11).
+                  // Catch it and warn instead. No need to do anything else. Users can make a new selection.
+                  try {
+                    range.setStart(...startNodeOffset);
+                    range.setEnd(...endNodeOffset);
+                  } catch (error) {
+                    warn(error.message || 'unknown');
+                  }
                   selection.removeAllRanges();
                   if (forward) selection.addRange(range);
                   else {
