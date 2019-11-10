@@ -3,6 +3,7 @@ import { Eq, getStructEq, strictEqual, fromEquals } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import * as i from 'fp-ts/lib/IO';
 import * as o from 'fp-ts/lib/Option';
+import * as nea from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
@@ -13,13 +14,15 @@ import {
   Element,
   ElementID,
   Node,
-  Path,
+  NonEmptyPath,
   ReactElement,
   Selection,
   Text,
+  Path,
 } from '../types';
 import { isCollapsed } from './selection';
 import { isText, isTextNotBR, textIsBR } from './text';
+import { initNonEmptyPath } from './path';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
 
@@ -91,7 +94,7 @@ export const jsx = (element: JSX.Element): ReactElement => {
 export const normalizeElement: Endomorphism<Element> = element => {
   // This flag is good enough for now. We can use fp-ts These later.
   let somethingHasBeenNormalized = false;
-  const children = element.children.reduce<(Node)[]>((array, child) => {
+  const children = element.children.reduce<Node[]>((array, child) => {
     if (isElement(child)) {
       const normalizedChild = normalizeElement(child);
       if (normalizedChild !== child) somethingHasBeenNormalized = true;
@@ -150,14 +153,15 @@ export const getChildAt = (index: number) => indexArray<Node>().index(index);
 /**
  * Focus on Element by Path.
  */
-// TODO: Maybe refactor to Optional<Element, Element> without as.
-export const getElementTraversal = (path: Path) =>
+export const getElementTraversal = (path: Path): Optional<Element, Element> =>
   path.reduce(
-    (acc, pathIndex) =>
-      acc
+    (optional, pathIndex) =>
+      optional
         .composeLens(childrenLens)
         .composeOptional(getChildAt(pathIndex))
         .composePrism(elementPrism),
+    // As Optional<Element, Element> to enforce Element type.
+    // Otherwise, type Node is inferred from elementPrism predicate.
     elementPrism.asOptional() as Optional<Element, Element>,
   );
 
@@ -165,54 +169,21 @@ export const getElementTraversal = (path: Path) =>
  * Focus on Text by Path.
  */
 export const getTextTraversal = (
-  parentElementPath: Path,
-  index: number,
-): Optional<Element, Text> =>
-  getElementTraversal(parentElementPath)
+  path: NonEmptyPath,
+): Optional<Element, string> =>
+  getElementTraversal(initNonEmptyPath(path))
     .composeLens(childrenLens)
-    .composeOptional(getChildAt(index))
+    .composeOptional(getChildAt(nea.last(path)))
     .composePrism(textPrism);
 
-/**
- * Ensure text traversal. If Path focuses to text offset, get parent path.
- */
-export const ensureTextTraversal = (
-  path: Path,
-  element: Element,
-): Optional<Element, Text> =>
-  pipe(
-    path,
-    foldRight(
-      () => {
-        throw new Error('TODO: Refactor.');
-      },
-      (path, index) => {
-        const textTraversal = getTextTraversal(path as Path, index);
-        if (textTraversal.asFold().getAll(element).length > 0)
-          return textTraversal;
-        return ensureTextTraversal(path as Path, element);
-      },
-    ),
-  );
-
-export const setTextElement = (
-  text: string,
-  selection: Selection,
-): Endomorphism<Element> => element => {
-  const onlyTextIsSelected: Predicate<Selection> = selection => {
-    const anchorFold = ensureTextTraversal(selection.anchor, element).asFold();
-    const focusFold = ensureTextTraversal(selection.focus, element).asFold();
-    if (!anchorFold.exist(isText)(element)) return false;
-    if (!focusFold.exist(isText)(element)) return false;
-    return anchorFold.getAll(element)[0] === focusFold.getAll(element)[0];
-  };
-
-  if (isCollapsed(selection) || onlyTextIsSelected(selection)) {
-    const path = selection.anchor;
-    return ensureTextTraversal(path, element).set(text)(element);
-  }
-  return element;
-};
+export const setTextElement = ({
+  text,
+  path,
+}: {
+  text: string;
+  path: NonEmptyPath;
+}): Endomorphism<Element> => element =>
+  pipe(element, getTextTraversal(path).set(text));
 
 // TODO: Some of those from symbol-tree lib.
 // hasChildren

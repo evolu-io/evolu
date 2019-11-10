@@ -6,7 +6,7 @@ import * as o from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as i from 'fp-ts/lib/IO';
-import { GetPathByDOMNode, Range, Selection } from '../types';
+import { GetPathByDOMNode, Range, Selection, NonEmptyPath } from '../types';
 import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
 
@@ -46,11 +46,7 @@ export const moveSelectionFocus = (
 export const moveSelection = (
   offset: number,
 ): Endomorphism<Selection> => selection =>
-  pipe(
-    selection,
-    moveSelectionAnchor(offset),
-    moveSelectionFocus(offset),
-  );
+  pipe(selection, moveSelectionAnchor(offset), moveSelectionFocus(offset));
 
 export const collapseToStart: Endomorphism<Selection> = selection => {
   if (isCollapsed(selection)) return selection;
@@ -64,8 +60,7 @@ export const collapseToEnd: Endomorphism<Selection> = selection => {
   return { anchor: range.end, focus: range.end };
 };
 
-export const getSelectionFromInputEvent = (
-  getPathByDOMNode: GetPathByDOMNode,
+export const selectionFromInputEvent = (getPathByDOMNode: GetPathByDOMNode) => (
   event: InputEvent,
 ): i.IO<o.Option<Selection>> => () =>
   pipe(
@@ -86,19 +81,18 @@ export const getSelectionFromInputEvent = (
     ),
   );
 
+export const selectionFromPath = (path: NonEmptyPath): Selection => ({
+  anchor: path,
+  focus: path,
+});
+
 /**
  * `{ anchor: [1, 2], focus: [1, 3] }` to `{ anchor: [1], focus: [1] }`
  */
 export const initSelection = (selection: Selection): o.Option<Selection> =>
   sequenceS(o.option)({
-    anchor: pipe(
-      init(selection.anchor),
-      o.filter(isNonEmpty),
-    ),
-    focus: pipe(
-      init(selection.focus),
-      o.filter(isNonEmpty),
-    ),
+    anchor: pipe(init(selection.anchor), o.filter(isNonEmpty)),
+    focus: pipe(init(selection.focus), o.filter(isNonEmpty)),
   });
 
 /**

@@ -4,7 +4,7 @@ import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
-import { Element, ReactElement, Selection, Value } from '../types';
+import { Element, ReactElement, Selection, SetTextArg, Value } from '../types';
 import { eqElement, jsx, normalizeElement, setTextElement } from './element';
 import { eqSelection, moveSelection } from './selection';
 
@@ -56,39 +56,36 @@ export const select = (selection: Selection): Endomorphism<Value> => value => ({
   selection: o.some(selection),
 });
 
-export const setText = (
-  text: string,
-  selection?: Selection,
-): Endomorphism<Value> => value =>
+export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
   pipe(
-    o.fromNullable(selection),
-    o.alt(() => value.selection),
-    o.map(selection =>
+    value,
+    elementLens.modify(setTextElement({ text: arg.text, path: arg.path })),
+    value =>
       pipe(
-        value,
-        elementLens.modify(setTextElement(text, selection)),
+        o.fromNullable(arg.selection),
+        o.fold(
+          () => value,
+          selection => ({ ...value, selection: o.some(selection) }),
+        ),
       ),
-    ),
-    o.getOrElse(() => value),
   );
 
-// TODO: It should traverse across nodes.
 export const move = (offset: number): Endomorphism<Value> => value =>
   pipe(
     value.selection,
     o.map(moveSelection(offset)),
-    o.fold(() => value, selection => select(selection)(value)),
+    o.fold(
+      () => value,
+      selection => select(selection)(value),
+    ),
   );
 
 export const deleteContent = (
   selection: Selection,
 ): Endomorphism<Value> => value =>
-  pipe(
-    value,
-    a => {
-      // TODO:
-      // eslint-disable-next-line no-console
-      console.log(selection);
-      return a;
-    },
-  );
+  pipe(value, a => {
+    // TODO:
+    // eslint-disable-next-line no-console
+    console.log(selection);
+    return a;
+  });

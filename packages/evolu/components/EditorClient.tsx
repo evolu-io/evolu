@@ -30,7 +30,7 @@ import {
   isExistingDOMSelection,
 } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
-import { initPath } from '../models/path';
+import { initNonEmptyPath } from '../models/path';
 import { eqSelection, isForward } from '../models/selection';
 import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
@@ -39,7 +39,7 @@ import {
   DOMNodeOffset,
   EditorProps,
   EditorRef,
-  Path,
+  NonEmptyPath,
   Reducer,
   Selection,
   Value,
@@ -163,9 +163,9 @@ export const EditorClient = memo(
       );
 
       const pathToNodeOffset = useCallback(
-        (path: Path): i.IO<o.Option<DOMNodeOffset>> =>
+        (path: NonEmptyPath): i.IO<o.Option<DOMNodeOffset>> =>
           pipe(
-            getDOMNodeByPath(initPath(path)),
+            getDOMNodeByPath(initNonEmptyPath(path)),
             i.map(
               pipe(
                 last(path),

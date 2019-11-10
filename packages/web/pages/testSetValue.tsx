@@ -39,7 +39,7 @@ const TestSetValue = () => {
   );
 
   const operationsRef = useRef([
-    setText('foo'),
+    setText({ text: 'foo', path: [0, 0] }),
     select({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
     move(1),
     elementLens.composeLens(childrenLens).modify(reverse),

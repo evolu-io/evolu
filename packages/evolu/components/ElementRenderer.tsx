@@ -8,12 +8,12 @@ import { isText } from '../models/text';
 import { TextRenderer } from './TextRenderer';
 import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
-import { Element, Path, SetDOMNodePathRef, PathMaybeEmpty } from '../types';
+import { Element, NonEmptyPath, SetDOMNodePathRef, Path } from '../types';
 import { createKeyForElement } from '../models/element';
 
 export const ElementRenderer = memo<{
   element: Element;
-  path: PathMaybeEmpty;
+  path: Path;
 }>(
   ({ element, path = empty }) => {
     const renderElement = useRenderElement();
@@ -42,7 +42,7 @@ export const ElementRenderer = memo<{
 
     const children = useMemo(() => {
       return element.children.map((child, index) => {
-        const childPath: Path = snoc(path, index);
+        const childPath: NonEmptyPath = snoc(path, index);
         if (isText(child)) {
           return (
             <TextRenderer

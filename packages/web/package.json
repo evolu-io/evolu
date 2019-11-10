@@ -21,7 +21,7 @@
     "react-dom": "^16.9.0",
     "react": "^16.9.0",
     "evolu": "0.1.0",
-    "snapshot-diff": "^0.5.2"
+    "snapshot-diff": "^0.6.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.0",

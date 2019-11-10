@@ -1,4 +1,3 @@
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as o from 'fp-ts/lib/Option';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
@@ -23,28 +22,43 @@ export interface ElementID
  */
 export interface Element {
   readonly id: ElementID;
-  readonly children: (Node)[];
+  readonly children: Node[];
 }
 
 export type Node = Element | Text;
 
+// TODO: Consider newtype.
 export type PathIndex = number;
 
-/**
- * Editor path can be resolved to Element, Text, or Text char.
- * Not readonly because https://github.com/gcanti/fp-ts/issues/987.
- */
-export type Path = NonEmptyArray<PathIndex>;
+// Paths are not readonly because https://github.com/gcanti/fp-ts/issues/987.
 
-export type PathMaybeEmpty = PathIndex[];
+/**
+ * Path to a place in Element. It can point to Element, Text, Text char, or nothing.
+ */
+export type Path = PathIndex[];
+
+/**
+ * Non empty Path.
+ */
+export interface NonEmptyPath extends Path {
+  0: PathIndex;
+}
+
+/**
+ * Non empty Path with offset.
+ */
+export interface NonEmptyPathWithOffset extends Path {
+  0: PathIndex;
+  1: PathIndex;
+}
 
 /**
  * Editor selection. It's like DOM Selection, but with Path for the anchor and the focus.
  * https://developer.mozilla.org/en-US/docs/Web/API/Selection
  */
 export interface Selection {
-  readonly anchor: Path;
-  readonly focus: Path;
+  readonly anchor: NonEmptyPath;
+  readonly focus: NonEmptyPath;
 }
 
 /**
@@ -56,6 +70,12 @@ export interface Value {
   readonly selection: o.Option<Selection>;
 }
 
+export type SetTextArg = {
+  text: Text;
+  path: NonEmptyPath;
+  selection?: Selection;
+};
+
 /**
  * Editor action.
  */
@@ -63,12 +83,7 @@ export type Action =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: Selection }
-  // | { type: 'setText'; text: string; path: Path; offset: Option<number> }
-
-  // zrusit
-  | { type: 'insertText'; text: string; selection: Selection }
-  | { type: 'insertReplacementText'; text: string }
-  | { type: 'deleteText'; text: string; selection: Selection }
+  | { type: 'setText'; arg: SetTextArg }
   | { type: 'deleteContent'; selection: Selection };
 
 /**
@@ -82,25 +97,21 @@ export type Reducer = ReactReducer<Value, Action>;
  * https://developer.mozilla.org/en-US/docs/Web/API/Range
  */
 export interface Range {
-  readonly start: Path;
-  readonly end: Path;
+  readonly start: NonEmptyPath;
+  readonly end: NonEmptyPath;
 }
 
 export type DOMNodeOffset = [DOMNode, number];
 
-export type GetDOMNodeByPath = (
-  path: PathMaybeEmpty,
-) => i.IO<o.Option<DOMNode>>;
-export type GetPathByDOMNode = (
-  node: DOMNode,
-) => i.IO<o.Option<PathMaybeEmpty>>;
+export type GetDOMNodeByPath = (path: Path) => i.IO<o.Option<DOMNode>>;
+export type GetPathByDOMNode = (node: DOMNode) => i.IO<o.Option<Path>>;
 
 export type SetDOMNodePathRef = (node: DOMNode | null) => void;
 
 export type SetDOMNodePath = (
   operation: 'add' | 'remove',
   node: DOMNode,
-  path: PathMaybeEmpty,
+  path: Path,
 ) => void;
 
 export type RenderElement = (
@@ -158,7 +169,7 @@ export interface EditorRef {
 
 export interface NodeInfo {
   readonly node: Node;
-  readonly path: Path;
+  readonly path: NonEmptyPath;
   // readonly text: string;
   // readonly parents: NonEmptyArray<Element>;
   // readonly parentBlocks: NonEmptyArray<Element>;

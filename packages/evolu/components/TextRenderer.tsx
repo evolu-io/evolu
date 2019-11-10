@@ -4,7 +4,7 @@ import { findDOMNode } from 'react-dom';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
 import { eqPath } from '../models/path';
 import { stringIsBR } from '../models/string';
-import { SetDOMNodePathRef, Path } from '../types';
+import { SetDOMNodePathRef, NonEmptyPath } from '../types';
 import { DOMText } from '../types/dom';
 
 // Inspired by DraftEditorTextNode.
@@ -81,7 +81,7 @@ class Text extends Component<TextProps> {
 
 export const TextRenderer = memo<{
   text: string;
-  path: Path;
+  path: NonEmptyPath;
 }>(
   ({ text, path }) => {
     const setNodePathRef = useSetDOMNodePathRef(path);

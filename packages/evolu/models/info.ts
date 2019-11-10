@@ -2,14 +2,7 @@ import { empty, isNonEmpty } from 'fp-ts/lib/Array';
 import { absurd } from 'fp-ts/lib/function';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { geq } from 'fp-ts/lib/Ord';
-import {
-  Element,
-  Info,
-  Node,
-  NodeInfo,
-  PathMaybeEmpty,
-  Selection,
-} from '../types';
+import { Element, Info, Node, NodeInfo, Path, Selection } from '../types';
 import { isElement } from './element';
 import { selectionToRange } from './selection';
 import { byContains } from './path';
@@ -23,7 +16,7 @@ export const createInfo = (selection: Selection, element: Element): Info => {
   const range = selectionToRange(selection);
   const nodes: NodeInfo[] = [];
 
-  const walk = (node: Node, path: PathMaybeEmpty) => {
+  const walk = (node: Node, path: Path) => {
     if (isNonEmpty(path)) {
       switch (sf) {
         case 'start': {

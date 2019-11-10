@@ -1,17 +1,16 @@
 /* eslint-env browser */
-import { Refinement, constFalse, constTrue } from 'fp-ts/lib/function';
-import * as o from 'fp-ts/lib/Option';
+import { Predicate, Refinement } from 'fp-ts/lib/function';
 import * as i from 'fp-ts/lib/IO';
+import * as o from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { sequenceT } from 'fp-ts/lib/Apply';
 import { DOMNodeOffset } from '../types';
 import {
   DOMElement,
   DOMNode,
   DOMRange,
   DOMSelection,
-  ExistingDOMSelection,
   DOMText,
+  ExistingDOMSelection,
 } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
@@ -25,18 +24,8 @@ export const isDOMText: Refinement<DOMNode, DOMText> = (
 export const isExistingDOMSelection: Refinement<
   DOMSelection,
   ExistingDOMSelection
-> = (s): s is ExistingDOMSelection =>
-  // Sure we can just check s.anchorNode != null && s.focusNode != null, but
-  // this is like Kata. Excercise to demonstrate how we can generalize a problem.
-  // This pipe can be refactored to allIsExisting or something. Maybe fp-ts already
-  // has something for that.
-  pipe(
-    sequenceT(o.option)(
-      o.fromNullable(s.anchorNode),
-      o.fromNullable(s.focusNode),
-    ),
-    o.fold(constFalse, constTrue),
-  );
+> = (selection): selection is ExistingDOMSelection =>
+  selection.anchorNode != null && selection.focusNode != null;
 
 export const createDOMNodeOffset = (
   offset: number,
@@ -60,3 +49,18 @@ export const createDOMRange = (
     o.mapNullable(element => element.ownerDocument),
     o.mapNullable(doc => doc.createRange()),
   );
+
+export const onlyTextIsAffected = (
+  isForward: boolean,
+): Predicate<ExistingDOMSelection> => selection =>
+  selection.isCollapsed &&
+  // nodeValue != null for text node.
+  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue
+  selection.anchorNode.nodeValue != null &&
+  selection.anchorOffset !==
+    (isForward ? selection.anchorNode.nodeValue.length : 0);
+
+export const isCollapsedDOMSelectionOnTextOrBR: Predicate<ExistingDOMSelection> = selection =>
+  selection.isCollapsed &&
+  (isDOMText(selection.focusNode) ||
+    selection.focusNode.childNodes[selection.focusOffset].nodeName === 'BR');
