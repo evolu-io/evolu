@@ -63,10 +63,8 @@ export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
     value =>
       pipe(
         o.fromNullable(arg.selection),
-        o.fold(
-          () => value,
-          selection => ({ ...value, selection: o.some(selection) }),
-        ),
+        o.map(selection => ({ ...value, selection: o.some(selection) })),
+        o.getOrElse(() => value),
       ),
   );
 
