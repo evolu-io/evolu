@@ -3,7 +3,13 @@ import { Option } from 'fp-ts/lib/Option';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer } from 'react';
 import { $Values } from 'utility-types';
-import { DOMNode, DOMRange, DOMSelection, DOMNodeOffset } from './dom';
+import {
+  DOMNode,
+  DOMRange,
+  DOMSelection,
+  DOMNodeOffset,
+  ExistingDOMSelection,
+} from './dom';
 
 /**
  * Editor text is a string. Like in React.
@@ -164,6 +170,7 @@ export interface EditorIO {
   readonly getDOMNodeByPath: GetDOMNodeByPath;
   readonly getDOMSelection: IO<Option<DOMSelection>>;
   readonly getElement: IO<Option<HTMLDivElement>>;
+  readonly getExistingDOMSelection: IO<Option<ExistingDOMSelection>>;
   readonly getPathByDOMNode: GetPathByDOMNode;
   readonly getSelectionFromDOM: IO<Option<Selection>>;
   readonly isTyping: IO<boolean>;

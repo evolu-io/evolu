@@ -18,7 +18,6 @@ import { useEffect } from 'react';
 import {
   getDOMRangeFromInputEvent,
   isCollapsedDOMSelectionOnTextOrBR,
-  isExistingDOMSelection,
   onlyTextIsAffected,
 } from '../models/dom';
 import {
@@ -56,7 +55,12 @@ const getNonEmptyPathWithOffsetFromInputEvent = (
 
 const insertText = (
   event: InputEvent,
-  { getPathByDOMNode, afterTyping, dispatch, getDOMSelection }: EditorIO,
+  {
+    getPathByDOMNode,
+    afterTyping,
+    dispatch,
+    getExistingDOMSelection,
+  }: EditorIO,
 ) => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
@@ -113,8 +117,7 @@ const insertText = (
     );
 
   pipe(
-    getDOMSelection(),
-    filter(isExistingDOMSelection),
+    getExistingDOMSelection(),
     fold(preventDefault(event), selection => {
       if (isCollapsedDOMSelectionOnTextOrBR(selection)) {
         dispatchSetTextAfterTyping();
@@ -154,7 +157,12 @@ const insertReplacementText = (
 
 const deleteContent = (
   event: InputEvent,
-  { afterTyping, dispatch, getPathByDOMNode, getDOMSelection }: EditorIO,
+  {
+    afterTyping,
+    dispatch,
+    getPathByDOMNode,
+    getExistingDOMSelection,
+  }: EditorIO,
 ) => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
@@ -195,8 +203,7 @@ const deleteContent = (
   };
 
   pipe(
-    getDOMSelection(),
-    filter(isExistingDOMSelection),
+    getExistingDOMSelection(),
     fold(preventDefault(event), selection => {
       const isForward = event.inputType === 'deleteContentForward';
       if (onlyTextIsAffected(isForward)(selection)) {
@@ -208,7 +215,7 @@ const deleteContent = (
   );
 };
 
-export const useBeforeInput = (editorIO: EditorIO) => {
+export const useBeforeInput = (editorIO: EditorIO): void => {
   useEffect(
     () =>
       pipe(

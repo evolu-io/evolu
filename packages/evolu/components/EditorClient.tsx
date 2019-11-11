@@ -39,10 +39,10 @@ import { initNonEmptyPath } from '../models/path';
 import { eqSelection, isForward } from '../models/selection';
 import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
-import { EditorProps, EditorReducer, EditorIO, Value } from '../types';
+import { EditorIO, EditorProps, EditorReducer, Value } from '../types';
+import { DOMNodeOffset } from '../types/dom';
 import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
-import { DOMNodeOffset } from '../types/dom';
 
 const debugAction = Debug('action');
 
@@ -129,6 +129,12 @@ export const EditorClient = memo(
         [getDocument],
       );
 
+      const getExistingDOMSelection = useCallback<
+        EditorIO['getExistingDOMSelection']
+      >(() => pipe(getDOMSelection(), filter(isExistingDOMSelection)), [
+        getDOMSelection,
+      ]);
+
       const createInfo = useCallback<EditorIO['createInfo']>(
         selection =>
           modelCreateInfo(selection, dispatchDepsRef.current.value.element),
@@ -148,8 +154,7 @@ export const EditorClient = memo(
       const getSelectionFromDOM = useCallback<EditorIO['getSelectionFromDOM']>(
         () =>
           pipe(
-            getDOMSelection(),
-            filter(isExistingDOMSelection),
+            getExistingDOMSelection(),
             chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
               // Nested pipe is ok, we can always refactor it out later.
               pipe(
@@ -164,7 +169,7 @@ export const EditorClient = memo(
               ),
             ),
           ),
-        [getDOMSelection, getPathByDOMNode],
+        [getExistingDOMSelection, getPathByDOMNode],
       );
 
       const pathToNodeOffset = useCallback<EditorIO['pathToNodeOffset']>(
@@ -238,7 +243,7 @@ export const EditorClient = memo(
               dispatchDepsRef.current.value.selection,
               getSelectionFromDOM(),
             ),
-            filter(selections => !eqSelection.equals(...selections)),
+            filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
             map(head),
             fold(constVoid, selection => {
               setDOMSelection(selection)();
@@ -259,6 +264,7 @@ export const EditorClient = memo(
           getDOMNodeByPath,
           getDOMSelection,
           getElement,
+          getExistingDOMSelection,
           getPathByDOMNode,
           getSelectionFromDOM,
           isTyping,
@@ -276,6 +282,7 @@ export const EditorClient = memo(
           getDOMSelection,
           getDocument,
           getElement,
+          getExistingDOMSelection,
           getPathByDOMNode,
           getSelectionFromDOM,
           isTyping,
