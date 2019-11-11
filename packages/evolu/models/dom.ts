@@ -1,12 +1,10 @@
 /* eslint-env browser */
 import { Predicate, Refinement } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { Option, fromNullable, mapNullable } from 'fp-ts/lib/Option';
-import { DOMNodeOffset } from '../types';
+import { fromNullable, Option } from 'fp-ts/lib/Option';
 import {
   DOMElement,
   DOMNode,
+  DOMNodeOffset,
   DOMRange,
   DOMSelection,
   DOMText,
@@ -27,28 +25,27 @@ export const isExistingDOMSelection: Refinement<
 > = (selection): selection is ExistingDOMSelection =>
   selection.anchorNode != null && selection.focusNode != null;
 
-export const createDOMNodeOffset = (
-  offset: number,
-): ((node: DOMNode) => DOMNodeOffset) => node => [node, offset];
+/**
+ * Chrome has a bug when it can return obsolete DOMSelection. It happens when a long
+ * text is deleted by holding delete key, so it's probably a race condition, because
+ * Safari is ok. Therefore, we have to validate DOMNodeOffset to prevent:
+ * `Uncaught DOMException: Failed to execute 'setEnd' on 'Range'`
+ */
+export const isValidDOMNodeOffset: Predicate<DOMNodeOffset> = ([
+  node,
+  offset,
+]) =>
+  isDOMElement(node)
+    ? offset <= node.childNodes.length
+    : isDOMText(node)
+    ? offset <= node.data.length
+    : false;
 
 export const getDOMRangeFromInputEvent = (
   event: InputEvent,
 ): Option<DOMRange> =>
   // @ts-ignore Outdated types.
   fromNullable(event.getTargetRanges()[0]);
-
-export const getDOMSelection = (
-  doc: Document,
-): IO<Option<DOMSelection>> => () => fromNullable(doc.getSelection());
-
-export const createDOMRange = (
-  element: HTMLElement | null,
-): IO<Option<DOMRange>> => () =>
-  pipe(
-    fromNullable(element),
-    mapNullable(element => element.ownerDocument),
-    mapNullable(doc => doc.createRange()),
-  );
 
 export const onlyTextIsAffected = (
   isForward: boolean,

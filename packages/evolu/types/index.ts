@@ -1,9 +1,9 @@
-import { Newtype } from 'newtype-ts';
-import { ReactDOM, ReactNode, Reducer as ReactReducer } from 'react';
-import { $Values } from 'utility-types';
 import { IO } from 'fp-ts/lib/IO';
 import { Option } from 'fp-ts/lib/Option';
-import { DOMNode } from './dom';
+import { Newtype } from 'newtype-ts';
+import { ReactDOM, ReactNode, Reducer } from 'react';
+import { $Values } from 'utility-types';
+import { DOMNode, DOMRange, DOMSelection, DOMNodeOffset } from './dom';
 
 /**
  * Editor text is a string. Like in React.
@@ -76,20 +76,14 @@ export type SetTextArg = {
   selection?: Selection;
 };
 
-/**
- * Editor action.
- */
-export type Action =
+export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
   | { type: 'selectionChange'; selection: Selection }
   | { type: 'setText'; arg: SetTextArg }
   | { type: 'deleteContent'; selection: Selection };
 
-/**
- * Editor reducer.
- */
-export type Reducer = ReactReducer<Value, Action>;
+export type EditorReducer = Reducer<Value, EditorAction>;
 
 /**
  * Editor range. It's like DOM Range, but with editor path for the start and the end.
@@ -100,8 +94,6 @@ export interface Range {
   readonly start: NonEmptyPath;
   readonly end: NonEmptyPath;
 }
-
-export type DOMNodeOffset = [DOMNode, number];
 
 export type GetDOMNodeByPath = (path: Path) => IO<Option<DOMNode>>;
 export type GetPathByDOMNode = (node: DOMNode) => IO<Option<Path>>;
@@ -119,8 +111,6 @@ export type RenderElement = (
   children: ReactNode,
   ref: SetDOMNodePathRef,
 ) => ReactNode;
-
-export type AfterTyping = (callback: () => void) => void;
 
 interface ReactElementFactory<T, P> extends Element {
   readonly tag: T;
@@ -156,13 +146,29 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
   readonly value: Value;
   readonly onChange: (value: Value) => void;
   readonly renderElement?: RenderElement;
-  readonly reducer?: Reducer;
+  readonly reducer?: EditorReducer;
 }
 
-export interface EditorRef {
-  readonly focus: () => void;
-  readonly createInfo: (selection: Selection) => Info;
-  // TODO: findDOMNodeByPath, computeInfo, etc.
+/**
+ * Editor non-deterministic computations that can cause side effects.
+ * https://gcanti.github.io/fp-ts/modules/IO.ts.html
+ */
+export interface EditorIO {
+  readonly afterTyping: (callback: IO<void>) => void; // Consider Task for that.
+  readonly createDOMRange: IO<Option<DOMRange>>;
+  readonly createInfo: (selection: Selection) => Info; // TODO: IO
+  readonly dispatch: (action: EditorAction) => IO<void>;
+  readonly ensureDOMSelectionIsActual: IO<void>;
+  readonly focus: IO<void>;
+  readonly getDocument: IO<Option<Document>>;
+  readonly getDOMNodeByPath: GetDOMNodeByPath;
+  readonly getDOMSelection: IO<Option<DOMSelection>>;
+  readonly getElement: IO<Option<HTMLDivElement>>;
+  readonly getPathByDOMNode: GetPathByDOMNode;
+  readonly getSelectionFromDOM: IO<Option<Selection>>;
+  readonly isTyping: IO<boolean>;
+  readonly pathToNodeOffset: (path: NonEmptyPath) => IO<Option<DOMNodeOffset>>;
+  readonly setDOMSelection: (selection: Selection) => IO<void>;
 }
 
 // TODO: Fragment, probably Child[].

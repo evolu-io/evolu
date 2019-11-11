@@ -1,24 +1,28 @@
 /* eslint-env browser */
 import { useRef, MutableRefObject, useCallback } from 'react';
-import { AfterTyping } from '../types';
+import { IO } from 'fp-ts/lib/IO';
+import { EditorIO } from '../types';
+import { warn } from '../warn';
 
-/**
- * Run the last callback on the requestAnimationFrame to get DOM changes
- * after typing. Everything else it's too soon or too late.
- */
-export const useAfterTyping = (): {
-  afterTyping: AfterTyping;
+export const useAfterTyping: IO<{
+  afterTyping: EditorIO['afterTyping'];
   isTypingRef: MutableRefObject<boolean>;
-} => {
+}> = () => {
   const isTypingRef = useRef(false);
-  const lastCallback = useRef(() => {});
-  const afterTyping = useCallback<AfterTyping>(callback => {
+  const callbacks = useRef<Array<IO<void>>>([]);
+  const afterTyping = useCallback<EditorIO['afterTyping']>(callback => {
     isTypingRef.current = true;
-    // Maybe call current before overriding.
-    lastCallback.current = callback;
+    callbacks.current.push(callback);
+    // https://twitter.com/steida/status/1193638146635902979
     requestAnimationFrame(() => {
       isTypingRef.current = false;
-      lastCallback.current();
+      try {
+        callbacks.current.forEach(callback => callback());
+      } catch (error) {
+        warn(error.message || 'unknown error in afterTyping');
+      } finally {
+        callbacks.current = [];
+      }
     });
   }, []);
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, memo, forwardRef } from 'react';
 import { EditorClient } from './EditorClient';
 import { EditorServer } from './EditorServer';
-import { EditorProps, EditorRef } from '../types';
+import { EditorProps, EditorIO } from '../types';
 
 export const Editor = memo(
-  forwardRef<EditorRef, EditorProps>((props, ref) => {
+  forwardRef<EditorIO, EditorProps>((props, ref) => {
     const [renderClient, setRenderClient] = useState(false);
 
     // Note we render EditorServer both on the server and the client,

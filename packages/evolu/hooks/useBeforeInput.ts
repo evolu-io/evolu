@@ -1,23 +1,22 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { constVoid } from 'fp-ts/lib/function';
-import { snoc } from 'fp-ts/lib/NonEmptyArray';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { Dispatch, RefObject, useEffect } from 'react';
 import { IO } from 'fp-ts/lib/IO';
+import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
-  Option,
-  fromNullable,
-  some,
-  none,
-  option,
-  filter,
-  map,
   chain,
+  filter,
   fold,
+  fromNullable,
+  map,
+  none,
+  Option,
+  option,
+  some,
 } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { useEffect } from 'react';
 import {
   getDOMRangeFromInputEvent,
-  getDOMSelection,
   isCollapsedDOMSelectionOnTextOrBR,
   isExistingDOMSelection,
   onlyTextIsAffected,
@@ -33,7 +32,7 @@ import {
   selectionFromInputEvent,
   selectionFromPath,
 } from '../models/selection';
-import { Action, AfterTyping, GetPathByDOMNode, NonEmptyPath } from '../types';
+import { EditorIO, GetPathByDOMNode, NonEmptyPath } from '../types';
 import { DOMRange, DOMText } from '../types/dom';
 import { warn } from '../warn';
 
@@ -57,10 +56,7 @@ const getNonEmptyPathWithOffsetFromInputEvent = (
 
 const insertText = (
   event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-  getPathByDOMNode: GetPathByDOMNode,
-  doc: Document,
+  { getPathByDOMNode, afterTyping, dispatch, getDOMSelection }: EditorIO,
 ) => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
@@ -111,13 +107,13 @@ const insertText = (
           dispatch({
             type: 'setText',
             arg: { text, path, selection },
-          });
+          })();
         });
       }),
     );
 
   pipe(
-    getDOMSelection(doc)(),
+    getDOMSelection(),
     filter(isExistingDOMSelection),
     fold(preventDefault(event), selection => {
       if (isCollapsedDOMSelectionOnTextOrBR(selection)) {
@@ -133,16 +129,14 @@ const insertText = (
 
 const insertReplacementText = (
   event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-  getPathByDOMNode: GetPathByDOMNode,
+  { afterTyping, dispatch, getPathByDOMNode }: EditorIO,
 ) => {
   const dispatchAfterTyping = ([range, path]: [DOMRange, NonEmptyPath]) =>
     afterTyping(() =>
       pipe(
         rangeStartContainerToText(range),
         fold(constVoid, text => {
-          dispatch({ type: 'setText', arg: { text, path } });
+          dispatch({ type: 'setText', arg: { text, path } })();
         }),
       ),
     );
@@ -160,10 +154,7 @@ const insertReplacementText = (
 
 const deleteContent = (
   event: InputEvent,
-  afterTyping: AfterTyping,
-  dispatch: Dispatch<Action>,
-  getPathByDOMNode: GetPathByDOMNode,
-  doc: Document,
+  { afterTyping, dispatch, getPathByDOMNode, getDOMSelection }: EditorIO,
 ) => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
@@ -195,7 +186,7 @@ const deleteContent = (
               dispatch({
                 type: 'setText',
                 arg: { text, path, selection },
-              });
+              })();
             });
           }),
         );
@@ -204,7 +195,7 @@ const deleteContent = (
   };
 
   pipe(
-    getDOMSelection(doc)(),
+    getDOMSelection(),
     filter(isExistingDOMSelection),
     fold(preventDefault(event), selection => {
       const isForward = event.inputType === 'deleteContentForward';
@@ -217,46 +208,43 @@ const deleteContent = (
   );
 };
 
-export const useBeforeInput = (
-  editorElementRef: RefObject<HTMLDivElement>,
-  afterTyping: AfterTyping,
-  getPathByDOMNode: GetPathByDOMNode,
-  dispatch: Dispatch<Action>,
-) => {
-  useEffect(() => {
-    const { current: editorElement } = editorElementRef;
-    if (editorElement == null) return;
-    const doc = editorElement.ownerDocument;
-    if (doc == null) return;
+export const useBeforeInput = (editorIO: EditorIO) => {
+  useEffect(
+    () =>
+      pipe(
+        editorIO.getElement(),
+        fold(constVoid, element => {
+          const handleBeforeInput = (event: InputEvent) => {
+            switch (event.inputType) {
+              case 'insertText': {
+                insertText(event, editorIO);
+                break;
+              }
+              case 'insertReplacementText': {
+                insertReplacementText(event, editorIO);
+                break;
+              }
+              // I don't understand why deleteContent needs a direction.
+              case 'deleteContentBackward':
+              case 'deleteContentForward': {
+                deleteContent(event, editorIO);
+                break;
+              }
+              default:
+                // Prevent unhandled until it will be handled.
+                event.preventDefault();
+                warn(`Unhandled beforeinput inputType: ${event.inputType}`);
+            }
+          };
 
-    const handleBeforeInput = (event: InputEvent) => {
-      switch (event.inputType) {
-        case 'insertText': {
-          insertText(event, afterTyping, dispatch, getPathByDOMNode, doc);
-          break;
-        }
-        case 'insertReplacementText': {
-          insertReplacementText(event, afterTyping, dispatch, getPathByDOMNode);
-          break;
-        }
-        // I don't understand why deleteContent needs a direction.
-        case 'deleteContentBackward':
-        case 'deleteContentForward': {
-          deleteContent(event, afterTyping, dispatch, getPathByDOMNode, doc);
-          break;
-        }
-        default:
-          // Prevent unhandled until it will be handled.
-          event.preventDefault();
-          warn(`Unhandled beforeinput inputType: ${event.inputType}`);
-      }
-    };
-
-    // @ts-ignore Outdated types.
-    editorElement.addEventListener('beforeinput', handleBeforeInput);
-    return () => {
-      // @ts-ignore Outdated types.
-      editorElement.removeEventListener('beforeinput', handleBeforeInput);
-    };
-  }, [afterTyping, dispatch, editorElementRef, getPathByDOMNode]);
+          // @ts-ignore Outdated types.
+          element.addEventListener('beforeinput', handleBeforeInput);
+          return () => {
+            // @ts-ignore Outdated types.
+            element.removeEventListener('beforeinput', handleBeforeInput);
+          };
+        }),
+      ),
+    [editorIO],
+  );
 };

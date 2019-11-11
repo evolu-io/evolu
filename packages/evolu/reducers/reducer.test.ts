@@ -1,11 +1,11 @@
 import { reducer } from './reducer';
 import { createValueWithText } from '../models/value';
 import { elementToIDless } from '../models/element';
-import { Action } from '../types';
+import { EditorAction } from '../types';
 
 const value = createValueWithText();
 
-const testReducer = (action: Action) => {
+const testReducer = (action: EditorAction) => {
   const { element, ...nextValue } = reducer(value, action);
   return {
     ...nextValue,

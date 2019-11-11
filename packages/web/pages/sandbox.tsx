@@ -89,8 +89,8 @@ const Sandbox = () => {
     [logValue],
   );
 
-  const editorRef = useRef<editor.EditorRef>(null);
-  // if (editorRef.current) editorRef.current.focus
+  const editorIORef = useRef<editor.EditorIO>(null);
+  // if (editorIORef.current) editorIORef.current.focus();
 
   return (
     <Container>
@@ -99,7 +99,7 @@ const Sandbox = () => {
       </Head>
       <Text size={2}>Sandbox</Text>
       <editor.Editor
-        ref={editorRef}
+        ref={editorIORef}
         value={value}
         // TODO:
         // reducer={customReducer}
@@ -131,7 +131,7 @@ const Sandbox = () => {
       <button
         type="button"
         onClick={() => {
-          if (editorRef.current) editorRef.current.focus();
+          if (editorIORef.current) editorIORef.current.focus();
         }}
       >
         focus
