@@ -1,6 +1,5 @@
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { constVoid } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   chain,
@@ -9,7 +8,6 @@ import {
   fromNullable,
   map,
   none,
-  Option,
   option,
   some,
 } from 'fp-ts/lib/Option';
@@ -17,8 +15,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { useEffect } from 'react';
 import {
   getDOMRangeFromInputEvent,
+  getDOMRangeStartContainerTextContent,
   isCollapsedDOMSelectionOnTextOrBR,
   onlyTextIsAffected,
+  preventDefault,
 } from '../models/dom';
 import {
   initNonEmptyPathWithOffset,
@@ -27,30 +27,22 @@ import {
 } from '../models/path';
 import {
   collapseToStart,
+  getSelectionFromInputEvent,
   initSelection,
-  selectionFromInputEvent,
-  selectionFromPath,
+  pathToSelection,
 } from '../models/selection';
 import { EditorIO, GetPathByDOMNode, NonEmptyPath } from '../types';
 import { DOMRange, DOMText } from '../types/dom';
 import { warn } from '../warn';
 
-const preventDefault = (event: InputEvent): IO<void> => () => {
-  event.preventDefault();
-};
-
-const rangeStartContainerToText: (a: Range) => Option<string> = ({
-  startContainer,
-}) => fromNullable(startContainer.textContent);
-
-const getNonEmptyPathWithOffsetFromInputEvent = (
-  event: InputEvent,
+const getAnchorNonEmptyPathFromInputEvent = (event: InputEvent) => (
   getPathByDOMNode: GetPathByDOMNode,
 ) =>
   pipe(
-    selectionFromInputEvent(getPathByDOMNode)(event)(),
+    getSelectionFromInputEvent(event)(getPathByDOMNode)(),
     map(s => s.anchor),
     filter(isNonEmptyPathWithOffset),
+    map(initNonEmptyPathWithOffset),
   );
 
 const insertText = (
@@ -65,7 +57,7 @@ const insertText = (
   const dispatchSetTextAfterTyping = () =>
     pipe(
       sequenceT(option)(
-        selectionFromInputEvent(getPathByDOMNode)(event)(),
+        getSelectionFromInputEvent(event)(getPathByDOMNode)(),
         getDOMRangeFromInputEvent(event),
         fromNullable(event.data),
       ),
@@ -88,7 +80,7 @@ const insertText = (
         const selectionAfterInsert = pipe(
           putBRback ? snoc(nonEmptyPath, 0) : nonEmptyPath,
           movePath(eventData.length),
-          selectionFromPath,
+          pathToSelection,
         );
         if (putBRback)
           return some({
@@ -132,24 +124,27 @@ const insertText = (
 
 const insertReplacementText = (
   event: InputEvent,
-  { afterTyping, dispatch, getPathByDOMNode }: EditorIO,
+  { afterTyping, dispatch, getPathByDOMNode, getSelectionFromDOM }: EditorIO,
 ) => {
   const dispatchAfterTyping = ([range, path]: [DOMRange, NonEmptyPath]) =>
     afterTyping(() =>
       pipe(
-        rangeStartContainerToText(range),
-        fold(constVoid, text => {
-          dispatch({ type: 'setText', arg: { text, path } })();
+        sequenceT(option)(
+          getDOMRangeStartContainerTextContent(range),
+          getSelectionFromDOM(),
+        ),
+        fold(constVoid, ([text, selection]) => {
+          dispatch({
+            type: 'setText',
+            arg: { text, path, selection },
+          })();
         }),
       ),
     );
   pipe(
     sequenceT(option)(
       getDOMRangeFromInputEvent(event),
-      pipe(
-        getNonEmptyPathWithOffsetFromInputEvent(event, getPathByDOMNode),
-        map(initNonEmptyPathWithOffset),
-      ),
+      getAnchorNonEmptyPathFromInputEvent(event)(getPathByDOMNode),
     ),
     fold(preventDefault(event), dispatchAfterTyping),
   );
@@ -167,8 +162,8 @@ const deleteContent = (
   const dispatchSetTextAfterTyping = () => {
     pipe(
       sequenceT(option)(
-        selectionFromInputEvent(getPathByDOMNode)(event)(),
-        getNonEmptyPathWithOffsetFromInputEvent(event, getPathByDOMNode),
+        getSelectionFromInputEvent(event)(getPathByDOMNode)(),
+        getAnchorNonEmptyPathFromInputEvent(event)(getPathByDOMNode),
         getDOMRangeFromInputEvent(event),
       ),
       fold(preventDefault(event), ([selection, nonEmptyPath, range]) => {
@@ -190,7 +185,7 @@ const deleteContent = (
               const text = textIsGoingToBeReplacedWithBR ? '' : data;
               const path = textIsGoingToBeReplacedWithBR
                 ? selection.anchor
-                : initNonEmptyPathWithOffset(nonEmptyPath);
+                : nonEmptyPath;
               dispatch({
                 type: 'setText',
                 arg: { text, path, selection },

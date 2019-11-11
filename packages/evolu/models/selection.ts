@@ -60,8 +60,8 @@ export const collapseToEnd: Endomorphism<Selection> = selection => {
   return { anchor: range.end, focus: range.end };
 };
 
-export const selectionFromInputEvent = (getPathByDOMNode: GetPathByDOMNode) => (
-  event: InputEvent,
+export const getSelectionFromInputEvent = (event: InputEvent) => (
+  getPathByDOMNode: GetPathByDOMNode,
 ): IO<Option<Selection>> => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
@@ -81,7 +81,7 @@ export const selectionFromInputEvent = (getPathByDOMNode: GetPathByDOMNode) => (
     ),
   );
 
-export const selectionFromPath = (path: NonEmptyPath): Selection => ({
+export const pathToSelection = (path: NonEmptyPath): Selection => ({
   anchor: path,
   focus: path,
 });

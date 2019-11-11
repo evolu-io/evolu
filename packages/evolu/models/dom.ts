@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import { Predicate, Refinement } from 'fp-ts/lib/function';
 import { fromNullable, Option } from 'fp-ts/lib/Option';
+import { IO } from 'fp-ts/lib/IO';
 import {
   DOMElement,
   DOMNode,
@@ -61,3 +62,11 @@ export const isCollapsedDOMSelectionOnTextOrBR: Predicate<ExistingDOMSelection> 
   selection.isCollapsed &&
   (isDOMText(selection.focusNode) ||
     selection.focusNode.childNodes[selection.focusOffset].nodeName === 'BR');
+
+export const getDOMRangeStartContainerTextContent: (
+  a: DOMRange,
+) => Option<string> = range => fromNullable(range.startContainer.textContent);
+
+export const preventDefault = (event: InputEvent): IO<void> => () => {
+  event.preventDefault();
+};

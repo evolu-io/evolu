@@ -79,7 +79,7 @@ export interface Value {
 export type SetTextArg = {
   text: Text;
   path: NonEmptyPath;
-  selection?: Selection;
+  selection: Selection;
 };
 
 export type EditorAction =
