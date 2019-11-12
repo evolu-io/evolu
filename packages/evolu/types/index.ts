@@ -160,7 +160,7 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
  * https://gcanti.github.io/fp-ts/modules/IO.ts.html
  */
 export interface EditorIO {
-  readonly afterTyping: (callback: IO<void>) => void; // Consider Task for that.
+  readonly afterTyping: (callback: IO<void>) => void;
   readonly createDOMRange: IO<Option<DOMRange>>;
   readonly createInfo: (selection: Selection) => Info; // TODO: IO
   readonly dispatch: (action: EditorAction) => IO<void>;

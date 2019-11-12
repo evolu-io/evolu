@@ -63,7 +63,7 @@ export const isCollapsedDOMSelectionOnTextOrBR: Predicate<ExistingDOMSelection> 
   (isDOMText(selection.focusNode) ||
     selection.focusNode.childNodes[selection.focusOffset].nodeName === 'BR');
 
-export const getDOMRangeStartContainerTextContent: (
+export const getTextContentFromRangeStartContainer: (
   a: DOMRange,
 ) => Option<string> = range => fromNullable(range.startContainer.textContent);
 

@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 import { IO } from 'fp-ts/lib/IO';
 import {
   getDOMRangeFromInputEvent,
-  getDOMRangeStartContainerTextContent,
+  getTextContentFromRangeStartContainer,
   isCollapsedDOMSelectionOnTextOrBR,
   onlyTextIsAffected,
   preventDefault,
@@ -130,11 +130,10 @@ const insertReplacementText = (
       ),
     ),
     fold(preventDefault(event), ({ range, path }) => {
-      // afterTyping should be Task probably.
       afterTyping(() =>
         pipe(
           sequenceT(option)(
-            getDOMRangeStartContainerTextContent(range),
+            getTextContentFromRangeStartContainer(range),
             getSelectionFromDOM(),
           ),
           fold(constVoid, ([text, selection]) => {
