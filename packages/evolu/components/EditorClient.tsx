@@ -1,8 +1,8 @@
 import Debug from 'debug';
-import { sequenceT } from 'fp-ts/lib/Apply';
+import { sequenceT, sequenceS } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { IO, map as mapIO } from 'fp-ts/lib/IO';
+import { IO, io, map as mapIO } from 'fp-ts/lib/IO';
 import { head, last, snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   chain,
@@ -36,7 +36,7 @@ import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
 import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
 import { initNonEmptyPath } from '../models/path';
-import { eqSelection, isForward } from '../models/selection';
+import { eqSelection, isForward, makeSelection } from '../models/selection';
 import { eqValue, normalize } from '../models/value';
 import { reducer as defaultEditorReducer } from '../reducers/reducer';
 import { EditorIO, EditorProps, EditorReducer, Value } from '../types';
@@ -252,12 +252,35 @@ export const EditorClient = memo(
         [getSelectionFromDOM, setDOMSelection],
       );
 
+      const DOMRangeToSelection = useCallback<EditorIO['DOMRangeToSelection']>(
+        range =>
+          pipe(
+            sequenceS(io)({
+              anchorPath: getPathByDOMNode(range.startContainer),
+              focusPath: getPathByDOMNode(range.endContainer),
+            }),
+            mapIO(sequenceS(option)),
+            mapIO(
+              chain(({ anchorPath, focusPath }) =>
+                makeSelection({
+                  anchorPath,
+                  anchorOffset: range.startOffset,
+                  focusPath,
+                  focusOffset: range.endOffset,
+                }),
+              ),
+            ),
+          ),
+        [getPathByDOMNode],
+      );
+
       const editorIO = useMemo<EditorIO>(
         () => ({
           afterTyping,
           createDOMRange,
           createInfo,
           dispatch,
+          DOMRangeToSelection,
           ensureDOMSelectionIsActual,
           focus,
           getDocument,
@@ -276,11 +299,12 @@ export const EditorClient = memo(
           createDOMRange,
           createInfo,
           dispatch,
+          DOMRangeToSelection,
           ensureDOMSelectionIsActual,
           focus,
+          getDocument,
           getDOMNodeByPath,
           getDOMSelection,
-          getDocument,
           getElement,
           getExistingDOMSelection,
           getPathByDOMNode,

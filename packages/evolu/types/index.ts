@@ -164,6 +164,7 @@ export interface EditorIO {
   readonly createDOMRange: IO<Option<DOMRange>>;
   readonly createInfo: (selection: Selection) => Info; // TODO: IO
   readonly dispatch: (action: EditorAction) => IO<void>;
+  readonly DOMRangeToSelection: (range: DOMRange) => IO<Option<Selection>>;
   readonly ensureDOMSelectionIsActual: IO<void>;
   readonly focus: IO<void>;
   readonly getDocument: IO<Option<Document>>;
