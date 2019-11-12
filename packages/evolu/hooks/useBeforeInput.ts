@@ -91,14 +91,13 @@ const insertText = (
         }
         return none;
       }),
-      fold(preventDefault(event), ({ getText, path, selection }) => {
-        afterTyping(() => {
-          const text = getText();
-          dispatch({
-            type: 'setText',
-            arg: { text, path, selection },
-          })();
-        });
+      fold(preventDefault(event), async ({ getText, path, selection }) => {
+        await afterTyping();
+        const text = getText();
+        dispatch({
+          type: 'setText',
+          arg: { text, path, selection },
+        })();
       }),
     );
 
@@ -129,20 +128,19 @@ const insertReplacementText = (
         map(path => ({ range, path })),
       ),
     ),
-    fold(preventDefault(event), ({ range, path }) => {
-      afterTyping(() =>
-        pipe(
-          sequenceT(option)(
-            getTextContentFromRangeStartContainer(range),
-            getSelectionFromDOM(),
-          ),
-          fold(constVoid, ([text, selection]) => {
-            dispatch({
-              type: 'setText',
-              arg: { text, path, selection },
-            })();
-          }),
+    fold(preventDefault(event), async ({ range, path }) => {
+      await afterTyping();
+      pipe(
+        sequenceT(option)(
+          getTextContentFromRangeStartContainer(range),
+          getSelectionFromDOM(),
         ),
+        fold(constVoid, ([text, selection]) => {
+          dispatch({
+            type: 'setText',
+            arg: { text, path, selection },
+          })();
+        }),
       );
     }),
   );
@@ -184,18 +182,17 @@ const deleteContent = (
         };
         pipe(
           getSelectionAfterDelete(),
-          fold(constVoid, selection => {
-            afterTyping(() => {
-              const { data } = range.startContainer as DOMText;
-              const text = textIsGoingToBeReplacedWithBR ? '' : data;
-              const path = textIsGoingToBeReplacedWithBR
-                ? selection.anchor
-                : nonEmptyPath;
-              dispatch({
-                type: 'setText',
-                arg: { text, path, selection },
-              })();
-            });
+          fold(constVoid, async selection => {
+            await afterTyping();
+            const { data } = range.startContainer as DOMText;
+            const text = textIsGoingToBeReplacedWithBR ? '' : data;
+            const path = textIsGoingToBeReplacedWithBR
+              ? selection.anchor
+              : nonEmptyPath;
+            dispatch({
+              type: 'setText',
+              arg: { text, path, selection },
+            })();
           }),
         );
       }),

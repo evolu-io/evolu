@@ -9,21 +9,23 @@ export const useAfterTyping: IO<{
   isTypingRef: MutableRefObject<boolean>;
 }> = () => {
   const isTypingRef = useRef(false);
-  const callbacks = useRef<Array<IO<void>>>([]);
-  const afterTyping = useCallback<EditorIO['afterTyping']>(callback => {
+  const resolvers = useRef<Array<IO<void>>>([]);
+  const afterTyping = useCallback<EditorIO['afterTyping']>(() => {
     isTypingRef.current = true;
-    callbacks.current.push(callback);
-    // https://twitter.com/steida/status/1193638146635902979
+    const promise = new Promise<void>(resolve => {
+      resolvers.current.push(resolve);
+    });
     requestAnimationFrame(() => {
       isTypingRef.current = false;
+      const resolversToCall = resolvers.current;
+      resolvers.current = [];
       try {
-        callbacks.current.forEach(callback => callback());
+        resolversToCall.forEach(resolver => resolver());
       } catch (error) {
         warn(error.message || 'unknown error in afterTyping');
-      } finally {
-        callbacks.current = [];
       }
     });
+    return promise;
   }, []);
 
   return { afterTyping, isTypingRef };

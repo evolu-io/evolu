@@ -1,5 +1,6 @@
 import { IO } from 'fp-ts/lib/IO';
 import { Option } from 'fp-ts/lib/Option';
+import { Task } from 'fp-ts/lib/Task';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer } from 'react';
 import { $Values } from 'utility-types';
@@ -156,11 +157,12 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
 }
 
 /**
- * Editor non-deterministic computations that can cause side effects.
- * https://gcanti.github.io/fp-ts/modules/IO.ts.html
+ * Editor side effects. There are two abstractions meant for side effects:
+ * IO (synchronous) and Task (asynchronous). Both of them have the -Either
+ * "version" for computations that may fail.
  */
 export interface EditorIO {
-  readonly afterTyping: (callback: IO<void>) => void;
+  readonly afterTyping: Task<void>;
   readonly createDOMRange: IO<Option<DOMRange>>;
   readonly createInfo: (selection: Selection) => Info; // TODO: IO
   readonly dispatch: (action: EditorAction) => IO<void>;
