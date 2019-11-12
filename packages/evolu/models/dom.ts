@@ -67,6 +67,7 @@ export const getDOMRangeStartContainerTextContent: (
   a: DOMRange,
 ) => Option<string> = range => fromNullable(range.startContainer.textContent);
 
+// It's ok to have IOs here. Only Editor related IOs belong to EditorIO.
 export const preventDefault = (event: InputEvent): IO<void> => () => {
   event.preventDefault();
 };
