@@ -2,13 +2,34 @@ import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { init, isNonEmpty, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import { chain, filter, Option, option, some } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { IO } from 'fp-ts/lib/IO';
-import { Option, chain, option, some, filter } from 'fp-ts/lib/Option';
-import { GetPathByDOMNode, Range, Selection, NonEmptyPath } from '../types';
+import {
+  GetPathByDOMNode,
+  NonEmptyPath,
+  Range,
+  Selection,
+  Path,
+  PathIndex,
+} from '../types';
 import { getDOMRangeFromInputEvent } from './dom';
 import { byDirection, eqPath, movePath } from './path';
+
+// Technically, it does not have to return Option, but it's
+// future compatible API when we switch to newtype-ts.
+// https://dev.to/gcanti/functional-design-smart-constructors-14nb
+export const makeSelection = (arg: {
+  anchorPath: Path;
+  anchorOffset: PathIndex;
+  focusPath: Path;
+  focusOffset: PathIndex;
+}): Option<Selection> =>
+  some({
+    anchor: snoc(arg.anchorPath, arg.anchorOffset),
+    focus: snoc(arg.focusPath, arg.focusOffset),
+  });
 
 export const eqSelection: Eq<Selection> = getStructEq({
   anchor: eqPath,
@@ -65,19 +86,22 @@ export const getSelectionFromInputEvent = (event: InputEvent) => (
 ): IO<Option<Selection>> => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
-    chain(({ startContainer, startOffset, endContainer, endOffset }) =>
-      pipe(
-        sequenceT(option)(
-          getPathByDOMNode(startContainer)(),
-          getPathByDOMNode(endContainer)(),
+    chain(
+      ({
+        startContainer,
+        startOffset: anchorOffset,
+        endContainer,
+        endOffset: focusOffset,
+      }) =>
+        pipe(
+          sequenceT(option)(
+            getPathByDOMNode(startContainer)(),
+            getPathByDOMNode(endContainer)(),
+          ),
+          chain(([anchorPath, focusPath]) =>
+            makeSelection({ anchorPath, anchorOffset, focusPath, focusOffset }),
+          ),
         ),
-        chain(([anchorPath, focusPath]) =>
-          some({
-            anchor: snoc(anchorPath, startOffset),
-            focus: snoc(focusPath, endOffset),
-          }),
-        ),
-      ),
     ),
   );
 
