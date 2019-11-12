@@ -1,20 +1,11 @@
-import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
+import { sequenceS } from 'fp-ts/lib/Apply';
 import { init, isNonEmpty, snoc } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { chain, filter, Option, option, some } from 'fp-ts/lib/Option';
+import { filter, Option, option, some } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import {
-  GetPathByDOMNode,
-  NonEmptyPath,
-  Range,
-  Selection,
-  Path,
-  PathIndex,
-} from '../types';
-import { getDOMRangeFromInputEvent } from './dom';
+import { NonEmptyPath, Path, PathIndex, Range, Selection } from '../types';
 import { byDirection, eqPath, movePath } from './path';
 
 // Technically, it does not have to return Option, but it's
@@ -80,30 +71,6 @@ export const collapseToEnd: Endomorphism<Selection> = selection => {
   const range = selectionToRange(selection);
   return { anchor: range.end, focus: range.end };
 };
-
-export const getSelectionFromInputEvent = (event: InputEvent) => (
-  getPathByDOMNode: GetPathByDOMNode,
-): IO<Option<Selection>> => () =>
-  pipe(
-    getDOMRangeFromInputEvent(event),
-    chain(
-      ({
-        startContainer,
-        startOffset: anchorOffset,
-        endContainer,
-        endOffset: focusOffset,
-      }) =>
-        pipe(
-          sequenceT(option)(
-            getPathByDOMNode(startContainer)(),
-            getPathByDOMNode(endContainer)(),
-          ),
-          chain(([anchorPath, focusPath]) =>
-            makeSelection({ anchorPath, anchorOffset, focusPath, focusOffset }),
-          ),
-        ),
-    ),
-  );
 
 export const pathToSelection = (path: NonEmptyPath): Selection => ({
   anchor: path,

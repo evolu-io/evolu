@@ -3,16 +3,16 @@ import { constVoid } from 'fp-ts/lib/function';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
   chain,
-  filter,
   fold,
   fromNullable,
-  map,
   none,
   option,
   some,
+  map,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useEffect } from 'react';
+import { IO } from 'fp-ts/lib/IO';
 import {
   getDOMRangeFromInputEvent,
   getDOMRangeStartContainerTextContent,
@@ -24,44 +24,39 @@ import {
   initNonEmptyPathWithOffset,
   isNonEmptyPathWithOffset,
   movePath,
+  tryInitNonEmptyPath,
 } from '../models/path';
 import {
   collapseToStart,
-  getSelectionFromInputEvent,
   initSelection,
   pathToSelection,
 } from '../models/selection';
-import { EditorIO, GetPathByDOMNode, NonEmptyPath } from '../types';
-import { DOMRange, DOMText } from '../types/dom';
+import { EditorIO } from '../types';
+import { DOMText } from '../types/dom';
 import { warn } from '../warn';
-
-const getAnchorNonEmptyPathFromInputEvent = (event: InputEvent) => (
-  getPathByDOMNode: GetPathByDOMNode,
-) =>
-  pipe(
-    getSelectionFromInputEvent(event)(getPathByDOMNode)(),
-    map(s => s.anchor),
-    filter(isNonEmptyPathWithOffset),
-    map(initNonEmptyPathWithOffset),
-  );
 
 const insertText = (
   event: InputEvent,
   {
-    getPathByDOMNode,
     afterTyping,
     dispatch,
+    DOMRangeToSelection,
     getExistingDOMSelection,
   }: EditorIO,
-) => {
+): IO<void> => () => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
       sequenceT(option)(
-        getSelectionFromInputEvent(event)(getPathByDOMNode)(),
         getDOMRangeFromInputEvent(event),
         fromNullable(event.data),
       ),
-      chain(([selection, range, eventData]) => {
+      chain(([range, eventData]) =>
+        pipe(
+          DOMRangeToSelection(range)(),
+          map(({ anchor }) => ({ range, eventData, anchor })),
+        ),
+      ),
+      chain(({ range, eventData, anchor }) => {
         const maybeBR = range.startContainer.childNodes[range.startOffset];
         const putBRback =
           range.startContainer === range.endContainer &&
@@ -76,9 +71,8 @@ const insertText = (
             );
           return text;
         };
-        const nonEmptyPath = selection.anchor;
         const selectionAfterInsert = pipe(
-          putBRback ? snoc(nonEmptyPath, 0) : nonEmptyPath,
+          putBRback ? snoc(anchor, 0) : anchor,
           movePath(eventData.length),
           pathToSelection,
         );
@@ -86,13 +80,13 @@ const insertText = (
           return some({
             getText,
             selection: selectionAfterInsert,
-            path: nonEmptyPath,
+            path: anchor,
           });
-        if (isNonEmptyPathWithOffset(nonEmptyPath)) {
+        if (isNonEmptyPathWithOffset(anchor)) {
           return some({
             getText,
             selection: selectionAfterInsert,
-            path: initNonEmptyPathWithOffset(nonEmptyPath),
+            path: initNonEmptyPathWithOffset(anchor),
           });
         }
         return none;
@@ -124,49 +118,61 @@ const insertText = (
 
 const insertReplacementText = (
   event: InputEvent,
-  { afterTyping, dispatch, getPathByDOMNode, getSelectionFromDOM }: EditorIO,
-) => {
-  const dispatchAfterTyping = ([range, path]: [DOMRange, NonEmptyPath]) =>
-    afterTyping(() =>
-      pipe(
-        sequenceT(option)(
-          getDOMRangeStartContainerTextContent(range),
-          getSelectionFromDOM(),
-        ),
-        fold(constVoid, ([text, selection]) => {
-          dispatch({
-            type: 'setText',
-            arg: { text, path, selection },
-          })();
-        }),
-      ),
-    );
+  { afterTyping, dispatch, DOMRangeToSelection, getSelectionFromDOM }: EditorIO,
+): IO<void> => () =>
   pipe(
-    sequenceT(option)(
-      getDOMRangeFromInputEvent(event),
-      getAnchorNonEmptyPathFromInputEvent(event)(getPathByDOMNode),
+    getDOMRangeFromInputEvent(event),
+    chain(range =>
+      pipe(
+        DOMRangeToSelection(range)(),
+        chain(selection => tryInitNonEmptyPath(selection.anchor)),
+        map(path => ({ range, path })),
+      ),
     ),
-    fold(preventDefault(event), dispatchAfterTyping),
+    fold(preventDefault(event), ({ range, path }) => {
+      // afterTyping should be Task probably.
+      afterTyping(() =>
+        pipe(
+          sequenceT(option)(
+            getDOMRangeStartContainerTextContent(range),
+            getSelectionFromDOM(),
+          ),
+          fold(constVoid, ([text, selection]) => {
+            dispatch({
+              type: 'setText',
+              arg: { text, path, selection },
+            })();
+          }),
+        ),
+      );
+    }),
   );
-};
 
 const deleteContent = (
   event: InputEvent,
   {
     afterTyping,
     dispatch,
-    getPathByDOMNode,
+    DOMRangeToSelection,
     getExistingDOMSelection,
   }: EditorIO,
-) => {
+): IO<void> => () => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
-      sequenceT(option)(
-        getSelectionFromInputEvent(event)(getPathByDOMNode)(),
-        getAnchorNonEmptyPathFromInputEvent(event)(getPathByDOMNode),
-        getDOMRangeFromInputEvent(event),
+      getDOMRangeFromInputEvent(event),
+      chain(range =>
+        pipe(
+          DOMRangeToSelection(range)(),
+          map(selection => ({ range, selection })),
+        ),
       ),
-      fold(preventDefault(event), ([selection, nonEmptyPath, range]) => {
+      chain(arg =>
+        pipe(
+          tryInitNonEmptyPath(arg.selection.anchor),
+          map(nonEmptyPath => ({ ...arg, nonEmptyPath })),
+        ),
+      ),
+      fold(preventDefault(event), ({ range, selection, nonEmptyPath }) => {
         const textIsGoingToBeReplacedWithBR =
           range.startContainer === range.endContainer &&
           range.startOffset === 0 &&
@@ -219,17 +225,17 @@ export const useBeforeInput = (editorIO: EditorIO): void => {
           const handleBeforeInput = (event: InputEvent) => {
             switch (event.inputType) {
               case 'insertText': {
-                insertText(event, editorIO);
+                insertText(event, editorIO)();
                 break;
               }
               case 'insertReplacementText': {
-                insertReplacementText(event, editorIO);
+                insertReplacementText(event, editorIO)();
                 break;
               }
               // I don't understand why deleteContent needs a direction.
               case 'deleteContentBackward':
               case 'deleteContentForward': {
-                deleteContent(event, editorIO);
+                deleteContent(event, editorIO)();
                 break;
               }
               default:

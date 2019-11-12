@@ -1,14 +1,10 @@
 import { getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { Endomorphism, Refinement } from 'fp-ts/lib/function';
-import { head, last, tail } from 'fp-ts/lib/NonEmptyArray';
+import { last } from 'fp-ts/lib/NonEmptyArray';
+import { Option, some, none } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
-import {
-  NonEmptyPath,
-  PathIndex,
-  Path,
-  NonEmptyPathWithOffset,
-} from '../types';
+import { NonEmptyPath, NonEmptyPathWithOffset, Path } from '../types';
 
 export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
   path,
@@ -53,15 +49,10 @@ export const initNonEmptyPathWithOffset = (
   path: NonEmptyPathWithOffset,
 ): NonEmptyPath => initNonEmptyPath(path) as NonEmptyPath;
 
+export const tryInitNonEmptyPath = (path: NonEmptyPath): Option<NonEmptyPath> =>
+  isNonEmptyPathWithOffset(path)
+    ? some(initNonEmptyPathWithOffset(path))
+    : none;
+
 export const movePath = (offset: number): Endomorphism<NonEmptyPath> => path =>
   snoc(initNonEmptyPath(path), last(path) + offset);
-
-export const pathToHeadAndTail = (path: NonEmptyPath): [PathIndex, Path] => [
-  head(path),
-  tail(path),
-];
-
-export const pathToInitAndLast = (path: NonEmptyPath): [Path, PathIndex] => [
-  initNonEmptyPath(path),
-  last(path),
-];
