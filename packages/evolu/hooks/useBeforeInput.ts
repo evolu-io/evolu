@@ -35,15 +35,13 @@ import { EditorIO } from '../types';
 import { DOMText } from '../types/dom';
 import { warn } from '../warn';
 
-const insertText = (
-  event: InputEvent,
-  {
-    afterTyping,
-    dispatch,
-    DOMRangeToSelection,
-    getExistingDOMSelection,
-  }: EditorIO,
-): IO<void> => () => {
+// Consider Task if we will need to queue it.
+type HandlerIO = (event: InputEvent, editorIO: EditorIO) => IO<void>;
+
+const insertText: HandlerIO = (
+  event,
+  { afterTyping, dispatch, DOMRangeToSelection, getExistingDOMSelection },
+) => () => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
       sequenceT(option)(
@@ -115,10 +113,10 @@ const insertText = (
   );
 };
 
-const insertReplacementText = (
-  event: InputEvent,
-  { afterTyping, dispatch, DOMRangeToSelection, getSelectionFromDOM }: EditorIO,
-): IO<void> => () =>
+const insertReplacementText: HandlerIO = (
+  event,
+  { afterTyping, dispatch, DOMRangeToSelection, getSelectionFromDOM },
+) => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
     chain(range =>
@@ -145,15 +143,10 @@ const insertReplacementText = (
     }),
   );
 
-const deleteContent = (
-  event: InputEvent,
-  {
-    afterTyping,
-    dispatch,
-    DOMRangeToSelection,
-    getExistingDOMSelection,
-  }: EditorIO,
-): IO<void> => () => {
+const deleteContent: HandlerIO = (
+  event,
+  { afterTyping, dispatch, DOMRangeToSelection, getExistingDOMSelection },
+) => () => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
       getDOMRangeFromInputEvent(event),
@@ -228,7 +221,6 @@ export const useBeforeInput = (editorIO: EditorIO): void => {
                 insertReplacementText(event, editorIO)();
                 break;
               }
-              // I don't understand why deleteContent needs a direction.
               case 'deleteContentBackward':
               case 'deleteContentForward': {
                 deleteContent(event, editorIO)();
