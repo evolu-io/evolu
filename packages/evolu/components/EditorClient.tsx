@@ -1,59 +1,36 @@
-import Debug from 'debug';
-import { sequenceT, sequenceS } from 'fp-ts/lib/Apply';
 import { empty } from 'fp-ts/lib/Array';
 import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { IO, io, map as mapIO } from 'fp-ts/lib/IO';
-import { head, last, snoc } from 'fp-ts/lib/NonEmptyArray';
-import {
-  chain,
-  filter,
-  fold,
-  fromNullable,
-  map,
-  mapNullable,
-  none,
-  option,
-  some,
-} from 'fp-ts/lib/Option';
+import { filter, fold, none } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   forwardRef,
   memo,
-  useCallback,
   useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
+import { useDispatch } from '../hooks/useDispatch';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
-import { usePrevious } from '../hooks/usePrevious';
+import { useEditorIO } from '../hooks/useEditorIO';
+import { useFocus } from '../hooks/useFocus';
 import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
-import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
-import { createInfo as modelCreateInfo } from '../models/info';
-import { initNonEmptyPath } from '../models/path';
-import { eqSelection, isForward, makeSelection } from '../models/selection';
-import { eqValue, normalize } from '../models/value';
-import { reducer as defaultEditorReducer } from '../reducers/reducer';
-import { EditorIO, EditorProps, EditorReducer, Value } from '../types';
-import { DOMNodeOffset } from '../types/dom';
+import { eqSelection } from '../models/selection';
+import { EditorIO, EditorProps } from '../types';
 import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
-
-const debugAction = Debug('action');
 
 export const EditorClient = memo(
   forwardRef<EditorIO, EditorProps>(
     (
       {
-        value: valueMaybeNotNormalized,
+        value,
         onChange,
         renderElement,
-        reducer = defaultEditorReducer,
         autoCorrect = 'off',
         spellCheck = false,
         role = 'textbox',
@@ -63,87 +40,9 @@ export const EditorClient = memo(
     ) => {
       const elementRef = useRef<HTMLDivElement>(null);
 
-      // Always normalize outer value. It's fast enough. And we can optimize it later.
-      const value = normalize(valueMaybeNotNormalized);
-
-      // We don't want to use useReducer because we don't want derived state.
-      // Naive dispatch implementation would re-subscribes listeners too often.
-      // React will provide better API because this could be tricky in concurrent mode.
-      // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
-      const dispatchDepsRef = useRef<{
-        value: Value;
-        reducer: EditorReducer;
-        onChange: EditorProps['onChange'];
-      }>({ value, reducer, onChange });
-
-      useLayoutEffect(() => {
-        dispatchDepsRef.current = { value, reducer, onChange };
-      });
-
-      const dispatch = useCallback<EditorIO['dispatch']>(
-        action => () => {
-          const { value, reducer, onChange } = dispatchDepsRef.current;
-          const nextValue = reducer(value, action);
-          debugAction(action.type, [value, action, nextValue]);
-          if (eqValue.equals(nextValue, value)) return;
-          onChange(nextValue);
-        },
-        [],
-      );
+      const [dispatch, valueRef] = useDispatch(onChange, value);
 
       const { afterTyping, isTypingRef } = useAfterTyping();
-
-      const isTyping = useCallback<IO<boolean>>(() => {
-        return isTypingRef.current;
-      }, [isTypingRef]);
-
-      const getElement = useCallback<EditorIO['getElement']>(
-        () => fromNullable(elementRef.current),
-        [],
-      );
-
-      const getDocument = useCallback<EditorIO['getDocument']>(
-        () =>
-          pipe(
-            getElement(),
-            mapNullable(el => el.ownerDocument),
-          ),
-        [getElement],
-      );
-
-      const createDOMRange = useCallback<EditorIO['createDOMRange']>(
-        () =>
-          pipe(
-            getDocument(),
-            map(doc => doc.createRange()),
-          ),
-        [getDocument],
-      );
-
-      const getDOMSelection = useCallback<EditorIO['getDOMSelection']>(
-        () =>
-          pipe(
-            getDocument(),
-            mapNullable(doc => doc.getSelection()),
-          ),
-        [getDocument],
-      );
-
-      const getExistingDOMSelection = useCallback<
-        EditorIO['getExistingDOMSelection']
-      >(() => pipe(getDOMSelection(), filter(isExistingDOMSelection)), [
-        getDOMSelection,
-      ]);
-
-      const createInfo = useCallback<EditorIO['createInfo']>(
-        selection =>
-          modelCreateInfo(selection, dispatchDepsRef.current.value.element),
-        [],
-      );
-
-      const focus = useCallback<EditorIO['focus']>(() => {
-        if (elementRef.current) elementRef.current.focus();
-      }, []);
 
       const {
         getDOMNodeByPath,
@@ -151,203 +50,27 @@ export const EditorClient = memo(
         setDOMNodePath,
       } = useDOMNodesPathsMap(value.element);
 
-      const getSelectionFromDOM = useCallback<EditorIO['getSelectionFromDOM']>(
-        () =>
-          pipe(
-            getExistingDOMSelection(),
-            chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
-              // Nested pipe is ok, we can always refactor it out later.
-              pipe(
-                sequenceT(option)(
-                  getPathByDOMNode(anchorNode)(),
-                  getPathByDOMNode(focusNode)(),
-                ),
-                map(([anchorPath, focusPath]) => ({
-                  anchor: snoc(anchorPath, anchorOffset),
-                  focus: snoc(focusPath, focusOffset),
-                })),
-              ),
-            ),
-          ),
-        [getExistingDOMSelection, getPathByDOMNode],
-      );
-
-      const pathToNodeOffset = useCallback<EditorIO['pathToNodeOffset']>(
-        path =>
-          pipe(
-            initNonEmptyPath(path),
-            getDOMNodeByPath,
-            mapIO(node =>
-              pipe(
-                node,
-                map(node => [node, last(path)] as DOMNodeOffset),
-                filter(isValidDOMNodeOffset),
-              ),
-            ),
-          ),
-        [getDOMNodeByPath],
-      );
-
-      const setDOMSelection = useCallback<EditorIO['setDOMSelection']>(
-        selection => () =>
-          pipe(
-            isForward(selection),
-            isForward =>
-              sequenceT(option)(
-                some(isForward),
-                getDOMSelection(),
-                createDOMRange(),
-                pathToNodeOffset(
-                  isForward ? selection.anchor : selection.focus,
-                )(),
-                pathToNodeOffset(
-                  isForward ? selection.focus : selection.anchor,
-                )(),
-              ),
-            fold(
-              constVoid,
-              ([
-                isForward,
-                selection,
-                range,
-                startNodeOffset,
-                endNodeOffset,
-              ]) => {
-                // isValidDOMNodeOffset
-                // if
-                const [startNode, startOffset] = startNodeOffset;
-                const [endNode, endOffset] = endNodeOffset;
-                range.setStart(startNode, startOffset);
-                range.setEnd(endNode, endOffset);
-                selection.removeAllRanges();
-                if (isForward) selection.addRange(range);
-                else {
-                  // https://stackoverflow.com/a/4802994/233902
-                  const endRange = range.cloneRange();
-                  endRange.collapse(false);
-                  selection.addRange(endRange);
-                  selection.extend(range.startContainer, range.startOffset);
-                }
-              },
-            ),
-          ),
-        [createDOMRange, getDOMSelection, pathToNodeOffset],
-      );
-
-      const ensureDOMSelectionIsActual = useCallback<
-        EditorIO['ensureDOMSelectionIsActual']
-      >(
-        () =>
-          pipe(
-            sequenceT(option)(
-              dispatchDepsRef.current.value.selection,
-              getSelectionFromDOM(),
-            ),
-            filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
-            map(head),
-            fold(constVoid, selection => {
-              setDOMSelection(selection)();
-            }),
-          ),
-        [getSelectionFromDOM, setDOMSelection],
-      );
-
-      const DOMRangeToSelection = useCallback<EditorIO['DOMRangeToSelection']>(
-        range =>
-          pipe(
-            sequenceS(io)({
-              anchorPath: getPathByDOMNode(range.startContainer),
-              focusPath: getPathByDOMNode(range.endContainer),
-            }),
-            mapIO(sequenceS(option)),
-            mapIO(
-              chain(({ anchorPath, focusPath }) =>
-                makeSelection({
-                  anchorPath,
-                  anchorOffset: range.startOffset,
-                  focusPath,
-                  focusOffset: range.endOffset,
-                }),
-              ),
-            ),
-          ),
-        [getPathByDOMNode],
-      );
-
-      const editorIO = useMemo<EditorIO>(
-        () => ({
-          afterTyping,
-          createDOMRange,
-          createInfo,
-          dispatch,
-          DOMRangeToSelection,
-          ensureDOMSelectionIsActual,
-          focus,
-          getDocument,
-          getDOMNodeByPath,
-          getDOMSelection,
-          getElement,
-          getExistingDOMSelection,
-          getPathByDOMNode,
-          getSelectionFromDOM,
-          isTyping,
-          pathToNodeOffset,
-          setDOMSelection,
-        }),
-        [
-          afterTyping,
-          createDOMRange,
-          createInfo,
-          dispatch,
-          DOMRangeToSelection,
-          ensureDOMSelectionIsActual,
-          focus,
-          getDocument,
-          getDOMNodeByPath,
-          getDOMSelection,
-          getElement,
-          getExistingDOMSelection,
-          getPathByDOMNode,
-          getSelectionFromDOM,
-          isTyping,
-          pathToNodeOffset,
-          setDOMSelection,
-        ],
+      const editorIO = useEditorIO(
+        elementRef,
+        isTypingRef,
+        afterTyping,
+        valueRef,
+        dispatch,
+        getDOMNodeByPath,
+        getPathByDOMNode,
       );
 
       useImperativeHandle(ref, () => editorIO);
 
-      // Internal state, it does not belong to Value I suppose.
-      const [tabLostFocus, setTabLostFocus] = useState(false);
-      const valueHadFocus = usePrevious(value.hasFocus);
-
-      // Map editor declarative focus to imperative DOM focus and blur methods.
-      useEffect(
-        () =>
-          pipe(
-            sequenceT(option)(getElement(), getDocument()),
-            fold(constVoid, ([element, document]) => {
-              const hasFocus = element === document.activeElement;
-              if (!valueHadFocus && value.hasFocus) {
-                if (!hasFocus) element.focus();
-              } else if (valueHadFocus && !value.hasFocus) {
-                // Do not call blur when tab lost focus so editor can be focused back.
-                // For manual test, click to editor then press cmd-tab twice.
-                // Editor selection must be preserved.
-                if (hasFocus && !tabLostFocus) element.blur();
-              }
-            }),
-          ),
-        [getDocument, getElement, tabLostFocus, value.hasFocus, valueHadFocus],
-      );
+      const { onFocus, onBlur } = useFocus(value.hasFocus, editorIO);
 
       useEffect(() => {
         const handleSelectionChange = () =>
           pipe(
-            isTypingRef.current ? none : getSelectionFromDOM(),
+            isTypingRef.current ? none : editorIO.getSelectionFromDOM(),
             filter(s1 =>
               pipe(
-                dispatchDepsRef.current.value.selection,
+                valueRef.current.selection,
                 fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
               ),
             ),
@@ -357,7 +80,7 @@ export const EditorClient = memo(
           );
 
         return pipe(
-          getDocument(),
+          editorIO.getDocument(),
           fold(
             () => constVoid, // onNone defines what onSome has to return.
             doc => {
@@ -371,14 +94,14 @@ export const EditorClient = memo(
             },
           ),
         );
-      }, [dispatch, getDocument, getSelectionFromDOM, isTypingRef]);
+      }, [dispatch, editorIO, isTypingRef, valueRef]);
 
       // useLayoutEffect is a must to keep browser selection in sync with editor selection.
       // With useEffect, fast typing would lose caret position.
       useLayoutEffect(() => {
         if (!value.hasFocus) return;
-        ensureDOMSelectionIsActual();
-      }, [value.hasFocus, ensureDOMSelectionIsActual, value.selection]);
+        editorIO.ensureDOMSelectionIsActual();
+      }, [value.hasFocus, value.selection, editorIO]);
 
       useBeforeInput(editorIO);
 
@@ -394,31 +117,14 @@ export const EditorClient = memo(
         );
       }, [value.element, renderElement, setDOMNodePath]);
 
-      const handleEditorElementFocus = useCallback(() => {
-        ensureDOMSelectionIsActual();
-        setTabLostFocus(false);
-        dispatch({ type: 'focus' })();
-      }, [dispatch, ensureDOMSelectionIsActual]);
-
-      const handleEditorElementBlur = useCallback(() => {
-        const tabLostFocus =
-          (elementRef.current &&
-            elementRef.current.ownerDocument &&
-            elementRef.current.ownerDocument.activeElement ===
-              elementRef.current) ||
-          false;
-        setTabLostFocus(tabLostFocus);
-        dispatch({ type: 'blur' })();
-      }, [dispatch]);
-
       return useMemo(() => {
         return (
           <div
             autoCorrect={autoCorrect}
             contentEditable
             data-gramm // Disable Grammarly Chrome extension.
-            onBlur={handleEditorElementBlur}
-            onFocus={handleEditorElementFocus}
+            onBlur={onBlur}
+            onFocus={onFocus}
             ref={elementRef}
             role={role}
             spellCheck={spellCheck}
@@ -431,15 +137,7 @@ export const EditorClient = memo(
             {children}
           </div>
         );
-      }, [
-        autoCorrect,
-        children,
-        handleEditorElementBlur,
-        handleEditorElementFocus,
-        rest,
-        role,
-        spellCheck,
-      ]);
+      }, [autoCorrect, children, onBlur, onFocus, rest, role, spellCheck]);
     },
   ),
 );

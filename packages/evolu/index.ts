@@ -18,6 +18,5 @@ export * from './models/selection';
 export * from './models/string';
 export * from './models/text';
 export * from './models/value';
-export * from './reducers/reducer';
 export * from './types';
 export * from './warn';

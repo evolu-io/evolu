@@ -153,7 +153,6 @@ export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
   readonly value: Value;
   readonly onChange: (value: Value) => void;
   readonly renderElement?: RenderElement;
-  readonly reducer?: EditorReducer;
 }
 
 /**

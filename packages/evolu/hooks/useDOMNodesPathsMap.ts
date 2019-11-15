@@ -21,8 +21,8 @@ const useDebugNodesPaths = (
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-      // const nodes: [string, Node][] = [];
-      // nodesPathsMap.forEach((path, node) => {
+      // const nodes: [string, DOMNode][] = [];
+      // domNodesPathsMap.forEach((path, node) => {
       //   nodes.push([path.join(), node]);
       // });
       // console.log(nodes);
