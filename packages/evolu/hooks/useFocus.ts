@@ -1,27 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { option, fold } from 'fp-ts/lib/Option';
+import { option, fold, some } from 'fp-ts/lib/Option';
 import { constVoid, constFalse } from 'fp-ts/lib/function';
 import { EditorIO } from '../types';
 import { usePrevious } from './usePrevious';
 
 export const useFocus = (
-  hasFocus: boolean,
   editorIO: EditorIO,
 ): {
   onFocus: () => void;
   onBlur: () => void;
 } => {
   const [tabLostFocus, setTabLostFocus] = useState(false);
-  const valueHadFocus = usePrevious(hasFocus);
+  const valueHadFocus = usePrevious(editorIO.getValue().hasFocus);
 
   // Map editor declarative focus to imperative DOM focus and blur methods.
   useEffect(
     () =>
       pipe(
-        sequenceT(option)(editorIO.getDocument(), editorIO.getElement()),
-        fold(constVoid, ([document, element]) => {
+        sequenceT(option)(
+          editorIO.getDocument(),
+          editorIO.getElement(),
+          some(editorIO.getValue().hasFocus),
+        ),
+        fold(constVoid, ([document, element, hasFocus]) => {
           const isActive = element === document.activeElement;
           if (!valueHadFocus && hasFocus) {
             if (!isActive) element.focus();
@@ -33,7 +36,7 @@ export const useFocus = (
           }
         }),
       ),
-    [editorIO, hasFocus, tabLostFocus, valueHadFocus],
+    [editorIO, tabLostFocus, valueHadFocus],
   );
 
   const onFocus = useCallback(() => {
