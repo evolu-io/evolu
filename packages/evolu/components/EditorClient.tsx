@@ -1,4 +1,3 @@
-import { empty } from 'fp-ts/lib/Array';
 import React, {
   forwardRef,
   memo,
@@ -12,12 +11,9 @@ import { useDispatch } from '../hooks/useDispatch';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
 import { useEditorIO } from '../hooks/useEditorIO';
 import { useFocus } from '../hooks/useFocus';
-import { RenderElementContext } from '../hooks/useRenderElement';
 import { useSelection } from '../hooks/useSelection';
-import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
 import { EditorIO, EditorProps } from '../types';
-import { renderReactElement } from './EditorServer';
-import { ElementRenderer } from './ElementRenderer';
+import { EditorChildren } from './EditorChildren';
 
 export const EditorClient = memo(
   forwardRef<EditorIO, EditorProps>(
@@ -57,23 +53,12 @@ export const EditorClient = memo(
 
       useImperativeHandle(ref, () => editorIO);
 
-      const { onFocus, onBlur } = useFocus(value.hasFocus, editorIO);
+      const { onFocus, onBlur } = useFocus(editorIO);
 
       useSelection(editorIO);
       useBeforeInput(editorIO);
 
-      const children = useMemo(() => {
-        return (
-          <SetNodePathContext.Provider value={setDOMNodePath}>
-            <RenderElementContext.Provider
-              value={renderElement || renderReactElement}
-            >
-              <ElementRenderer element={value.element} path={empty} />
-            </RenderElementContext.Provider>
-          </SetNodePathContext.Provider>
-        );
-      }, [value.element, renderElement, setDOMNodePath]);
-
+      // Jo, ale co? EditorElement? jo
       return useMemo(() => {
         return (
           <div
@@ -91,10 +76,24 @@ export const EditorClient = memo(
             tabIndex={0}
             {...rest}
           >
-            {children}
+            <EditorChildren
+              setDOMNodePath={setDOMNodePath}
+              renderElement={renderElement}
+              element={value.element}
+            />
           </div>
         );
-      }, [autoCorrect, children, onBlur, onFocus, rest, role, spellCheck]);
+      }, [
+        autoCorrect,
+        onBlur,
+        onFocus,
+        renderElement,
+        rest,
+        role,
+        setDOMNodePath,
+        spellCheck,
+        value.element,
+      ]);
     },
   ),
 );
