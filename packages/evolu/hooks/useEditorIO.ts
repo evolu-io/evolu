@@ -21,7 +21,6 @@ import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { initNonEmptyPath } from '../models/path';
 import { DOMNodeOffset } from '../types/dom';
 import { isForward, eqSelection, makeSelection } from '../models/selection';
-import { warn } from '../warn';
 
 export const useEditorIO = (
   elementRef: RefObject<HTMLDivElement>,
@@ -32,6 +31,10 @@ export const useEditorIO = (
   getDOMNodeByPath: GetDOMNodeByPath,
   getPathByDOMNode: GetPathByDOMNode,
 ): EditorIO => {
+  const getValue = useCallback<IO<Value>>(() => {
+    return valueRef.current;
+  }, [valueRef]);
+
   const isTyping = useCallback<IO<boolean>>(() => {
     return isTypingRef.current;
   }, [isTypingRef]);
@@ -191,9 +194,8 @@ export const useEditorIO = (
     [getPathByDOMNode],
   );
 
-  return useMemo<EditorIO>(() => {
-    warn('EditorIO created.');
-    return {
+  return useMemo<EditorIO>(
+    () => ({
       afterTyping,
       createDOMRange,
       createInfo,
@@ -208,27 +210,30 @@ export const useEditorIO = (
       getExistingDOMSelection,
       getPathByDOMNode,
       getSelectionFromDOM,
+      getValue,
       isTyping,
       pathToNodeOffset,
       setDOMSelection,
-    };
-  }, [
-    afterTyping,
-    createDOMRange,
-    createInfo,
-    dispatch,
-    DOMRangeToSelection,
-    ensureDOMSelectionIsActual,
-    focus,
-    getDocument,
-    getDOMNodeByPath,
-    getDOMSelection,
-    getElement,
-    getExistingDOMSelection,
-    getPathByDOMNode,
-    getSelectionFromDOM,
-    isTyping,
-    pathToNodeOffset,
-    setDOMSelection,
-  ]);
+    }),
+    [
+      afterTyping,
+      createDOMRange,
+      createInfo,
+      dispatch,
+      DOMRangeToSelection,
+      ensureDOMSelectionIsActual,
+      focus,
+      getDocument,
+      getDOMNodeByPath,
+      getDOMSelection,
+      getElement,
+      getExistingDOMSelection,
+      getPathByDOMNode,
+      getSelectionFromDOM,
+      getValue,
+      isTyping,
+      pathToNodeOffset,
+      setDOMSelection,
+    ],
+  );
 };

@@ -175,6 +175,7 @@ export interface EditorIO {
   readonly getExistingDOMSelection: IO<Option<ExistingDOMSelection>>;
   readonly getPathByDOMNode: GetPathByDOMNode;
   readonly getSelectionFromDOM: IO<Option<Selection>>;
+  readonly getValue: IO<Value>;
   readonly isTyping: IO<boolean>;
   readonly pathToNodeOffset: (path: NonEmptyPath) => IO<Option<DOMNodeOffset>>;
   readonly setDOMSelection: (selection: Selection) => IO<void>;

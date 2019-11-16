@@ -1,13 +1,8 @@
 import { empty } from 'fp-ts/lib/Array';
-import { constTrue, constVoid } from 'fp-ts/lib/function';
-import { filter, fold, none } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import React, {
   forwardRef,
   memo,
-  useEffect,
   useImperativeHandle,
-  useLayoutEffect,
   useMemo,
   useRef,
 } from 'react';
@@ -18,8 +13,8 @@ import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
 import { useEditorIO } from '../hooks/useEditorIO';
 import { useFocus } from '../hooks/useFocus';
 import { RenderElementContext } from '../hooks/useRenderElement';
+import { useSelection } from '../hooks/useSelection';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
-import { eqSelection } from '../models/selection';
 import { EditorIO, EditorProps } from '../types';
 import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
@@ -64,45 +59,7 @@ export const EditorClient = memo(
 
       const { onFocus, onBlur } = useFocus(value.hasFocus, editorIO);
 
-      useEffect(() => {
-        const handleSelectionChange = () =>
-          pipe(
-            isTypingRef.current ? none : editorIO.getSelectionFromDOM(),
-            filter(s1 =>
-              pipe(
-                valueRef.current.selection,
-                fold(constTrue, s2 => !eqSelection.equals(s1, s2)),
-              ),
-            ),
-            fold(constVoid, selection => {
-              dispatch({ type: 'selectionChange', selection })();
-            }),
-          );
-
-        return pipe(
-          editorIO.getDocument(),
-          fold(
-            () => constVoid, // onNone defines what onSome has to return.
-            doc => {
-              doc.addEventListener('selectionchange', handleSelectionChange);
-              return () => {
-                doc.removeEventListener(
-                  'selectionchange',
-                  handleSelectionChange,
-                );
-              };
-            },
-          ),
-        );
-      }, [dispatch, editorIO, isTypingRef, valueRef]);
-
-      // useLayoutEffect is a must to keep browser selection in sync with editor selection.
-      // With useEffect, fast typing would lose caret position.
-      useLayoutEffect(() => {
-        if (!value.hasFocus) return;
-        editorIO.ensureDOMSelectionIsActual();
-      }, [value.hasFocus, value.selection, editorIO]);
-
+      useSelection(editorIO);
       useBeforeInput(editorIO);
 
       const children = useMemo(() => {
