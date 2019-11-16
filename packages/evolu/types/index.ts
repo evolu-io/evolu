@@ -137,7 +137,7 @@ export type ReactElement = $Values<
   }
 >;
 
-type ReactDivAtttributesUsefulForEditor = Pick<
+export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'
   | 'autoCorrect'
@@ -149,11 +149,11 @@ type ReactDivAtttributesUsefulForEditor = Pick<
   | 'tabIndex'
 >;
 
-export interface EditorProps extends ReactDivAtttributesUsefulForEditor {
+export type EditorProps = EditorElementAttrs & {
   readonly value: Value;
   readonly onChange: (value: Value) => void;
   readonly renderElement?: RenderElement;
-}
+};
 
 /**
  * Editor side effects. There are two abstractions meant for side effects:
