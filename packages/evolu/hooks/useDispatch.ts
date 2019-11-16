@@ -1,15 +1,15 @@
 import Debug from 'debug';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { absurd } from 'fp-ts/lib/function';
-import { useRef, MutableRefObject, useLayoutEffect, useCallback } from 'react';
-import { EditorReducer, EditorProps, EditorIO, Value } from '../types';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import {
-  setFocus,
-  select,
-  setText,
   deleteContent,
   eqValue,
+  select,
+  setFocus,
+  setText,
 } from '../models/value';
+import { EditorIO, EditorProps, EditorReducer, Value } from '../types';
 
 const debugAction = Debug('action');
 
@@ -35,8 +35,7 @@ const reducer: EditorReducer = (value, action) => {
 export const useDispatch = (
   onChange: EditorProps['onChange'],
   value: Value,
-): [EditorIO['dispatch'], MutableRefObject<Value>] => {
-  // Tohle asi hook!
+): [EditorIO['dispatch'], EditorIO['getValue']] => {
   const valueRef = useRef(value);
   useLayoutEffect(() => {
     valueRef.current = value;
@@ -50,5 +49,6 @@ export const useDispatch = (
     },
     [onChange],
   );
-  return [dispatch, valueRef];
+  const getValue = useCallback(() => valueRef.current, []);
+  return [dispatch, getValue];
 };

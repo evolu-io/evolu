@@ -37,8 +37,6 @@ export type Node = Element | Text;
 // TODO: Consider newtype.
 export type PathIndex = number;
 
-// Paths are not readonly because https://github.com/gcanti/fp-ts/issues/987.
-
 /**
  * Path to a place in Element. It can point to Element, Text, Text char, or nothing.
  */

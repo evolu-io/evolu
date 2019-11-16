@@ -1,12 +1,12 @@
 /* eslint-env browser */
-import { useRef, MutableRefObject, useCallback } from 'react';
 import { IO } from 'fp-ts/lib/IO';
+import { useCallback, useRef } from 'react';
 import { EditorIO } from '../types';
 import { warn } from '../warn';
 
 export const useAfterTyping: IO<{
   afterTyping: EditorIO['afterTyping'];
-  isTypingRef: MutableRefObject<boolean>;
+  isTyping: EditorIO['isTyping'];
 }> = () => {
   const isTypingRef = useRef(false);
   const resolvers = useRef<Array<IO<void>>>([]);
@@ -28,5 +28,7 @@ export const useAfterTyping: IO<{
     return promise;
   }, []);
 
-  return { afterTyping, isTypingRef };
+  const isTyping = useCallback(() => isTypingRef.current, []);
+
+  return { afterTyping, isTyping };
 };

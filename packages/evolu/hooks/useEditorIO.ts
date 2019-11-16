@@ -1,44 +1,36 @@
-import { useCallback, useMemo, MutableRefObject, RefObject } from 'react';
-import { IO, io, map as mapIO } from 'fp-ts/lib/IO';
+import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
+import { constVoid } from 'fp-ts/lib/function';
+import { io, map as mapIO } from 'fp-ts/lib/IO';
 import { head, last, snoc } from 'fp-ts/lib/NonEmptyArray';
 import {
-  mapNullable,
+  chain,
+  filter,
+  fold,
   fromNullable,
   map,
-  filter,
-  chain,
+  mapNullable,
   option,
   some,
-  fold,
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { sequenceT, sequenceS } from 'fp-ts/lib/Apply';
-import { constVoid } from 'fp-ts/lib/function';
 import { Task } from 'fp-ts/lib/Task';
-import { EditorIO, Value, GetDOMNodeByPath, GetPathByDOMNode } from '../types';
-import { createInfo as modelCreateInfo } from '../models/info';
+import { RefObject, useCallback, useMemo } from 'react';
 import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
+import { createInfo as modelCreateInfo } from '../models/info';
 import { initNonEmptyPath } from '../models/path';
+import { eqSelection, isForward, makeSelection } from '../models/selection';
+import { EditorIO, GetDOMNodeByPath, GetPathByDOMNode } from '../types';
 import { DOMNodeOffset } from '../types/dom';
-import { isForward, eqSelection, makeSelection } from '../models/selection';
 
 export const useEditorIO = (
   elementRef: RefObject<HTMLDivElement>,
-  isTypingRef: MutableRefObject<boolean>,
+  isTyping: EditorIO['isTyping'],
   afterTyping: Task<void>,
-  valueRef: MutableRefObject<Value>,
+  getValue: EditorIO['getValue'],
   dispatch: EditorIO['dispatch'],
   getDOMNodeByPath: GetDOMNodeByPath,
   getPathByDOMNode: GetPathByDOMNode,
 ): EditorIO => {
-  const getValue = useCallback<IO<Value>>(() => {
-    return valueRef.current;
-  }, [valueRef]);
-
-  const isTyping = useCallback<IO<boolean>>(() => {
-    return isTypingRef.current;
-  }, [isTypingRef]);
-
   const getElement = useCallback<EditorIO['getElement']>(
     () => fromNullable(elementRef.current),
     [elementRef],
@@ -78,8 +70,8 @@ export const useEditorIO = (
   ]);
 
   const createInfo = useCallback<EditorIO['createInfo']>(
-    selection => modelCreateInfo(selection, valueRef.current.element),
-    [valueRef],
+    selection => modelCreateInfo(selection, getValue().element),
+    [getValue],
   );
 
   const focus = useCallback<EditorIO['focus']>(() => {
@@ -162,14 +154,14 @@ export const useEditorIO = (
   >(
     () =>
       pipe(
-        sequenceT(option)(valueRef.current.selection, getSelectionFromDOM()),
+        sequenceT(option)(getValue().selection, getSelectionFromDOM()),
         filter(([s1, s2]) => !eqSelection.equals(s1, s2)),
         map(head),
         fold(constVoid, selection => {
           setDOMSelection(selection)();
         }),
       ),
-    [getSelectionFromDOM, setDOMSelection, valueRef],
+    [getSelectionFromDOM, getValue, setDOMSelection],
   );
 
   const DOMRangeToSelection = useCallback<EditorIO['DOMRangeToSelection']>(

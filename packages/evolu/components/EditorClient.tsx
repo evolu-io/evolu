@@ -14,9 +14,9 @@ export const EditorClient = memo(
     ({ value, onChange, renderElement, ...rest }, ref) => {
       const elementRef = useRef<HTMLDivElement>(null);
 
-      const [dispatch, valueRef] = useDispatch(onChange, value);
+      const [dispatch, getValue] = useDispatch(onChange, value);
 
-      const { afterTyping, isTypingRef } = useAfterTyping();
+      const { afterTyping, isTyping } = useAfterTyping();
 
       const {
         getDOMNodeByPath,
@@ -26,9 +26,9 @@ export const EditorClient = memo(
 
       const editorIO = useEditorIO(
         elementRef,
-        isTypingRef,
+        isTyping,
         afterTyping,
-        valueRef,
+        getValue,
         dispatch,
         getDOMNodeByPath,
         getPathByDOMNode,
