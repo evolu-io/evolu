@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import * as editor from 'evolu';
+import { createValue, normalizeElement, id, Editor, ReactElement } from 'evolu';
 
-const initialValue = editor.createValue({
-  element: editor.normalizeElement({
-    id: editor.id(),
+const initialValue = createValue({
+  element: normalizeElement({
+    id: id(),
     tag: 'div',
     props: {
       className: 'root',
     },
     children: [
       {
-        id: editor.id(),
+        id: id(),
         tag: 'div',
         props: {
           className: 'list',
@@ -18,13 +18,13 @@ const initialValue = editor.createValue({
         children: ['a', 'b', '', 'c'],
       },
     ],
-  } as editor.ReactElement),
+  } as ReactElement),
 });
 
 const TestNormalizeEditorElement = () => {
   const [value, setValue] = useState(initialValue);
 
-  return <editor.Editor value={value} onChange={setValue} />;
+  return <Editor value={value} onChange={setValue} />;
 };
 
 export default TestNormalizeEditorElement;

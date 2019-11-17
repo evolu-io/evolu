@@ -1,18 +1,18 @@
 import React, { useState, useCallback } from 'react';
-import * as editor from 'evolu';
+import { createValue, useLogValue, Value, Editor } from 'evolu';
 import { testSelectionElement } from './testSelection';
 
-const initialValue = editor.createValue({
+const initialValue = createValue({
   element: testSelectionElement,
 });
 
 const TestSelectionNoFocusNoSelection = () => {
   const [value, setValue] = useState(initialValue);
 
-  const [logValue, logValueElement] = editor.useLogValue(value);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (value: editor.Value) => {
+    (value: Value) => {
       logValue(value);
       setValue(value);
     },
@@ -21,7 +21,7 @@ const TestSelectionNoFocusNoSelection = () => {
 
   return (
     <>
-      <editor.Editor value={value} onChange={handleEditorChange} />
+      <Editor value={value} onChange={handleEditorChange} />
       {logValueElement}
     </>
   );

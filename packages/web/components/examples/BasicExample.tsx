@@ -1,20 +1,29 @@
 import React, { useState, useCallback } from 'react';
-import * as editor from 'evolu';
 import { fromNullable } from 'fp-ts/lib/Option';
+import {
+  createValue,
+  id,
+  jsx,
+  Value,
+  useLogValue,
+  Editor,
+  ReactElement,
+  Selection,
+} from 'evolu';
 import { Text } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // Export for testEditorServer.
-export const initialValue = editor.createValue<editor.ReactElement>({
+export const initialValue = createValue<ReactElement>({
   element: {
-    id: editor.id(),
+    id: id(),
     tag: 'div',
     props: {
       className: 'root',
     },
     children: [
       {
-        id: editor.id(),
+        id: id(),
         tag: 'div',
         props: {
           // Uncomment 'width: 1' to check types.
@@ -24,7 +33,7 @@ export const initialValue = editor.createValue<editor.ReactElement>({
         children: ['heading'],
       },
       {
-        id: editor.id(),
+        id: id(),
         tag: 'div',
         props: {
           style: { fontSize: '16px' },
@@ -35,8 +44,8 @@ export const initialValue = editor.createValue<editor.ReactElement>({
   },
 });
 
-export const initialValueWithTextOnly = editor.createValue({
-  element: editor.jsx(<div className="root">a</div>),
+export const initialValueWithTextOnly = createValue({
+  element: jsx(<div className="root">a</div>),
 });
 
 export const BasicExample = ({
@@ -45,19 +54,19 @@ export const BasicExample = ({
   onlyText = false,
 }: {
   autoFocus?: boolean;
-  initialSelection?: editor.Selection | null;
+  initialSelection?: Selection | null;
   onlyText?: boolean;
 }) => {
-  const [value, setValue] = useState<editor.Value>({
+  const [value, setValue] = useState<Value>({
     ...(onlyText ? initialValueWithTextOnly : initialValue),
     hasFocus: autoFocus,
     selection: fromNullable(initialSelection),
   });
 
-  const [logValue, logValueElement] = editor.useLogValue(value);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (value: editor.Value) => {
+    (value: Value) => {
       logValue(value);
       setValue(value);
     },
@@ -67,7 +76,7 @@ export const BasicExample = ({
   return (
     <>
       <Text size={1}>Basic Example</Text>
-      <editor.Editor
+      <Editor
         {...defaultEditorProps}
         value={value}
         onChange={handleEditorChange}

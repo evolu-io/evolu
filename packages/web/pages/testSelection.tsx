@@ -1,16 +1,24 @@
 import React, { useState, useCallback } from 'react';
-import * as editor from 'evolu';
+import {
+  ReactElement,
+  id,
+  createValue,
+  useLogValue,
+  Value,
+  Editor,
+  Selection,
+} from 'evolu';
 import { some } from 'fp-ts/lib/Option';
 
-export const testSelectionElement: editor.ReactElement = {
-  id: editor.id(),
+export const testSelectionElement: ReactElement = {
+  id: id(),
   tag: 'div',
   props: {
     className: 'root',
   },
   children: [
     {
-      id: editor.id(),
+      id: id(),
       tag: 'div',
       props: {
         style: { fontSize: '24px' },
@@ -18,7 +26,7 @@ export const testSelectionElement: editor.ReactElement = {
       children: ['heading'],
     },
     {
-      id: editor.id(),
+      id: id(),
       tag: 'div',
       props: {
         style: { fontSize: '16px' },
@@ -28,24 +36,24 @@ export const testSelectionElement: editor.ReactElement = {
   ],
 };
 
-const initialValue = editor.createValue({
+const initialValue = createValue({
   element: testSelectionElement,
 });
 
 const TestSelection = () => {
   const [value, setValue] = useState(initialValue);
 
-  const [logValue, logValueElement] = editor.useLogValue(value);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (value: editor.Value) => {
+    (value: Value) => {
       logValue(value);
       setValue(value);
     },
     [logValue],
   );
 
-  const select = (selection: editor.Selection) => {
+  const select = (selection: Selection) => {
     handleEditorChange({
       ...value,
       hasFocus: true,
@@ -55,7 +63,7 @@ const TestSelection = () => {
 
   return (
     <>
-      <editor.Editor value={value} onChange={handleEditorChange} />
+      <Editor value={value} onChange={handleEditorChange} />
       {logValueElement}
       <div>
         <button

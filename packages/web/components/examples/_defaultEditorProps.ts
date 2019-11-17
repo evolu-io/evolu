@@ -1,6 +1,6 @@
-import * as editor from 'evolu';
+import { EditorProps } from 'evolu';
 
-export const defaultEditorProps: Partial<editor.EditorProps> = {
+export const defaultEditorProps: Partial<EditorProps> = {
   style: {
     backgroundColor: '#eee',
     marginBottom: 24,

@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import React, { useCallback, useState, useReducer, useRef } from 'react';
-import * as editor from 'evolu';
+import { createValue, jsx, useLogValue, Value, EditorIO, Editor } from 'evolu';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
-const initialValue = editor.createValue({
-  element: editor.jsx(
+const initialValue = createValue({
+  element: jsx(
     <div className="root">
       <div
         style={{
@@ -79,18 +79,18 @@ const Sandbox = () => {
   const [value, setValue] = useState(initialValue);
   const [forceUpdateKey, forceUpdate] = useReducer(x => x + 1, 0);
 
-  const [logValue, logValueElement] = editor.useLogValue(value);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (value: editor.Value) => {
+    (value: Value) => {
       logValue(value);
       setValue(value);
     },
     [logValue],
   );
 
-  const editorIORef = useRef<editor.EditorIO>(null);
-  // if (editorIORef.current) editorIORef.current.focus();
+  const editorRef = useRef<EditorIO>(null);
+  // if (editorRef.current) editorRef.current.focus();
 
   return (
     <Container>
@@ -98,11 +98,9 @@ const Sandbox = () => {
         <title>Sandbox</title>
       </Head>
       <Text size={2}>Sandbox</Text>
-      <editor.Editor
-        ref={editorIORef}
+      <Editor
+        ref={editorRef}
         value={value}
-        // TODO:
-        // reducer={customReducer}
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         spellCheck
@@ -131,7 +129,7 @@ const Sandbox = () => {
       <button
         type="button"
         onClick={() => {
-          if (editorIORef.current) editorIORef.current.focus();
+          if (editorRef.current) editorRef.current.focus();
         }}
       >
         focus

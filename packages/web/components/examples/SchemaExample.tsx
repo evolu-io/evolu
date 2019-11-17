@@ -1,17 +1,27 @@
 import { css, SerializedStyles } from '@emotion/core';
-import * as editor from 'evolu';
+import {
+  Element,
+  Selection,
+  Text,
+  createValue,
+  id,
+  RenderElement,
+  Value,
+  useLogValue,
+  Editor,
+} from 'evolu';
 import { absurd } from 'fp-ts/lib/function';
 import React, { ReactNode, useCallback, useState } from 'react';
 import { fromNullable } from 'fp-ts/lib/Option';
-import { Text } from '../Text';
+import { Text as AppText } from '../Text';
 import { defaultEditorProps } from './_defaultEditorProps';
 
 // We can describe a schema with TypeScript pretty well.
 // Runtime validation should be possible with awesome gcanti/io-ts.
 
-interface SchemaElement extends editor.Element {
+interface SchemaElement extends Element {
   type: string;
-  children: (SchemaElement | editor.Text)[];
+  children: (SchemaElement | Text)[];
 }
 
 // For images and the other void elements.
@@ -22,17 +32,17 @@ interface SchemaVoidElement extends SchemaElement {
 interface SchemaHeadingElement extends SchemaElement {
   type: 'heading';
   // Just one text.
-  children: [editor.Text];
+  children: [Text];
 }
 
 interface SchemaLinkElement extends SchemaElement {
   type: 'link';
   href: string;
   // Just one text.
-  children: [editor.Text];
+  children: [Text];
 }
 
-type SchemaParagraphElementChild = editor.Text | SchemaLinkElement;
+type SchemaParagraphElementChild = Text | SchemaLinkElement;
 
 interface SchemaParagraphElement extends SchemaElement {
   type: 'paragraph';
@@ -43,7 +53,7 @@ interface SchemaParagraphElement extends SchemaElement {
 interface SchemaListItemElement extends SchemaElement {
   type: 'listitem';
   // Just one text or text with SchemaListElement.
-  children: [editor.Text] | [editor.Text, SchemaListElement];
+  children: [Text] | [Text, SchemaListElement];
 }
 
 interface SchemaListElement extends SchemaElement {
@@ -70,27 +80,27 @@ export interface SchemaDocumentElement extends SchemaElement {
 }
 
 // Exported for testEditorServer.
-export const initialValue = editor.createValue<SchemaDocumentElement>({
+export const initialValue = createValue<SchemaDocumentElement>({
   element: {
-    id: editor.id(),
+    id: id(),
     type: 'document',
     children: [
       {
-        id: editor.id(),
+        id: id(),
         type: 'heading',
         children: ['heading'],
       },
       {
-        id: editor.id(),
+        id: id(),
         type: 'paragraph',
         children: ['paragraph'],
       },
       {
-        id: editor.id(),
+        id: id(),
         type: 'list',
         children: [
           {
-            id: editor.id(),
+            id: id(),
             type: 'listitem',
             children: [
               'listitem',
@@ -111,7 +121,7 @@ export const initialValue = editor.createValue<SchemaDocumentElement>({
         ],
       },
       {
-        id: editor.id(),
+        id: id(),
         type: 'image',
         src: 'https://via.placeholder.com/80',
         alt: 'Square placeholder image 80px',
@@ -125,7 +135,7 @@ export const initialValue = editor.createValue<SchemaDocumentElement>({
 
 // Exported for testEditorServer.
 export const useSchemaRenderElement = () => {
-  const renderElement = useCallback<editor.RenderElement>(
+  const renderElement = useCallback<RenderElement>(
     (editorElement, children, ref) => {
       // This is how we can leverage assertNever.
       const element = editorElement as
@@ -185,18 +195,18 @@ export const SchemaExample = ({
   initialSelection = null,
 }: {
   autoFocus?: boolean;
-  initialSelection?: editor.Selection | null;
+  initialSelection?: Selection | null;
 }) => {
-  const [value, setValue] = useState<editor.Value>({
+  const [value, setValue] = useState<Value>({
     ...initialValue,
     hasFocus: autoFocus,
     selection: fromNullable(initialSelection),
   });
 
-  const [logValue, logValueElement] = editor.useLogValue(value);
+  const [logValue, logValueElement] = useLogValue(value);
 
   const handleEditorChange = useCallback(
-    (value: editor.Value) => {
+    (value: Value) => {
       logValue(value);
       setValue(value);
     },
@@ -219,8 +229,8 @@ export const SchemaExample = ({
 
   return (
     <>
-      <Text size={1}>Schema Example</Text>
-      <editor.Editor
+      <AppText size={1}>Schema Example</AppText>
+      <Editor
         {...defaultEditorProps}
         value={value}
         onChange={handleEditorChange}
