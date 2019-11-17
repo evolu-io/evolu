@@ -2,7 +2,7 @@ import { IO } from 'fp-ts/lib/IO';
 import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
 import { Newtype } from 'newtype-ts';
-import { ReactDOM, ReactNode, Reducer } from 'react';
+import { ReactDOM, ReactNode, Reducer, RefObject } from 'react';
 import { $Values } from 'utility-types';
 import {
   DOMNode,
@@ -75,21 +75,6 @@ export interface Value {
   readonly selection: Option<Selection>;
 }
 
-export type SetTextArg = {
-  text: Text;
-  path: NonEmptyPath;
-  selection: Selection;
-};
-
-export type EditorAction =
-  | { type: 'focus' }
-  | { type: 'blur' }
-  | { type: 'selectionChange'; selection: Selection }
-  | { type: 'setText'; arg: SetTextArg }
-  | { type: 'deleteContent'; selection: Selection };
-
-export type EditorReducer = Reducer<Value, EditorAction>;
-
 /**
  * Editor range. It's like DOM Range, but with editor path for the start and the end.
  * Range should be an implementation detail when an operation needs the direction.
@@ -135,6 +120,21 @@ export type ReactElement = $Values<
   }
 >;
 
+export type SetTextArg = {
+  text: Text;
+  path: NonEmptyPath;
+  selection: Selection;
+};
+
+export type EditorAction =
+  | { type: 'focus' }
+  | { type: 'blur' }
+  | { type: 'selectionChange'; selection: Selection }
+  | { type: 'setText'; arg: SetTextArg }
+  | { type: 'deleteContent'; selection: Selection };
+
+export type EditorReducer = Reducer<Value, EditorAction>;
+
 export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'
@@ -178,6 +178,8 @@ export interface EditorIO {
   readonly pathToNodeOffset: (path: NonEmptyPath) => IO<Option<DOMNodeOffset>>;
   readonly setDOMSelection: (selection: Selection) => IO<void>;
 }
+
+export type EditorRef = RefObject<EditorIO>;
 
 // TODO: Fragment, probably Child[].
 
