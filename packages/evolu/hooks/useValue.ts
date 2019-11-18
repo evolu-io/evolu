@@ -13,8 +13,6 @@ export const useValue = (
   const getValue = useCallback(() => valueRef.current, []);
   const setValue = useCallback<EditorIO['setValue']>(
     nextValue => () => {
-      // porovnat, a diff
-      // debugAction(action.type, [valueRef.current, action, nextValue]);
       if (eqValue.equals(nextValue, valueRef.current)) return;
       onChange(nextValue);
     },
