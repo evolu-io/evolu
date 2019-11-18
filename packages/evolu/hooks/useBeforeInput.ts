@@ -34,13 +34,14 @@ import {
 import { EditorIO } from '../types';
 import { DOMText } from '../types/dom';
 import { warn } from '../warn';
+import { setText } from '../models/value';
 
 // Consider Task if we will need to queue it.
 type HandlerIO = (event: InputEvent, editorIO: EditorIO) => IO<void>;
 
 const insertText: HandlerIO = (
   event,
-  { afterTyping, dispatch, DOMRangeToSelection, getExistingDOMSelection },
+  { afterTyping, modifyValue, DOMRangeToSelection, getExistingDOMSelection },
 ) => () => {
   const dispatchSetTextAfterTyping = () =>
     pipe(
@@ -92,10 +93,7 @@ const insertText: HandlerIO = (
       fold(preventDefault(event), async ({ getText, path, selection }) => {
         await afterTyping();
         const text = getText();
-        dispatch({
-          type: 'setText',
-          arg: { text, path, selection },
-        })();
+        modifyValue(setText({ text, path, selection }))();
       }),
     );
 
@@ -115,7 +113,7 @@ const insertText: HandlerIO = (
 
 const insertReplacementText: HandlerIO = (
   event,
-  { afterTyping, dispatch, DOMRangeToSelection, getSelectionFromDOM },
+  { afterTyping, modifyValue, DOMRangeToSelection, getSelectionFromDOM },
 ) => () =>
   pipe(
     getDOMRangeFromInputEvent(event),
@@ -134,10 +132,7 @@ const insertReplacementText: HandlerIO = (
           getSelectionFromDOM(),
         ),
         fold(constVoid, ([text, selection]) => {
-          dispatch({
-            type: 'setText',
-            arg: { text, path, selection },
-          })();
+          modifyValue(setText({ text, path, selection }))();
         }),
       );
     }),
@@ -145,7 +140,7 @@ const insertReplacementText: HandlerIO = (
 
 const deleteContent: HandlerIO = (
   event,
-  { afterTyping, dispatch, DOMRangeToSelection, getExistingDOMSelection },
+  { afterTyping, modifyValue, DOMRangeToSelection, getExistingDOMSelection },
 ) => () => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
@@ -182,10 +177,7 @@ const deleteContent: HandlerIO = (
             const path = textIsGoingToBeReplacedWithBR
               ? selection.anchor
               : nonEmptyPath;
-            dispatch({
-              type: 'setText',
-              arg: { text, path, selection },
-            })();
+            modifyValue(setText({ text, path, selection }))();
           }),
         );
       }),

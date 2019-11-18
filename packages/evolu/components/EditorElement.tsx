@@ -1,5 +1,4 @@
-import React, { ReactNode, RefObject } from 'react';
-import { useFocus } from '../hooks/useFocus';
+import React, { ReactNode, RefObject, useCallback } from 'react';
 import { EditorIO, EditorElementAttrs } from '../types';
 
 type EditorElementProps = {
@@ -22,18 +21,24 @@ export const EditorElement = ({
     ...rest
   } = attrs;
 
-  const { onFocus, onBlur } = useFocus(editorIO);
+  const handleBlur = useCallback(() => {
+    editorIO.onBlur.read()();
+  }, [editorIO.onBlur]);
+
+  const handleFocus = useCallback(() => {
+    editorIO.onFocus.read()();
+  }, [editorIO.onFocus]);
 
   return (
     <div
       autoCorrect={autoCorrect}
-      spellCheck={spellCheck}
-      role={role}
       contentEditable
       data-gramm // Disable Grammarly Chrome extension.
-      onBlur={onBlur}
-      onFocus={onFocus}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
       ref={elementRef}
+      role={role}
+      spellCheck={spellCheck}
       suppressContentEditableWarning
       suppressHydrationWarning
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

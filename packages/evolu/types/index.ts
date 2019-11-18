@@ -1,14 +1,15 @@
 import { IO } from 'fp-ts/lib/IO';
 import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
+import { IORef } from 'fp-ts/lib/IORef';
 import { Newtype } from 'newtype-ts';
 import { ReactDOM, ReactNode, Reducer, RefObject } from 'react';
 import { $Values } from 'utility-types';
 import {
   DOMNode,
+  DOMNodeOffset,
   DOMRange,
   DOMSelection,
-  DOMNodeOffset,
   ExistingDOMSelection,
 } from './dom';
 
@@ -126,6 +127,7 @@ export type SetTextArg = {
   selection: Selection;
 };
 
+// TOHLE PUJDE DO PRDELE!
 export type EditorAction =
   | { type: 'focus' }
   | { type: 'blur' }
@@ -133,6 +135,7 @@ export type EditorAction =
   | { type: 'setText'; arg: SetTextArg }
   | { type: 'deleteContent'; selection: Selection };
 
+// TOHLE PUJDE DO PRDELE!
 export type EditorReducer = Reducer<Value, EditorAction>;
 
 export type EditorElementAttrs = Pick<
@@ -162,7 +165,6 @@ export interface EditorIO {
   readonly afterTyping: Task<void>;
   readonly createDOMRange: IO<Option<DOMRange>>;
   readonly createInfo: (selection: Selection) => Info; // TODO: IO
-  readonly dispatch: (action: EditorAction) => IO<void>;
   readonly DOMRangeToSelection: (range: DOMRange) => IO<Option<Selection>>;
   readonly ensureDOMSelectionIsActual: IO<void>;
   readonly focus: IO<void>;
@@ -175,8 +177,13 @@ export interface EditorIO {
   readonly getSelectionFromDOM: IO<Option<Selection>>;
   readonly getValue: IO<Value>;
   readonly isTyping: IO<boolean>;
+  readonly modifyValue: (callback: (value: Value) => Value) => IO<void>;
+  readonly onBlur: IORef<IO<void>>;
+  readonly onFocus: IORef<IO<void>>;
+  readonly onSelectionChange: IORef<IO<void>>;
   readonly pathToNodeOffset: (path: NonEmptyPath) => IO<Option<DOMNodeOffset>>;
   readonly setDOMSelection: (selection: Selection) => IO<void>;
+  readonly setValue: (value: Value) => IO<void>;
 }
 
 export type EditorRef = RefObject<EditorIO>;

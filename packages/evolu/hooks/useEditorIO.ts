@@ -14,22 +14,25 @@ import {
 } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Task } from 'fp-ts/lib/Task';
-import { RefObject, useCallback, useMemo } from 'react';
+import { RefObject, useCallback, useMemo, useRef } from 'react';
+import { IORef } from 'fp-ts/lib/IORef';
 import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
 import { initNonEmptyPath } from '../models/path';
 import { eqSelection, isForward, makeSelection } from '../models/selection';
 import { EditorIO, GetDOMNodeByPath, GetPathByDOMNode } from '../types';
 import { DOMNodeOffset } from '../types/dom';
+import { warn } from '../warn';
 
 export const useEditorIO = (
-  elementRef: RefObject<HTMLDivElement>,
-  isTyping: EditorIO['isTyping'],
   afterTyping: Task<void>,
-  getValue: EditorIO['getValue'],
-  dispatch: EditorIO['dispatch'],
+  elementRef: RefObject<HTMLDivElement>,
   getDOMNodeByPath: GetDOMNodeByPath,
   getPathByDOMNode: GetPathByDOMNode,
+  getValue: EditorIO['getValue'],
+  isTyping: EditorIO['isTyping'],
+  modifyValue: EditorIO['modifyValue'],
+  setValue: EditorIO['setValue'],
 ): EditorIO => {
   const getElement = useCallback<EditorIO['getElement']>(
     () => fromNullable(elementRef.current),
@@ -186,32 +189,47 @@ export const useEditorIO = (
     [getPathByDOMNode],
   );
 
+  const { current: onSelectionChange } = useRef(new IORef(constVoid));
+  const { current: onFocus } = useRef(new IORef(constVoid));
+  const { current: onBlur } = useRef(new IORef(constVoid));
+
+  const useMemoCalled = useRef(false);
+  const warnIfCalledRepeatedly = useCallback(<A>(a: A): A => {
+    if (useMemoCalled.current) warn('Fix deps in useEditorIO!');
+    useMemoCalled.current = true;
+    return a;
+  }, []);
+
   return useMemo<EditorIO>(
-    () => ({
-      afterTyping,
-      createDOMRange,
-      createInfo,
-      dispatch,
-      DOMRangeToSelection,
-      ensureDOMSelectionIsActual,
-      focus,
-      getDocument,
-      getDOMNodeByPath,
-      getDOMSelection,
-      getElement,
-      getExistingDOMSelection,
-      getPathByDOMNode,
-      getSelectionFromDOM,
-      getValue,
-      isTyping,
-      pathToNodeOffset,
-      setDOMSelection,
-    }),
+    () =>
+      warnIfCalledRepeatedly({
+        afterTyping,
+        createDOMRange,
+        createInfo,
+        DOMRangeToSelection,
+        ensureDOMSelectionIsActual,
+        focus,
+        getDocument,
+        getDOMNodeByPath,
+        getDOMSelection,
+        getElement,
+        getExistingDOMSelection,
+        getPathByDOMNode,
+        getSelectionFromDOM,
+        getValue,
+        isTyping,
+        modifyValue,
+        onBlur,
+        onFocus,
+        onSelectionChange,
+        pathToNodeOffset,
+        setDOMSelection,
+        setValue,
+      }),
     [
       afterTyping,
       createDOMRange,
       createInfo,
-      dispatch,
       DOMRangeToSelection,
       ensureDOMSelectionIsActual,
       focus,
@@ -224,8 +242,14 @@ export const useEditorIO = (
       getSelectionFromDOM,
       getValue,
       isTyping,
+      modifyValue,
+      onBlur,
+      onFocus,
+      onSelectionChange,
       pathToNodeOffset,
       setDOMSelection,
+      setValue,
+      warnIfCalledRepeatedly,
     ],
   );
 };

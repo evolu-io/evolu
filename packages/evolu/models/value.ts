@@ -23,12 +23,12 @@ export const eqValue: Eq<Value> = getStructEq({
   selection: getEq(eqSelection),
 });
 
-export const createValue = <T extends Element>({
+export const createValue = <E extends Element>({
   element,
   selection = none,
   hasFocus = false,
 }: {
-  element: T;
+  element: E;
   selection?: Option<Selection>;
   hasFocus?: boolean;
 }): Value => ({

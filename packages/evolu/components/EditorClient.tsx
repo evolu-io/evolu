@@ -1,20 +1,22 @@
 import React, { forwardRef, memo, useImperativeHandle, useRef } from 'react';
 import { useAfterTyping } from '../hooks/useAfterTyping';
 import { useBeforeInput } from '../hooks/useBeforeInput';
-import { useDispatch } from '../hooks/useDispatch';
 import { useDOMNodesPathsMap } from '../hooks/useDOMNodesPathsMap';
 import { useEditorIO } from '../hooks/useEditorIO';
-import { useSelection } from '../hooks/useSelection';
+import { useSelection } from '../plugins/useSelection';
 import { EditorIO, EditorProps } from '../types';
 import { EditorElement } from './EditorElement';
 import { EditorChildren } from './EditorChildren';
+import { useSelectionChange } from '../hooks/useSelectionChange';
+import { useFocus } from '../plugins/useFocus';
+import { useValue } from '../hooks/useValue';
 
 export const EditorClient = memo(
   forwardRef<EditorIO, EditorProps>(
     ({ value, onChange, renderElement, ...rest }, ref) => {
       const elementRef = useRef<HTMLDivElement>(null);
 
-      const [dispatch, getValue] = useDispatch(onChange, value);
+      const [getValue, setValue, modifyValue] = useValue(value, onChange);
 
       const { afterTyping, isTyping } = useAfterTyping();
 
@@ -25,18 +27,22 @@ export const EditorClient = memo(
       } = useDOMNodesPathsMap(value.element);
 
       const editorIO = useEditorIO(
-        elementRef,
-        isTyping,
         afterTyping,
-        getValue,
-        dispatch,
+        elementRef,
         getDOMNodeByPath,
         getPathByDOMNode,
+        getValue,
+        isTyping,
+        modifyValue,
+        setValue,
       );
-
       useImperativeHandle(ref, () => editorIO);
-      useSelection(editorIO);
+
+      useSelectionChange(editorIO);
       useBeforeInput(editorIO);
+
+      useSelection({ current: editorIO });
+      useFocus({ current: editorIO });
 
       return (
         <EditorElement editorIO={editorIO} elementRef={elementRef} attrs={rest}>

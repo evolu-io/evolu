@@ -10,11 +10,12 @@
   ],
   "dependencies": {
     "debug": "^4.1.1",
-    "nanoid": "^2.1.0",
-    "utility-types": "^3.7.0",
     "fp-ts": "^2.0.5",
     "monocle-ts": "^2.0.0",
-    "newtype-ts": "^0.3.2"
+    "nanoid": "^2.1.0",
+    "newtype-ts": "^0.3.2",
+    "rfc6902": "^3.0.4",
+    "utility-types": "^3.7.0"
   },
   "peerDependencies": {
     "fp-ts": "^2.0.5",
