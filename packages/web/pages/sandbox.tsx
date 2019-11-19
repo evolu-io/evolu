@@ -96,38 +96,6 @@ const Sandbox = () => {
   );
 
   const editorRef = useEditorRef();
-  // // useSetup? useStart? no?
-  // usePlugin(editorRef, editorIO => {
-  //   // console.log(editorIO);
-  //   // return () => {}
-  // });
-  // useEffect(() => {
-  //   console.log(editorRef);
-  // });
-
-  // aha! kazdou pluginu musim bejt schopnej nejdrive napsat tady!
-  // takze musim treba vypnout default chovani
-  // to bude tak, ze tam bude kupa special hooku
-  // provazuje se to pres io? kde se to drzi? pres ref, ok
-  // useEffect(() => {
-  //   // takze treba focus!
-  //   // nebo prepsat default chovani
-  //   // console.log(editorRef.current);
-  //   if (editorRef.current) {
-  //     editorRef.current.onInsertParagraph(value => {
-  //       // editorRef.current.createInfo()
-  //     });
-  //   }
-  // }, [editorRef]);
-
-  // useEnter(editorRef)
-  //  useSoftLine(editorRef)
-  // useToolbar(editorRef)
-  // useReplaceText(editorRef)
-  //  useHashtag(editorRef)
-  //  useMentions(editorRef)
-  // useKey(editorRef)
-  //  useTab(editorRef)
 
   return (
     <Container>
