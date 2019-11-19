@@ -27,7 +27,7 @@ export const useSelection = (editorRef: EditorRef) => {
     },
     layoutEffect: editorIO => {
       if (!editorIO.getValue().hasFocus) return;
-      // TODO: IORef.
+      // It can be IORef as well, if needed.
       editorIO.ensureDOMSelectionIsActual();
     },
   });

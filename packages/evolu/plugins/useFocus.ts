@@ -49,6 +49,7 @@ export const useFocus = (editorRef: EditorRef) => {
         ),
         fold(constVoid, ([document, element, hasFocus]) => {
           const isActive = element === document.activeElement;
+          // Element focus and blur can be IORef as well, if needed.
           if (isActive) {
             // For manual test, click to editor then press cmd-tab twice.
             if (!hasFocus && !tabLostFocus) element.blur();
