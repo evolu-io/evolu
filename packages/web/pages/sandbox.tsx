@@ -1,6 +1,13 @@
+import {
+  createValue,
+  Editor,
+  jsx,
+  useEditorRef,
+  useLogValue,
+  Value,
+} from 'evolu';
 import Head from 'next/head';
-import React, { useCallback, useState, useReducer, useRef } from 'react';
-import { createValue, jsx, useLogValue, Value, EditorIO, Editor } from 'evolu';
+import React, { useCallback, useState } from 'react';
 import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
@@ -77,7 +84,6 @@ const initialValue = createValue({
 
 const Sandbox = () => {
   const [value, setValue] = useState(initialValue);
-  const [forceUpdateKey, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [logValue, logValueElement] = useLogValue(value);
 
@@ -89,8 +95,39 @@ const Sandbox = () => {
     [logValue],
   );
 
-  const editorRef = useRef<EditorIO>(null);
-  // if (editorRef.current) editorRef.current.focus();
+  const editorRef = useEditorRef();
+  // // useSetup? useStart? no?
+  // usePlugin(editorRef, editorIO => {
+  //   // console.log(editorIO);
+  //   // return () => {}
+  // });
+  // useEffect(() => {
+  //   console.log(editorRef);
+  // });
+
+  // aha! kazdou pluginu musim bejt schopnej nejdrive napsat tady!
+  // takze musim treba vypnout default chovani
+  // to bude tak, ze tam bude kupa special hooku
+  // provazuje se to pres io? kde se to drzi? pres ref, ok
+  // useEffect(() => {
+  //   // takze treba focus!
+  //   // nebo prepsat default chovani
+  //   // console.log(editorRef.current);
+  //   if (editorRef.current) {
+  //     editorRef.current.onInsertParagraph(value => {
+  //       // editorRef.current.createInfo()
+  //     });
+  //   }
+  // }, [editorRef]);
+
+  // useEnter(editorRef)
+  //  useSoftLine(editorRef)
+  // useToolbar(editorRef)
+  // useReplaceText(editorRef)
+  //  useHashtag(editorRef)
+  //  useMentions(editorRef)
+  // useKey(editorRef)
+  //  useTab(editorRef)
 
   return (
     <Container>
@@ -104,35 +141,16 @@ const Sandbox = () => {
         onChange={handleEditorChange}
         style={defaultEditorProps.style}
         spellCheck
-        key={forceUpdateKey}
       />
       {logValueElement}
-      {/* <button
-        type="button"
-        onMouseDown={event => {
-          event.preventDefault();
-          // console.log('f');
-          // handleEditorChange(nextValue);
-        }}
-      >
-        update value
-      </button> */}
       <button
         type="button"
         onMouseDown={event => {
           event.preventDefault();
-          forceUpdate({});
-        }}
-      >
-        force update
-      </button>
-      <button
-        type="button"
-        onClick={() => {
           if (editorRef.current) editorRef.current.focus();
         }}
       >
-        focus
+        foo
       </button>
     </Container>
   );
