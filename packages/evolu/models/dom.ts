@@ -7,9 +7,9 @@ import {
   DOMNode,
   DOMNodeOffset,
   DOMRange,
-  DOMSelection,
+  DOMSelectionMaybeNeverExisted,
   DOMText,
-  ExistingDOMSelection,
+  DOMSelection,
 } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
@@ -20,10 +20,10 @@ export const isDOMText: Refinement<DOMNode, DOMText> = (
   node,
 ): node is DOMText => node.nodeType === Node.TEXT_NODE;
 
-export const isExistingDOMSelection: Refinement<
-  DOMSelection,
-  ExistingDOMSelection
-> = (selection): selection is ExistingDOMSelection =>
+export const isDOMSelection: Refinement<
+  DOMSelectionMaybeNeverExisted,
+  DOMSelection
+> = (selection): selection is DOMSelection =>
   selection.anchorNode != null && selection.focusNode != null;
 
 /**
@@ -50,7 +50,7 @@ export const getDOMRangeFromInputEvent = (
 
 export const onlyTextIsAffected = (
   isForward: boolean,
-): Predicate<ExistingDOMSelection> => selection =>
+): Predicate<DOMSelection> => selection =>
   selection.isCollapsed &&
   // nodeValue != null for text node.
   // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue
@@ -58,7 +58,7 @@ export const onlyTextIsAffected = (
   selection.anchorOffset !==
     (isForward ? selection.anchorNode.nodeValue.length : 0);
 
-export const isCollapsedDOMSelectionOnTextOrBR: Predicate<ExistingDOMSelection> = selection =>
+export const isCollapsedDOMSelectionOnTextOrBR: Predicate<DOMSelection> = selection =>
   selection.isCollapsed &&
   (isDOMText(selection.focusNode) ||
     selection.focusNode.childNodes[selection.focusOffset].nodeName === 'BR');

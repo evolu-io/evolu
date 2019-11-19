@@ -3,14 +3,14 @@ import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
 import { IORef } from 'fp-ts/lib/IORef';
 import { Newtype } from 'newtype-ts';
-import { ReactDOM, ReactNode, Reducer, RefObject } from 'react';
+import { ReactDOM, ReactNode, RefObject } from 'react';
 import { $Values } from 'utility-types';
 import {
   DOMNode,
   DOMNodeOffset,
   DOMRange,
+  DOMSelectionMaybeNeverExisted,
   DOMSelection,
-  ExistingDOMSelection,
 } from './dom';
 
 /**
@@ -127,17 +127,6 @@ export type SetTextArg = {
   selection: Selection;
 };
 
-// TOHLE PUJDE DO PRDELE!
-export type EditorAction =
-  | { type: 'focus' }
-  | { type: 'blur' }
-  | { type: 'selectionChange'; selection: Selection }
-  | { type: 'setText'; arg: SetTextArg }
-  | { type: 'deleteContent'; selection: Selection };
-
-// TOHLE PUJDE DO PRDELE!
-export type EditorReducer = Reducer<Value, EditorAction>;
-
 export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'
@@ -174,7 +163,6 @@ export interface EditorIO {
   readonly getDOMNodeByPath: GetDOMNodeByPath;
   readonly getDOMSelection: IO<Option<DOMSelection>>;
   readonly getElement: IO<Option<HTMLDivElement>>;
-  readonly getExistingDOMSelection: IO<Option<ExistingDOMSelection>>;
   readonly getPathByDOMNode: GetPathByDOMNode;
   readonly getSelectionFromDOM: IO<Option<Selection>>;
   readonly getValue: IO<Value>;

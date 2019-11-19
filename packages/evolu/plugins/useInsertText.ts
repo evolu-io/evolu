@@ -29,7 +29,7 @@ const createHandler = ({
   afterTyping,
   modifyValue,
   DOMRangeToSelection,
-  getExistingDOMSelection,
+  getDOMSelection,
 }: EditorIO) => (event: InputEvent) => () => {
   const setTextAfterTyping = () =>
     pipe(
@@ -86,7 +86,7 @@ const createHandler = ({
     );
 
   pipe(
-    getExistingDOMSelection(),
+    getDOMSelection(),
     fold(preventDefault(event), selection => {
       if (isCollapsedDOMSelectionOnTextOrBR(selection)) {
         setTextAfterTyping();

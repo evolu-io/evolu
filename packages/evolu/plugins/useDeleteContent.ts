@@ -17,7 +17,7 @@ const createHandler = ({
   afterTyping,
   modifyValue,
   DOMRangeToSelection,
-  getExistingDOMSelection,
+  getDOMSelection,
 }: EditorIO) => (event: InputEvent) => () => {
   const dispatchSetTextAfterTyping = () => {
     pipe(
@@ -62,7 +62,7 @@ const createHandler = ({
   };
 
   pipe(
-    getExistingDOMSelection(),
+    getDOMSelection(),
     fold(preventDefault(event), selection => {
       const isForward = event.inputType === 'deleteContentForward';
       if (onlyTextIsAffected(isForward)(selection)) {

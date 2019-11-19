@@ -16,7 +16,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Task } from 'fp-ts/lib/Task';
 import { RefObject, useCallback, useMemo, useRef } from 'react';
 import { IORef } from 'fp-ts/lib/IORef';
-import { isExistingDOMSelection, isValidDOMNodeOffset } from '../models/dom';
+import { isDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
 import { initNonEmptyPath } from '../models/path';
 import { eqSelection, isForward, makeSelection } from '../models/selection';
@@ -66,16 +66,11 @@ export const useEditorIO = (
     () =>
       pipe(
         getDocument(),
-        mapNullable(doc => doc.getSelection()),
+        mapNullable(document => document.getSelection()),
+        filter(isDOMSelection),
       ),
     [getDocument],
   );
-
-  const getExistingDOMSelection = useCallback<
-    EditorIO['getExistingDOMSelection']
-  >(() => pipe(getDOMSelection(), filter(isExistingDOMSelection)), [
-    getDOMSelection,
-  ]);
 
   const createInfo = useCallback<EditorIO['createInfo']>(
     selection => modelCreateInfo(selection, getValue().element),
@@ -89,7 +84,7 @@ export const useEditorIO = (
   const getSelectionFromDOM = useCallback<EditorIO['getSelectionFromDOM']>(
     () =>
       pipe(
-        getExistingDOMSelection(),
+        getDOMSelection(),
         chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
           // Nested pipe is ok, we can always refactor it out later.
           pipe(
@@ -104,7 +99,7 @@ export const useEditorIO = (
           ),
         ),
       ),
-    [getExistingDOMSelection, getPathByDOMNode],
+    [getDOMSelection, getPathByDOMNode],
   );
 
   const pathToNodeOffset = useCallback<EditorIO['pathToNodeOffset']>(
@@ -278,7 +273,6 @@ export const useEditorIO = (
         getDOMNodeByPath,
         getDOMSelection,
         getElement,
-        getExistingDOMSelection,
         getPathByDOMNode,
         getSelectionFromDOM,
         getValue,
@@ -351,7 +345,6 @@ export const useEditorIO = (
       getDOMNodeByPath,
       getDOMSelection,
       getElement,
-      getExistingDOMSelection,
       getPathByDOMNode,
       getSelectionFromDOM,
       getValue,
