@@ -93,8 +93,6 @@ const createHandler = ({
         return;
       }
       event.preventDefault();
-      // if (selection.isCollapsed) return;
-      // TODO: dispatch insertText
     }),
   );
 };
