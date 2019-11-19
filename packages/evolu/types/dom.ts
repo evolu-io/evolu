@@ -17,3 +17,4 @@ export type DOMSelection = DOMSelectionMaybeNeverExisted & {
 };
 
 export type DOMNodeOffset = [DOMNode, number];
+export type DOMTextOffset = [DOMText, number];

@@ -12,6 +12,8 @@ import { Container } from '../components/Container';
 import { defaultEditorProps } from '../components/examples/_defaultEditorProps';
 import { Text } from '../components/Text';
 
+// import * as editor from 'evolu'
+
 const initialValue = createValue({
   element: jsx(
     <div className="root">

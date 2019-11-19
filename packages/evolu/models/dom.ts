@@ -1,6 +1,6 @@
 /* eslint-env browser */
 import { Predicate, Refinement } from 'fp-ts/lib/function';
-import { fromNullable, Option } from 'fp-ts/lib/Option';
+import { fromNullable, Option, none, some } from 'fp-ts/lib/Option';
 import { IO } from 'fp-ts/lib/IO';
 import {
   DOMElement,
@@ -10,6 +10,7 @@ import {
   DOMSelectionMaybeNeverExisted,
   DOMText,
   DOMSelection,
+  DOMTextOffset,
 } from '../types/dom';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
@@ -48,26 +49,23 @@ export const getDOMRangeFromInputEvent = (
   // @ts-ignore Outdated types.
   fromNullable(event.getTargetRanges()[0]);
 
-export const onlyTextIsAffected = (
-  isForward: boolean,
-): Predicate<DOMSelection> => selection =>
-  selection.isCollapsed &&
-  // nodeValue != null for text node.
-  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue
-  selection.anchorNode.nodeValue != null &&
-  selection.anchorOffset !==
-    (isForward ? selection.anchorNode.nodeValue.length : 0);
-
 export const isCollapsedDOMSelectionOnTextOrBR: Predicate<DOMSelection> = selection =>
   selection.isCollapsed &&
   (isDOMText(selection.focusNode) ||
     selection.focusNode.childNodes[selection.focusOffset].nodeName === 'BR');
 
 export const getTextContentFromRangeStartContainer: (
-  a: DOMRange,
+  range: DOMRange,
 ) => Option<string> = range => fromNullable(range.startContainer.textContent);
 
 // It's ok to have IOs here. Only Editor related IOs belong to EditorIO.
 export const preventDefault = (event: InputEvent): IO<void> => () => {
   event.preventDefault();
 };
+
+export const DOMSelectionToDOMTextOffset = (
+  selection: DOMSelection,
+): Option<DOMTextOffset> =>
+  selection.isCollapsed && isDOMText(selection.anchorNode)
+    ? some([selection.anchorNode, selection.anchorOffset])
+    : none;

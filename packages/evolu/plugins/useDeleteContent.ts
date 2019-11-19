@@ -1,15 +1,16 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { chain, map, fold, some } from 'fp-ts/lib/Option';
-import { constVoid } from 'fp-ts/lib/function';
+import { chain, map, fold, some, option } from 'fp-ts/lib/Option';
+import { constVoid, Predicate, constFalse } from 'fp-ts/lib/function';
+import { sequenceT } from 'fp-ts/lib/Apply';
 import { EditorRef, EditorIO } from '../types';
 import { usePlugin } from './usePlugin';
 import {
   getDOMRangeFromInputEvent,
   preventDefault,
-  onlyTextIsAffected,
+  DOMSelectionToDOMTextOffset,
 } from '../models/dom';
 import { tryInitNonEmptyPath } from '../models/path';
-import { DOMText } from '../types/dom';
+import { DOMText, DOMRange, DOMSelection } from '../types/dom';
 import { initSelection, collapseToStart } from '../models/selection';
 import { setText } from '../models/value';
 
@@ -19,13 +20,13 @@ const createHandler = ({
   DOMRangeToSelection,
   getDOMSelection,
 }: EditorIO) => (event: InputEvent) => () => {
-  const dispatchSetTextAfterTyping = () => {
+  const dispatchSetTextAfterTyping = (range: DOMRange) => {
     pipe(
-      getDOMRangeFromInputEvent(event),
-      chain(range =>
+      DOMRangeToSelection(range)(),
+      chain(selection =>
         pipe(
-          DOMRangeToSelection(range)(),
-          map(selection => ({ range, selection })),
+          tryInitNonEmptyPath(selection.anchor),
+          map(nonEmptyPath => ({ selection, nonEmptyPath })),
         ),
       ),
       chain(arg =>
@@ -34,7 +35,7 @@ const createHandler = ({
           map(nonEmptyPath => ({ ...arg, nonEmptyPath })),
         ),
       ),
-      fold(preventDefault(event), ({ range, selection, nonEmptyPath }) => {
+      fold(preventDefault(event), ({ selection, nonEmptyPath }) => {
         const textIsGoingToBeReplacedWithBR =
           range.startContainer === range.endContainer &&
           range.startOffset === 0 &&
@@ -61,12 +62,22 @@ const createHandler = ({
     );
   };
 
+  const canUseSetText: Predicate<DOMSelection> = selection =>
+    pipe(
+      DOMSelectionToDOMTextOffset(selection),
+      fold(
+        constFalse,
+        ([node, offset]) =>
+          offset !==
+          (event.inputType === 'deleteContentForward' ? node.data.length : 0),
+      ),
+    );
+
   pipe(
-    getDOMSelection(),
-    fold(preventDefault(event), selection => {
-      const isForward = event.inputType === 'deleteContentForward';
-      if (onlyTextIsAffected(isForward)(selection)) {
-        dispatchSetTextAfterTyping();
+    sequenceT(option)(getDOMSelection(), getDOMRangeFromInputEvent(event)),
+    fold(preventDefault(event), ([selection, range]) => {
+      if (canUseSetText(selection)) {
+        dispatchSetTextAfterTyping(range);
       } else {
         preventDefault(event)();
       }
