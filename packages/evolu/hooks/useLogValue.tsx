@@ -41,7 +41,10 @@ const Item = memo(
         {shown ? <b>{text}</b> : text}
         {shown && (
           <div title="click to close" onMouseDown={handleItemMouseDown}>
-            {JSON.stringify(elementToIDless(element), null, 2)}
+            {JSON.stringify(elementToIDless(element), null, 2)
+              // Make non-breaking space visible.
+              .split('\xa0')
+              .join('&nbsp;')}
           </div>
         )}
         <style jsx>{`
