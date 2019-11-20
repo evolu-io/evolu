@@ -69,3 +69,8 @@ export const DOMSelectionToDOMTextOffset = (
   selection.isCollapsed && isDOMText(selection.anchorNode)
     ? some([selection.anchorNode, selection.anchorOffset])
     : none;
+
+export const canMoveWithinDOMTextOffset = (
+  forward: boolean,
+): Predicate<DOMTextOffset> => ([node, offset]) =>
+  forward ? offset < node.data.length : offset > 0;

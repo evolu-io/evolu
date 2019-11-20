@@ -8,6 +8,7 @@ import {
   getDOMRangeFromInputEvent,
   preventDefault,
   DOMSelectionToDOMTextOffset,
+  canMoveWithinDOMTextOffset,
 } from '../models/dom';
 import { tryInitNonEmptyPath } from '../models/path';
 import { DOMText, DOMRange, DOMSelection } from '../types/dom';
@@ -20,7 +21,7 @@ const createHandler = ({
   DOMRangeToSelection,
   getDOMSelection,
 }: EditorIO) => (event: InputEvent) => () => {
-  const dispatchSetTextAfterTyping = (range: DOMRange) => {
+  const setTextAfterTyping = (range: DOMRange) => {
     pipe(
       DOMRangeToSelection(range)(),
       chain(selection =>
@@ -62,22 +63,22 @@ const createHandler = ({
     );
   };
 
-  const canUseSetText: Predicate<DOMSelection> = selection =>
+  const canUseSetText: Predicate<[DOMSelection, DOMRange]> = ([selection]) =>
     pipe(
       DOMSelectionToDOMTextOffset(selection),
-      fold(
-        constFalse,
-        ([node, offset]) =>
-          offset !==
-          (event.inputType === 'deleteContentForward' ? node.data.length : 0),
-      ),
+      fold(constFalse, ([node, offset]) => {
+        const within = canMoveWithinDOMTextOffset(
+          event.inputType === 'deleteContentForward',
+        )([node, offset]);
+        return within;
+      }),
     );
 
   pipe(
     sequenceT(option)(getDOMSelection(), getDOMRangeFromInputEvent(event)),
     fold(preventDefault(event), ([selection, range]) => {
-      if (canUseSetText(selection)) {
-        dispatchSetTextAfterTyping(range);
+      if (canUseSetText([selection, range])) {
+        setTextAfterTyping(range);
       } else {
         preventDefault(event)();
       }
