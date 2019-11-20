@@ -53,6 +53,25 @@ export const useEditorIO = (
     [getElement],
   );
 
+  const getWindow = useCallback<EditorIO['getWindow']>(
+    () =>
+      pipe(
+        getDocument(),
+        mapNullable(doc => doc.defaultView),
+      ),
+    [getDocument],
+  );
+
+  const getComputedStyle = useCallback<EditorIO['getComputedStyle']>(
+    el => () =>
+      pipe(
+        fromNullable(el.ownerDocument),
+        mapNullable(doc => doc.defaultView),
+        chain(win => some(win.getComputedStyle(el))),
+      ),
+    [],
+  );
+
   const createDOMRange = useCallback<EditorIO['createDOMRange']>(
     () =>
       pipe(
@@ -264,7 +283,9 @@ export const useEditorIO = (
         createInfo,
         DOMRangeToSelection,
         ensureDOMSelectionIsActual,
+        getComputedStyle,
         focus,
+        getWindow,
         getDocument,
         getDOMNodeByPath,
         getDOMSelection,
@@ -337,6 +358,7 @@ export const useEditorIO = (
       DOMRangeToSelection,
       ensureDOMSelectionIsActual,
       focus,
+      getComputedStyle,
       getDocument,
       getDOMNodeByPath,
       getDOMSelection,
@@ -344,6 +366,7 @@ export const useEditorIO = (
       getPathByDOMNode,
       getSelectionFromDOM,
       getValue,
+      getWindow,
       isTyping,
       modifyValue,
       onBlur,

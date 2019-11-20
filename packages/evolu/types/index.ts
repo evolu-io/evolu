@@ -9,8 +9,8 @@ import {
   DOMNode,
   DOMNodeOffset,
   DOMRange,
-  DOMSelectionMaybeNeverExisted,
   DOMSelection,
+  DOMElement,
 } from './dom';
 
 /**
@@ -159,6 +159,7 @@ export interface EditorIO {
   readonly DOMRangeToSelection: (range: DOMRange) => IO<Option<Selection>>;
   readonly ensureDOMSelectionIsActual: IO<void>;
   readonly focus: IO<void>;
+  readonly getComputedStyle: (el: DOMElement) => IO<Option<CSSStyleDeclaration>>; // prettier-ignore
   readonly getDocument: IO<Option<Document>>;
   readonly getDOMNodeByPath: GetDOMNodeByPath;
   readonly getDOMSelection: IO<Option<DOMSelection>>;
@@ -166,6 +167,7 @@ export interface EditorIO {
   readonly getPathByDOMNode: GetPathByDOMNode;
   readonly getSelectionFromDOM: IO<Option<Selection>>;
   readonly getValue: IO<Value>;
+  readonly getWindow: IO<Option<Window>>;
   readonly isTyping: IO<boolean>;
   readonly modifyValue: (callback: (value: Value) => Value) => IO<void>;
   readonly pathToNodeOffset: (path: NonEmptyPath) => IO<Option<DOMNodeOffset>>;
