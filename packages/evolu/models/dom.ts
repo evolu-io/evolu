@@ -74,3 +74,11 @@ export const canMoveWithinDOMTextOffset = (
   forward: boolean,
 ): Predicate<DOMTextOffset> => ([node, offset]) =>
   forward ? offset < node.data.length : offset > 0;
+
+export const isDOMTextToBeDeletedByRange: (
+  node: DOMText,
+) => Predicate<DOMRange> = node => range =>
+  range.startOffset === 0 && range.endOffset === node.data.length;
+
+export const isInline: Predicate<CSSStyleDeclaration> = declaration =>
+  declaration.display === 'inline';
