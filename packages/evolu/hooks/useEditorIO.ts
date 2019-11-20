@@ -196,12 +196,8 @@ export const useEditorIO = (
   const onBlur = useIORef();
 
   const useInputEventIORef = () =>
-    useRef<InputEventIORef>(
-      new IORef(event => () => {
-        // Block all by default.
-        event.preventDefault();
-      }),
-    ).current;
+    useRef<InputEventIORef>(new IORef(event => () => event.preventDefault()))
+      .current;
 
   const onInsertText = useInputEventIORef();
   const onInsertReplacementText = useInputEventIORef();
