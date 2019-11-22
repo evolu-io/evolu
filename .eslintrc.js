@@ -56,6 +56,7 @@ module.exports = {
     'max-classes-per-file': 'off',
     'no-else-return': 'off',
     'no-nested-ternary': 'off',
+    // Because of newtype.
     '@typescript-eslint/no-empty-interface': 'off',
     // Buggy when some variable is refactored.
     'import/named': 'off',
