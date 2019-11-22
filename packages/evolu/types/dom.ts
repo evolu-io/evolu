@@ -11,10 +11,10 @@ export interface DOMText extends Text {}
  */
 export interface DOMSelectionMaybeNeverExisted extends Selection {}
 
-export type DOMSelection = DOMSelectionMaybeNeverExisted & {
+export interface DOMSelection extends DOMSelectionMaybeNeverExisted {
   readonly anchorNode: DOMNode;
   readonly focusNode: DOMNode;
-};
+}
 
 export type DOMNodeOffset = [DOMNode, number];
 export type DOMTextOffset = [DOMText, number];

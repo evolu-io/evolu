@@ -35,7 +35,6 @@ export interface Element {
 
 export type Node = Element | Text;
 
-// TODO: Consider newtype.
 export type PathIndex = number;
 
 /**
@@ -86,22 +85,25 @@ export interface Range {
   readonly end: NonEmptyPath;
 }
 
-export type GetDOMNodeByPath = (path: Path) => IO<Option<DOMNode>>;
-export type GetPathByDOMNode = (node: DOMNode) => IO<Option<Path>>;
+export interface GetDOMNodeByPath {
+  (path: Path): IO<Option<DOMNode>>;
+}
 
-export type SetDOMNodePathRef = (node: DOMNode | null) => void;
+export interface GetPathByDOMNode {
+  (node: DOMNode): IO<Option<Path>>;
+}
 
-export type SetDOMNodePath = (
-  operation: 'add' | 'remove',
-  node: DOMNode,
-  path: Path,
-) => void;
+export interface SetDOMNodePathRef {
+  (node: DOMNode | null): void;
+}
 
-export type RenderElement = (
-  element: Element,
-  children: ReactNode,
-  ref: SetDOMNodePathRef,
-) => ReactNode;
+export interface SetDOMNodePath {
+  (operation: 'add' | 'remove', node: DOMNode, path: Path): void;
+}
+
+export interface RenderElement {
+  (element: Element, children: ReactNode, ref: SetDOMNodePathRef): ReactNode;
+}
 
 interface ReactElementFactory<T, P> extends Element {
   readonly tag: T;
@@ -121,11 +123,11 @@ export type ReactElement = $Values<
   }
 >;
 
-export type SetTextArg = {
+export interface SetTextArg {
   text: Text;
   path: NonEmptyPath;
   selection: Selection;
-};
+}
 
 export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,

@@ -1,12 +1,12 @@
 import React, { ReactNode, RefObject, useCallback } from 'react';
 import { EditorIO, EditorElementAttrs } from '../types';
 
-type EditorElementProps = {
-  editorIO: EditorIO;
-  elementRef: RefObject<HTMLDivElement>;
-  children: ReactNode;
-  attrs: EditorElementAttrs;
-};
+interface EditorElementProps {
+  readonly editorIO: EditorIO;
+  readonly elementRef: RefObject<HTMLDivElement>;
+  readonly children: ReactNode;
+  readonly attrs: EditorElementAttrs;
+}
 
 export const EditorElement = ({
   editorIO,
