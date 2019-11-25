@@ -150,12 +150,6 @@ export type ReactElement = $Values<
   }
 >;
 
-export interface SetTextArg {
-  text: Text;
-  path: NonEmptyPath;
-  selection: Selection;
-}
-
 export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,
   | 'accessKey'

@@ -4,7 +4,14 @@ import { getEq, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
-import { Element, ReactElement, Selection, SetTextArg, Value } from '../types';
+import {
+  Element,
+  ReactElement,
+  Selection,
+  Text,
+  Value,
+  NonEmptyPath,
+} from '../types';
 import { eqElement, jsx, normalizeElement, setTextElement } from './element';
 import { eqSelection } from './selection';
 
@@ -56,12 +63,19 @@ export const select = (selection: Selection): Endomorphism<Value> => value => ({
   selection: some(selection),
 });
 
-export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
-  pipe(
-    value,
-    elementLens.modify(setTextElement({ text: arg.text, path: arg.path })),
-    value => ({ ...value, selection: some(arg.selection) }),
-  );
+export const setText = ({
+  text,
+  path,
+  selection,
+}: {
+  text: Text;
+  path: NonEmptyPath;
+  selection: Selection;
+}): Endomorphism<Value> => value =>
+  pipe(value, elementLens.modify(setTextElement({ text, path })), value => ({
+    ...value,
+    selection: some(selection),
+  }));
 
 // TODO: Rethink move, maybe we will use Either.
 // export const move = (delta: PathDelta): Endomorphism<Value> => value =>
