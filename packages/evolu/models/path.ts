@@ -1,29 +1,38 @@
 import { array, getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
-import { Refinement, identity } from 'fp-ts/lib/function';
+import { identity, Refinement } from 'fp-ts/lib/function';
+import { last } from 'fp-ts/lib/NonEmptyArray';
 import {
-  last,
-  NonEmptyArray,
-  nonEmptyArray,
-  map as nonEmptyArrayMap,
-} from 'fp-ts/lib/NonEmptyArray';
-import { map, none, Option, option, some, fold } from 'fp-ts/lib/Option';
+  filter,
+  fold,
+  map,
+  none,
+  Option,
+  option,
+  some,
+} from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { Prism } from 'monocle-ts';
 import { getEq as getNewtypeEq } from 'newtype-ts';
 import { prismInteger } from 'newtype-ts/lib/Integer';
 import {
   NonNegativeInteger,
   prismNonNegativeInteger,
 } from 'newtype-ts/lib/NonNegativeInteger';
-import { Prism } from 'monocle-ts';
 import {
   NonEmptyPath,
   NonEmptyPathWithOffset,
   Path,
-  PathIndex,
   PathDelta,
+  PathIndex,
 } from '../types';
+
+export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
+  path,
+): path is NonEmptyPath => {
+  return path.length > 0;
+};
 
 /**
  * Smart constructor for PathIndex.
@@ -67,16 +76,8 @@ export const unwrapPath = (path: Path): number[] => path.map(unwrapPathIndex);
 /**
  * Smart constructor for NonEmptyPath.
  */
-export const toNonEmptyPath = (
-  indexes: NonEmptyArray<number>,
-): Option<NonEmptyPath> =>
-  pipe(nonEmptyArrayMap(toPathIndex)(indexes), nonEmptyArray.sequence(option));
-
-export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
-  path,
-): path is NonEmptyPath => {
-  return path.length > 0;
-};
+export const toNonEmptyPath = (indexes: number[]): Option<NonEmptyPath> =>
+  pipe(toPath(indexes), filter(isNonEmptyPath));
 
 /**
  * Helper for tests. With FP, we never throw. But tests are different, they throw.
