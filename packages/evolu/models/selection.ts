@@ -10,6 +10,20 @@ import { NonEmptyPath, PathDelta, Range, Selection } from '../types';
 import { byDirection, eqPath, movePath, toNonEmptyPath } from './path';
 
 /**
+ * Smart constructor for Selection.
+ */
+export const toSelection = (
+  anchor: number[],
+  focus: number[],
+): Option<Selection> =>
+  pipe(
+    sequenceS(option)({
+      anchor: toNonEmptyPath(anchor),
+      focus: toNonEmptyPath(focus),
+    }),
+  );
+
+/**
  * Helper for tests. With FP, we never throw. But tests are different, they throw.
  */
 export const unsafeSelection = ({
@@ -20,10 +34,7 @@ export const unsafeSelection = ({
   focus: NonEmptyArray<number>;
 }): Selection =>
   pipe(
-    sequenceS(option)({
-      anchor: toNonEmptyPath(anchor),
-      focus: toNonEmptyPath(focus),
-    }),
+    toSelection(anchor, focus),
     fold(() => {
       throw new Error('invalid selection');
     }, identity),
