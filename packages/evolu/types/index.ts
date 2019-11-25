@@ -10,6 +10,14 @@ import { Integer } from 'newtype-ts/lib/Integer';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { DOMNode, DOMRange, DOMSelection, DOMElement, DOMText } from './dom';
 
+// *Json types are data tranfer objects. They may or may not be valid.
+// For example, invalid PathJson can be `[-1, 1]`, invalid ElementJson may
+// not be normalized, etc. With newtype, TypeScript enforce correctness
+// forcing us to use smart constructors.
+// https://dev.to/gcanti/functional-design-smart-constructors-14nb
+// https://github.com/gcanti/newtype-ts
+// For rich schemas, we can leverage https://github.com/gcanti/io-ts.
+
 /**
  * Editor text is a string. Like in React.
  */
@@ -77,7 +85,7 @@ export interface Selection {
 /**
  * Selection JSON.
  */
-export interface SelectionJSON {
+export interface SelectionJson {
   readonly anchor: NonEmptyArray<number>;
   readonly focus: NonEmptyArray<number>;
 }

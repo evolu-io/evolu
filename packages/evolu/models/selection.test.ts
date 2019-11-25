@@ -8,12 +8,12 @@ import {
   collapseToEnd,
   toSelection,
 } from './selection';
-import { Selection, SelectionJSON } from '../types';
+import { Selection, SelectionJson } from '../types';
 
 // A helper for tests only. Remember, we don't want to create Selection this way,
 // because it throws and with functional programming, we never throw.
 // But tests are different, they throw.
-const s = (json: SelectionJSON): Selection => {
+const s = (json: SelectionJson): Selection => {
   const nullable = toNullable(toSelection(json));
   if (nullable == null) throw new Error('wrong selection');
   return nullable;
