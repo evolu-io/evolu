@@ -17,8 +17,9 @@ import {
   NonEmptyPath,
   Path,
   ReactElement,
+  PathIndex,
 } from '../types';
-import { initNonEmptyPath } from './path';
+import { initNonEmptyPath, unwrapPathIndex } from './path';
 import { isText, isTextNotBR, textIsBR } from './text';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
@@ -145,7 +146,8 @@ export const elementToIDless = (element: Element) => {
 export const childrenLens = Lens.fromProp<Element>()('children');
 export const elementPrism = Prism.fromPredicate(isElement);
 export const textPrism = Prism.fromPredicate(isText);
-export const getChildAt = (index: number) => indexArray<Node>().index(index);
+export const getChildAt = (index: PathIndex) =>
+  indexArray<Node>().index(unwrapPathIndex(index));
 
 /**
  * Focus on Element by Path.

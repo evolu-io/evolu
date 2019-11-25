@@ -1,15 +1,18 @@
-import React, { memo, useCallback, useMemo } from 'react';
 import { empty } from 'fp-ts/lib/Array';
+import { constNull } from 'fp-ts/lib/function';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
+import { fold } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
-import { eqPath } from '../models/path';
-import { isText } from '../models/text';
-import { TextRenderer } from './TextRenderer';
-import { warn } from '../warn';
 import { isDOMElement } from '../models/dom';
-import { Element, NonEmptyPath, SetDOMNodePathRef, Path } from '../types';
 import { createKeyForElement } from '../models/element';
+import { eqPath, pathIndex } from '../models/path';
+import { isText } from '../models/text';
+import { Element, Path, SetDOMNodePathRef } from '../types';
+import { warn } from '../warn';
+import { TextRenderer } from './TextRenderer';
 
 export const ElementRenderer = memo<{
   element: Element;
@@ -40,27 +43,31 @@ export const ElementRenderer = memo<{
       [setDOMNodePathRef],
     );
 
-    const children = useMemo(() => {
-      return element.children.map((child, index) => {
-        const childPath: NonEmptyPath = snoc(path, index);
-        if (isText(child)) {
-          return (
-            <TextRenderer
-              key={index.toString()}
-              text={child}
-              path={childPath}
-            />
-          );
-        }
-        return (
-          <ElementRenderer
-            key={createKeyForElement(child)}
-            element={child}
-            path={childPath}
-          />
-        );
-      });
-    }, [element.children, path]);
+    const children = useMemo(
+      () =>
+        element.children.map((child, index) =>
+          pipe(
+            pathIndex(index),
+            fold(constNull, index => {
+              const childPath = snoc(path, index);
+              return isText(child) ? (
+                <TextRenderer
+                  key={index.toString()}
+                  text={child}
+                  path={childPath}
+                />
+              ) : (
+                <ElementRenderer
+                  key={createKeyForElement(child)}
+                  element={child}
+                  path={childPath}
+                />
+              );
+            }),
+          ),
+        ),
+      [element.children, path],
+    );
 
     return <>{renderElement(element, children, handleElementRef)}</>;
   },

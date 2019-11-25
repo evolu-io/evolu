@@ -15,6 +15,3 @@ export interface DOMSelection extends DOMSelectionMaybeNeverExisted {
   readonly anchorNode: DOMNode;
   readonly focusNode: DOMNode;
 }
-
-export type DOMNodeOffset = [DOMNode, number];
-export type DOMTextOffset = [DOMText, number];

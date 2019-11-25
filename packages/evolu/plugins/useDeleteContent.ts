@@ -8,7 +8,7 @@ import {
   getDOMRangeFromInputEvent,
   preventDefault,
   DOMSelectionToDOMTextOffset,
-  canMoveWithinDOMTextOffset,
+  isMoveWithinDOMTextOffset,
 } from '../models/dom';
 import { tryInitNonEmptyPath } from '../models/path';
 import { DOMText, DOMRange, DOMSelection } from '../types/dom';
@@ -67,7 +67,7 @@ const createHandler = ({
     pipe(
       DOMSelectionToDOMTextOffset(selection),
       fold(constFalse, ([node, offset]) => {
-        const within = canMoveWithinDOMTextOffset(
+        const within = isMoveWithinDOMTextOffset(
           event.inputType === 'deleteContentForward',
         )([node, offset]);
         return within;

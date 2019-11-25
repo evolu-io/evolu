@@ -1,21 +1,12 @@
 import { Eq, eqBoolean, getStructEq } from 'fp-ts/lib/Eq';
 import { Endomorphism } from 'fp-ts/lib/function';
+import { getEq, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
-import {
-  Option,
-  getEq,
-  none,
-  some,
-  fromNullable,
-  map,
-  getOrElse,
-  fold,
-} from 'fp-ts/lib/Option';
 import { Element, ReactElement, Selection, SetTextArg, Value } from '../types';
 import { eqElement, jsx, normalizeElement, setTextElement } from './element';
-import { eqSelection, moveSelection } from './selection';
+import { eqSelection } from './selection';
 
 export const eqValue: Eq<Value> = getStructEq({
   element: eqElement,
@@ -69,23 +60,19 @@ export const setText = (arg: SetTextArg): Endomorphism<Value> => value =>
   pipe(
     value,
     elementLens.modify(setTextElement({ text: arg.text, path: arg.path })),
-    value =>
-      pipe(
-        fromNullable(arg.selection),
-        map(selection => ({ ...value, selection: some(selection) })),
-        getOrElse(() => value),
-      ),
+    value => ({ ...value, selection: some(arg.selection) }),
   );
 
-export const move = (offset: number): Endomorphism<Value> => value =>
-  pipe(
-    value.selection,
-    map(moveSelection(offset)),
-    fold(
-      () => value,
-      selection => select(selection)(value),
-    ),
-  );
+// TODO: Rethink move, maybe we will use Either.
+// export const move = (delta: PathDelta): Endomorphism<Value> => value =>
+// pipe(
+//     sequenceT(option)(pathIndex(delta), value.selection),
+//     chain(([delta, selection]) => moveSelection(delta)(selection)),
+//     fold(
+//       () => value,
+//       selection => ({ ...value, selection: some(selection) }),
+//     ),
+//   );
 
 export const deleteContent = (
   selection: Selection,

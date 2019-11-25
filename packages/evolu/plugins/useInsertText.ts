@@ -21,8 +21,10 @@ import {
   movePath,
   isNonEmptyPathWithOffset,
   initNonEmptyPathWithOffset,
+  pathIndex,
+  pathDelta,
 } from '../models/path';
-import { pathToSelection } from '../models/selection';
+import { selectionFromPath } from '../models/selection';
 import { setText } from '../models/value';
 
 const createHandler = ({
@@ -58,25 +60,29 @@ const createHandler = ({
             );
           return text;
         };
-        const selectionAfterInsert = pipe(
-          putBRback ? snoc(anchor, 0) : anchor,
-          movePath(eventData.length),
-          pathToSelection,
+        return pipe(
+          sequenceT(option)(pathIndex(0), pathDelta(eventData.length)),
+          chain(([index, delta]) =>
+            pipe(putBRback ? snoc(anchor, index) : anchor, movePath(delta)),
+          ),
+          map(selectionFromPath),
+          chain(selectionAfterInsert => {
+            if (putBRback)
+              return some({
+                getText,
+                selection: selectionAfterInsert,
+                path: anchor,
+              });
+            if (isNonEmptyPathWithOffset(anchor)) {
+              return some({
+                getText,
+                selection: selectionAfterInsert,
+                path: initNonEmptyPathWithOffset(anchor),
+              });
+            }
+            return none;
+          }),
         );
-        if (putBRback)
-          return some({
-            getText,
-            selection: selectionAfterInsert,
-            path: anchor,
-          });
-        if (isNonEmptyPathWithOffset(anchor)) {
-          return some({
-            getText,
-            selection: selectionAfterInsert,
-            path: initNonEmptyPathWithOffset(anchor),
-          });
-        }
-        return none;
       }),
       fold(preventDefault(event), async ({ getText, path, selection }) => {
         await afterTyping();

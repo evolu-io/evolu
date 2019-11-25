@@ -7,8 +7,11 @@ import {
   Value,
   Editor,
   Selection,
+  selection,
 } from 'evolu';
-import { some } from 'fp-ts/lib/Option';
+import { some, fold } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { constVoid } from 'fp-ts/lib/function';
 
 export const testSelectionElement: ReactElement = {
   id: id(),
@@ -71,10 +74,13 @@ const TestSelection = () => {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            select({
-              anchor: [0, 0, 0],
-              focus: [0, 0, 2],
-            });
+            pipe(
+              selection({
+                anchor: [0, 0, 0],
+                focus: [0, 0, 2],
+              }),
+              fold(constVoid, select),
+            );
           }}
         >
           select first two letters
@@ -84,10 +90,13 @@ const TestSelection = () => {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            select({
-              anchor: [0, 0, 2],
-              focus: [0, 0, 0],
-            });
+            pipe(
+              selection({
+                anchor: [0, 0, 2],
+                focus: [0, 0, 0],
+              }),
+              fold(constVoid, select),
+            );
           }}
         >
           select first two letters backward
@@ -97,10 +106,13 @@ const TestSelection = () => {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            select({
-              anchor: [0, 0, 0],
-              focus: [1, 0, 9],
-            });
+            pipe(
+              selection({
+                anchor: [0, 0, 0],
+                focus: [1, 0, 9],
+              }),
+              fold(constVoid, select),
+            );
           }}
         >
           select all
@@ -110,10 +122,13 @@ const TestSelection = () => {
           type="button"
           onMouseDown={event => {
             event.preventDefault();
-            select({
-              anchor: [1, 0, 9],
-              focus: [0, 0, 0],
-            });
+            pipe(
+              selection({
+                anchor: [1, 0, 9],
+                focus: [0, 0, 0],
+              }),
+              fold(constVoid, select),
+            );
           }}
         >
           select all backward

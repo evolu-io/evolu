@@ -1,6 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { selection } from 'evolu';
+import { toNullable } from 'fp-ts/lib/Option';
 import { Text } from '../components/Text';
 import { Container } from '../components/Container';
 import { BasicExample } from '../components/examples/BasicExample';
@@ -36,7 +38,9 @@ const Index = () => {
       <Text size={2}>Evolu</Text>
       <BasicExample
         autoFocus
-        initialSelection={{ anchor: [0, 0, 0], focus: [0, 0, 2] }}
+        initialSelection={toNullable(
+          selection({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
+        )}
       />
       <SchemaExample />
       <Text size={1}>Tests</Text>

@@ -3,15 +3,12 @@ import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
 import { IORef } from 'fp-ts/lib/IORef';
 import { Newtype } from 'newtype-ts';
+import { NonNegativeInteger } from 'newtype-ts/lib/NonNegativeInteger';
 import { ReactDOM, ReactNode, RefObject } from 'react';
 import { $Values } from 'utility-types';
-import {
-  DOMNode,
-  DOMNodeOffset,
-  DOMRange,
-  DOMSelection,
-  DOMElement,
-} from './dom';
+import { Integer } from 'newtype-ts/lib/Integer';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { DOMNode, DOMRange, DOMSelection, DOMElement, DOMText } from './dom';
 
 /**
  * Editor text is a string. Like in React.
@@ -33,9 +30,20 @@ export interface Element {
   readonly children: Node[];
 }
 
+/**
+ * Element or Text.
+ */
 export type Node = Element | Text;
 
-export type PathIndex = number;
+/**
+ * PathIndex is non negative integer to define children.
+ */
+export interface PathIndex extends NonNegativeInteger {}
+
+/**
+ * PathDelta is an integer to define move forward or backward.
+ */
+export interface PathDelta extends Integer {}
 
 /**
  * Path to a place in Element. It can point to Element, Text, Text char, or nothing.
@@ -67,6 +75,14 @@ export interface Selection {
 }
 
 /**
+ * Selection JSON. It can be invalid so use selection smart constructor.
+ */
+export interface SelectionJSON {
+  readonly anchor: NonEmptyArray<number>;
+  readonly focus: NonEmptyArray<number>;
+}
+
+/**
  * Editor value.
  */
 export interface Value {
@@ -84,6 +100,9 @@ export interface Range {
   readonly start: NonEmptyPath;
   readonly end: NonEmptyPath;
 }
+
+export type DOMNodeOffset = [DOMNode, PathIndex];
+export type DOMTextOffset = [DOMText, PathIndex];
 
 export interface GetDOMNodeByPath {
   (path: Path): IO<Option<DOMNode>>;

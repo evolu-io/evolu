@@ -1,17 +1,18 @@
 /* eslint-env browser */
 import { Predicate, Refinement } from 'fp-ts/lib/function';
-import { fromNullable, Option, none, some } from 'fp-ts/lib/Option';
+import { fromNullable, Option, none, some, chain } from 'fp-ts/lib/Option';
 import { IO } from 'fp-ts/lib/IO';
+import { pipe } from 'fp-ts/lib/pipeable';
 import {
   DOMElement,
   DOMNode,
-  DOMNodeOffset,
   DOMRange,
   DOMSelectionMaybeNeverExisted,
   DOMText,
   DOMSelection,
-  DOMTextOffset,
 } from '../types/dom';
+import { DOMNodeOffset, DOMTextOffset } from '../types';
+import { unwrapPathIndex, pathIndex } from './path';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
@@ -38,9 +39,9 @@ export const isValidDOMNodeOffset: Predicate<DOMNodeOffset> = ([
   offset,
 ]) =>
   isDOMElement(node)
-    ? offset <= node.childNodes.length
+    ? unwrapPathIndex(offset) <= node.childNodes.length
     : isDOMText(node)
-    ? offset <= node.data.length
+    ? unwrapPathIndex(offset) <= node.data.length
     : false;
 
 export const getDOMRangeFromInputEvent = (
@@ -58,7 +59,6 @@ export const getTextContentFromRangeStartContainer: (
   range: DOMRange,
 ) => Option<string> = range => fromNullable(range.startContainer.textContent);
 
-// It's ok to have IOs here. Only Editor related IOs belong to EditorIO.
 export const preventDefault = (event: InputEvent): IO<void> => () => {
   event.preventDefault();
 };
@@ -66,14 +66,21 @@ export const preventDefault = (event: InputEvent): IO<void> => () => {
 export const DOMSelectionToDOMTextOffset = (
   selection: DOMSelection,
 ): Option<DOMTextOffset> =>
-  selection.isCollapsed && isDOMText(selection.anchorNode)
-    ? some([selection.anchorNode, selection.anchorOffset])
-    : none;
+  pipe(
+    pathIndex(selection.anchorOffset),
+    chain(offset =>
+      selection.isCollapsed && isDOMText(selection.anchorNode)
+        ? some([selection.anchorNode, offset])
+        : none,
+    ),
+  );
 
-export const canMoveWithinDOMTextOffset = (
+export const isMoveWithinDOMTextOffset = (
   forward: boolean,
 ): Predicate<DOMTextOffset> => ([node, offset]) =>
-  forward ? offset < node.data.length : offset > 0;
+  forward
+    ? unwrapPathIndex(offset) < node.data.length
+    : unwrapPathIndex(offset) > 0;
 
 export const isDOMTextToBeDeletedByRange: (
   node: DOMText,

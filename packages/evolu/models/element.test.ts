@@ -1,3 +1,6 @@
+import { pipe } from 'fp-ts/lib/pipeable';
+import { fold } from 'fp-ts/lib/Option';
+import { constVoid } from 'fp-ts/lib/function';
 import { createStableIDFactory } from '../../web/tests/integration/helpers';
 import {
   isNormalizedElement,
@@ -7,6 +10,7 @@ import {
   eqElement,
 } from './element';
 import { Element } from '../types';
+import { pathIndex } from './path';
 
 const id = createStableIDFactory();
 
@@ -127,7 +131,12 @@ test('childrenLens', () => {
 test('getChildAt', () => {
   const child: Element = { id: id(), children: [] };
   const children: Element['children'] = [{ id: id(), children: [] }];
-  expect(getChildAt(0).set(child)(children)[0]).toBe(child);
+  pipe(
+    pathIndex(0),
+    fold(constVoid, index => {
+      expect(getChildAt(index).set(child)(children)[0]).toBe(child);
+    }),
+  );
 });
 
 test('eqElement', () => {

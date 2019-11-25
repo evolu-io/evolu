@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, Value, useLogValue, createValue } from 'evolu';
-import { some } from 'fp-ts/lib/Option';
+import { Editor, Value, useLogValue, createValue, selection } from 'evolu';
 import { testSelectionElement } from './testSelection';
 
 const initialValue = createValue({
   element: testSelectionElement,
   hasFocus: false,
-  selection: some({
+  selection: selection({
     anchor: [0, 0, 0],
     focus: [0, 0, 2],
   }),

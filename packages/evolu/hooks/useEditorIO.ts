@@ -18,15 +18,15 @@ import { RefObject, useCallback, useMemo, useRef } from 'react';
 import { IORef } from 'fp-ts/lib/IORef';
 import { isDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
-import { initNonEmptyPath } from '../models/path';
-import { eqSelection, isForward, makeSelection } from '../models/selection';
+import { initNonEmptyPath, pathIndex, unwrapPathIndex } from '../models/path';
+import { eqSelection, isForward } from '../models/selection';
 import {
   EditorIO,
   GetDOMNodeByPath,
   GetPathByDOMNode,
   InputEventIORef,
+  DOMNodeOffset,
 } from '../types';
-import { DOMNodeOffset } from '../types/dom';
 import { warn } from '../warn';
 
 export const useEditorIO = (
@@ -105,13 +105,14 @@ export const useEditorIO = (
       pipe(
         getDOMSelection(),
         chain(({ anchorNode, anchorOffset, focusNode, focusOffset }) =>
-          // Nested pipe is ok, we can always refactor it out later.
           pipe(
             sequenceT(option)(
               getPathByDOMNode(anchorNode)(),
+              pathIndex(anchorOffset),
               getPathByDOMNode(focusNode)(),
+              pathIndex(focusOffset),
             ),
-            map(([anchorPath, focusPath]) => ({
+            map(([anchorPath, anchorOffset, focusPath, focusOffset]) => ({
               anchor: snoc(anchorPath, anchorOffset),
               focus: snoc(focusPath, focusOffset),
             })),
@@ -154,8 +155,8 @@ export const useEditorIO = (
           ([isForward, selection, range, startNodeOffset, endNodeOffset]) => {
             const [startNode, startOffset] = startNodeOffset;
             const [endNode, endOffset] = endNodeOffset;
-            range.setStart(startNode, startOffset);
-            range.setEnd(endNode, endOffset);
+            range.setStart(startNode, unwrapPathIndex(startOffset));
+            range.setEnd(endNode, unwrapPathIndex(endOffset));
             selection.removeAllRanges();
             if (isForward) selection.addRange(range);
             else {
@@ -193,16 +194,19 @@ export const useEditorIO = (
           anchorPath: getPathByDOMNode(range.startContainer),
           focusPath: getPathByDOMNode(range.endContainer),
         }),
-        mapIO(sequenceS(option)),
+        mapIO(({ anchorPath, focusPath }) =>
+          sequenceS(option)({
+            anchorPath,
+            anchorOffset: pathIndex(range.startOffset),
+            focusPath,
+            focusOffset: pathIndex(range.endOffset),
+          }),
+        ),
         mapIO(
-          chain(({ anchorPath, focusPath }) =>
-            makeSelection({
-              anchorPath,
-              anchorOffset: range.startOffset,
-              focusPath,
-              focusOffset: range.endOffset,
-            }),
-          ),
+          map(({ anchorPath, anchorOffset, focusPath, focusOffset }) => ({
+            anchor: snoc(anchorPath, anchorOffset),
+            focus: snoc(focusPath, focusOffset),
+          })),
         ),
       ),
     [getPathByDOMNode],

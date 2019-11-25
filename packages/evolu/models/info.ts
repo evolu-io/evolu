@@ -1,11 +1,13 @@
 import { empty, isNonEmpty } from 'fp-ts/lib/Array';
-import { absurd } from 'fp-ts/lib/function';
+import { absurd, constVoid } from 'fp-ts/lib/function';
 import { snoc } from 'fp-ts/lib/NonEmptyArray';
 import { geq } from 'fp-ts/lib/Ord';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { fold } from 'fp-ts/lib/Option';
 import { Element, Info, Node, NodeInfo, Path, Selection } from '../types';
 import { isElement } from './element';
 import { selectionToRange } from './selection';
-import { byContains } from './path';
+import { byContains, pathIndex } from './path';
 import { isText } from './text';
 
 type SearchingFor = 'start' | 'end' | 'nothing';
@@ -45,7 +47,12 @@ export const createInfo = (selection: Selection, element: Element): Info => {
     if (sf === 'nothing' || !isElement(node)) return;
     node.children.forEach((nodeChild, index) => {
       if (sf === 'nothing') return;
-      walk(nodeChild, snoc(path, index));
+      pipe(
+        pathIndex(index),
+        fold(constVoid, index => {
+          walk(nodeChild, snoc(path, index));
+        }),
+      );
     });
   };
 

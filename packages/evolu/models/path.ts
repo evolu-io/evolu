@@ -1,10 +1,76 @@
-import { getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
+import { array, getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
-import { Endomorphism, Refinement } from 'fp-ts/lib/function';
-import { last } from 'fp-ts/lib/NonEmptyArray';
-import { Option, some, none } from 'fp-ts/lib/Option';
+import { Refinement } from 'fp-ts/lib/function';
+import {
+  last,
+  NonEmptyArray,
+  nonEmptyArray,
+  map as nonEmptyArrayMap,
+} from 'fp-ts/lib/NonEmptyArray';
+import { map, none, Option, option, some } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
-import { NonEmptyPath, NonEmptyPathWithOffset, Path } from '../types';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { getEq as getNewtypeEq } from 'newtype-ts';
+import { prismInteger } from 'newtype-ts/lib/Integer';
+import {
+  NonNegativeInteger,
+  prismNonNegativeInteger,
+} from 'newtype-ts/lib/NonNegativeInteger';
+import { Prism } from 'monocle-ts';
+import {
+  NonEmptyPath,
+  NonEmptyPathWithOffset,
+  Path,
+  PathIndex,
+  PathDelta,
+} from '../types';
+
+/**
+ * Smart constructor for PathIndex.
+ */
+export const pathIndex: (index: number) => Option<PathIndex> =
+  prismNonNegativeInteger.getOption;
+
+/**
+ * Unwrap PathIndex.
+ */
+export const unwrapPathIndex: (index: PathIndex) => number =
+  prismNonNegativeInteger.reverseGet;
+
+export const prismPathIndex: Prism<number, PathIndex> = prismNonNegativeInteger;
+
+/**
+ * Smart constructor for PathDelta.
+ */
+export const pathDelta: (delta: number) => Option<PathDelta> =
+  prismInteger.getOption;
+
+/**
+ * Unwrap PathDelta.
+ */
+export const unwrapPathDelta: (delta: PathDelta) => number =
+  prismInteger.reverseGet;
+
+export const prismPathDelta: Prism<number, PathDelta> = prismInteger;
+
+/**
+ * Smart constructor for Path.
+ */
+export const path = (indexes: number[]): Option<Path> =>
+  pipe(indexes.map(pathIndex), array.sequence(option));
+
+/**
+ * Unwrap Path.
+ */
+export const unwrapPath = (path: Path): number[] => path.map(unwrapPathIndex);
+
+/**
+ * Smart constructor for NonEmptyPath.
+ */
+export const nonEmptyPath = (
+  indexes: NonEmptyArray<number>,
+): Option<NonEmptyPath> =>
+  pipe(nonEmptyArrayMap(pathIndex)(indexes), nonEmptyArray.sequence(option));
 
 export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
   path,
@@ -19,7 +85,7 @@ export const isNonEmptyPathWithOffset: Refinement<
   return path.length > 1;
 };
 
-export const eqPath = getEq(eqNumber);
+export const eqPath = getEq(getNewtypeEq<NonNegativeInteger>(eqNumber));
 
 /**
  * Forward (1) or backward (-1) or equal (0). Use lt, gt, geq etc. fp-ts helpers.
@@ -54,5 +120,10 @@ export const tryInitNonEmptyPath = (path: NonEmptyPath): Option<NonEmptyPath> =>
     ? some(initNonEmptyPathWithOffset(path))
     : none;
 
-export const movePath = (offset: number): Endomorphism<NonEmptyPath> => path =>
-  snoc(initNonEmptyPath(path), last(path) + offset);
+export const movePath = (delta: PathDelta) => (
+  path: NonEmptyPath,
+): Option<NonEmptyPath> =>
+  pipe(
+    pathIndex(unwrapPathIndex(last(path)) + unwrapPathDelta(delta)),
+    map(index => snoc(initNonEmptyPath(path), index)),
+  );
