@@ -1,14 +1,13 @@
 import { IO } from 'fp-ts/lib/IO';
+import { IORef } from 'fp-ts/lib/IORef';
 import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
-import { IORef } from 'fp-ts/lib/IORef';
 import { Newtype } from 'newtype-ts';
+import { Integer } from 'newtype-ts/lib/Integer';
 import { NonNegativeInteger } from 'newtype-ts/lib/NonNegativeInteger';
 import { ReactDOM, ReactNode, RefObject } from 'react';
 import { $Values } from 'utility-types';
-import { Integer } from 'newtype-ts/lib/Integer';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { DOMNode, DOMRange, DOMSelection, DOMElement, DOMText } from './dom';
+import { DOMElement, DOMNode, DOMRange, DOMSelection, DOMText } from './dom';
 
 /**
  * Editor text is a string. Like in React.
@@ -72,14 +71,6 @@ export interface NonEmptyPathWithOffset extends Path {
 export interface Selection {
   readonly anchor: NonEmptyPath;
   readonly focus: NonEmptyPath;
-}
-
-/**
- * Selection JSON.
- */
-export interface SelectionJson {
-  readonly anchor: NonEmptyArray<number>;
-  readonly focus: NonEmptyArray<number>;
 }
 
 /**
