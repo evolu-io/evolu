@@ -1,15 +1,6 @@
-import { toNullable } from 'fp-ts/lib/Option';
-import { eqPath, byDirection, byContains, toPath } from './path';
-import { Path } from '../types';
+import { byContains, byDirection, eqPath, unsafePath } from './path';
 
-// A helper for tests only. Remember, we don't want to create Path this way,
-// because it throws and with functional programming, we never throw.
-// But tests are different, they throw.
-const p = (json: number[]): Path => {
-  const nullable = toNullable(toPath(json));
-  if (nullable == null) throw new Error('wrong path');
-  return nullable;
-};
+const p = unsafePath;
 
 test('eqPath', () => {
   expect(eqPath.equals(p([1]), p([1]))).toBe(true);

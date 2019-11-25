@@ -1,4 +1,3 @@
-import { toNullable } from 'fp-ts/lib/Option';
 import {
   isCollapsed,
   eqSelection,
@@ -6,18 +5,11 @@ import {
   selectionToRange,
   collapseToStart,
   collapseToEnd,
-  toSelection,
+  unsafeSelection,
 } from './selection';
-import { Selection, SelectionJson } from '../types';
+import { Selection } from '../types';
 
-// A helper for tests only. Remember, we don't want to create Selection this way,
-// because it throws and with functional programming, we never throw.
-// But tests are different, they throw.
-const s = (json: SelectionJson): Selection => {
-  const nullable = toNullable(toSelection(json));
-  if (nullable == null) throw new Error('wrong selection');
-  return nullable;
-};
+const s = unsafeSelection;
 
 test('isCollapsed', () => {
   expect(isCollapsed(s({ anchor: [0], focus: [0] }))).toBe(true);

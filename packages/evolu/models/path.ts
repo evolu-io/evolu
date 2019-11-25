@@ -1,13 +1,13 @@
 import { array, getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
-import { Refinement } from 'fp-ts/lib/function';
+import { Refinement, identity } from 'fp-ts/lib/function';
 import {
   last,
   NonEmptyArray,
   nonEmptyArray,
   map as nonEmptyArrayMap,
 } from 'fp-ts/lib/NonEmptyArray';
-import { map, none, Option, option, some } from 'fp-ts/lib/Option';
+import { map, none, Option, option, some, fold } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { getEq as getNewtypeEq } from 'newtype-ts';
@@ -77,6 +77,17 @@ export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
 ): path is NonEmptyPath => {
   return path.length > 0;
 };
+
+/**
+ * Helper for tests. With FP, we never throw. But tests are different, they throw.
+ */
+export const unsafePath = (indexes: number[]): Path =>
+  pipe(
+    toPath(indexes),
+    fold(() => {
+      throw new Error('invalid path');
+    }, identity),
+  );
 
 export const isNonEmptyPathWithOffset: Refinement<
   Path,

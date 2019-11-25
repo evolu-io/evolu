@@ -1,12 +1,11 @@
-import React from 'react';
+import { unsafeSelection } from 'evolu';
 import Head from 'next/head';
 import Link from 'next/link';
-import { toSelection } from 'evolu';
-import { toNullable } from 'fp-ts/lib/Option';
-import { Text } from '../components/Text';
+import React from 'react';
 import { Container } from '../components/Container';
 import { BasicExample } from '../components/examples/BasicExample';
 import { SchemaExample } from '../components/examples/SchemaExample';
+import { Text } from '../components/Text';
 
 const LinkToTest = ({ name }: { name: string }) => {
   return (
@@ -38,9 +37,10 @@ const Index = () => {
       <Text size={2}>Evolu</Text>
       <BasicExample
         autoFocus
-        initialSelection={toNullable(
-          toSelection({ anchor: [0, 0, 0], focus: [0, 0, 2] }),
-        )}
+        initialSelection={unsafeSelection({
+          anchor: [0, 0, 0],
+          focus: [0, 0, 2],
+        })}
       />
       <SchemaExample />
       <Text size={1}>Tests</Text>

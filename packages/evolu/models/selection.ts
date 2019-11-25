@@ -1,27 +1,33 @@
 import { sequenceS } from 'fp-ts/lib/Apply';
 import { init, isNonEmpty } from 'fp-ts/lib/Array';
 import { Eq, getStructEq } from 'fp-ts/lib/Eq';
-import { Endomorphism, Predicate } from 'fp-ts/lib/function';
-import { chain, filter, map, Option, option } from 'fp-ts/lib/Option';
+import { Endomorphism, identity, Predicate } from 'fp-ts/lib/function';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { chain, filter, fold, map, Option, option } from 'fp-ts/lib/Option';
 import { geq } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import {
-  NonEmptyPath,
-  PathDelta,
-  Range,
-  Selection,
-  SelectionJson,
-} from '../types';
+import { NonEmptyPath, PathDelta, Range, Selection } from '../types';
 import { byDirection, eqPath, movePath, toNonEmptyPath } from './path';
 
 /**
- * Smart constructor for Selection.
+ * Helper for tests. With FP, we never throw. But tests are different, they throw.
  */
-export const toSelection = (json: SelectionJson): Option<Selection> =>
-  sequenceS(option)({
-    anchor: toNonEmptyPath(json.anchor),
-    focus: toNonEmptyPath(json.focus),
-  });
+export const unsafeSelection = ({
+  anchor,
+  focus,
+}: {
+  anchor: NonEmptyArray<number>;
+  focus: NonEmptyArray<number>;
+}): Selection =>
+  pipe(
+    sequenceS(option)({
+      anchor: toNonEmptyPath(anchor),
+      focus: toNonEmptyPath(focus),
+    }),
+    fold(() => {
+      throw new Error('invalid selection');
+    }, identity),
+  );
 
 export const selectionFromPath = (path: NonEmptyPath): Selection => ({
   anchor: path,
