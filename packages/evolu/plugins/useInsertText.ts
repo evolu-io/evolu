@@ -21,8 +21,8 @@ import {
   movePath,
   isNonEmptyPathWithOffset,
   initNonEmptyPathWithOffset,
-  pathIndex,
-  pathDelta,
+  toPathIndex,
+  toPathDelta,
 } from '../models/path';
 import { selectionFromPath } from '../models/selection';
 import { setText } from '../models/value';
@@ -61,7 +61,7 @@ const createHandler = ({
           return text;
         };
         return pipe(
-          sequenceT(option)(pathIndex(0), pathDelta(eventData.length)),
+          sequenceT(option)(toPathIndex(0), toPathDelta(eventData.length)),
           chain(([index, delta]) =>
             pipe(putBRback ? snoc(anchor, index) : anchor, movePath(delta)),
           ),

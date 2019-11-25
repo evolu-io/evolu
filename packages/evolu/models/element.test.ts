@@ -10,7 +10,7 @@ import {
   eqElement,
 } from './element';
 import { Element } from '../types';
-import { pathIndex } from './path';
+import { toPathIndex } from './path';
 
 const id = createStableIDFactory();
 
@@ -132,7 +132,7 @@ test('getChildAt', () => {
   const child: Element = { id: id(), children: [] };
   const children: Element['children'] = [{ id: id(), children: [] }];
   pipe(
-    pathIndex(0),
+    toPathIndex(0),
     fold(constVoid, index => {
       expect(getChildAt(index).set(child)(children)[0]).toBe(child);
     }),

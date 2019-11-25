@@ -75,7 +75,7 @@ export interface Selection {
 }
 
 /**
- * Selection JSON. It can be invalid so use selection smart constructor.
+ * Selection JSON.
  */
 export interface SelectionJSON {
   readonly anchor: NonEmptyArray<number>;

@@ -28,7 +28,7 @@ import {
 /**
  * Smart constructor for PathIndex.
  */
-export const pathIndex: (index: number) => Option<PathIndex> =
+export const toPathIndex: (index: number) => Option<PathIndex> =
   prismNonNegativeInteger.getOption;
 
 /**
@@ -42,7 +42,7 @@ export const prismPathIndex: Prism<number, PathIndex> = prismNonNegativeInteger;
 /**
  * Smart constructor for PathDelta.
  */
-export const pathDelta: (delta: number) => Option<PathDelta> =
+export const toPathDelta: (delta: number) => Option<PathDelta> =
   prismInteger.getOption;
 
 /**
@@ -56,8 +56,8 @@ export const prismPathDelta: Prism<number, PathDelta> = prismInteger;
 /**
  * Smart constructor for Path.
  */
-export const path = (indexes: number[]): Option<Path> =>
-  pipe(indexes.map(pathIndex), array.sequence(option));
+export const toPath = (indexes: number[]): Option<Path> =>
+  pipe(indexes.map(toPathIndex), array.sequence(option));
 
 /**
  * Unwrap Path.
@@ -67,10 +67,10 @@ export const unwrapPath = (path: Path): number[] => path.map(unwrapPathIndex);
 /**
  * Smart constructor for NonEmptyPath.
  */
-export const nonEmptyPath = (
+export const toNonEmptyPath = (
   indexes: NonEmptyArray<number>,
 ): Option<NonEmptyPath> =>
-  pipe(nonEmptyArrayMap(pathIndex)(indexes), nonEmptyArray.sequence(option));
+  pipe(nonEmptyArrayMap(toPathIndex)(indexes), nonEmptyArray.sequence(option));
 
 export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
   path,
@@ -124,6 +124,6 @@ export const movePath = (delta: PathDelta) => (
   path: NonEmptyPath,
 ): Option<NonEmptyPath> =>
   pipe(
-    pathIndex(unwrapPathIndex(last(path)) + unwrapPathDelta(delta)),
+    toPathIndex(unwrapPathIndex(last(path)) + unwrapPathDelta(delta)),
     map(index => snoc(initNonEmptyPath(path), index)),
   );

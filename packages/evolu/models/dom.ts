@@ -12,7 +12,7 @@ import {
   DOMSelection,
 } from '../types/dom';
 import { DOMNodeOffset, DOMTextOffset } from '../types';
-import { unwrapPathIndex, pathIndex } from './path';
+import { unwrapPathIndex, toPathIndex } from './path';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
@@ -67,7 +67,7 @@ export const DOMSelectionToDOMTextOffset = (
   selection: DOMSelection,
 ): Option<DOMTextOffset> =>
   pipe(
-    pathIndex(selection.anchorOffset),
+    toPathIndex(selection.anchorOffset),
     chain(offset =>
       selection.isCollapsed && isDOMText(selection.anchorNode)
         ? some([selection.anchorNode, offset])

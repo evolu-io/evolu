@@ -7,7 +7,7 @@ import {
   Value,
   Editor,
   Selection,
-  selection,
+  toSelection,
 } from 'evolu';
 import { some, fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -75,7 +75,7 @@ const TestSelection = () => {
           onMouseDown={event => {
             event.preventDefault();
             pipe(
-              selection({
+              toSelection({
                 anchor: [0, 0, 0],
                 focus: [0, 0, 2],
               }),
@@ -91,7 +91,7 @@ const TestSelection = () => {
           onMouseDown={event => {
             event.preventDefault();
             pipe(
-              selection({
+              toSelection({
                 anchor: [0, 0, 2],
                 focus: [0, 0, 0],
               }),
@@ -107,7 +107,7 @@ const TestSelection = () => {
           onMouseDown={event => {
             event.preventDefault();
             pipe(
-              selection({
+              toSelection({
                 anchor: [0, 0, 0],
                 focus: [1, 0, 9],
               }),
@@ -123,7 +123,7 @@ const TestSelection = () => {
           onMouseDown={event => {
             event.preventDefault();
             pipe(
-              selection({
+              toSelection({
                 anchor: [1, 0, 9],
                 focus: [0, 0, 0],
               }),

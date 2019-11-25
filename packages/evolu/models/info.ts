@@ -7,7 +7,7 @@ import { fold } from 'fp-ts/lib/Option';
 import { Element, Info, Node, NodeInfo, Path, Selection } from '../types';
 import { isElement } from './element';
 import { selectionToRange } from './selection';
-import { byContains, pathIndex } from './path';
+import { byContains, toPathIndex } from './path';
 import { isText } from './text';
 
 type SearchingFor = 'start' | 'end' | 'nothing';
@@ -48,7 +48,7 @@ export const createInfo = (selection: Selection, element: Element): Info => {
     node.children.forEach((nodeChild, index) => {
       if (sf === 'nothing') return;
       pipe(
-        pathIndex(index),
+        toPathIndex(index),
         fold(constVoid, index => {
           walk(nodeChild, snoc(path, index));
         }),

@@ -1,12 +1,12 @@
 import { toNullable } from 'fp-ts/lib/Option';
-import { eqPath, byDirection, byContains, path } from './path';
+import { eqPath, byDirection, byContains, toPath } from './path';
 import { Path } from '../types';
 
 // A helper for tests only. Remember, we don't want to create Path this way,
 // because it throws and with functional programming, we never throw.
 // But tests are different, they throw.
 const p = (json: number[]): Path => {
-  const nullable = toNullable(path(json));
+  const nullable = toNullable(toPath(json));
   if (nullable == null) throw new Error('wrong path');
   return nullable;
 };

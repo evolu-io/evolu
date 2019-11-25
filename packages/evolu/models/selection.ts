@@ -12,15 +12,15 @@ import {
   Selection,
   SelectionJSON,
 } from '../types';
-import { byDirection, eqPath, movePath, nonEmptyPath } from './path';
+import { byDirection, eqPath, movePath, toNonEmptyPath } from './path';
 
 /**
  * Smart constructor for Selection.
  */
-export const selection = (json: SelectionJSON): Option<Selection> =>
+export const toSelection = (json: SelectionJSON): Option<Selection> =>
   sequenceS(option)({
-    anchor: nonEmptyPath(json.anchor),
-    focus: nonEmptyPath(json.focus),
+    anchor: toNonEmptyPath(json.anchor),
+    focus: toNonEmptyPath(json.focus),
   });
 
 export const selectionFromPath = (path: NonEmptyPath): Selection => ({

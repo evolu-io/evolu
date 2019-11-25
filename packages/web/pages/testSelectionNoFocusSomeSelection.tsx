@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Editor, Value, useLogValue, createValue, selection } from 'evolu';
+import { Editor, Value, useLogValue, createValue, toSelection } from 'evolu';
 import { testSelectionElement } from './testSelection';
 
 const initialValue = createValue({
   element: testSelectionElement,
   hasFocus: false,
-  selection: selection({
+  selection: toSelection({
     anchor: [0, 0, 0],
     focus: [0, 0, 2],
   }),

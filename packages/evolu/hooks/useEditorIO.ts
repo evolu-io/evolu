@@ -18,7 +18,7 @@ import { RefObject, useCallback, useMemo, useRef } from 'react';
 import { IORef } from 'fp-ts/lib/IORef';
 import { isDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
-import { initNonEmptyPath, pathIndex, unwrapPathIndex } from '../models/path';
+import { initNonEmptyPath, toPathIndex, unwrapPathIndex } from '../models/path';
 import { eqSelection, isForward } from '../models/selection';
 import {
   EditorIO,
@@ -108,9 +108,9 @@ export const useEditorIO = (
           pipe(
             sequenceT(option)(
               getPathByDOMNode(anchorNode)(),
-              pathIndex(anchorOffset),
+              toPathIndex(anchorOffset),
               getPathByDOMNode(focusNode)(),
-              pathIndex(focusOffset),
+              toPathIndex(focusOffset),
             ),
             map(([anchorPath, anchorOffset, focusPath, focusOffset]) => ({
               anchor: snoc(anchorPath, anchorOffset),
@@ -197,9 +197,9 @@ export const useEditorIO = (
         mapIO(({ anchorPath, focusPath }) =>
           sequenceS(option)({
             anchorPath,
-            anchorOffset: pathIndex(range.startOffset),
+            anchorOffset: toPathIndex(range.startOffset),
             focusPath,
-            focusOffset: pathIndex(range.endOffset),
+            focusOffset: toPathIndex(range.endOffset),
           }),
         ),
         mapIO(

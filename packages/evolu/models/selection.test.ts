@@ -6,7 +6,7 @@ import {
   selectionToRange,
   collapseToStart,
   collapseToEnd,
-  selection,
+  toSelection,
 } from './selection';
 import { Selection, SelectionJSON } from '../types';
 
@@ -14,7 +14,7 @@ import { Selection, SelectionJSON } from '../types';
 // because it throws and with functional programming, we never throw.
 // But tests are different, they throw.
 const s = (json: SelectionJSON): Selection => {
-  const nullable = toNullable(selection(json));
+  const nullable = toNullable(toSelection(json));
   if (nullable == null) throw new Error('wrong selection');
   return nullable;
 };

@@ -8,7 +8,7 @@ import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
 import { isDOMElement } from '../models/dom';
 import { createKeyForElement } from '../models/element';
-import { eqPath, pathIndex } from '../models/path';
+import { eqPath, toPathIndex } from '../models/path';
 import { isText } from '../models/text';
 import { Element, Path, SetDOMNodePathRef } from '../types';
 import { warn } from '../warn';
@@ -47,7 +47,7 @@ export const ElementRenderer = memo<{
       () =>
         element.children.map((child, index) =>
           pipe(
-            pathIndex(index),
+            toPathIndex(index),
             fold(constNull, index => {
               const childPath = snoc(path, index);
               return isText(child) ? (
