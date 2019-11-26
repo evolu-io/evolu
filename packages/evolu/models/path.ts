@@ -20,8 +20,6 @@ import {
   Path,
   PathDelta,
   PathIndex,
-  tPathDelta,
-  tPathIndex,
 } from '../types';
 
 export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
@@ -34,13 +32,13 @@ export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
  * Smart constructor for PathIndex.
  */
 export const toPathIndex = (index: number): Option<PathIndex> =>
-  fromEither(tPathIndex.decode(index));
+  fromEither(PathIndex.decode(index));
 
 /**
  * Smart constructor for PathDelta.
  */
 export const toPathDelta = (delta: number): Option<PathDelta> =>
-  fromEither(tPathDelta.decode(delta));
+  fromEither(PathDelta.decode(delta));
 
 /**
  * Smart constructor for Path.

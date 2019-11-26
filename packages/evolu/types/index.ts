@@ -47,7 +47,7 @@ interface PathIndexBrand {
   readonly PathIndex: unique symbol;
 }
 
-export const tPathIndex = t.brand(
+export const PathIndex = t.brand(
   t.number,
   (n): n is t.Branded<number, PathIndexBrand> => Number.isInteger(n) && n >= 0,
   'PathIndex',
@@ -56,13 +56,13 @@ export const tPathIndex = t.brand(
 /**
  * PathIndex is non negative integer.
  */
-export type PathIndex = t.TypeOf<typeof tPathIndex>;
+export type PathIndex = t.TypeOf<typeof PathIndex>;
 
 interface PathDeltaBrand {
   readonly PathDelta: unique symbol;
 }
 
-export const tPathDelta = t.brand(
+export const PathDelta = t.brand(
   t.number,
   (n): n is t.Branded<number, PathDeltaBrand> => Number.isInteger(n),
   'PathDelta',
@@ -71,7 +71,7 @@ export const tPathDelta = t.brand(
 /**
  * PathDelta is an integer.
  */
-export type PathDelta = t.TypeOf<typeof tPathDelta>;
+export type PathDelta = t.TypeOf<typeof PathDelta>;
 
 /**
  * Path to a place in Element. It can point to Element, Text, Text char, or nothing.
