@@ -18,7 +18,7 @@ import { RefObject, useCallback, useMemo, useRef } from 'react';
 import { IORef } from 'fp-ts/lib/IORef';
 import { isDOMSelection, isValidDOMNodeOffset } from '../models/dom';
 import { createInfo as modelCreateInfo } from '../models/info';
-import { initNonEmptyPath, toPathIndex, unwrapPathIndex } from '../models/path';
+import { initNonEmptyPath, toPathIndex } from '../models/path';
 import { eqSelection, isForward } from '../models/selection';
 import {
   EditorIO,
@@ -155,8 +155,8 @@ export const useEditorIO = (
           ([isForward, selection, range, startNodeOffset, endNodeOffset]) => {
             const [startNode, startOffset] = startNodeOffset;
             const [endNode, endOffset] = endNodeOffset;
-            range.setStart(startNode, unwrapPathIndex(startOffset));
-            range.setEnd(endNode, unwrapPathIndex(endOffset));
+            range.setStart(startNode, startOffset);
+            range.setEnd(endNode, endOffset);
             selection.removeAllRanges();
             if (isForward) selection.addRange(range);
             else {

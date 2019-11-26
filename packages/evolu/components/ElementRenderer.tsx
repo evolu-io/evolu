@@ -7,7 +7,6 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useRenderElement } from '../hooks/useRenderElement';
 import { useSetDOMNodePathRef } from '../hooks/useSetDOMNodePathRef';
 import { isDOMElement } from '../models/dom';
-import { createKeyForElement } from '../models/element';
 import { eqPath, toPathIndex } from '../models/path';
 import { isText } from '../models/text';
 import { Element, Path, SetDOMNodePathRef } from '../types';
@@ -58,7 +57,7 @@ export const ElementRenderer = memo<{
                 />
               ) : (
                 <ElementRenderer
-                  key={createKeyForElement(child)}
+                  key={child.id}
                   element={child}
                   path={childPath}
                 />

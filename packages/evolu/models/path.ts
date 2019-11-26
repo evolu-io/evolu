@@ -5,6 +5,7 @@ import { last } from 'fp-ts/lib/NonEmptyArray';
 import {
   filter,
   fold,
+  fromEither,
   map,
   none,
   Option,
@@ -13,19 +14,14 @@ import {
 } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Prism } from 'monocle-ts';
-import { getEq as getNewtypeEq } from 'newtype-ts';
-import { prismInteger } from 'newtype-ts/lib/Integer';
-import {
-  NonNegativeInteger,
-  prismNonNegativeInteger,
-} from 'newtype-ts/lib/NonNegativeInteger';
 import {
   NonEmptyPath,
   NonEmptyPathWithOffset,
   Path,
   PathDelta,
   PathIndex,
+  tPathDelta,
+  tPathIndex,
 } from '../types';
 
 export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
@@ -37,41 +33,20 @@ export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
 /**
  * Smart constructor for PathIndex.
  */
-export const toPathIndex: (index: number) => Option<PathIndex> =
-  prismNonNegativeInteger.getOption;
-
-/**
- * Unwrap PathIndex.
- */
-export const unwrapPathIndex: (index: PathIndex) => number =
-  prismNonNegativeInteger.reverseGet;
-
-export const prismPathIndex: Prism<number, PathIndex> = prismNonNegativeInteger;
+export const toPathIndex = (index: number): Option<PathIndex> =>
+  fromEither(tPathIndex.decode(index));
 
 /**
  * Smart constructor for PathDelta.
  */
-export const toPathDelta: (delta: number) => Option<PathDelta> =
-  prismInteger.getOption;
-
-/**
- * Unwrap PathDelta.
- */
-export const unwrapPathDelta: (delta: PathDelta) => number =
-  prismInteger.reverseGet;
-
-export const prismPathDelta: Prism<number, PathDelta> = prismInteger;
+export const toPathDelta = (delta: number): Option<PathDelta> =>
+  fromEither(tPathDelta.decode(delta));
 
 /**
  * Smart constructor for Path.
  */
 export const toPath = (indexes: number[]): Option<Path> =>
   pipe(indexes.map(toPathIndex), array.sequence(option));
-
-/**
- * Unwrap Path.
- */
-export const unwrapPath = (path: Path): number[] => path.map(unwrapPathIndex);
 
 /**
  * Smart constructor for NonEmptyPath.
@@ -97,7 +72,7 @@ export const isNonEmptyPathWithOffset: Refinement<
   return path.length > 1;
 };
 
-export const eqPath = getEq(getNewtypeEq<NonNegativeInteger>(eqNumber));
+export const eqPath = getEq(eqNumber);
 
 /**
  * Forward (1) or backward (-1) or equal (0). Use lt, gt, geq etc. fp-ts helpers.
@@ -136,6 +111,6 @@ export const movePath = (delta: PathDelta) => (
   path: NonEmptyPath,
 ): Option<NonEmptyPath> =>
   pipe(
-    toPathIndex(unwrapPathIndex(last(path)) + unwrapPathDelta(delta)),
+    toPathIndex(last(path) + delta),
     map(index => snoc(initNonEmptyPath(path), index)),
   );

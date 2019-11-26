@@ -1,10 +1,6 @@
 import { constVoid } from 'fp-ts/lib/function';
-import React, { Children, createElement, memo, Fragment } from 'react';
-import {
-  isElement,
-  normalizeElement,
-  createKeyForElement,
-} from '../models/element';
+import React, { Children, createElement, Fragment, memo } from 'react';
+import { isElement, normalizeElement } from '../models/element';
 import { textIsBR } from '../models/text';
 import { Element, ReactElement, RenderElement } from '../types';
 
@@ -33,7 +29,7 @@ export const ServerElementRenderer = ({
         <ServerElementRenderer
           element={child}
           renderElement={renderElement}
-          key={createKeyForElement(child)}
+          key={child.id}
         />
       );
     const key = index.toString();

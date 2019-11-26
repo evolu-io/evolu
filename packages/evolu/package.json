@@ -12,15 +12,12 @@
     "fp-ts": "^2.0.5",
     "io-ts": "^2.0.1",
     "monocle-ts": "^2.0.0",
-    "nanoid": "^2.1.0",
-    "newtype-ts": "^0.3.2",
-    "utility-types": "^3.7.0"
+    "nanoid": "^2.1.0"
   },
   "peerDependencies": {
     "fp-ts": "^2.0.5",
     "io-ts": "^2.0.1",
     "monocle-ts": "^2.0.0",
-    "newtype-ts": "^0.3.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },

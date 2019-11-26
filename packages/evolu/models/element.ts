@@ -3,23 +3,22 @@ import { Eq, fromEquals, getStructEq, strictEqual } from 'fp-ts/lib/Eq';
 import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
 import { last as lastNonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { chain, fold, fromPredicate } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import nanoid from 'nanoid';
-import { iso } from 'newtype-ts';
 import { Children } from 'react';
-import { fromPredicate, fold, chain } from 'fp-ts/lib/Option';
 import {
   Element,
   ElementID,
   Node,
   NonEmptyPath,
   Path,
-  ReactElement,
   PathIndex,
+  ReactElement,
 } from '../types';
-import { initNonEmptyPath, unwrapPathIndex } from './path';
+import { initNonEmptyPath } from './path';
 import { isText, isTextNotBR, textIsBR } from './text';
 
 export const eqElementID: Eq<ElementID> = { equals: strictEqual };
@@ -48,19 +47,11 @@ export const isElement: Refinement<Node, Element> = (node): node is Element => {
   return Array.isArray((node as Element).children);
 };
 
-const isoNodeID = iso<ElementID>();
-
-/**
- * Create React key for Element from its ID.
- */
-export const createKeyForElement = (element: Element): string =>
-  isoNodeID.unwrap(element.id);
-
 /**
  * Create ElementID via nanoid(10).
  * https://zelark.github.io/nano-id-cc
  */
-export const id: IO<ElementID> = () => isoNodeID.wrap(nanoid(10));
+export const id: IO<ElementID> = () => nanoid(10) as ElementID;
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -146,8 +137,7 @@ export const elementToIDless = (element: Element) => {
 export const childrenLens = Lens.fromProp<Element>()('children');
 export const elementPrism = Prism.fromPredicate(isElement);
 export const textPrism = Prism.fromPredicate(isText);
-export const getChildAt = (index: PathIndex) =>
-  indexArray<Node>().index(unwrapPathIndex(index));
+export const getChildAt = (index: PathIndex) => indexArray<Node>().index(index);
 
 /**
  * Focus on Element by Path.

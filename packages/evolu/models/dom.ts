@@ -12,7 +12,7 @@ import {
   DOMSelection,
 } from '../types/dom';
 import { DOMNodeOffset, DOMTextOffset } from '../types';
-import { unwrapPathIndex, toPathIndex } from './path';
+import { toPathIndex } from './path';
 
 export const isDOMElement: Refinement<DOMNode, DOMElement> = (
   node,
@@ -39,9 +39,9 @@ export const isValidDOMNodeOffset: Predicate<DOMNodeOffset> = ([
   offset,
 ]) =>
   isDOMElement(node)
-    ? unwrapPathIndex(offset) <= node.childNodes.length
+    ? offset <= node.childNodes.length
     : isDOMText(node)
-    ? unwrapPathIndex(offset) <= node.data.length
+    ? offset <= node.data.length
     : false;
 
 export const getDOMRangeFromInputEvent = (
@@ -78,9 +78,7 @@ export const DOMSelectionToDOMTextOffset = (
 export const isMoveWithinDOMTextOffset = (
   forward: boolean,
 ): Predicate<DOMTextOffset> => ([node, offset]) =>
-  forward
-    ? unwrapPathIndex(offset) < node.data.length
-    : unwrapPathIndex(offset) > 0;
+  forward ? offset < node.data.length : offset > 0;
 
 export const isDOMTextToBeDeletedByRange: (
   node: DOMText,
