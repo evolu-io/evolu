@@ -25,33 +25,33 @@ import {
 /**
  * Smart constructor for PathIndex.
  */
-export const toPathIndex = (index: number): Option<PathIndex> =>
-  fromEither(PathIndex.decode(index));
+export const toPathIndex = (output: number): Option<PathIndex> =>
+  fromEither(PathIndex.decode(output));
 
 /**
  * Smart constructor for PathDelta.
  */
-export const toPathDelta = (delta: number): Option<PathDelta> =>
-  fromEither(PathDelta.decode(delta));
+export const toPathDelta = (output: number): Option<PathDelta> =>
+  fromEither(PathDelta.decode(output));
 
 /**
  * Smart constructor for Path.
  */
-export const toPath = (indexes: number[]): Option<Path> =>
-  pipe(indexes.map(toPathIndex), array.sequence(option));
+export const toPath = (output: number[]): Option<Path> =>
+  pipe(output.map(toPathIndex), array.sequence(option));
 
 /**
  * Smart constructor for NonEmptyPath.
  */
-export const toNonEmptyPath = (indexes: number[]): Option<NonEmptyPath> =>
-  pipe(toPath(indexes), filter(NonEmptyPath.is));
+export const toNonEmptyPath = (output: number[]): Option<NonEmptyPath> =>
+  pipe(toPath(output), filter(NonEmptyPath.is));
 
 /**
  * Helper for tests. With FP, we never throw. But tests are different, they throw.
  */
-export const unsafePath = (indexes: number[]): Path =>
+export const unsafePath = (output: number[]): Path =>
   pipe(
-    toPath(indexes),
+    toPath(output),
     fold(() => {
       throw new Error('invalid path');
     }, identity),

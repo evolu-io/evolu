@@ -169,6 +169,11 @@ const Selection = t.type({
  */
 export type Selection = t.TypeOf<typeof Selection>;
 
+export interface SelectionOutput {
+  readonly anchor: number[];
+  readonly focus: number[];
+}
+
 const Value = t.type({
   element: Element,
   hasFocus: t.boolean,
