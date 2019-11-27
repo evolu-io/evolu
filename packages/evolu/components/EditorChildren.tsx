@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 import { empty } from 'fp-ts/lib/Array';
 import { RenderElementContext } from '../hooks/useRenderElement';
 import { SetNodePathContext } from '../hooks/useSetDOMNodePathRef';
-import { renderReactElement } from './EditorServer';
 import { ElementRenderer } from './ElementRenderer';
 import { SetDOMNodePath, RenderElement, Element } from '../types';
+import { renderReactElement } from '../models/element';
 
 export const EditorChildren = memo(
   ({

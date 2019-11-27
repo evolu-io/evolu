@@ -1,18 +1,8 @@
 import { constVoid } from 'fp-ts/lib/function';
-import React, { Children, createElement, Fragment, memo } from 'react';
-import { isElement, normalizeElement } from '../models/element';
+import React, { Fragment, memo } from 'react';
+import { normalizeElement, renderReactElement } from '../models/element';
 import { textIsBR } from '../models/text';
-import { Element, ReactElement, RenderElement } from '../types';
-
-export const renderReactElement: RenderElement = (element, children, ref) => {
-  const { tag, props } = element as ReactElement;
-  // To bypass React void elements invariant violation.
-  // We don't want to pass children are many args because they already have keys.
-  if (Children.count(children) === 0) {
-    return createElement(tag, { ...props, ref });
-  }
-  return createElement(tag, { ...props, ref }, children);
-};
+import { Element, RenderElement } from '../types';
 
 interface ServerElementRendererProps {
   element: Element;
@@ -24,7 +14,7 @@ export const ServerElementRenderer = ({
   renderElement,
 }: ServerElementRendererProps) => {
   const children = element.children.map((child, index) => {
-    if (isElement(child))
+    if (Element.is(child))
       return (
         <ServerElementRenderer
           element={child}
@@ -39,10 +29,8 @@ export const ServerElementRenderer = ({
       <Fragment key={key}>{child}</Fragment>
     );
   });
-  if (renderElement) {
-    return <>{renderElement(element, children, constVoid)}</>;
-  }
-  return <>{renderReactElement(element, children, constVoid)}</>;
+  const renderFunction = renderElement || renderReactElement;
+  return <>{renderFunction(element, children, constVoid)}</>;
 };
 
 type ReactDivAtttributesUsefulForEditorServer = Pick<

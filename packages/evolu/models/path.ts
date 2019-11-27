@@ -22,12 +22,6 @@ import {
   PathIndex,
 } from '../types';
 
-export const isNonEmptyPath: Refinement<Path, NonEmptyPath> = (
-  path,
-): path is NonEmptyPath => {
-  return path.length > 0;
-};
-
 /**
  * Smart constructor for PathIndex.
  */
@@ -50,7 +44,7 @@ export const toPath = (indexes: number[]): Option<Path> =>
  * Smart constructor for NonEmptyPath.
  */
 export const toNonEmptyPath = (indexes: number[]): Option<NonEmptyPath> =>
-  pipe(toPath(indexes), filter(isNonEmptyPath));
+  pipe(toPath(indexes), filter(NonEmptyPath.is));
 
 /**
  * Helper for tests. With FP, we never throw. But tests are different, they throw.

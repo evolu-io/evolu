@@ -2,17 +2,34 @@ import { IO } from 'fp-ts/lib/IO';
 import { IORef } from 'fp-ts/lib/IORef';
 import { Option } from 'fp-ts/lib/Option';
 import { Task } from 'fp-ts/lib/Task';
-import { ReactDOM, ReactNode, RefObject } from 'react';
 import * as t from 'io-ts';
+import { nonEmptyArray } from 'io-ts-types/lib/nonEmptyArray';
+import { option } from 'io-ts-types/lib/option';
+import { ReactNode, RefObject } from 'react';
 import { DOMElement, DOMNode, DOMRange, DOMSelection, DOMText } from './dom';
 
 // https://dev.to/gcanti/functional-design-smart-constructors-14nb
 // https://github.com/gcanti/io-ts
+// Note only types supposed to be serialized are defined with io-ts.
+
+// interface TextBrand {
+//   readonly Text: unique symbol;
+// }
+
+// export const Text = t.brand(
+//   t.string,
+//   // TODO: Validate whitespaces. Add min length when logic will be fixed.
+//   (n): n is t.Branded<string, TextBrand> => n.length <= 65535,
+//   'Text',
+// );
 
 /**
  * Editor text is a string. Like in React.
  */
+// export type Text = t.TypeOf<typeof Text>;
 export type Text = string;
+
+// ElementID
 
 interface ElementIDBrand {
   readonly ElementID: unique symbol;
@@ -20,7 +37,7 @@ interface ElementIDBrand {
 
 export const ElementID = t.brand(
   t.string,
-  (n): n is t.Branded<string, ElementIDBrand> => n.length >= 10,
+  (n): n is t.Branded<string, ElementIDBrand> => n.length >= 8,
   'ElementID',
 );
 
@@ -31,6 +48,11 @@ export const ElementID = t.brand(
 export type ElementID = t.TypeOf<typeof ElementID>;
 
 /**
+ * Element or Text.
+ */
+export type Node = Element | Text;
+
+/**
  * Editor element. The base for all other editor elements.
  */
 export interface Element {
@@ -38,10 +60,53 @@ export interface Element {
   readonly children: Node[];
 }
 
+// With branded types, A and O are different.
+// https://github.com/gcanti/io-ts/issues/385
+export interface ElementOutput {
+  readonly id: string;
+  readonly children: (ElementOutput | string)[];
+}
+
+export const Element: t.Type<Element, ElementOutput> = t.recursion(
+  'Element',
+  () =>
+    t.type({
+      id: ElementID,
+      // Can't put Node here: ReferenceError: Node is not defined.
+      // It should work and it works on copy-pasted Element2, so it
+      // must be some Webpack magic or I don't know.
+      children: t.array(t.union([Element, t.string])),
+    }),
+);
+
+export const Node = t.union([Element, t.string]);
+
 /**
- * Element or Text.
+ * Editor React-like element. It has tag and props.
  */
-export type Node = Element | Text;
+export interface ReactElement extends Element {
+  readonly tag: string;
+  readonly props: {};
+  readonly children: (ReactElement | Text)[];
+}
+
+export interface ReactElementOutput extends ElementOutput {
+  readonly tag: string;
+  readonly props: {};
+  readonly children: (ReactElementOutput | string)[];
+}
+
+export const ReactElement: t.Type<
+  ReactElement,
+  ReactElementOutput
+> = t.recursion('Element', () =>
+  t.type({
+    id: ElementID,
+    tag: t.string,
+    props: t.UnknownRecord,
+    children: t.array(t.union([ReactElement, t.string])),
+  }),
+);
 
 interface PathIndexBrand {
   readonly PathIndex: unique symbol;
@@ -78,12 +143,12 @@ export type PathDelta = t.TypeOf<typeof PathDelta>;
  */
 export type Path = PathIndex[];
 
+export const NonEmptyPath = nonEmptyArray(PathIndex);
+
 /**
  * Non empty Path.
  */
-export interface NonEmptyPath extends Path {
-  0: PathIndex;
-}
+export type NonEmptyPath = t.TypeOf<typeof NonEmptyPath>;
 
 /**
  * Non empty Path with offset.
@@ -93,23 +158,27 @@ export interface NonEmptyPathWithOffset extends Path {
   1: PathIndex;
 }
 
+const Selection = t.type({
+  anchor: NonEmptyPath,
+  focus: NonEmptyPath,
+});
+
 /**
  * Editor selection. It's like DOM Selection, but with Path for the anchor and the focus.
  * https://developer.mozilla.org/en-US/docs/Web/API/Selection
  */
-export interface Selection {
-  readonly anchor: NonEmptyPath;
-  readonly focus: NonEmptyPath;
-}
+export type Selection = t.TypeOf<typeof Selection>;
+
+const Value = t.type({
+  element: Element,
+  hasFocus: t.boolean,
+  selection: option(Selection),
+});
 
 /**
  * Editor value.
  */
-export interface Value {
-  readonly element: Element;
-  readonly hasFocus: boolean;
-  readonly selection: Option<Selection>;
-}
+export type Value = t.TypeOf<typeof Value>;
 
 /**
  * Editor range. It's like DOM Range, but with editor path for the start and the end.
@@ -143,27 +212,6 @@ export interface SetDOMNodePath {
 export interface RenderElement {
   (element: Element, children: ReactNode, ref: SetDOMNodePathRef): ReactNode;
 }
-
-interface ReactElementFactory<T, P> extends Element {
-  readonly tag: T;
-  readonly props?: P;
-  readonly children: (ReactElement | Text)[];
-}
-
-// Refactor, it should not be required.
-type $Values<T extends object> = T[keyof T];
-
-/**
- * Editor React-like element. It has tag and props.
- */
-export type ReactElement = $Values<
-  {
-    [T in keyof ReactDOM]: ReactElementFactory<
-      T,
-      ReturnType<ReactDOM[T]>['props']
-    >;
-  }
->;
 
 export type EditorElementAttrs = Pick<
   React.HTMLAttributes<HTMLDivElement>,

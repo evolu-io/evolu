@@ -26,8 +26,6 @@ export const initialValue = createValue<ReactElement>({
         id: id(),
         tag: 'div',
         props: {
-          // Uncomment 'width: 1' to check types.
-          // width: 1,
           style: { fontSize: '24px' },
         },
         children: ['heading'],

@@ -11,6 +11,7 @@
   "dependencies": {
     "fp-ts": "^2.0.5",
     "io-ts": "^2.0.1",
+    "io-ts-types": "^0.5.2",
     "monocle-ts": "^2.0.0",
     "nanoid": "^2.1.0"
   },

@@ -4,14 +4,7 @@ import { getEq, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens } from 'monocle-ts';
 import { createElement } from 'react';
-import {
-  Element,
-  ReactElement,
-  Selection,
-  Text,
-  Value,
-  NonEmptyPath,
-} from '../types';
+import { Element, Selection, Text, Value, NonEmptyPath } from '../types';
 import { eqElement, jsx, normalizeElement, setTextElement } from './element';
 import { eqSelection } from './selection';
 
@@ -21,7 +14,7 @@ export const eqValue: Eq<Value> = getStructEq({
   selection: getEq(eqSelection),
 });
 
-export const createValue = <E extends Element>({
+export const createValue = <E extends Element = Element>({
   element,
   selection = none,
   hasFocus = false,
@@ -36,7 +29,8 @@ export const createValue = <E extends Element>({
 });
 
 export const createValueWithText = (text = '') =>
-  createValue<ReactElement>({
+  createValue({
+    // createElement, because this file is not tsx.
     element: jsx(createElement('div', { className: 'root' }, text)),
     hasFocus: false,
   });

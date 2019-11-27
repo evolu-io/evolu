@@ -118,5 +118,5 @@ export const createStableIDFactory = (): IO<ElementID> => {
   beforeEach(async () => {
     lastID = 0;
   });
-  return () => ((lastID++).toString() as unknown) as ElementID;
+  return () => (`.......${(lastID++).toString()}` as unknown) as ElementID;
 };

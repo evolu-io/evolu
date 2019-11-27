@@ -1,6 +1,6 @@
 import { getEq, last, unsafeUpdateAt } from 'fp-ts/lib/Array';
 import { Eq, fromEquals, getStructEq, strictEqual } from 'fp-ts/lib/Eq';
-import { Endomorphism, Predicate, Refinement } from 'fp-ts/lib/function';
+import { Endomorphism, Predicate } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
 import { last as lastNonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { chain, fold, fromPredicate } from 'fp-ts/lib/Option';
@@ -8,7 +8,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Lens, Optional, Prism } from 'monocle-ts/lib';
 import { indexArray } from 'monocle-ts/lib/Index/Array';
 import nanoid from 'nanoid';
-import { Children } from 'react';
+import { Children, createElement } from 'react';
 import {
   Element,
   ElementID,
@@ -17,6 +17,7 @@ import {
   Path,
   PathIndex,
   ReactElement,
+  RenderElement,
 } from '../types';
 import { initNonEmptyPath } from './path';
 import { isText, isTextNotBR, textIsBR } from './text';
@@ -43,15 +44,11 @@ export const eqElement: Eq<Element> = getStructEq({
   children: eqNodes,
 });
 
-export const isElement: Refinement<Node, Element> = (node): node is Element => {
-  return Array.isArray((node as Element).children);
-};
-
 /**
- * Create ElementID via nanoid(10).
+ * Create ElementID via nanoid(8).
  * https://zelark.github.io/nano-id-cc
  */
-export const id: IO<ElementID> = () => nanoid(10) as ElementID;
+export const id: IO<ElementID> = () => nanoid(8) as ElementID;
 
 /**
  * Map `<div>a</div>` to `{ id: id(), tag: 'div', children: [{ id: id(), text: 'a' }] }` etc.
@@ -75,6 +72,19 @@ export const jsx = (element: JSX.Element): ReactElement => {
   };
 };
 
+export const renderReactElement: RenderElement = (element, children, ref) => {
+  let tag = 'div';
+  let props = {};
+  if (ReactElement.is(element)) {
+    tag = element.tag;
+    props = element.props;
+  }
+  if (Children.count(children) === 0) {
+    return createElement(tag, { ...props, ref });
+  }
+  return createElement(tag, { ...props, ref }, children);
+};
+
 /**
  * Like https://developer.mozilla.org/en-US/docs/Web/API/Node/normalize,
  * except strings can be empty. Empty strings are rendered as BR.
@@ -84,7 +94,7 @@ export const normalizeElement: Endomorphism<Element> = element => {
   // This flag is good enough for now. We can use fp-ts These later.
   let somethingHasBeenNormalized = false;
   const children = element.children.reduce<Node[]>((array, child) => {
-    if (isElement(child)) {
+    if (Element.is(child)) {
       const normalizedChild = normalizeElement(child);
       if (normalizedChild !== child) somethingHasBeenNormalized = true;
       return [...array, normalizedChild];
@@ -135,7 +145,8 @@ export const elementToIDless = (element: Element) => {
 // Functional optics.
 // https://github.com/gcanti/monocle-ts
 export const childrenLens = Lens.fromProp<Element>()('children');
-export const elementPrism = Prism.fromPredicate(isElement);
+// Add <Node, Element> because Element.is uses unknown. I think it's ok.
+export const elementPrism = Prism.fromPredicate<Node, Element>(Element.is);
 export const textPrism = Prism.fromPredicate(isText);
 export const getChildAt = (index: PathIndex) => indexArray<Node>().index(index);
 

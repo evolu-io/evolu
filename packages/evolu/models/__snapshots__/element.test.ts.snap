@@ -3,14 +3,14 @@
 exports[`normalizeElement do not add children 1`] = `
 Object {
   "children": Array [],
-  "id": "0",
+  "id": ".......0",
 }
 `;
 
 exports[`normalizeElement do not remove children 1`] = `
 Object {
   "children": Array [],
-  "id": "0",
+  "id": ".......0",
 }
 `;
 
@@ -19,7 +19,7 @@ Object {
   "children": Array [
     "",
   ],
-  "id": "1",
+  "id": ".......1",
 }
 `;
 
@@ -28,7 +28,7 @@ Object {
   "children": Array [
     ".",
   ],
-  "id": "2",
+  "id": ".......2",
 }
 `;
 
@@ -44,19 +44,19 @@ Object {
             "a",
             Object {
               "children": Array [],
-              "id": "3",
+              "id": ".......3",
             },
             "bc",
           ],
-          "id": "2",
+          "id": ".......2",
         },
       ],
-      "id": "1",
+      "id": ".......1",
     },
     "a",
     "",
     "b",
   ],
-  "id": "0",
+  "id": ".......0",
 }
 `;

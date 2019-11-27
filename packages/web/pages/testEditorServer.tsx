@@ -9,6 +9,7 @@ import {
 const reactElement: ReactElement = {
   id: id(),
   tag: 'div',
+  props: {},
   children: ['a', 'b', '', 'c'],
 };
 
