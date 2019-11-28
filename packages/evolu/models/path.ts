@@ -1,17 +1,8 @@
-import { array, getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
+import { getEq, snoc, takeLeft } from 'fp-ts/lib/Array';
 import { eqNumber } from 'fp-ts/lib/Eq';
 import { identity, Refinement } from 'fp-ts/lib/function';
 import { last } from 'fp-ts/lib/NonEmptyArray';
-import {
-  filter,
-  fold,
-  fromEither,
-  map,
-  none,
-  Option,
-  option,
-  some,
-} from 'fp-ts/lib/Option';
+import { fold, fromEither, map, none, Option, some } from 'fp-ts/lib/Option';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
@@ -38,13 +29,13 @@ export const toPathDelta = (output: number): Option<PathDelta> =>
  * Smart constructor for Path.
  */
 export const toPath = (output: number[]): Option<Path> =>
-  pipe(output.map(toPathIndex), array.sequence(option));
+  fromEither(Path.decode(output));
 
 /**
  * Smart constructor for NonEmptyPath.
  */
 export const toNonEmptyPath = (output: number[]): Option<NonEmptyPath> =>
-  pipe(toPath(output), filter(NonEmptyPath.is));
+  fromEither(NonEmptyPath.decode(output));
 
 /**
  * Helper for tests. With FP, we never throw. But tests are different, they throw.

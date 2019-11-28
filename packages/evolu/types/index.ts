@@ -138,10 +138,12 @@ export const PathDelta = t.brand(
  */
 export type PathDelta = t.TypeOf<typeof PathDelta>;
 
+export const Path = t.array(PathIndex);
+
 /**
  * Path to a place in Element. It can point to Element, Text, Text char, or nothing.
  */
-export type Path = PathIndex[];
+export type Path = t.TypeOf<typeof Path>;
 
 export const NonEmptyPath = nonEmptyArray(PathIndex);
 
